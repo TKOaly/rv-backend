@@ -8,7 +8,7 @@ router.use(function (req, res, next) {
   next();
 });
 
-router.post('/authenticate', function (req, res) {
+router.post('/', function (req, res) {
   if (req.body.username && req.body.password) {
     var username = req.body.username;
     var password = req.body.password;

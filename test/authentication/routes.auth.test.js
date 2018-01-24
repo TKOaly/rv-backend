@@ -10,6 +10,8 @@ const server = require('../../src/app');
 const request = chai.request(server);
 const knex = require('../../src/db/knex.js');
 
+const AUTH_PATH = '/api/v1/user/authenticate';
+
 describe('routes: authentication', () => {
 
   beforeEach((done) => {
@@ -32,14 +34,14 @@ describe('routes: authentication', () => {
     });
   });
   
-  describe('POST /api/v1/auth/authenticate', () => {
+  describe('POST /api/v1/user/authenticate', () => {
 
     it('with valid credentials, should respond with an authentication token', (done) => {
       chai.request(server)
-      .post('/api/v1/auth/authenticate')
+      .post(AUTH_PATH)
       .type('form')
       .send({
-        username: 'testuser',
+        username: 'normal_user',
         password: 'hunter2'
       })
       .end((err, res) => {
@@ -52,7 +54,7 @@ describe('routes: authentication', () => {
 
     it('with invalid credentials, should return a 403 forbidden response', (done) => {
       chai.request(server)
-      .post('/api/v1/auth/authenticate')
+      .post(AUTH_PATH)
       .type('form')
       .send({
         username: 'testuser',
@@ -67,7 +69,7 @@ describe('routes: authentication', () => {
 
     it('invalid request should result in a 400 bad request response', (done) => {
       chai.request(server)
-      .post('/api/v1/auth/authenticate')
+      .post(AUTH_PATH)
       .type('form')
       .send('garbage')
       .end((err, res) => {

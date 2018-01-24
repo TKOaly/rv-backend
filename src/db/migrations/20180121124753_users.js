@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
     table.string('password_hash', 128);
     table.string('email', 255).unique('user_email_unique_constraint');
     table.integer('balance');
+    table.timestamps(true, true);
   });
 };
 

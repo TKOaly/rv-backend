@@ -9,9 +9,9 @@
   app.use(bodyParser.json());
   app.use(cors());
 
-  var auth_routes = require('./routes/auth');
+  var auth_route = require('./routes/auth');
 
-  app.use('/api/v1/auth', auth_routes);
+  app.use('/api/v1/user/authenticate', auth_route);
 
   module.exports = app;
 }());
