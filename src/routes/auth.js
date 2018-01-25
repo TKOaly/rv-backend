@@ -21,8 +21,20 @@ router.post('/', function (req, res) {
         var pwhash = rows[0].password_hash;
         bcrypt.compare(password, pwhash, function (err, matches) {
           if (matches === true) {
-            res.status(200).json({
-              access_token: token.sign({ username: rows[0].username })
+            var roles = [];
+
+            knex.select('role_name')
+            .from('user_roles')
+            .join('roles', function() {
+              this.on('user_roles.role', '=', 'roles.role_name')
+              .andOn('user_roles.user', '=', knex.raw('?', [rows[0].username]));
+            })
+            .then((rows) => {
+              roles = rows.map((row) => row.role_name);
+
+              res.status(200).json({
+                access_token: token.sign({ username: rows[0].username, roles: roles })
+              });
             });
           } else {
             res.status(403).json({
