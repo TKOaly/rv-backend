@@ -25,3 +25,11 @@ module.exports.findUserRoles = (username) => {
     return rows.map((row) => row.role_name);
   });
 }
+
+module.exports.updateAccountBalance = (username, balance) => {
+  return knex('users')
+  .where('username', '=', username)
+  .update({
+    account_balance: balance
+  });
+}

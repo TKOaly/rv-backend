@@ -34,7 +34,7 @@ describe('routes: authentication', () => {
     });
   });
   
-  describe('POST ' + AUTH_PATH, () => {
+  describe('User authentication', () => {
 
     it('with valid credentials, should respond with an authentication token', (done) => {
       chai.request(server)

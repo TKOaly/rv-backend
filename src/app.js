@@ -10,8 +10,9 @@
   app.use(cors());
 
   var auth_route = require('./routes/auth');
-
+  var account_route = require('./routes/account');
   app.use('/api/v1/user/authenticate', auth_route);
-
+  app.use('/api/v1/user/account', account_route);
+  
   module.exports = app;
 }());
