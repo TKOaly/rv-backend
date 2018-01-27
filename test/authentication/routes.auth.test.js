@@ -52,13 +52,28 @@ describe('routes: authentication', () => {
       });
     });
 
-    it('with invalid credentials, should return a 403 forbidden response', (done) => {
+    it('with invalid password, should return a 403 forbidden response', (done) => {
       chai.request(server)
       .post(AUTH_PATH)
       .type('form')
       .send({
-        username: 'testuser',
+        username: 'normal_user',
         password: 'incorrect'
+      })
+      .end((err, res) => {
+        should.exist(err)
+        res.status.should.equal(403);
+        done();
+      });
+    });
+
+    it('with nonexistent user, should return a 403 forbidden response', (done) => {
+      chai.request(server)
+      .post(AUTH_PATH)
+      .type('form')
+      .send({
+        username: 'nobody',
+        password: 'something'
       })
       .end((err, res) => {
         should.exist(err)

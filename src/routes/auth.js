@@ -2,38 +2,27 @@ const express = require('express')
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const token = require('../jwt/token');
-const knex = require('../db/knex.js');
+const knex = require('../db/knex');
+const userStore = require('../db/userStore');
 
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
   next();
 });
 
-router.post('/', function (req, res) {
+router.post('/', (req, res) => {
   if (req.body.username && req.body.password) {
     var username = req.body.username;
     var password = req.body.password;
 
-    knex('users')
-    .where({ username: username })
-    .select('username', 'password_hash')
-    .then(function (rows) {
-      if (rows.length > 0) {
-        var pwhash = rows[0].password_hash;
-        bcrypt.compare(password, pwhash, function (err, matches) {
-          if (matches === true) {
-            var roles = [];
-
-            knex.select('role_name')
-            .from('user_roles')
-            .join('roles', function() {
-              this.on('user_roles.role', '=', 'roles.role_name')
-              .andOn('user_roles.user', '=', knex.raw('?', [rows[0].username]));
-            })
-            .then((rows) => {
-              roles = rows.map((row) => row.role_name);
-
+    userStore.findByUsername(username)
+    .then((user) => {
+      if (user) {
+        userStore.verifyPassword(password, user.password_hash)
+        .then((match) => {
+          if (match === true) {
+            userStore.findUserRoles(user.username).then((roles) => {
               res.status(200).json({
-                access_token: token.sign({ username: rows[0].username, roles: roles })
+                access_token: token.sign({ username: user.name, roles: roles })
               });
             });
           } else {
@@ -50,7 +39,7 @@ router.post('/', function (req, res) {
         });
       }
     })
-    .catch(function (error) {
+    .catch((error) => {
       res.status(500).json({
         error_code: 'internal_error',
         message: 'Internal error'

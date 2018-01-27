@@ -27,19 +27,19 @@ exports.seed = function(knex, Promise) {
           username: 'normal_user',
           full_name: 'John Doe',
           password_hash: bcrypt.hashSync('hunter2', 11),
-          balance: 500
+          account_balance: 500
         },
         {
           username: 'super_user',
           full_name: 'Super User',
           password_hash: bcrypt.hashSync('superduper5000', 11),
-          balance: 500
+          account_balance: 500
         },
         {
           username: 'admin_user',
           full_name: 'BOFH',
           password_hash: bcrypt.hashSync('admin123', 11),
-          balance: 500
+          account_balance: 500
         }
       ]);
     })
