@@ -22,7 +22,7 @@ router.post('/', (req, res) => {
           if (match === true) {
             userStore.findUserRoles(user.username).then((roles) => {
               res.status(200).json({
-                access_token: token.sign({ username: user.name, roles: roles })
+                access_token: token.sign({ username: user.username, roles: roles })
               });
             });
           } else {
@@ -40,6 +40,8 @@ router.post('/', (req, res) => {
       }
     })
     .catch((error) => {
+      console.log(error);
+
       res.status(500).json({
         error_code: 'internal_error',
         message: 'Internal error'
