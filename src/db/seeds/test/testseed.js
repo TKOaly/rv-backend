@@ -1,7 +1,13 @@
 var bcrypt = require('bcrypt');
 
 exports.seed = function(knex, Promise) {
-  return knex('roles').del()
+  return knex('user_roles').del()
+    .then(() => {
+      return knex('users').del();
+    })
+    .then(() => {
+      return knex('roles').del();
+    })
     .then(() => {
       return knex('roles').insert([
         {
@@ -17,9 +23,6 @@ exports.seed = function(knex, Promise) {
           role_description: 'Administrator'
         }
       ]);
-    })
-    .then(() => {
-      return knex('users').del()
     })
     .then(() => {
       return knex('users').insert([
@@ -45,9 +48,6 @@ exports.seed = function(knex, Promise) {
           account_balance: 500
         }
       ]);
-    })
-    .then(() => {
-      return knex('user_roles').del()
     })
     .then(() => {
       return knex('user_roles').insert([

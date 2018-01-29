@@ -8,7 +8,8 @@ chai.use(chaiHttp);
 
 const server = require('../../src/app');
 const request = chai.request(server);
-const knex = require('../../src/db/knex.js');
+const knex = require('../../src/db/knex');
+const jwt = require('../../src/jwt/token');
 
 const AUTH_PATH = '/api/v1/user/authenticate';
 
@@ -48,6 +49,12 @@ describe('routes: authentication', () => {
         should.not.exist(err)
         res.status.should.equal(200);
         should.exist(res.body.access_token);
+        
+        var token = jwt.verify(res.body.access_token);
+        should.exist(token.data.username);
+        should.exist(token.data.roles);
+        token.data.username.should.equal('normal_user');
+
         done();
       });
     });
