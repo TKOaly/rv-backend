@@ -1,4 +1,4 @@
-# rv-backend
+# rv-backend [![Build Status](https://travis-ci.org/ohtu2018-rv/rv-backend.svg?branch=develop)](https://travis-ci.org/ohtu2018-rv/rv-backend)
 
 RV backend
 
