@@ -1,3 +1,11 @@
+branches:
+  only:
+    - develop
+
+env:
+  global:
+    secure: "5ozb//SotYbWFaWMw6WKDD/BSkH/8WRcoJXUQC0NGNT8DjWtuoW69N0KngCk7WdvkDDnZCcRKDUXjlIs4mHfMsqbYjlz8dzHKEtSJFHWV9+/U89Zlk+f8+9znWDdXrluNwobSHNfBom+rrqZWEOxsiBgTc2owvxAfOOITyCT4wVe6M+HEJP1I45rVgr5vbO0mMJCNZMcjZD7RZ2ubFgi2191Ib8QBGIk5iK4jhD9hSmlucEX7T4j6aG3/fz2OK9D8vxpiyDsiBWVZkhpOGTYCTPSKw8NcI8JccGYE0wDnjifo+xRC4fGmt6bJryrhps1c5PRBbG4wva/mvlD2UU9YkV1UBDXnw6W/n+ojdIPAqL66VYwQcs4xjxxoDuIPiKOmQY/wQVZTL22NigIXnraAJH6NjWEDGYiFipi6rloZCU9T4RlYHvQdEVsML6pto1eNNEDuMNSW+LRW5r58/+p0LskEKa8xe+wsf+Zi0Ixd+DM04sJ73amPwUIH2RpoKkh0yAXQiGAveH8HKjQUTrDisMciS455r41LFbEsRlW9eMk6nhCroXO+jcccinLReMV6m9i5JA500cMv+rs/lufK/hcNjVEk1kOPf4+dlecaFAgMseVQAlXctKJrUyzKBSg9iYACYcsWAZ+yxn7ZX4dPcFgP/ztTCsKeDsRRoKT1KQ="
+
 sudo: required
 services:
   - docker
@@ -10,3 +18,7 @@ cache:
   directories:
     - "node_modules"
 
+after_success:
+  - docker build -t rv-backend .
+  secure: "RMAPT9Y33kqufzihfU5XXueD84Ued64PZRZPRIt6vu0QD5tk+dgVyBzjreyl+SHpJFHhm6gKvur/23giHWaWcYKOuJoyrGtPKeWxKliXmFpQTQWorbvFU62ITmeWCnB00XLgBfZDAfD2UpfldeGEU2huCrsxXfpgo3zT8tSdqwVE3bpOHfzw0Y9D14Ko5WD5z0YxTj9IWWxs9byeL8G32XxxGO++gFD/S68Y0RfL0WKQqGND/yv/BHD2MrfqpbpdDQIphZ9rTWNjLJD3+Vn6k/v/k5Tpka7thz3j1ED1QoCGL4Ly5VgJmnTjpN9ykjuVlgeU8dAsHkybMhbd1OlKZuveEmV4sb2ZKhFFr8w/4tvWL47tjQWoYrJHT0KkpYT0hlM0tL6bK9OY0rxgFnEanNZY+jv1lj2sTdYkmCwz/1N7X2MmJUyKnSmvHuTEPZmV4IqXBj/J6Rns5EDNAhB7ukDH/CEfk7VrDLO+UxDnia/Ec2iYrX2GZV4aVwWe5VnK0z7V4bJyhV3NZqrb0dSRpb4CqVYId3eeIYQRerPG+E91ZdOPWF+o0zYm3av0HNRdv3d21Gi2C1a4erhuKpCdDyuZx1Ik34rVCCPc7YRLF6DFd1/6jRfzANVFtH4rxiZoewePG84w6WASiwN2VqtBhfX+R/R+tsWS3eRcHrnyiGA="
+  
