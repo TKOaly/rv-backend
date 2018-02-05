@@ -1,12 +1,12 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTableIfNotExists('roles', function (table) {
-    table.string('role_name', 50)
-    .primary()
-    .index('role_name_index');
-    table.string('role_description', 200);
-  }); 
+    return knex.schema.createTableIfNotExists('roles', function (table) {
+        table.string('role_name', 50)
+            .primary()
+            .index('role_name_index');
+        table.string('role_description', 200);
+    }); 
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists('roles');
+    return knex.schema.dropTableIfExists('roles');
 };
