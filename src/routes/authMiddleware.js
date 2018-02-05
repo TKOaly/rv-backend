@@ -1,7 +1,8 @@
 (function () {
     const jwt = require('../jwt/token');
+    const userStore = require('../db/userStore');
 
-    function authMiddleware (req, res, next) {
+    async function authMiddleware (req, res, next) {
         var authHeader = req.get('Authorization');
         var rvusername = null;
         var rvroles = null;
@@ -19,9 +20,25 @@
         }
 
         if (rvusername && rvroles) {
-            req.rvusername = rvusername;
-            req.rvroles = rvroles;
-            next();
+            try {
+                req.rvuser = await userStore.findByUsername(rvusername);
+                req.rvroles = await userStore.findUserRoles(rvusername);
+                
+                if (req.rvuser && req.rvroles) {
+                    next();
+                } else {
+                    res.status(403).json({
+                        error_code: 'invalid_token',
+                        message: 'Invalid authorization token'
+                    });
+                }
+            }
+            catch (error) {
+                res.status(500).json({
+                    error_code: 'internal_error',
+                    message: 'Internal error'
+                });
+            }
         } else {
             res.status(403).json({
                 error_code: 'invalid_token',
