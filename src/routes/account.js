@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const token = require('../jwt/token');
-const knex = require('../db/knex');
 const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 

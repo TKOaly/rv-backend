@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
 const token = require('../jwt/token');
-const knex = require('../db/knex');
 const userStore = require('../db/userStore');
 
 router.use((req, res, next) => {
