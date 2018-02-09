@@ -1,0 +1,25 @@
+env:
+  global:
+    secure: 5ozb//SotYbWFaWMw6WKDD/BSkH/8WRcoJXUQC0NGNT8DjWtuoW69N0KngCk7WdvkDDnZCcRKDUXjlIs4mHfMsqbYjlz8dzHKEtSJFHWV9+/U89Zlk+f8+9znWDdXrluNwobSHNfBom+rrqZWEOxsiBgTc2owvxAfOOITyCT4wVe6M+HEJP1I45rVgr5vbO0mMJCNZMcjZD7RZ2ubFgi2191Ib8QBGIk5iK4jhD9hSmlucEX7T4j6aG3/fz2OK9D8vxpiyDsiBWVZkhpOGTYCTPSKw8NcI8JccGYE0wDnjifo+xRC4fGmt6bJryrhps1c5PRBbG4wva/mvlD2UU9YkV1UBDXnw6W/n+ojdIPAqL66VYwQcs4xjxxoDuIPiKOmQY/wQVZTL22NigIXnraAJH6NjWEDGYiFipi6rloZCU9T4RlYHvQdEVsML6pto1eNNEDuMNSW+LRW5r58/+p0LskEKa8xe+wsf+Zi0Ixd+DM04sJ73amPwUIH2RpoKkh0yAXQiGAveH8HKjQUTrDisMciS455r41LFbEsRlW9eMk6nhCroXO+jcccinLReMV6m9i5JA500cMv+rs/lufK/hcNjVEk1kOPf4+dlecaFAgMseVQAlXctKJrUyzKBSg9iYACYcsWAZ+yxn7ZX4dPcFgP/ztTCsKeDsRRoKT1KQ=
+
+sudo: required
+services:
+  - docker
+
+language: node_js
+node_js:
+  - "8"
+
+cache:
+  directories:
+    - "node_modules"
+
+after_success:
+  - test $TRAVIS_BRANCH = "develop" && docker build -t rv-backend .
+  - test $TRAVIS_BRANCH = "develop" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+  - test $TRAVIS_BRANCH = "develop" && docker tag rv-backend registry.heroku.com/rv-backend-dev/web
+  - test $TRAVIS_BRANCH = "develop" && docker push registry.heroku.com/rv-backend-dev/web
+  - test $TRAVIS_BRANCH = "master" && docker build -t rv-backend .
+  - test $TRAVIS_BRANCH = "master" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+  - test $TRAVIS_BRANCH = "master" && docker tag rv-backend registry.heroku.com/rv-backend/web
+  - test $TRAVIS_BRANCH = "master" && docker push registry.heroku.com/rv-backend/web
