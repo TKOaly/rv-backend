@@ -11,11 +11,11 @@ exports.up = function(knex, Promise) {
             table.integer('userid').primary();
             table.dateTime('createdate').notNullable();
             table.integer('roleid').notNullable().references('roleid').inTable('ROLE');
-            table.string('name', 64).charset('utf8').notNullable().index();
-            table.string('univident', 128).notNullable().charset('utf8');
+            table.string('name', 64).notNullable().index();
+            table.string('univident', 128).notNullable();
             table.string('pass', 100).notNullable();
             table.integer('saldo').notNullable();
-            table.string('realname', 128).charset('utf8');
+            table.string('realname', 128);
         })
         .createTableIfNotExists('SALDOHISTORY', function (table) {
             table.increments('saldhistid');
@@ -30,9 +30,10 @@ exports.down = function(knex, Promise) {
     if (process.env.NODE_ENV === 'production') {
         throw new Error('dont drop stuff in production');
     }
-    
-    return knex.schema
-        .dropTableIfExists('SALDOHISTORY')
-        .dropTableIfExists('RVPERSON')
-        .dropTableIfExists('ROLE');
+    else {
+        return knex.schema
+            .dropTableIfExists('SALDOHISTORY')
+            .dropTableIfExists('RVPERSON')
+            .dropTableIfExists('ROLE');
+    }
 };
