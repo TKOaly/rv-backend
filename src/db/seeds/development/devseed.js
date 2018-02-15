@@ -1,67 +1,80 @@
 var bcrypt = require('bcrypt');
 
 exports.seed = function(knex, Promise) {
-    return knex('user_roles').del()
+    return knex('SALDOHISTORY').del()
         .then(() => {
-            return knex('users').del();
+            return knex('RVPERSON').del();
         })
         .then(() => {
-            return knex('roles').del();
+            return knex('ROLE').del();
         })
         .then(() => {
-            return knex('roles').insert([
+            return knex('ROLE').insert([
                 {
-                    role_name: 'user',
-                    role_description: 'Regular user'
+                    role: 'ADMIN',
+                    buzzerlimit: -1000,
+                    fgcolor: 37,
+                    bgcolor: 40
                 },
                 {
-                    role_name: 'superuser',
-                    role_description: 'Super user'
+                    role: 'USER1',
+                    buzzerlimit: -1000,
+                    fgcolor: 37,
+                    bgcolor: 40
                 },
                 {
-                    role_name: 'admin',
-                    role_description: 'Administrator'
+                    role: 'USER2',
+                    buzzerlimit: -1000,
+                    fgcolor: 31,
+                    bgcolor: 47
+                },
+                {
+                    role: 'USER3',
+                    buzzerlimit: -5000,
+                    fgcolor: 32,
+                    bgcolor: 40
+                },
+                {
+                    role: 'USER4',
+                    buzzerlimit: -1000,
+                    fgcolor: 37,
+                    bgcolor: 40
+                },
+                {
+                    role: 'MULKKU',
+                    buzzerlimit: -1000,
+                    fgcolor: 37,
+                    bgcolor: 40
+                },
+                {
+                    role: 'INACTIVE',
+                    buzzerlimit: -1000,
+                    fgcolor: 37,
+                    bgcolor: 40
                 }
             ]);
         })
         .then(() => {
-            return knex('users').insert([
+            return knex('RVPERSON').insert([
                 {
-                    username: 'normal_user',
-                    full_name: 'John Doe',
-                    password_hash: bcrypt.hashSync('hunter2', 11),
-                    email: 'address@example.com',
-                    account_balance: 500
+                    userid: 1,
+                    createdate: new Date(),
+                    roleid: 2,
+                    name: 'normal_user',
+                    univident: 'user@example.com',
+                    pass: bcrypt.hashSync('hunter2', 11),
+                    saldo: 500,
+                    realname: 'John Doe'
                 },
                 {
-                    username: 'super_user',
-                    full_name: 'Super User',
-                    password_hash: bcrypt.hashSync('superduper5000', 11),
-                    email: 'super@example.com',
-                    account_balance: 500
-                },
-                {
-                    username: 'admin_user',
-                    full_name: 'BOFH',
-                    password_hash: bcrypt.hashSync('admin123', 11),
-                    email: 'admin@example.com',
-                    account_balance: 500
-                }
-            ]);
-        })
-        .then(() => {
-            return knex('user_roles').insert([
-                {
-                    user: 'normal_user',
-                    role: 'user'
-                },
-                {
-                    user: 'super_user',
-                    role: 'superuser'
-                },
-                {
-                    user: 'admin_user',
-                    role: 'admin'
+                    userid: 2,
+                    createdate: new Date(),
+                    roleid: 1,
+                    name: 'admin_user',
+                    univident: 'admin@example.com',
+                    pass: bcrypt.hashSync('admin123', 11),
+                    saldo: 500,
+                    realname: 'BOFH'
                 }
             ]);
         });
