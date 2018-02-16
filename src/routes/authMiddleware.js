@@ -5,7 +5,6 @@
     async function authMiddleware (req, res, next) {
         var authHeader = req.get('Authorization');
         var rvusername = null;
-        var rvroles = null;
 
         if (authHeader !== undefined) {
             var parts = authHeader.split(' ');
@@ -14,12 +13,11 @@
 
                 if (token) {
                     rvusername = token.data.username;
-                    rvroles = token.data.roles;
                 }
             }
         }
 
-        if (rvusername && rvroles) {
+        if (rvusername) {
             try {
                 req.rvuser = await userStore.findByUsername(rvusername);
                 req.rvroles = await userStore.findUserRoles(rvusername);

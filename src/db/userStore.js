@@ -2,8 +2,8 @@ const knex = require('./knex');
 const bcrypt = require('bcrypt');
 
 module.exports.findByUsername = (username) => {
-    return knex('users')
-        .where({ username: username })
+    return knex('RVPERSON')
+        .where('RVPERSON.name', '=', username)
         .select('*')
         .then((rows) => {
             return rows.length > 0 ? rows[0] : null;
@@ -15,21 +15,46 @@ module.exports.verifyPassword = (password, passwordHash) => {
 };
 
 module.exports.findUserRoles = (username) => {
-    return knex.select('role_name')
-        .from('user_roles')
-        .join('roles', function() {
-            this.on('user_roles.role', '=', 'roles.role_name')
-                .andOn('user_roles.user', '=', knex.raw('?', [username]));
+    return knex.select('role')
+        .from('ROLE')
+        .join('RVPERSON', function() {
+            this.on('RVPERSON.roleid', '=', 'ROLE.roleid')
+                .andOn('RVPERSON.name', '=', knex.raw('?', [username]));
         })
         .then((rows) => {
-            return rows.map((row) => row.role_name);
+            return rows.map((row) => row.role);
         });
 };
 
-module.exports.updateAccountBalance = (username, balance) => {
-    return knex('users')
-        .where('username', '=', username)
-        .update({
-            account_balance: balance
-        });
+module.exports.updateAccountBalance = (username, difference) => {
+    return knex.transaction(function(trx) {
+        return knex
+            .transacting(trx)
+            .select('userid', 'saldo')
+            .from('RVPERSON')
+            .where({ name: username })
+            .then((rows) => rows[0])
+            .then((user) => {
+                user.saldo += difference;
+                return knex('RVPERSON')
+                    .transacting(trx)
+                    .where({ name: username })
+                    .update({
+                        saldo: user.saldo
+                    })
+                    .then(() => user);
+            })
+            .then((user) => {
+                return knex
+                    .transacting(trx)
+                    .insert({
+                        userid: user.userid,
+                        time: new Date(),
+                        saldo: user.saldo,
+                        difference: difference
+                    })
+                    .into('SALDOHISTORY')
+                    .then(() => user.saldo);
+            });
+    });
 };

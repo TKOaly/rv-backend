@@ -9,10 +9,10 @@ router.get('/', async (req, res) => {
     var user = req.rvuser;
 
     res.status(200).json({
-        username: user.username,
-        full_name: user.full_name,
-        email: user.email,
-        account_balance: user.account_balance
+        username: user.name,
+        full_name: user.realname,
+        email: user.univident,
+        account_balance: user.saldo
     });
 });
 
@@ -22,11 +22,10 @@ router.post('/debit', async (req, res) => {
         var amount = parseInt(req.body.amount, 10);
 
         if (!isNaN(amount) && amount > 0) {
-            if (user.account_balance > 0) {
-                user.account_balance -= amount;
-                await userStore.updateAccountBalance(user.username, user.account_balance);
+            if (user.saldo > 0) {
+                user.saldo = await userStore.updateAccountBalance(user.name, -amount);
                 res.status(200).json({
-                    account_balance: user.account_balance
+                    account_balance: user.saldo
                 });
             } else {
                 res.status(403).json({
@@ -55,10 +54,9 @@ router.post('/credit', async (req, res) => {
         var amount = parseInt(req.body.amount, 10);
 
         if (!isNaN(amount) && amount > 0) {
-            user.account_balance += amount;
-            await userStore.updateAccountBalance(user.username, user.account_balance);
+            user.saldo = await userStore.updateAccountBalance(user.name, amount);
             res.status(200).json({
-                account_balance: user.account_balance
+                account_balance: user.saldo
             });
         } else {
             res.status(400).json({
