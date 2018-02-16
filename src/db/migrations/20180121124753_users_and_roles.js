@@ -16,6 +16,8 @@ exports.up = function(knex, Promise) {
             table.string('pass', 100).notNullable();
             table.integer('saldo').notNullable();
             table.string('realname', 128);
+            table.unique('name');
+            table.unique('univident');
         })
         .createTableIfNotExists('SALDOHISTORY', function (table) {
             table.increments('saldhistid');

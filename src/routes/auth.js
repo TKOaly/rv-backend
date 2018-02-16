@@ -15,10 +15,10 @@ router.post('/', async (req, res) => {
         try {
             var user = await userStore.findByUsername(username);
             if (user) {
-                if (await userStore.verifyPassword(password, user.password_hash)) {
-                    var roles = await userStore.findUserRoles(user.username);
+                if (await userStore.verifyPassword(password, user.pass)) {
+                    var roles = await userStore.findUserRoles(user.name);
                     res.status(200).json({
-                        access_token: token.sign({ username: user.username, roles: roles})
+                        access_token: token.sign({ username: user.name })
                     });
                 } else {
                     res.status(403).json({
