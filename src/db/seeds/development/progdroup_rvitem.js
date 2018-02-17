@@ -8,9 +8,6 @@ exports.seed = function(knex, Promise) {
             return knex('PRODGROUP').del();
         })
         .then(() => {
-            return knex('RVITEM').del();
-        })
-        .then(() => {
             return knex('PRODGROUP').insert(prodgroups);
         })
         .then(() => {
