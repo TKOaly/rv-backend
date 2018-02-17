@@ -27,7 +27,7 @@ exports.up = function(knex, Promise) {
                 .references('pgrpid')
                 .inTable('PRODGROUP');
             table
-                .integer('descr')
+                .string('descr', 64)
                 .notNullable()
                 .comment('Textual product description (name)');
             table
@@ -39,7 +39,9 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema
-        .dropTableIfExists('RVITEM')
-        .dropTableIfExists('PRODGROUP');
+    if (process.env.NODE_ENV !== 'production') {
+        return knex.schema
+            .dropTableIfExists('RVITEM')
+            .dropTableIfExists('PRODGROUP');
+    }
 };
