@@ -1,5 +1,5 @@
-const prodgroups = require('./PRODGROUP.json');
-const rvitems = require('./RVITEM.json');
+const prodgroups = require('../seeddata/PRODGROUP.json');
+const rvitems = require('../seeddata/RVITEM.json');
 
 exports.seed = function(knex, Promise) {
     return knex('RVITEM')
