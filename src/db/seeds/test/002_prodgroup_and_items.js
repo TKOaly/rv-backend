@@ -11,6 +11,7 @@ exports.seed = function(knex, Promise) {
             return knex('PRODGROUP').insert(prodgroups);
         })
         .then(() => {
-            return knex('RVITEM').insert(rvitems);
+            rvitems.forEach((item) => knex('RVITEM').insert(item));
+            return knex;
         });
 };
