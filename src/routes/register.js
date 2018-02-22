@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
         }).end();
         return;
     }
-    const userEmail = await userStore.findByEmail(body.email);
+    const userEmail = await userStore.findByEmail(body.email.trim());
     if (userEmail) {
         res.status(403).json({
             error: `Email already in use.`
@@ -53,7 +53,9 @@ router.post('/', async (req, res) => {
 
     // Add user to db
     try {
-        const inserted = await userStore.insertUser(body);
+        const highestId = await userStore.findHighestUserId();
+        console.log(highestId.max)
+        const inserted = await userStore.insertUser(body, highestId.max);
         res.status(201).json(inserted);
     } catch (exception) {
         res.status(500).json({
@@ -63,7 +65,7 @@ router.post('/', async (req, res) => {
     }
     
     // for debugging
-    // console.log(await userStore.getUsers())
+     console.log(await userStore.getUsers())
 });
 
 module.exports = router;

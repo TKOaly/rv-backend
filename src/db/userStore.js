@@ -1,7 +1,7 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
 
-module.exports.getUsers = (username) => {
+module.exports.getUsers = () => {
     return knex('RVPERSON')
         .select('*')
         .then((persons) => {
@@ -18,6 +18,14 @@ module.exports.findByUsername = (username) => {
         });
 };
 
+module.exports.findHighestUserId = () => {
+    return knex('RVPERSON')
+        .max('userid')
+        .then((rows) => {
+            return rows.length > 0 ? rows[0] : null;
+        });
+};
+
 module.exports.findByEmail = (email) => {
     return knex('RVPERSON')
         .where('RVPERSON.univident', '=', email)
@@ -27,15 +35,15 @@ module.exports.findByEmail = (email) => {
         });
 };
 
-module.exports.insertUser = (user) => {
+module.exports.insertUser = (user, highestId) => {
     return knex('RVPERSON')
         .insert(
             {
-
+                userid: highestId + 1,
                 createdate: new Date(),
                 roleid: 2,
                 name: user.username,
-                univident: user.email,
+                univident: user.email.trim(),
                 pass: bcrypt.hashSync(user.password, 11),
                 saldo: 0,
                 realname: user.realname
