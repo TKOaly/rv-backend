@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
             table.integer('bgcolor').notNullable().defaultTo(40);
         })    
         .createTableIfNotExists('RVPERSON', function (table) {
-            table.integer('userid').primary();
+            table.increments('userid').primary();
             table.dateTime('createdate').notNullable();
             table.integer('roleid').notNullable().references('roleid').inTable('ROLE');
             table.string('name', 64).notNullable().index();

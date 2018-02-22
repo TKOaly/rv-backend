@@ -1,6 +1,14 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
 
+module.exports.getUsers = (username) => {
+    return knex('RVPERSON')
+        .select('*')
+        .then((persons) => {
+            return persons;
+        });
+};
+
 module.exports.findByUsername = (username) => {
     return knex('RVPERSON')
         .where('RVPERSON.name', '=', username)
@@ -8,6 +16,31 @@ module.exports.findByUsername = (username) => {
         .then((rows) => {
             return rows.length > 0 ? rows[0] : null;
         });
+};
+
+module.exports.findByEmail = (email) => {
+    return knex('RVPERSON')
+        .where('RVPERSON.univident', '=', email)
+        .select('*')
+        .then((rows) => {
+            return rows.length > 0 ? rows[0] : null;
+        });
+};
+
+module.exports.insertUser = (user) => {
+    return knex('RVPERSON')
+        .insert(
+            {
+
+                createdate: new Date(),
+                roleid: 2,
+                name: user.username,
+                univident: user.email,
+                pass: bcrypt.hashSync(user.password, 11),
+                saldo: 0,
+                realname: user.realname
+            }
+        )
 };
 
 module.exports.verifyPassword = (password, passwordHash) => {

@@ -24,6 +24,8 @@ By default, the server will listen on port 8081. See [.env](.env) for default co
 
 To shut down the local environment, run `docker-compose down`. This will stop and remove any containers created by Docker Compose.
 
+On linux `sudo ./restart.sh` restarts a running docker.
+
 ### Without Docker
 
 To run the backend without Docker, install [Node.js](https://nodejs.org) and [PostgreSQL](https://www.postgresql.org). Then, create a database and a user in PostgreSQL for the backend to use.

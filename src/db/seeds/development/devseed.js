@@ -57,7 +57,6 @@ exports.seed = function(knex, Promise) {
         .then(() => {
             return knex('RVPERSON').insert([
                 {
-                    userid: 1,
                     createdate: new Date(),
                     roleid: 2,
                     name: 'normal_user',
@@ -66,8 +65,7 @@ exports.seed = function(knex, Promise) {
                     saldo: 500,
                     realname: 'John Doe'
                 },
-                {
-                    userid: 2,
+                {   
                     createdate: new Date(),
                     roleid: 1,
                     name: 'admin_user',
