@@ -73,5 +73,5 @@ The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests.
 | `/api/v1/user/account` | GET | **Authentication required.** Returns basic information about the authenticated user, such as name, email, etc.
 | `/api/v1/user/account/credit` | POST | **Authentication required.** Increase the authenticated user's account balance. Accepts parameter `amount` that should be an integer. Returns new account balance.
 | `/api/v1/user/account/debit` | POST | **Authentication required.** Decrease the authenticated user's account balance. Accepts parameter `amount` that should be an integer. Returns new account balance.
-| `/api/v1/user/register` | POST | Register a new account. Accepts credentials `username`, `password`, `realname` and `email`. Returns the new account as JSON.
+| `/api/v1/user/register` | POST | Register a new account. Accepts credentials `username`, `password`, `realname` and `email`.
 | `/api/v1/product/purchase` | POST | Buy an item. Accept `barcode`, `price` and `product_name`. Returns the purchase as JSON.
