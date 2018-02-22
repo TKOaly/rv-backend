@@ -54,7 +54,6 @@ router.post('/', async (req, res) => {
     // Add user to db
     try {
         const highestId = await userStore.findHighestUserId();
-        console.log(highestId.max)
         const inserted = await userStore.insertUser(body, highestId.max);
         res.status(201).json(inserted);
     } catch (exception) {
@@ -65,7 +64,7 @@ router.post('/', async (req, res) => {
     }
     
     // for debugging
-     console.log(await userStore.getUsers())
+    // console.log(await userStore.getUsers())
 });
 
 module.exports = router;
