@@ -47,11 +47,11 @@ exports.up = function(knex, Promise) {
             .inTable('PRICE');
         table
             .integer('priceid2')
-            .notNullable()
             .unsigned()
-            .comment('Reference to user who made the change')
+            .comment('Reference to new price if action was to change price')
             .references('priceid')
-            .inTable('PRICE');
+            .inTable('PRICE')
+            .defaultTo(null);
     });
 };
 
