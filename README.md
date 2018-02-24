@@ -24,6 +24,8 @@ By default, the server will listen on port 8081. See [.env](.env) for default co
 
 To shut down the local environment, run `docker-compose down`. This will stop and remove any containers created by Docker Compose.
 
+On linux `sudo ./restart.sh` restarts a running docker.
+
 ### Without Docker
 
 To run the backend without Docker, install [Node.js](https://nodejs.org) and [PostgreSQL](https://www.postgresql.org). Then, create a database and a user in PostgreSQL for the backend to use.
@@ -71,3 +73,5 @@ The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests.
 | `/api/v1/user/account` | GET | **Authentication required.** Returns basic information about the authenticated user, such as name, email, etc.
 | `/api/v1/user/account/credit` | POST | **Authentication required.** Increase the authenticated user's account balance. Accepts parameter `amount` that should be an integer. Returns new account balance.
 | `/api/v1/user/account/debit` | POST | **Authentication required.** Decrease the authenticated user's account balance. Accepts parameter `amount` that should be an integer. Returns new account balance.
+| `/api/v1/user/register` | POST | Register a new account. Accepts credentials `username`, `password`, `realname` and `email`.
+| `/api/v1/product/purchase` | POST | Buy an item. Accept `barcode`, `price` and `product_name`. Returns the purchase as JSON.
