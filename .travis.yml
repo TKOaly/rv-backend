@@ -23,11 +23,4 @@ script:
   - codecov
 
 after_success:
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker build -t rv-backend .
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker tag rv-backend registry.heroku.com/rv-backend-dev/web
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker push registry.heroku.com/rv-backend-dev/web
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker build -t rv-backend .
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker tag rv-backend registry.heroku.com/rv-backend/web
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker push registry.heroku.com/rv-backend/web
+  - ./travis-deploy.sh
