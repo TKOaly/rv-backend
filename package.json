@@ -5,6 +5,10 @@
     "private": true,
     "scripts": {
         "start": "node ./src/server.js",
+        "start-nodemon": "nodemon ./src/server.js",
+        "db-rollback": "knex migrate:rollback",
+        "db-migrate": "knex migrate:latest",
+        "db-seed": "knex seed:run",
         "test": "nyc --reporter=lcov mocha --exit",
         "lint-js": "eslint src/**/*.js",
         "fix-js": "eslint --fix src/**/*.js",
@@ -29,6 +33,7 @@
         "husky": "^0.14.3",
         "lint-staged": "^7.0.0",
         "mocha": "^4.1.0",
+        "nodemon": "^1.15.1",
         "nyc": "^11.4.1"
     },
     "lint-staged": {
