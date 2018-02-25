@@ -5,8 +5,7 @@
     "private": true,
     "scripts": {
         "start": "node ./src/server.js",
-        "test": "mocha --exit",
-        "report-coverage": "nyc report --reporter=text-lcov > coverage.lcov",
+        "test": "nyc --reporter=lcov mocha --exit",
         "lint-js": "eslint src/**/*.js",
         "fix-js": "eslint --fix src/**/*.js",
         "start-container": "docker-compose build && docker-compose up -d db && docker-compose up -d rv-backend",

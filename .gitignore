@@ -2,5 +2,5 @@
 node_modules/
 *.sqlite
 requests/
-*.lcov
+coverage/
 .nyc_output/
