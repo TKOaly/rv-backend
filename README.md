@@ -1,4 +1,6 @@
-# rv-backend [![Build Status](https://travis-ci.org/ohtu2018-rv/rv-backend.svg?branch=develop)](https://travis-ci.org/ohtu2018-rv/rv-backend)
+# rv-backend 
+
+[![Build Status](https://travis-ci.org/ohtu2018-rv/rv-backend.svg?branch=develop)](https://travis-ci.org/ohtu2018-rv/rv-backend) [![codecov](https://codecov.io/gh/ohtu2018-rv/rv-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/ohtu2018-rv/rv-backend)
 
 RV backend
 
