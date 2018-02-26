@@ -6,6 +6,13 @@ sudo: required
 services:
   - docker
 
+addons:
+  apt:
+    sources:
+      - heroku
+    packages:
+      - heroku-toolbelt
+      
 language: node_js
 node_js:
   - "8"
