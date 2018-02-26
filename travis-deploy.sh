@@ -6,10 +6,9 @@ then
     echo "Building Docker image..."
     docker build -t rv-backend .
     echo "Pushing image to Heroku..."
-    docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+    docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
     docker tag rv-backend registry.heroku.com/rvbtest/web
     docker push registry.heroku.com/rvbtest/web
-    export HEROKU_API_KEY=$HEROKU_AUTH_TOKEN
     echo "Clearing and reseeding database..."
     heroku run "NODE_ENV=development ./node_modules/knex/bin/cli.js migrate:rollback" -a rvbtest
     heroku run "NODE_ENV=development ./node_modules/knex/bin/cli.js migrate:latest" -a rvbtest
@@ -22,7 +21,7 @@ then
     echo "Building Docker image..."
     docker build -t rv-backend .
     echo "Pushing image to Heroku..."
-    docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
+    docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
     docker tag rv-backend registry.heroku.com/rv-backend/web
     docker push registry.heroku.com/rv-backend/web
 fi
