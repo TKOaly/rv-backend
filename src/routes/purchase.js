@@ -37,6 +37,7 @@ router.post('/', async (req, res) => {
                     res.status(200).json({
                         product_name: product.descr,
                         quantity: quantity,
+                        price: product.sellprice,
                         account_balance: newBalance
                     });
                 } else {

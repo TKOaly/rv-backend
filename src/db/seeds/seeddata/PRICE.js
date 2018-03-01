@@ -18,6 +18,16 @@ const data = [
         userid: 2,
         starttime: new Date(),
         endtime: null
+    },
+    {
+        barcode: '6413600013082',
+        count: 9001,
+        buyprice: 150,
+        sellprice: 180,
+        itemid: 470,
+        userid: 2,
+        starttime: new Date(),
+        endtime: null
     }
 ];
 
