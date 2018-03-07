@@ -48,7 +48,7 @@ module.exports.insertUser = (user, highestId) => {
                 saldo: 0,
                 realname: user.realname
             }
-        )
+        );
 };
 
 module.exports.verifyPassword = (password, passwordHash) => {

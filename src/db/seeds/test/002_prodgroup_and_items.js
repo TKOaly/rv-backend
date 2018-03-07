@@ -11,7 +11,7 @@ exports.seed = function(knex, Promise) {
             return knex('PRODGROUP').insert(prodgroups);
         })
         .then(() => {
-            rvitems.forEach((item) => knex('RVITEM').insert(item));
-            return knex;
+            // seed only a subset of products so that tests don't time out
+            return knex('RVITEM').insert(rvitems.filter((item) => item.itemid >= 1750));
         });
 };
