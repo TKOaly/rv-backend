@@ -1,25 +1,27 @@
 env:
   global:
-    secure: 5ozb//SotYbWFaWMw6WKDD/BSkH/8WRcoJXUQC0NGNT8DjWtuoW69N0KngCk7WdvkDDnZCcRKDUXjlIs4mHfMsqbYjlz8dzHKEtSJFHWV9+/U89Zlk+f8+9znWDdXrluNwobSHNfBom+rrqZWEOxsiBgTc2owvxAfOOITyCT4wVe6M+HEJP1I45rVgr5vbO0mMJCNZMcjZD7RZ2ubFgi2191Ib8QBGIk5iK4jhD9hSmlucEX7T4j6aG3/fz2OK9D8vxpiyDsiBWVZkhpOGTYCTPSKw8NcI8JccGYE0wDnjifo+xRC4fGmt6bJryrhps1c5PRBbG4wva/mvlD2UU9YkV1UBDXnw6W/n+ojdIPAqL66VYwQcs4xjxxoDuIPiKOmQY/wQVZTL22NigIXnraAJH6NjWEDGYiFipi6rloZCU9T4RlYHvQdEVsML6pto1eNNEDuMNSW+LRW5r58/+p0LskEKa8xe+wsf+Zi0Ixd+DM04sJ73amPwUIH2RpoKkh0yAXQiGAveH8HKjQUTrDisMciS455r41LFbEsRlW9eMk6nhCroXO+jcccinLReMV6m9i5JA500cMv+rs/lufK/hcNjVEk1kOPf4+dlecaFAgMseVQAlXctKJrUyzKBSg9iYACYcsWAZ+yxn7ZX4dPcFgP/ztTCsKeDsRRoKT1KQ=
+  - secure: dmiPDYw6Y28G6ZjCLj8/OBoi9ojcC44goqkmW8y8p2Q6HdIEHgW4FwFZ0NMf6s1OQ8Yq53ZBJCthauMfFZNJ3m6/+KOX5q4FZE8MruLcPV6tnYD2F2/8qpA+rnhb1UKzQ6kY+yvnC1AHOIi5KWXQWk8MwYNCjbdFRGIj4nWrZW8/HCLk9n+kww66p3bF+aa+kuM4sIhz2yxcTIr3qd1gpr6oOqSSHRpToiWfwzdFhHt8RTa3hsAZv81XGNvQJ3Fib02/qFDsy/r8MLz1J3QWExlcxZRAnUHT1AdpWVpmy22komhK93TvYvL+/OURhvt5jVMWbzBXvK35M8ul+e4Q8x1tNI3C93AxQwTTjW9KO1tju+D78oorPot2103tT3LYhU2xijB1Uh4XpNpD8D0TUHVQo/jJVLZ07I2vSh9CNrbCkUBICuNWBGbGJXD5rN0yqS0YL+g4qlwyO2HKA7bW+RFJ7/jytbVhWkeTIZ8xpk0seOlbmJ/Zq66GmEb2ZRHprDN38p+h/m/kyevA4csz9HDCqreXCf8gxsC+qLiLdw9gtrRq3db0N00fboXP80sXQFWi/O0MLB6VHVKT/8bKkwsMQviW6Afm/IWRdT3qGjQfMa3dhUfU69RheffKLMKagzbzDFfXCRAFtHpKgmIoO75/QFQTXwmxrOjXYBpC3/I=
 
 sudo: required
 services:
-  - docker
-
+- docker
+addons:
+  apt:
+    sources:
+    - heroku
+    packages:
+    - heroku-toolbelt
 language: node_js
 node_js:
-  - "8"
-
+- '8'
 cache:
   directories:
-    - "node_modules"
-
+  - node_modules
+install:
+- npm install
+- npm install -g codecov
+script:
+- npm test
+- codecov
 after_success:
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker build -t rv-backend .
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker tag rv-backend registry.heroku.com/rv-backend-dev/web
-  - test $TRAVIS_BRANCH = "develop" && test $TRAVIS_PULL_REQUEST = "false" && docker push registry.heroku.com/rv-backend-dev/web
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker build -t rv-backend .
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker login --username=_ --password=$HEROKU_AUTH_TOKEN registry.heroku.com
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker tag rv-backend registry.heroku.com/rv-backend/web
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" && docker push registry.heroku.com/rv-backend/web
+- "./travis-deploy.sh"

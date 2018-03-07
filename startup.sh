@@ -1,4 +1,7 @@
 #!/bin/bash
-./node_modules/knex/bin/cli.js migrate:latest --env $NODE_ENV
-./node_modules/knex/bin/cli.js seed:run --env $NODE_ENV
-npm start
+if [ $NODE_ENV != "production" ]
+then
+    npm run start-nodemon
+else
+    npm start
+fi

@@ -1,7 +1,11 @@
 version: '3'
 services:
   rv-backend:
-    build: .
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-development}
     ports:
       - ${PORT:-8081}:${PORT:-8081}
     environment:
@@ -9,6 +13,8 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ./src:/usr/src/app/src
 
   db:
     image: postgres:10-alpine
