@@ -14,6 +14,7 @@
     var register_route = require('./routes/register');
     var purchase_route = require('./routes/purchase');
     var admin_auth = require('./routes/admin/adminAuth');
+    var admin_products = require('./routes/admin/products');
 
     app.use('/api/v1/user/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
@@ -21,6 +22,7 @@
     app.use('/api/v1/product/purchase', purchase_route);
 
     app.use('/api/v1/admin/authenticate', admin_auth);
+    app.use('/api/v1/admin/products', admin_products);
     
     module.exports = app;
 }());

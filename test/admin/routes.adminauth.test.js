@@ -1,7 +1,3 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-process.env.JWT_ADMIN_SECRET = 'admin test secret';
-
 const chai = require('chai');
 const should = chai.should();
 const expect = chai.expect;
