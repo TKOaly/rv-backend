@@ -1,20 +1,8 @@
-
 const jwt = require('../jwt/token');
 const userStore = require('../db/userStore');
+const verifyRoles = require('./authUtils').verifyRoles;
 
-const verifyRoles = (requiredRoles, userRoles) => {
-    var verified = true;
-
-    requiredRoles.forEach(role => {
-        if (!userRoles.includes(role)) {
-            verified = false;
-        }
-    });
-
-    return verified;
-};
-
-const authMiddleware = (roles = []) => {
+const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
     return async (req, res, next) => {
         var authHeader = req.get('Authorization');
         var rvusername = null;
@@ -23,7 +11,7 @@ const authMiddleware = (roles = []) => {
         if (authHeader !== undefined) {
             var parts = authHeader.split(' ');
             if (parts.length == 2 && parts[0] == 'Bearer') {
-                var token = jwt.verify(parts[1]);
+                var token = jwt.verify(parts[1], tokenSecret);
 
                 if (token) {
                     rvusername = token.data.username;
@@ -71,3 +59,4 @@ const authMiddleware = (roles = []) => {
 };
 
 module.exports = authMiddleware;
+module.exports.verifyRoles = verifyRoles;

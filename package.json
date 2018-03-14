@@ -9,7 +9,7 @@
         "db-rollback": "knex migrate:rollback",
         "db-migrate": "knex migrate:latest",
         "db-seed": "knex seed:run",
-        "test": "nyc --reporter=lcov mocha --exit -R spec",
+        "test": "nyc --reporter=lcov mocha --exit",
         "lint-js": "eslint src/**/*.js",
         "fix-js": "eslint --fix src/**/*.js",
         "start-container": "docker-compose build && docker-compose up -d db && docker-compose up -d rv-backend",
