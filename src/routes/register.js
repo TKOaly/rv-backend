@@ -2,17 +2,17 @@ const express = require('express');
 const router = express.Router();
 const userStore = require('../db/userStore'); // not used
 
-const neededKeys = ["username", "password", "realname", "email"]
+const neededKeys = ['username', 'password', 'realname', 'email'];
 
 // Register a new user
 router.post('/', async (req, res) => {
     const body = req.body;
     
     // Missing fields
-    const newAccountKeys = Object.keys(body)
+    const newAccountKeys = Object.keys(body);
     const missingKeys = neededKeys.filter((key) => {
         return !newAccountKeys.includes(key);
-    })
+    });
     if (missingKeys.length > 0) {
         res.status(400).json({
             error: `Missing: ${missingKeys.join()}`
@@ -23,12 +23,12 @@ router.post('/', async (req, res) => {
     // Check username, password length
     if (body.username.length < 4) {
         res.status(400).json({
-            error: `Username has at least 4 characters.`
+            error: 'Username has at least 4 characters.'
         }).end();
         return;
     } else if (body.password.length < 4) {
         res.status(400).json({
-            error: `Password has at least 4 characters.`
+            error: 'Password has at least 4 characters.'
         }).end();
         return;
     }
@@ -37,14 +37,14 @@ router.post('/', async (req, res) => {
     const user = await userStore.findByUsername(body.username);
     if (user) {
         res.status(403).json({
-            error: `Username already in use.`
+            error: 'Username already in use.'
         }).end();
         return;
     }
     const userEmail = await userStore.findByEmail(body.email.trim());
     if (userEmail) {
         res.status(403).json({
-            error: `Email already in use.`
+            error: 'Email already in use.'
         }).end();
         return;
     }

@@ -1,11 +1,25 @@
-(function () {
-    const jwt = require('../jwt/token');
-    const userStore = require('../db/userStore');
 
-    async function authMiddleware (req, res, next) {
+const jwt = require('../jwt/token');
+const userStore = require('../db/userStore');
+
+const verifyRoles = (requiredRoles, userRoles) => {
+    var verified = true;
+
+    requiredRoles.forEach(role => {
+        if (!userRoles.includes(role)) {
+            verified = false;
+        }
+    });
+
+    return verified;
+};
+
+const authMiddleware = (roles = []) => {
+    return async (req, res, next) => {
         var authHeader = req.get('Authorization');
         var rvusername = null;
 
+        // verify that Authorization header contains a token
         if (authHeader !== undefined) {
             var parts = authHeader.split(' ');
             if (parts.length == 2 && parts[0] == 'Bearer') {
@@ -23,8 +37,17 @@
                 req.rvroles = await userStore.findUserRoles(rvusername);
                 
                 if (req.rvuser && req.rvroles) {
-                    next();
+                    // finally, verify that user is authorized
+                    if (verifyRoles(roles, req.rvroles)) {
+                        next();
+                    } else {
+                        res.status(403).json({
+                            error_code: 'not_authorized',
+                            message: 'Not authorized'
+                        });
+                    }
                 } else {
+                    // token contains nonexistent user or no roles
                     res.status(403).json({
                         error_code: 'invalid_token',
                         message: 'Invalid authorization token'
@@ -38,12 +61,13 @@
                 });
             }
         } else {
+            // no username in token
             res.status(403).json({
                 error_code: 'invalid_token',
                 message: 'Invalid authorization token'
             });
         }
-    }
+    };
+};
 
-    module.exports = authMiddleware;
-}());
+module.exports = authMiddleware;

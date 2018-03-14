@@ -3,10 +3,6 @@ const router = express.Router();
 const token = require('../jwt/token');
 const userStore = require('../db/userStore');
 
-router.use((req, res, next) => {
-    next();
-});
-
 router.post('/', async (req, res) => {
     if (req.body.username && req.body.password) {
         var username = req.body.username;
