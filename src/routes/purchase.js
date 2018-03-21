@@ -4,7 +4,7 @@ const userStore = require('../db/userStore');
 const productStore = require('../db/productStore');
 const authMiddleware = require('./authMiddleware');
 
-router.use(authMiddleware);
+router.use(authMiddleware());
 
 router.post('/', async (req, res) => {
     var barcode = req.body.barcode;

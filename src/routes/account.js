@@ -3,7 +3,7 @@ const router = express.Router();
 const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 
-router.use(authMiddleware);
+router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
     var user = req.rvuser;

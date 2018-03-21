@@ -52,3 +52,18 @@ module.exports.addPurchase = (productid, priceid, userid, quantity) => {
             });
     });
 };
+
+/**
+ * Returns all products and their stock quantities, if available.
+ * 
+ */
+module.exports.findAll = () => {
+    return knex('RVITEM')
+        .leftJoin('PRICE', function() {
+            this.on('PRICE.itemid', '=', 'RVITEM.itemid')
+                .andOnNull('PRICE.endtime');
+        })
+        .select('RVITEM.itemid', 'RVITEM.descr')
+        .sum('PRICE.count as quantity')
+        .groupBy('RVITEM.itemid');
+};
