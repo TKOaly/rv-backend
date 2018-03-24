@@ -4,6 +4,6 @@ exports.seed = function (knex, Promise) {
     return knex('PRICE')
         .del()
         .then(() => {
-            return knex('PRICE').insert(prices);
+            return knex('PRICE').insert(prices.filter(p => p.itemid >= 1750));
         });
 };
