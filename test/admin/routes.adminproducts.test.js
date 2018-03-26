@@ -56,14 +56,14 @@ describe('routes: admin products', () => {
         it('Requesting product with existing barcode', async () => {
         
             return chai.request(server)
-                .get('/api/v1/admin/products/6411223344552')
+                .get('/api/v1/admin/products/5029578000972')
                 .set('Authorization', 'Bearer ' + token)
                 .then((res) => {
                     res.status.should.equal(200, 'Existing barcode should return product');
-                    res.body.product['barcode'].should.equal('6411223344552');
+                    res.body.product['barcode'].should.equal('5029578000972');
                 })
                 .catch((err) => {
-                    console.log(err);
+                    throw err;
                 });
         });
 
