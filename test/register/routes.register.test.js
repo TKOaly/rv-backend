@@ -125,8 +125,6 @@ describe('routes: register', () => {
                     done();
                 });
         });
-
-
     });
 
     describe('User should be able to register to service', () => {
@@ -145,89 +143,6 @@ describe('routes: register', () => {
                     done();
                 });
         });
-
     });
-
-    /* describe('User account actions', () => {
-        var token = jwt.sign({
-            username: 'normal_user'
-        });
-
-        it('debiting should reduce account balance', (done) => {
-            chai.request(server)
-                .post('/api/v1/user/account/debit')
-                .send({
-                    amount: 150
-                })
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.not.exist(err);
-                    res.status.should.equal(200);
-                    should.exist(res.body.account_balance);
-                    expect(res.body.account_balance).to.equal(350);
-                    done();
-                });
-        });
-
-        it('debiting a negative amount should not work', (done) => {
-            chai.request(server)
-                .post('/api/v1/user/account/debit')
-                .send({
-                    amount: -200
-                })
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(err);
-                    res.status.should.equal(400);
-                    done();
-                });
-        });
-
-        it('debiting when account balance is not positive should not work', (done) => {
-            userStore.updateAccountBalance('normal_user', -500).then(() => {
-                chai.request(server)
-                    .post('/api/v1/user/account/debit')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        amount: 100
-                    })
-                    .end((err, res) => {
-                        should.exist(err);
-                        res.status.should.equal(403);
-                        done();
-                    });
-            });
-        });
-
-        it('crediting should increase account balance', (done) => {
-            chai.request(server)
-                .post('/api/v1/user/account/credit')
-                .send({
-                    amount: 150
-                })
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.not.exist(err);
-                    res.status.should.equal(200);
-                    should.exist(res.body.account_balance);
-                    expect(res.body.account_balance).to.equal(650);
-                    done();
-                });
-        });
-
-        it('crediting a negative amount should not work', (done) => {
-            chai.request(server)
-                .post('/api/v1/user/account/credit')
-                .send({
-                    amount: -200
-                })
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(err);
-                    res.status.should.equal(400);
-                    done();
-                });
-        });
-     */
 });
 
