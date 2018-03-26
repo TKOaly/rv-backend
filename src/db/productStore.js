@@ -65,5 +65,5 @@ module.exports.findAll = () => {
         })
         .select('RVITEM.itemid', 'RVITEM.descr', 'PRICE.barcode')
         .sum('PRICE.count as quantity')
-        .groupBy('RVITEM.itemid');
+        .groupBy('RVITEM.itemid', 'PRICE.barcode');
 };
