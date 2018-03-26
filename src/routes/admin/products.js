@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
             return {
                 product_id: product.itemid,
                 product_name: product.descr,
+                product_barcode: product.barcode,
                 quantity: parseInt(product.quantity || 0)
             };
         })
