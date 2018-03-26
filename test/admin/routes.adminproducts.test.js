@@ -36,12 +36,13 @@ describe('routes: admin products', () => {
     });
 
     describe('products', () => {
-        it('admins should be able to get product list', (done) => {
-            const token = jwt.sign(
-                { username: 'admin_user' },
-                process.env.JWT_ADMIN_SECRET
-            );
+        const token = jwt.sign(
+            { username: 'admin_user' },
+            process.env.JWT_ADMIN_SECRET
+        );
 
+        it('admins should be able to get product list', (done) => {
+            
             chai.request(server)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
@@ -49,6 +50,46 @@ describe('routes: admin products', () => {
                     should.not.exist(err);
                     should.exist(res.body.products);
                     done();
+                });
+        });
+
+        it('Requesting product with existing barcode', async () => {
+        
+            return chai.request(server)
+                .get('/api/v1/admin/products/6411223344552')
+                .set('Authorization', 'Bearer ' + token)
+                .then((res) => {
+                    res.status.should.equal(200, 'Existing barcode should return product');
+                    res.body.product['barcode'].should.equal('6411223344552');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        });
+
+        it('Requesting product with malformated barcode', async () => {
+        
+            return chai.request(server)
+                .get('/api/v1/admin/products/1337')
+                .set('Authorization', 'Bearer ' + token)
+                .then((res) => {
+                    res.status.should.not.equal(200);
+                })
+                .catch((err) => {
+                    err.status.should.equal(400, 'malformated barcode should return error');
+                });
+        });
+
+        it('Requesting product with nonexisting barcode', async () => {
+        
+            return chai.request(server)
+                .get('/api/v1/admin/products/1234567890123')
+                .set('Authorization', 'Bearer ' + token)
+                .then((res) => {
+                    res.status.should.not.equal(200);
+                })
+                .catch((err) => {
+                    err.status.should.equal(404, 'Barcode that doesn\'t exits should return error');
                 });
         });
     });
