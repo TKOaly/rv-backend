@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
+const logger = require('winston');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
@@ -50,6 +51,65 @@ router.get('/:barcode', async (req, res) => {
                 message: 'Internal error'
             });
         }
+    }
+});
+
+router.post('/stock/:id(\\d+)', async (req, res) => {
+    const id = req.params.id;
+    const buyprice = parseInt(req.body.buyprice, 10);
+    const sellprice = parseInt(req.body.sellprice, 10);
+    const quantity = parseInt(req.body.quantity, 10);
+
+    try {
+        // check that product exists
+        const product = await productStore.findById(id);
+        if (!product) {
+            res.status(404).json({
+                error_code: 'product_not_found',
+                message: 'Product not found'
+            });
+            return;
+        }
+
+        // check that request is valid
+        const errors = [];
+        isNaN(buyprice) && errors.push('buyprice should be a number');
+        isNaN(sellprice) && errors.push('sellprice should be a number');
+        (isNaN(quantity) || quantity <= 0) && errors.push('quantity should be a number > 0');
+
+        if (errors.length > 0) {
+            res.status(400).json({
+                error_code: 'bad_request',
+                message: 'Missing or invalid fields in request',
+                errors
+            });
+            return;
+        }
+
+        // update information
+        await productStore.changeProductStock(
+            product.itemid,
+            buyprice,
+            sellprice,
+            product.count + quantity,
+            req.rvuser.userid
+        );
+
+        // return updated information
+
+        res.status(200).json({
+            product_id: parseInt(id, 10),
+            buyprice: buyprice,
+            sellprice: sellprice,
+            quantity: product.count + quantity
+        });
+    }
+    catch (error) {
+        logger.error('Error at %s: %s', req.path, error.stack);
+        res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
     }
 });
 
