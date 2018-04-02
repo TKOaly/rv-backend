@@ -194,7 +194,13 @@ module.exports.findAll = () => {
             this.on('PRICE.itemid', '=', 'RVITEM.itemid')
                 .andOnNull('PRICE.endtime');
         })
-        .select('RVITEM.itemid', 'RVITEM.descr', 'PRICE.barcode')
+        .select(
+            'RVITEM.itemid',
+            'RVITEM.descr',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice'
+        )
         .sum('PRICE.count as quantity')
-        .groupBy('RVITEM.itemid', 'PRICE.barcode');
+        .groupBy('RVITEM.itemid', 'PRICE.barcode', 'PRICE.buyprice', 'PRICE.sellprice');
 };

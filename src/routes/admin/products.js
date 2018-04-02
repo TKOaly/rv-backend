@@ -7,18 +7,25 @@ const logger = require('winston');
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
 router.get('/', async (req, res) => {
-    var products = await productStore.findAll();
+    try {
+        var products = await productStore.findAll();
 
-    res.status(200).json({
-        products: products.map(product => {
-            return {
-                product_id: product.itemid,
-                product_name: product.descr,
-                product_barcode: product.barcode,
-                quantity: parseInt(product.quantity || 0)
-            };
-        })
-    });
+        res.status(200).json({
+            products: products.map(product => {
+                return {
+                    product_id: product.itemid,
+                    product_name: product.descr,
+                    product_barcode: product.barcode,
+                    buyprice: product.buyprice,
+                    sellprice: product.sellprice,
+                    quantity: parseInt(product.quantity || 0)
+                };
+            })
+        });
+    }
+    catch (error) {
+        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+    }
 });
 
 router.get('/:barcode', async (req, res) => {
@@ -105,7 +112,7 @@ router.post('/stock/:id(\\d+)', async (req, res) => {
         });
     }
     catch (error) {
-        logger.error('Error at %s: %s', req.path, error.stack);
+        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
