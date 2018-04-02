@@ -1,0 +1,83 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn test
+
+PATH: 
+  /Users/tuhmm/.local/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+Yarn version: 
+  1.5.1
+
+Node version: 
+  8.10.0
+
+Platform: 
+  darwin x64
+
+npm manifest: 
+  {
+      "name": "rv_user_service",
+      "version": "0.1.0",
+      "description": "RV user service",
+      "private": true,
+      "scripts": {
+          "start": "node ./src/server.js",
+          "start-nodemon": "nodemon ./src/server.js",
+          "db-rollback": "knex migrate:rollback",
+          "db-migrate": "knex migrate:latest",
+          "db-seed": "knex seed:run",
+          "test": "nyc --reporter=lcov mocha --exit",
+          "lint-js": "eslint src/**/*.js",
+          "fix-js": "eslint --fix src/**/*.js",
+          "start-container": "docker-compose build && docker-compose up -d db && docker-compose up -d rv-backend",
+          "stop-container": "docker-compose down",
+          "precommit": "lint-staged"
+      },
+      "dependencies": {
+          "bcrypt": "^1.0.3",
+          "body-parser": "^1.18.2",
+          "cors": "^2.8.4",
+          "express": "^4.16.1",
+          "jsonwebtoken": "^8.1.0",
+          "knex": "^0.14.2",
+          "pg": "^7.4.1"
+      },
+      "devDependencies": {
+          "chai": "^4.1.2",
+          "chai-http": "^3.0.0",
+          "eslint": "^4.17.0",
+          "husky": "^0.14.3",
+          "lint-staged": "^7.0.0",
+          "mocha": "^4.1.0",
+          "nodemon": "^1.15.1",
+          "nyc": "^11.4.1",
+          "sqlite3": "^3.1.13"
+      },
+      "lint-staged": {
+          "src/**/*.js": [
+              "eslint",
+              "git add"
+          ]
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
+
+Trace: 
+  Error: Command failed.
+  Exit code: 127
+  Command: sh
+  Arguments: -c nyc --reporter=lcov mocha --exit
+  Directory: /Users/tuhmm/Code/rv-backend
+  Output:
+  
+      at ProcessTermError.MessageError (/usr/local/lib/node_modules/yarn/lib/cli.js:186:110)
+      at new ProcessTermError (/usr/local/lib/node_modules/yarn/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/usr/local/lib/node_modules/yarn/lib/cli.js:30281:17)
+      at emitTwo (events.js:126:13)
+      at ChildProcess.emit (events.js:214:7)
+      at maybeClose (internal/child_process.js:925:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:209:5)

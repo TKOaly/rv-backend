@@ -52,6 +52,12 @@ router.post('/', async (req, res) => {
                     endtime: null
                 }
 
+                if (Object.values(newProduct).includes(undefined) || Object.values(newPrice).includes(undefined)) {
+                    res.status(400).json({
+                        message: 'Missing parametres.'
+                    });
+                }
+
                 const status = await productStore.addProduct(newProduct, newPrice)
 
                 res.status(201).json({
