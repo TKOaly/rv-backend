@@ -67,3 +67,28 @@ module.exports.findAll = () => {
         .sum('PRICE.count as quantity')
         .groupBy('RVITEM.itemid', 'PRICE.barcode');
 };
+
+/**
+ * Creates a new product if given barcode is not in use.
+ * 
+ */
+module.exports.addProduct = (product, price) => {
+    return knex.transaction(trx => {
+        return trx
+            .insert(product)
+            .into('RVITEM')
+            .then(() => {
+                return trx
+                    .insert(price)
+                    .into('PRICE')
+        })
+    })
+    .then(() => {
+        console.log('Successful DB-transaction')
+        return 'success'
+    })
+    .catch(err => {
+        console.log('Failure in inserting to DB')
+        return 'failure'
+    })
+}
