@@ -61,7 +61,7 @@ router.get('/:barcode', async (req, res) => {
     }
 });
 
-router.post('/stock/:id(\\d+)', async (req, res) => {
+router.post('/product/:id(\\d+)', async (req, res) => {
     const id = req.params.id;
     const buyprice = parseInt(req.body.buyprice, 10);
     const sellprice = parseInt(req.body.sellprice, 10);

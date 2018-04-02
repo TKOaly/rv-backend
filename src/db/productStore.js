@@ -70,6 +70,7 @@ module.exports.changeProductStock = async (
             .then(rows => {
                 oldPrice = rows[0];
 
+                // update current valid price if only quantity changes
                 if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
                     return knex('PRICE')
                         .update('count', quantity)
@@ -82,6 +83,7 @@ module.exports.changeProductStock = async (
                         });
                 }
 
+                // otherwise invalidate old price and create a new price
                 return knex('PRICE')
                     .transacting(trx)
                     .update({
@@ -104,11 +106,12 @@ module.exports.changeProductStock = async (
                             }, 'priceid');
                     });
             })
-            .then(ids => {
-                let newPriceId = ids[0];
+            .then(id => {
+                // record changes in product history
+                let newPriceId = id[0];
                 let actions = [];
                 let timestamp = new Date();
-                
+
                 if (buyprice !== oldPrice.buyprice) {
                     actions.push({
                         time: timestamp,
