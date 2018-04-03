@@ -10,6 +10,7 @@ chai.use(chaiHttp);
 
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
+const productStore = require('../../src/db/productStore');
 
 describe('routes: admin products', () => {
     const server = require('../../src/app');
@@ -155,6 +156,62 @@ describe('routes: admin products', () => {
                     should.exist(err)
                     res.status.should.equal(400);
                     done();
+              
+        it('Adding products to stock should work', async () => {
+            const product = await productStore.findById(1750);
+
+            return chai.request(server)
+                .post('/api/v1/admin/products/product/1750')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    buyprice: 300,
+                    sellprice: 350,
+                    quantity: 50
+                })
+                .then(res => {
+                    res.status.should.equal(200);
+                    res.body.product_id.should.equal(1750);
+                    res.body.buyprice.should.equal(300);
+                    res.body.sellprice.should.equal(350);
+                    res.body.quantity.should.equal(product.count + 50);
+                })
+                .catch(err => {
+                    throw err;
+                });
+        });
+
+        it('Adding nonexistent product to stock should not work', async () => {
+            return chai.request(server)
+                .post('/api/v1/admin/products/product/123456890')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    buyprice: 300,
+                    sellprice: 350,
+                    quantity: 50
+                })
+                .then(res => {
+                    res.status.should.not.equal(200);
+                })
+                .catch(err => {
+                    err.status.should.equal(404);
+                    should.exist(err.response.body.error_code);
+                    should.exist(err.response.body.message);
+                });
+        });
+
+        it('Request with missing fields should be rejected', async () => {
+            return chai.request(server)
+                .post('/api/v1/admin/products/product/1750')
+                .set('Authorization', 'Bearer ' + token)
+                .send({})
+                .then(res => {
+                    res.status.should.not.equal(200);
+                })
+                .catch(err => {
+                    err.status.should.equal(400);
+                    should.exist(err.response.body.error_code);
+                    should.exist(err.response.body.message);
+                    should.exist(err.response.body.errors);
                 });
         });
     });
