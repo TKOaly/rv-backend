@@ -80,15 +80,15 @@ module.exports.addProduct = (product, price) => {
             .then(() => {
                 return trx
                     .insert(price)
-                    .into('PRICE')
+                    .into('PRICE');
+            });
+    })
+        .then(() => {
+            console.log('Successful DB-transaction');
+            return 'success';
         })
-    })
-    .then(() => {
-        console.log('Successful DB-transaction')
-        return 'success'
-    })
-    .catch(err => {
-        console.log('Failure in inserting to DB')
-        return 'failure'
-    })
-}
+        .catch(err => {
+            console.log('Failure in inserting to DB');
+            return 'failure';
+        });
+};
