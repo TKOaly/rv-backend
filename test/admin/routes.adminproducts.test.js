@@ -94,6 +94,72 @@ describe('routes: admin products', () => {
                 });
         });
 
+        it('POST /, returns created product on valid parametres', (done) => { 
+            let product = {
+                descr: 'body.descr',
+                pgrpid: '21',
+                weight: 500,
+                barcode: '6411501656249',
+                count: 12,
+                buyprice: 50,
+                sellprice: 150
+            };
+
+            chai.request(server)
+                .post('/api/v1/admin/products')
+                .send(product)
+                .set('Authorization', 'Bearer ' + token)
+                .end((err, res) => {
+                    should.not.exist(err);
+                    should.exist(res.body.product);
+                    res.status.should.equal(201);
+                    done();
+                });
+        });
+
+        it('POST /, returns error on invalid barcode', (done) => { 
+            let product = {
+                descr: 'body.descr',
+                pgrpid: '21',
+                weight: 500,
+                barcode: 'invalid',
+                count: 12,
+                buyprice: 50,
+                sellprice: 150
+            };
+
+            chai.request(server)
+                .post('/api/v1/admin/products')
+                .send(product)
+                .set('Authorization', 'Bearer ' + token)
+                .end((err, res) => {
+                    should.exist(err);
+                    res.status.should.equal(400);
+                    done();
+                });
+        });
+
+        it('POST /, returns error on missing parametres', (done) => { 
+            let product = {
+                weight: 500,
+                barcode: '4560000033333',
+                count: 12,
+                buyprice: 50,
+                sellprice: 150
+            };
+
+            chai.request(server)
+                .post('/api/v1/admin/products')
+                .send(product)
+                .set('Authorization', 'Bearer ' + token)
+                .end((err, res) => {
+                    should.exist(err)
+                    res.status.should.equal(400);
+                    done();
+
+                });
+        });
+
         it('Adding products to stock should work', async () => {
             const product = await productStore.findById(1750);
 

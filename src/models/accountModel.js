@@ -6,11 +6,11 @@ function Account(account) {
         password: account.password,
         realname: account.realname,
         email: account.email
-    }
+    };
 }
 
 const validate = (account) => {
-    return false
-}
+    return false;
+};
 
-module.export = validate
+module.export = validate;
