@@ -15,25 +15,21 @@ const productStore = require('../../src/db/productStore');
 describe('routes: admin products', () => {
     const server = require('../../src/app');
     const request = chai.request(server);
-    
-    beforeEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                knex.migrate.latest()
-                    .then(() => {
-                        knex.seed.run()
-                            .then(() => {
-                                done();
-                            });
-                    });
+
+    beforeEach(done => {
+        knex.migrate.rollback().then(() => {
+            knex.migrate.latest().then(() => {
+                knex.seed.run().then(() => {
+                    done();
+                });
             });
+        });
     });
 
-    afterEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                done();
-            });
+    afterEach(done => {
+        knex.migrate.rollback().then(() => {
+            done();
+        });
     });
 
     describe('products', () => {
@@ -42,9 +38,9 @@ describe('routes: admin products', () => {
             process.env.JWT_ADMIN_SECRET
         );
 
-        it('admins should be able to get product list', (done) => {
-            
-            chai.request(server)
+        it('admins should be able to get product list', done => {
+            chai
+                .request(server)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
@@ -55,46 +51,55 @@ describe('routes: admin products', () => {
         });
 
         it('Requesting product with existing barcode', async () => {
-        
-            return chai.request(server)
+            return chai
+                .request(server)
                 .get('/api/v1/admin/products/5029578000972')
                 .set('Authorization', 'Bearer ' + token)
-                .then((res) => {
-                    res.status.should.equal(200, 'Existing barcode should return product');
+                .then(res => {
+                    res.status.should.equal(
+                        200,
+                        'Existing barcode should return product'
+                    );
                     res.body.product['barcode'].should.equal('5029578000972');
                 })
-                .catch((err) => {
+                .catch(err => {
                     throw err;
                 });
         });
 
         it('Requesting product with malformated barcode', async () => {
-        
-            return chai.request(server)
+            return chai
+                .request(server)
                 .get('/api/v1/admin/products/1337')
                 .set('Authorization', 'Bearer ' + token)
-                .then((res) => {
+                .then(res => {
                     res.status.should.not.equal(200);
                 })
-                .catch((err) => {
-                    err.status.should.equal(400, 'malformated barcode should return error');
+                .catch(err => {
+                    err.status.should.equal(
+                        400,
+                        'malformated barcode should return error'
+                    );
                 });
         });
 
         it('Requesting product with nonexisting barcode', async () => {
-        
-            return chai.request(server)
+            return chai
+                .request(server)
                 .get('/api/v1/admin/products/1234567890123')
                 .set('Authorization', 'Bearer ' + token)
-                .then((res) => {
+                .then(res => {
                     res.status.should.not.equal(200);
                 })
-                .catch((err) => {
-                    err.status.should.equal(404, 'Barcode that doesn\'t exits should return error');
+                .catch(err => {
+                    err.status.should.equal(
+                        404,
+                        'Barcode that doesn\'t exits should return error'
+                    );
                 });
         });
 
-        it('POST /, returns created product on valid parametres', (done) => { 
+        it('POST /, returns created product on valid parametres', done => {
             let product = {
                 descr: 'body.descr',
                 pgrpid: '21',
@@ -105,7 +110,8 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai.request(server)
+            chai
+                .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
@@ -117,7 +123,7 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('POST /, returns error on invalid barcode', (done) => { 
+        it('POST /, returns error on invalid barcode', done => {
             let product = {
                 descr: 'body.descr',
                 pgrpid: '21',
@@ -128,7 +134,8 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai.request(server)
+            chai
+                .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
@@ -139,7 +146,7 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('POST /, returns error on missing parametres', (done) => { 
+        it('POST /, returns error on missing parametres', done => {
             let product = {
                 weight: 500,
                 barcode: '4560000033333',
@@ -148,22 +155,23 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai.request(server)
+            chai
+                .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.exist(err)
+                    should.exist(err);
                     res.status.should.equal(400);
                     done();
-
                 });
         });
 
         it('Adding products to stock should work', async () => {
             const product = await productStore.findById(1750);
 
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -184,7 +192,8 @@ describe('routes: admin products', () => {
         });
 
         it('Adding nonexistent product to stock should not work', async () => {
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/admin/products/product/123456890')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -203,7 +212,8 @@ describe('routes: admin products', () => {
         });
 
         it('Request with missing fields should be rejected', async () => {
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
                 .send({})

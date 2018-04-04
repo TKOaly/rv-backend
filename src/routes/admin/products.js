@@ -9,38 +9,39 @@ router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 router.get('/', async (req, res) => {
     try {
         var products = await productStore.findAll();
-
-        res.status(200).json({
-            products: products.map(product => {
-                return {
-                    product_id: product.itemid,
-                    product_name: product.descr,
-                    product_barcode: product.barcode,
-                    buyprice: product.buyprice,
-                    sellprice: product.sellprice,
-                    quantity: parseInt(product.quantity || 0)
-                };
-            })
+        const prods = products.map(product => {
+            return {
+                product_id: product.itemid,
+                product_name: product.descr,
+                product_barcode: product.barcode,
+                buyprice: product.buyprice,
+                sellprice: product.sellprice,
+                quantity: parseInt(product.quantity || 0)
+            };
         });
-    }
-    catch (error) {
+        return res.status(200).json({
+            products: prods
+        });
+    } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
     }
 });
 
 router.post('/', async (req, res) => {
     var body = req.body;
-
-    if (!body.barcode.match('(^[0-9]{13})+$')) {
-        res.status(400).json({
-            error_code: 'Bad _request',
-            message: 'not a barcode'
-        });
-    } else {
-        try {
+    try {
+        const barcodeRegex = await body.barcode.match('(^[0-9]{13})+$');
+        if (!barcodeRegex) {
+            return res.status(400).json({
+                error_code: 'Bad _request',
+                message: 'not a barcode'
+            });
+        } else {
             const product = await productStore.findByBarcode(body.barcode);
             let products = await productStore.findAll();
-            const highestId = Math.max(...products.map((product) => product.itemid))
+            const highestId = Math.max(
+                ...products.map(product => product.itemid)
+            );
 
             if (!product) {
                 const newProduct = {
@@ -48,7 +49,7 @@ router.post('/', async (req, res) => {
                     itemid: highestId + 1,
                     pgrpid: body.pgrpid,
                     weight: body.weight
-                }
+                };
                 const newPrice = {
                     barcode: body.barcode,
                     count: body.count,
@@ -58,33 +59,40 @@ router.post('/', async (req, res) => {
                     userid: 2,
                     starttime: new Date(),
                     endtime: null
-                }
+                };
 
-                if (Object.values(newProduct).includes(undefined) || Object.values(newPrice).includes(undefined)) {
-                    res.status(400).json({
+                if (
+                    Object.values(newProduct).includes(undefined) ||
+                    Object.values(newPrice).includes(undefined)
+                ) {
+                    return res.status(400).json({
                         message: 'Missing parametres.'
                     });
                 }
 
-                const status = await productStore.addProduct(newProduct, newPrice)
+                const status = await productStore.addProduct(
+                    newProduct,
+                    newPrice
+                );
 
-                res.status(201).json({
+                return res.status(201).json({
                     product: newProduct,
                     price: newPrice,
                     dbstatus: status
                 });
             } else {
-                res.status(400).json({ 
+                return res.status(400).json({
                     error_code: 'Product exists',
-                    messasge: 'Barcode is already assigned to a product.'     
+                    messasge: 'Barcode is already assigned to a product.'
                 });
             }
-        } catch (exception) {
-            res.status(500).json({
-                error_code: 'internal_error',
-                message: 'Internal error'
-            });
         }
+    } catch (exception) {
+        logger.error('Error at %s: %s', req.baseUrl + req.path, exception.stack);
+        return res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
     }
 });
 
@@ -96,24 +104,22 @@ router.get('/:barcode', async (req, res) => {
             error_code: 'Bad _request',
             message: 'not a barcode'
         });
-    
     } else {
         try {
             const product = await productStore.findByBarcode(barcode);
 
             if (product) {
-                res.status(200).json({
+                return res.status(200).json({
                     product: product
                 });
             } else {
-                res.status(404).json({ 
+                return res.status(404).json({
                     error_code: 'Not_found',
-                    messasge: 'item not found on database'     
+                    messasge: 'item not found on database'
                 });
             }
-
         } catch (exception) {
-            res.status(500).json({
+            return res.status(500).json({
                 error_code: 'internal_error',
                 message: 'Internal error'
             });
@@ -131,26 +137,25 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         // check that product exists
         const product = await productStore.findById(id);
         if (!product) {
-            res.status(404).json({
+            return res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
             });
-            return;
         }
 
         // check that request is valid
         const errors = [];
         isNaN(buyprice) && errors.push('buyprice should be a number');
         isNaN(sellprice) && errors.push('sellprice should be a number');
-        (isNaN(quantity) || quantity <= 0) && errors.push('quantity should be a number > 0');
+        (isNaN(quantity) || quantity <= 0) &&
+            errors.push('quantity should be a number > 0');
 
         if (errors.length > 0) {
-            res.status(400).json({
+            return res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Missing or invalid fields in request',
                 errors
             });
-            return;
         }
 
         // update information
@@ -164,16 +169,15 @@ router.post('/product/:id(\\d+)', async (req, res) => {
 
         // return updated information
 
-        res.status(200).json({
+        return res.status(200).json({
             product_id: parseInt(id, 10),
             buyprice: buyprice,
             sellprice: sellprice,
             quantity: product.count + quantity
         });
-    }
-    catch (error) {
+    } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
-        res.status(500).json({
+        return res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
