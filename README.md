@@ -21,7 +21,7 @@ To set up a local environment, run the following commands:
 1. `docker-compose build` to build Docker images for the backend and database.
 2. `docker-compose up` to start the server and PostgreSQL database. Note the name of the server container, as you will need it for later steps.
 3. To create database schema, run `docker exec -it <server container name or id> npm run db-migrate`.
-4. To seed database with data for development, run `docker exec it <server container name or id> npm run db-seed`.
+4. To seed database with data for development, run `docker exec -it <server container name or id> npm run db-seed`.
 
 By default, the server will listen on port 8081. See [.env](.env) for default configuration and [Configuration](#configuration) for an explanation of these variables.
 
