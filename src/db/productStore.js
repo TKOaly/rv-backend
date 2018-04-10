@@ -200,6 +200,7 @@ module.exports.findAll = () => {
         .select(
             'RVITEM.itemid',
             'RVITEM.descr',
+            'RVITEM.pgrpid',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice'
