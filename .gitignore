@@ -5,3 +5,4 @@ requests/
 coverage/
 .nyc_output/
 .env
+*.log
