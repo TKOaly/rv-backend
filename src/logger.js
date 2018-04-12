@@ -2,30 +2,21 @@ const { createLogger, format, transports } = require('winston');
 const { combine, timestamp, label, printf } = format;
 
 const logFormat = printf(info => {
-    return `${info.timestamp} [${info.label} (${process.env.NODE_ENV})] ${
-        info.level
-    }: ${info.message}`;
+    return `${info.timestamp} ${info.level.padEnd(8)}: ${info.message}`;
 });
 
 const logger = createLogger({
     transports: [
         new transports.File({
-            filename: 'logs/error.log',
+            filename: 'logs/errors.log',
             level: 'error',
-            format: combine(
-                label({ label: 'rv-backend' }),
-                timestamp(),
-                logFormat
-            ),
+            format: combine(timestamp(), logFormat),
             json: false
         }),
         new transports.File({
-            filename: 'logs/rv.log',
-            format: combine(
-                label({ label: 'rv-backend' }),
-                timestamp(),
-                logFormat
-            ),
+            filename: 'logs/combined.log',
+            level: 'info',
+            format: combine(timestamp(), logFormat),
             json: false
         })
     ]
