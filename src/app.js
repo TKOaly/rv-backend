@@ -17,12 +17,14 @@
     var admin_auth = require('./routes/admin/adminAuth');
     var admin_products = require('./routes/admin/products');
     var user_products = require('./routes/products');
+    var user_categories = require('./routes/categories');
     var admin_global_margin = require('./routes/admin/margin');
 
     app.use('/api/v1/user/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
     app.use('/api/v1/user/register', register_route);
     app.use('/api/v1/user/products', user_products);
+    app.use('/api/v1/user/categories', user_categories);
     app.use('/api/v1/product/purchase', purchase_route);
 
     app.use('/api/v1/admin/authenticate', admin_auth);

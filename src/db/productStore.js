@@ -233,3 +233,15 @@ module.exports.addProduct = (product, price) => {
             return 'failure';
         });
 };
+
+/**
+ * Returns all categories.
+ * 
+ */
+module.exports.findAllCategories = () => {
+    return knex('PRODGROUP')
+        .select(
+            'PRODGROUP.pgrpid',
+            'PRODGROUP.descr'
+        );
+};
