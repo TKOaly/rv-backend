@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
-const logger = require('winston');
+const logger = require('./../../logger');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 

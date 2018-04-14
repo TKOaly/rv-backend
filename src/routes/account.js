@@ -3,7 +3,7 @@ const router = express.Router();
 const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 
-const logger = require('winston');
+const logger = require('./../logger');
 
 router.use(authMiddleware());
 
