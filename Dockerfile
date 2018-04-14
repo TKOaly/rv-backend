@@ -4,7 +4,6 @@ ENV NODE_ENV "$NODE_ENV"
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
-COPY ./logs ./logs
 COPY ./src ./src
 COPY ./knexfile.js .
 COPY ./startup.sh ./startup.sh
