@@ -16,6 +16,7 @@ services:
       - JWT_ADMIN_SECRET=${JWT_ADMIN_SECRET}
     volumes:
       - ./src:/usr/src/app/src
+      - ./logs:/usr/src/app/logs
 
   db:
     image: postgres:10-alpine
