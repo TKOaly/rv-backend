@@ -22,6 +22,10 @@ router.get('/', async (req, res) => {
         });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
     }
 });
 

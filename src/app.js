@@ -24,7 +24,7 @@
     app.use('/api/v1/user/account', account_route);
     app.use('/api/v1/user/register', register_route);
     app.use('/api/v1/user/products', user_products);
-    app.use('/api/v1/user/categories', user_categories);
+    app.use('/api/v1/categories', user_categories);
     app.use('/api/v1/product/purchase', purchase_route);
 
     app.use('/api/v1/admin/authenticate', admin_auth);
