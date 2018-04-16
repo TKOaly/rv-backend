@@ -109,7 +109,7 @@ router.get('/:barcode', async (req, res) => {
     var barcode = req.params.barcode;
 
     if (!barcode.match('(^[0-9]{13})+$')) {
-        logger.error('Bad barcode: %s', barcode);
+        logger.error('Bad barcode: ' + barcode);
         return res.status(400).json({
             error_code: 'Bad _request',
             message: 'not a barcode'
@@ -190,9 +190,10 @@ router.post('/product/:id(\\d+)', async (req, res) => {
 
         // return updated information
         logger.info(
-            'Successful buy-in of %s pcs of Product #%s',
-            quantity,
-            parseInt(id, 10)
+            'Successful buy-in of ' +
+                quantity +
+                ' pcs of Product #' +
+                parseInt(id, 10)
         );
         return res.status(200).json({
             product_id: parseInt(id, 10),

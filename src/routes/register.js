@@ -71,7 +71,7 @@ router.post('/', async (req, res) => {
     try {
         const highestId = await userStore.findHighestUserId();
         const inserted = await userStore.insertUser(body, highestId.max);
-        logger.info('Registered new user: ' + inserted.username);
+        logger.info('Registered new user: ' + body.username);
         res.status(201).json(inserted);
     } catch (exception) {
         logger.info('Error registering new user: ' + exception);
