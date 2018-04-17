@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
-const logger = require('winston');
+const logger = require('./../../logger');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
@@ -81,6 +81,11 @@ router.post('/', async (req, res) => {
                     dbstatus: status
                 });
             } else {
+                logger.error(
+                    'Barcode %s is already assigned to product %s',
+                    product.barcode,
+                    product.product_name
+                );
                 return res.status(400).json({
                     error_code: 'Product exists',
                     messasge: 'Barcode is already assigned to a product.'
@@ -88,7 +93,11 @@ router.post('/', async (req, res) => {
             }
         }
     } catch (exception) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, exception.stack);
+        logger.error(
+            'Error at %s: %s',
+            req.baseUrl + req.path,
+            exception.stack
+        );
         return res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -100,7 +109,8 @@ router.get('/:barcode', async (req, res) => {
     var barcode = req.params.barcode;
 
     if (!barcode.match('(^[0-9]{13})+$')) {
-        res.status(400).json({
+        logger.error('Bad barcode: ' + barcode);
+        return res.status(400).json({
             error_code: 'Bad _request',
             message: 'not a barcode'
         });
@@ -119,6 +129,11 @@ router.get('/:barcode', async (req, res) => {
                 });
             }
         } catch (exception) {
+            logger.error(
+                'Error at %s: %s',
+                req.baseUrl + req.path,
+                exception.stack
+            );
             return res.status(500).json({
                 error_code: 'internal_error',
                 message: 'Internal error'
@@ -137,6 +152,9 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         // check that product exists
         const product = await productStore.findById(id);
         if (!product) {
+            logger.error(
+                'User tried to do a buy-in for product that does not exist.'
+            );
             return res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
@@ -151,6 +169,9 @@ router.post('/product/:id(\\d+)', async (req, res) => {
             errors.push('quantity should be a number > 0');
 
         if (errors.length > 0) {
+            logger.error(
+                'Errors occured while doing a buy-in: ' + JSON.stringify(errors)
+            );
             return res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Missing or invalid fields in request',
@@ -168,7 +189,12 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         );
 
         // return updated information
-
+        logger.info(
+            'Successful buy-in of ' +
+                quantity +
+                ' pcs of Product #' +
+                parseInt(id, 10)
+        );
         return res.status(200).json({
             product_id: parseInt(id, 10),
             buyprice: buyprice,

@@ -1,5 +1,6 @@
 const token = require('../jwt/token');
 const userStore = require('../db/userStore');
+const logger = require('./../logger');
 
 const verifyRoles = (requiredRoles, userRoles) => {
     var verified = true;
@@ -16,8 +17,8 @@ const verifyRoles = (requiredRoles, userRoles) => {
 module.exports.verifyRoles = verifyRoles;
 
 module.exports.authenticateUser = async (
-    req, 
-    res, 
+    req,
+    res,
     requiredRoles = [],
     tokenSecret = process.env.JWT_SECRET
 ) => {
@@ -32,16 +33,31 @@ module.exports.authenticateUser = async (
                     var roles = await userStore.findUserRoles(user.name);
 
                     if (verifyRoles(requiredRoles, roles)) {
+                        logger.info(
+                            'Generated and signed new JWT for user ' + user.name
+                        );
                         res.status(200).json({
-                            access_token: token.sign({ username: user.name }, tokenSecret)
+                            access_token: token.sign(
+                                { username: user.name },
+                                tokenSecret
+                            )
                         });
                     } else {
+                        logger.error(
+                            'User ' +
+                                user.name +
+                                ' is not authorized to view this resource.'
+                        );
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized'
                         });
                     }
                 } else {
+                    logger.error(
+                        'Invalid username or password. Username that was entered: ' +
+                            username
+                    );
                     res.status(403).json({
                         error_code: 'invalid_credentials',
                         message: 'Invalid username or password'
@@ -53,14 +69,16 @@ module.exports.authenticateUser = async (
                     message: 'Invalid username or password'
                 });
             }
-        }
-        catch (error) {
+        } catch (error) {
+            logger.error('Error: ' + error);
             res.status(500).json({
                 error_code: 'internal_error',
                 message: 'Internal error'
             });
         }
     } else {
-        res.status(400).json({ error_code: 'bad_request', message: 'Bad request' });
+        res
+            .status(400)
+            .json({ error_code: 'bad_request', message: 'Bad request' });
     }
 };

@@ -1,10 +1,10 @@
 (function() {
     'use strict';
+    
     const express = require('express');
     const cors = require('cors');
     const bodyParser = require('body-parser');
     const app = express();
-    const winston = require('winston');
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
@@ -30,6 +30,6 @@
     app.use('/api/v1/admin/authenticate', admin_auth);
     app.use('/api/v1/admin/products', admin_products);
     app.use('/api/v1/admin/margin', admin_global_margin);
-    
+
     module.exports = app;
-}());
+})();

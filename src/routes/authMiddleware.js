@@ -1,8 +1,12 @@
 const jwt = require('../jwt/token');
 const userStore = require('../db/userStore');
 const verifyRoles = require('./authUtils').verifyRoles;
+const logger = require('./../logger');
 
-const authMiddleware = function (roles = [], tokenSecret = process.env.JWT_SECRET) {
+const authMiddleware = function(
+    roles = [],
+    tokenSecret = process.env.JWT_SECRET
+) {
     return async function(req, res, next) {
         var authHeader = req.get('Authorization');
         var rvusername = null;
@@ -23,12 +27,20 @@ const authMiddleware = function (roles = [], tokenSecret = process.env.JWT_SECRE
             try {
                 req.rvuser = await userStore.findByUsername(rvusername);
                 req.rvroles = await userStore.findUserRoles(rvusername);
-                
+
                 if (req.rvuser && req.rvroles) {
                     // finally, verify that user is authorized
                     if (verifyRoles(roles, req.rvroles)) {
+                        logger.info(
+                            'User ' +
+                                req.rvuser.name +
+                                ' successfully verified'
+                        );
                         next();
                     } else {
+                        logger.error(
+                            'User ' + req.rvuser.name + ' is not authorized'
+                        );
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized'
@@ -36,19 +48,22 @@ const authMiddleware = function (roles = [], tokenSecret = process.env.JWT_SECRE
                     }
                 } else {
                     // token contains nonexistent user or no roles
+                    logger.error(
+                        'Invalid authorization token (token contains nonexistent user or no roles)'
+                    );
                     res.status(403).json({
                         error_code: 'invalid_token',
                         message: 'Invalid authorization token'
                     });
                 }
-            }
-            catch (error) {
+            } catch (error) {
                 res.status(500).json({
                     error_code: 'internal_error',
                     message: 'Internal error'
                 });
             }
         } else {
+            logger.error('Invalid authorization token (no username in token)');
             // no username in token
             res.status(403).json({
                 error_code: 'invalid_token',
