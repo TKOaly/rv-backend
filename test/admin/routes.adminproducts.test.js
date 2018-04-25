@@ -50,6 +50,38 @@ describe('routes: admin products', () => {
                 });
         });
 
+        it('admins should not be able to get a product that does not exist', done => {
+            chai
+                .request(server)
+                .get('/api/v1/admin/products/product/9999')
+                .set('Authorization', 'Bearer ' + token)
+                .end((err, res) => {
+                    should.exist(err);
+                    done();
+                });
+        });
+
+        it('admins should be able to get a product that exists', done => {
+            chai
+                .request(server)
+                .get('/api/v1/admin/products/product/1816')
+                .set('Authorization', 'Bearer ' + token)
+                .end((err,res) => {
+                    should.exist(res.body.itemid);
+                    should.exist(res.body.pgrpid);
+                    should.exist(res.body.descr);
+                    should.exist(res.body.weight);
+                    should.exist(res.body.priceid);
+                    should.exist(res.body.barcode);
+                    should.exist(res.body.count);
+                    should.exist(res.body.buyprice);
+                    should.exist(res.body.sellprice);
+                    should.exist(res.body.userid);
+                    should.exist(res.body.starttime);
+                    done();
+                });
+        });
+
         it('Requesting product with existing barcode', async () => {
             return chai
                 .request(server)

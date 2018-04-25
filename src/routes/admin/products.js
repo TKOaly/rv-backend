@@ -6,7 +6,7 @@ const logger = require('./../../logger');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
-router.get('/:productId(\\d+)', async (req, res) => {
+router.get('/product/:productId(\\d+)', async (req, res) => {
     try {
         const product = await productStore.findById(req.params.productId);
         if (!product) {
