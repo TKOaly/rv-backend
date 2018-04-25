@@ -1,7 +1,6 @@
 .DS_Store
 node_modules/
 *.sqlite
-requests/
 coverage/
 .nyc_output/
 .env
