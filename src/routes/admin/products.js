@@ -6,6 +6,18 @@ const logger = require('./../../logger');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
+router.get('/:productId(\\d+)', async (req, res) => {
+    try {
+        const product = await productStore.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        return res.status(200).json(product);
+    } catch (error) {
+        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         var products = await productStore.findAll();
