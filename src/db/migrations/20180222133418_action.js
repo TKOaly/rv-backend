@@ -1,14 +1,18 @@
 exports.up = function(knex, Promise) {
-    return knex.schema.createTableIfNotExists('ACTION', function(table) {
-        table
-            .increments('actionid')
-            .unsigned()
-            .primary()
-            .comment('Action ID');
-        table
-            .string('action', 64)
-            .notNullable()
-            .comment('Description of action');
+    return knex.schema.hasTable('ACTION').then(exists => {
+        if (!exists) {
+            return knex.schema.createTable('ACTION', table => {
+                table
+                    .increments('actionid')
+                    .unsigned()
+                    .primary()
+                    .comment('Action ID');
+                table
+                    .string('action', 64)
+                    .notNullable()
+                    .comment('Description of action');
+            });
+        }
     });
 };
 
