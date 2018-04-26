@@ -76,8 +76,6 @@ describe('routes: admin products', () => {
                     should.exist(res.body.count);
                     should.exist(res.body.buyprice);
                     should.exist(res.body.sellprice);
-                    should.exist(res.body.userid);
-                    should.exist(res.body.starttime);
                     done();
                 });
         });

@@ -4,6 +4,13 @@ const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
 const logger = require('./../../logger');
 
+const prodFilter = product => {
+    delete product.userid;
+    delete product.starttime;
+    delete product.endtime;
+    return product;
+};
+
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
 router.get('/product/:productId(\\d+)', async (req, res) => {
@@ -12,7 +19,7 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        return res.status(200).json(product);
+        return res.status(200).json(prodFilter(product));
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
     }
