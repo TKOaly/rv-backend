@@ -13,15 +13,10 @@ module.exports.findAll = () => {
         .select(
             'RVBOX.barcode AS box_barcode',
             'RVBOX.itembarcode AS product_barcode',
+            'RVITEM.descr AS product_name',
             'RVBOX.itemcount AS items_per_box',
             'RVITEM.itemid AS product_id'
-        )
-        .then(rows => rows.map(r => ({
-            box_barcode: r.box_barcode,
-            items_per_box: r.items_per_box,
-            product_barcode: r.product_barcode,
-            product_id: r.product_id
-        })));
+        );
 };
 
 /**
@@ -40,20 +35,9 @@ module.exports.findByBoxBarcode = barcode => {
         .select(
             'RVBOX.barcode AS box_barcode',
             'RVBOX.itembarcode AS product_barcode',
+            'RVITEM.descr AS product_name',
             'RVBOX.itemcount AS items_per_box',
             'RVITEM.itemid AS product_id'
         )
-        .then(rows => {
-            if (rows.length === 0) {
-                return null;
-            } else {
-                const r = rows[0];
-                return {
-                    box_barcode: r.box_barcode,
-                    items_per_box: r.items_per_box,
-                    product_barcode: r.product_barcode,
-                    product_id: r.product_id
-                };
-            }
-        });
+        .first();
 };

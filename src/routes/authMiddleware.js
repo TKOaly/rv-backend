@@ -57,6 +57,7 @@ const authMiddleware = function(
                     });
                 }
             } catch (error) {
+                logger.error('authMiddleware: %s', error);
                 res.status(500).json({
                     error_code: 'internal_error',
                     message: 'Internal error'
