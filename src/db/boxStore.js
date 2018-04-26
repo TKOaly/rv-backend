@@ -20,6 +20,7 @@ module.exports.findAll = () => {
             return rows.map(r => ({
                 box_barcode: r.box_barcode,
                 items_per_box: r.items_per_box,
+                product_barcode: r.product_barcode,
                 product_id: r.product_id
             }));
         });
@@ -52,6 +53,7 @@ module.exports.findByBoxBarcode = barcode => {
                 return {
                     box_barcode: r.box_barcode,
                     items_per_box: r.items_per_box,
+                    product_barcode: r.product_barcode,
                     product_id: r.product_id
                 };
             }
