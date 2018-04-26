@@ -16,14 +16,12 @@ module.exports.findAll = () => {
             'RVBOX.itemcount AS items_per_box',
             'RVITEM.itemid AS product_id'
         )
-        .then(rows => {
-            return rows.map(r => ({
-                box_barcode: r.box_barcode,
-                items_per_box: r.items_per_box,
-                product_barcode: r.product_barcode,
-                product_id: r.product_id
-            }));
-        });
+        .then(rows => rows.map(r => ({
+            box_barcode: r.box_barcode,
+            items_per_box: r.items_per_box,
+            product_barcode: r.product_barcode,
+            product_id: r.product_id
+        })));
 };
 
 /**
