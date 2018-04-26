@@ -1,9 +1,11 @@
+const isObject = require('util').isObject;
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const boxStore = require('../../db/boxStore');
 const productStore = require('../../db/productStore');
 const logger = require('./../../logger');
+const fieldValidator = require('./../../utils/fieldValidator');
 
 router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 
@@ -48,8 +50,8 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         const product = await productStore.findById(box.product_id);
 
         if (!box) {
-            logger.error(
-                '%s: box with barcode %s was not found',
+            logger.warning(
+                'POST %s: box with barcode %s was not found',
                 req.baseUrl + req.path,
                 req.params.barcode);
             return res.status(404).json({
@@ -74,9 +76,11 @@ router.post('/:barcode(\\d+)', async (req, res) => {
 
         if (errors.length > 0) {
             logger.error(
-                '%s: invalid request',
+                'POST %s: invalid request by user %s: %s',
                 req.baseUrl + req.path,
-                req.params.barcode);
+                req.rvuser.name,
+                errors.join(', ')
+            );
 
             return res.status(400).json({
                 error_code: 'bad_request',
@@ -113,6 +117,118 @@ router.post('/:barcode(\\d+)', async (req, res) => {
             quantity_added: box.items_per_box * boxes,
             total_quantity: quantity
         });
+    } catch (error) {
+        logger.error('%s: %s', req.baseUrl + req.path, error.stack);
+        return res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
+    }
+});
+
+const boxValidators = [
+    {
+        field: 'items_per_box',
+        validator: fieldValidator.createValidator(
+            v => !isNaN(parseInt(v, 10)) && v > 0,
+            'items_per_box should be a number greater than 0'
+        )
+    },
+    {
+        field: 'product',
+        validator: fieldValidator.createValidator(
+            v => isObject(v),
+            'product should be an object'
+        )
+    }
+];
+
+const productValidators = [
+    {
+        field: 'product_barcode',
+        validator: fieldValidator.createValidator(
+            v => typeof v === 'string' && v.match('^\\d+$'),
+            'product_barcode should be a string of digits'
+        )
+    },
+    {
+        field: 'product_name',
+        validator: fieldValidator.createValidator(
+            v => typeof v === 'string' && v && v.length > 0,
+            'product_name should be a non-empty string'
+        )
+    },
+    {
+        field: 'product_group',
+        validator: fieldValidator.createValidator(
+            v => !isNaN(parseInt(v, 10)),
+            'product_group should be a number'
+        )
+    },
+    {
+        field: 'product_weight',
+        validator: fieldValidator.createValidator(
+            v => !isNaN(parseInt(v, 10)),
+            'weight should be a number'
+        )
+    },
+    {
+        field: 'product_buyprice',
+        validator: fieldValidator.createValidator(
+            v => !isNaN(parseInt(v, 10)) && v >= 0,
+            'product_buyprice should not be negative'
+        )
+    },
+    {
+        field: 'product_sellprice',
+        validator: fieldValidator.createValidator(
+            v => !isNaN(parseInt(v, 10)) && v >= 0,
+            'product_sellprice should not be negative'
+        )
+    }
+];
+
+router.put('/:barcode(\\d+)', async (req, res) => {
+    // validate request
+    const boxErrors = fieldValidator.validateObject(req.body, boxValidators);
+    if (boxErrors.length > 0) {
+        logger.error(
+            'PUT %s: invalid request by user %s: %s',
+            req.baseUrl + req.path,
+            req.rvuser.name,
+            boxErrors.join(', ')
+        );
+        return res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors: boxErrors
+        });
+    }
+
+    const productErrors = fieldValidator.validateObject(
+        req.body.product, 
+        productValidators
+    );
+    if (productErrors.length > 0) {
+        logger.error(
+            'PUT %s: invalid request by user %s: %s',
+            req.baseUrl + req.path,
+            req.rvuser.name,
+            productErrors.join(', ')
+        );
+        return res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors: productErrors
+        });
+    }
+
+    try {
+        let box = await boxStore.findByBoxBarcode(req.params.barcode);
+        let product = await productStore.findByBarcode(req.body.product.product_barcode);
+        let boxCreated = false;
+
+        
     } catch (error) {
         logger.error('%s: %s', req.baseUrl + req.path, error.stack);
         return res.status(500).json({
