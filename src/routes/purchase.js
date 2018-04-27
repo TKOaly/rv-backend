@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
             var user = req.rvuser;
 
             // product and price found
-            if (product !== null) {
+            if (product) {
 
                 // user has enough money to purchase
                 if (user.saldo > 0) {
