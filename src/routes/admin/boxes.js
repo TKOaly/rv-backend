@@ -187,11 +187,111 @@ router.put('/:barcode(\\d+)', async (req, res) => {
     }
 
     try {
+        let productData = req.body.product;
         let box = await boxStore.findByBoxBarcode(req.params.barcode);
-        let product = await productStore.findByBarcode(req.body.product.product_barcode);
+        let product = await productStore.findByBarcode(productData.product_barcode);
         let boxCreated = false;
 
-        // create product if it doesn't exist
+        // create or update box and product
+
+        if (!product) {
+            const prodId = await productStore.addProduct({
+                descr: productData.product_name,
+                pgrpid: productData.product_group,
+                weight: productData.product_weight
+            }, {
+                barcode: productData.product_barcode,
+                count: 0,
+                buyprice: productData.product_buyprice,
+                sellprice: productData.product_sellprice,
+                userid: req.rvuser.userid,
+                starttime: new Date(),
+                endtime: null
+            }, req.rvuser.userid);
+
+            logger.info(
+                '%s %s: created product "%s" with id %s and barcode %s',
+                req.method,
+                req.originalUrl,
+                productData.product_name,
+                prodId,
+                productData.product_barcode
+            );
+        } else {
+            // update product info and price
+            await productStore.changeProductStock(
+                product.itemid,
+                productData.product_buyprice,
+                productData.product_sellprice,
+                product.count,
+                req.rvuser.userid
+            );
+
+            await productStore.updateProduct({
+                id: product.itemid,
+                name: productData.product_name,
+                group: productData.product_group,
+                weight: productData.product_weight,
+                userid: req.rvuser.userid
+            });
+
+            logger.info(
+                '%s %s: updated product "%s" (barcode %s)',
+                req.method,
+                req.originalUrl,
+                productData.product_name,
+                productData.product_barcode
+            );
+        }
+
+        product = await productStore.findByBarcode(productData.product_barcode);
+
+        if (!box) {
+            await boxStore.createBox(
+                req.params.barcode,
+                productData.product_barcode,
+                req.body.items_per_box,
+                req.rvuser.userid
+            );
+            boxCreated = true;
+
+            logger.info(
+                '%s %s: created a box with barcode %s for product "%s" (barcode %s)',
+                req.method,
+                req.originalUrl,
+                req.params.barcode,
+                productData.product_name,
+                productData.product_barcode
+            );
+        } else {
+            await boxStore.updateBox(
+                req.params.barcode,
+                productData.product_barcode,
+                req.body.items_per_box,
+                req.rvuser.userid
+            );
+
+            logger.info(
+                '%s %s: updated box %s',
+                req.method,
+                req.originalUrl,
+                req.params.barcode
+            );
+        }
+
+        return res.status(boxCreated ? 201 : 200).json({
+            box_barcode: req.params.barcode,
+            items_per_box: req.body.items_per_box,
+            product: {
+                product_id: product.itemid,
+                product_name: product.descr,
+                product_group: product.pgrpid,
+                product_barcode: product.barcode,
+                product_weight: product.weight,
+                product_sellprice: product.sellprice,
+                product_buyprice: product.buyprice
+            }
+        });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
         return res.status(500).json({

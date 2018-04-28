@@ -8,8 +8,9 @@ const knex = require('./knex');
  */
 module.exports.findByBarcode = async barcode => {
     return knex('PRICE')
-        .innerJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .where('PRICE.barcode', barcode)
+        .orderBy('starttime', 'DESC')
         .first();
 };
 
@@ -26,9 +27,7 @@ module.exports.findById = async id => {
                 .andOnNull('PRICE.endtime');
         })
         .where('RVITEM.itemid', id)
-        .then(rows => {
-            return rows.length > 0 ? rows[0] : null;
-        });
+        .first();
 };
 
 /**
@@ -233,6 +232,64 @@ module.exports.addProduct = (product, price, userid) => {
                     });
             })
             .then(() => product.itemid);
+    });
+};
+
+/**
+ * Updates a product's information (name, category, weight)
+ * 
+ * @param {Object} product product to update
+ * @param {integer} id product id
+ * @param {string} name product name
+ * @param {integer} group product category id
+ * @param {weight} weight product weight
+ * @param {integer} userid id of the user updating the product
+ */
+module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
+    let oldProduct = await module.exports.findById(id);
+
+    return knex.transaction(function (trx) {
+        return knex('RVITEM')
+            .transacting(trx)
+            .update({
+                descr: name,
+                pgrpid: group,
+                weight
+            })
+            .where('itemid', id)
+            .then(() => {
+                // record changes in product history
+                let actions = [];
+                const action = {
+                    time: new Date(),
+                    count: oldProduct.count,
+                    itemid: id,
+                    userid,
+                    priceid1: oldProduct.priceid
+                };
+
+                if (name !== oldProduct.descr) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 2})
+                    );
+                }
+
+                if (group !== oldProduct.pgrpid) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 4 })
+                    );
+                }
+
+                if (weight !== oldProduct.weight) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 3 })
+                    );
+                }
+
+                return knex('ITEMHISTORY')
+                    .transacting(trx)
+                    .insert(actions);
+            });
     });
 };
 

@@ -93,7 +93,7 @@ router.post('/', async (req, res) => {
         newPrice.itemid = newId;
 
         logger.info(
-            '%s %s: user %s created new product %s with id %s',
+            '%s %s: user %s created new product "%s" with id %s',
             req.method,
             req.originalUrl,
             req.rvuser.name,
