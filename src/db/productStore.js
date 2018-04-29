@@ -62,6 +62,7 @@ module.exports.changeProductStock = async (
                 // update current valid price if only quantity changes
                 if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
                     return knex('PRICE')
+                        .transacting(trx)
                         .update('count', quantity)
                         .where('priceid', oldPrice.priceid)
                         .then(() => {
@@ -137,9 +138,13 @@ module.exports.changeProductStock = async (
                     });
                 }
 
-                return knex('ITEMHISTORY')
-                    .transacting(trx)
-                    .insert(actions);
+                if (actions.length > 0) {
+                    return knex('ITEMHISTORY')
+                        .transacting(trx)
+                        .insert(actions);
+                }
+
+                return trx;
             })
             .then(trx.commit)
             .catch(trx.rollback);
@@ -286,9 +291,13 @@ module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
                     );
                 }
 
-                return knex('ITEMHISTORY')
-                    .transacting(trx)
-                    .insert(actions);
+                if (actions.length > 0) {
+                    return knex('ITEMHISTORY')
+                        .transacting(trx)
+                        .insert(actions);
+                }
+
+                return trx;
             });
     });
 };

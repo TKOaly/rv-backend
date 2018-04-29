@@ -72,13 +72,13 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         const boxes = parseInt(req.body.boxes, 10);
 
         // validate request
-        const validators = [
+        const reqValidators = [
             validators.nonNegativeNumber('sellprice'),
             validators.nonNegativeNumber('buyprice'),
             validators.positiveNumber('boxes'),
         ];
 
-        let errors = fieldValidator.validateObject(req.body, validators);
+        let errors = fieldValidator.validateObject(req.body, reqValidators);
 
         if (errors.length > 0) {
             logger.error(
