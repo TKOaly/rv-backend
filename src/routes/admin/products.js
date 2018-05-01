@@ -35,6 +35,7 @@ router.get('/', async (req, res) => {
                 product_id: product.itemid,
                 product_name: product.descr,
                 product_barcode: product.barcode,
+                product_group: product.pgrpid,
                 buyprice: product.buyprice,
                 sellprice: product.sellprice,
                 quantity: parseInt(product.quantity || 0)
