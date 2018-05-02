@@ -19,6 +19,7 @@
     var user_products = require('./routes/products');
     var user_categories = require('./routes/categories');
     var admin_global_margin = require('./routes/admin/margin');
+    var admin_boxes = require('./routes/admin/boxes');
 
     app.use('/api/v1/user/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
@@ -30,6 +31,7 @@
     app.use('/api/v1/admin/authenticate', admin_auth);
     app.use('/api/v1/admin/products', admin_products);
     app.use('/api/v1/admin/margin', admin_global_margin);
-
+    app.use('/api/v1/admin/boxes', admin_boxes);
+    
     module.exports = app;
 })();
