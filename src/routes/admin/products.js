@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
+const categoryStore = require('../../db/categoryStore');
 const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
@@ -29,42 +30,47 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
 
 // Edit product
 router.put('/product/:productId(\\d+)', async (req, res) => {
-    const errors = [];
     try {
+        const errors = [];
         const product = await productStore.findById(req.params.productId);
+        // Check that product exists
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        product.pgrpid = req.params.pgrpid ? req.params.pgrpid : product.pgrpid;
-        product.descr = req.params.descr ? req.params.descr : product.descr;
-        product.weight = req.params.weight ? req.params.weight : product.weight;
-        if (req.params.weight && req.params.weight < 0) {
-            errors.push('Weight can\'t be negative');
-        }
-        product.barcode = req.params.barcode
-            ? req.params.barcode
-            : product.barcode;
+        product.pgrpid = req.body.pgrpid ? req.body.pgrpid : product.pgrpid;
 
-        if (req.params.barcode) {
-            const prod = await productStore.findByBarcode(req.params.barcode);
-            if (prod) {
-                errors.push('Product already exists with given barcode');
+        // Validate pgrpid
+        if (req.body.pgrpid) {
+            const productGroup = await categoryStore.findById(req.body.pgrpid);
+            if (!productGroup) {
+                errors.push('Product group does not exist');
             }
         }
 
-        product.buyprice = req.params.buyprice
-            ? req.params.buyprice
-            : product.buyprice;
-        product.sellprice = req.params.sellprice
-            ? req.params.sellprice
-            : product.sellprice;
-        product.quantity = req.params.quantity
-            ? req.params.quantity
-            : product.quantity;
-        const updatedProduct = await productStore.updateProduct(product);
-        return res.status(200).json(prodFilter(updatedProduct));
+        product.descr = req.body.descr ? req.body.descr : product.descr;
+        product.weight = req.body.weight ? req.body.weight : product.weight;
+
+        // Validate weight
+        if (req.body.weight && req.body.weight < 0) {
+            errors.push('Weight can\'t be negative');
+        }
+
+        if (errors.length > 0) {
+            return res.status(400).json({ errors });
+        }
+
+        const result = await productStore.updateProduct({
+            id: product.itemid,
+            name: product.descr,
+            group: product.pgrpid,
+            weight: product.weight,
+            userid: req.rvuser.userid
+        });
+        const newProd = await productStore.findById(product.itemid);
+        return res.status(200).json(prodFilter(newProd));
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        return res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -149,7 +155,11 @@ router.post('/', async (req, res) => {
             endtime: null
         };
 
-        const newId = await productStore.addProduct(newProduct, newPrice, req.rvuser.userid);
+        const newId = await productStore.addProduct(
+            newProduct,
+            newPrice,
+            req.rvuser.userid
+        );
         newProduct.itemid = newId;
         newPrice.itemid = newId;
 
@@ -167,12 +177,7 @@ router.post('/', async (req, res) => {
             price: newPrice
         });
     } catch (error) {
-        logger.error(
-            '%s %s: %s',
-            req.method,
-            req.originalUrl,
-            error.stack
-        );
+        logger.error('%s %s: %s', req.method, req.originalUrl, error.stack);
         return res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

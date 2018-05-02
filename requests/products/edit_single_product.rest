@@ -1,0 +1,7 @@
+PUT http://localhost:8080/api/v1/admin/products/product/1816 HTTP/1.1
+Authorization: Bearer {{rv_backend_admin_token}}
+content-type: application/json
+
+{
+    "descr": "Mars"
+}
