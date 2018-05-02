@@ -3,6 +3,8 @@ const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
 const logger = require('./../../logger');
+const fieldValidator = require('../../utils/fieldValidator');
+const validators = require('../../utils/validators');
 
 const prodFilter = product => {
     delete product.userid;
@@ -33,6 +35,7 @@ router.get('/', async (req, res) => {
                 product_id: product.itemid,
                 product_name: product.descr,
                 product_barcode: product.barcode,
+                product_group: product.pgrpid,
                 buyprice: product.buyprice,
                 sellprice: product.sellprice,
                 quantity: parseInt(product.quantity || 0)
@@ -47,75 +50,87 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    var body = req.body;
-    try {
-        const barcodeRegex = await body.barcode.match('(^[0-9]{13})+$');
-        if (!barcodeRegex) {
-            return res.status(400).json({
-                error_code: 'Bad _request',
-                message: 'not a barcode'
-            });
-        } else {
-            const product = await productStore.findByBarcode(body.barcode);
-            let products = await productStore.findAll();
-            const highestId = Math.max(
-                ...products.map(product => product.itemid)
-            );
+    let productValidators = [
+        validators.numericBarcode('barcode'),
+        validators.nonEmptyString('descr'),
+        validators.positiveNumber('pgrpid'),
+        validators.nonNegativeNumber('weight'),
+        validators.nonNegativeNumber('count'),
+        validators.nonNegativeNumber('buyprice'),
+        validators.nonNegativeNumber('sellprice')
+    ];
 
-            if (!product) {
-                const newProduct = {
-                    descr: body.descr,
-                    itemid: highestId + 1,
-                    pgrpid: body.pgrpid,
-                    weight: body.weight
-                };
-                const newPrice = {
-                    barcode: body.barcode,
-                    count: body.count,
-                    buyprice: body.buyprice,
-                    sellprice: body.sellprice,
-                    itemid: highestId + 1,
-                    userid: 2,
-                    starttime: new Date(),
-                    endtime: null
-                };
-
-                if (
-                    Object.values(newProduct).includes(undefined) ||
-                    Object.values(newPrice).includes(undefined)
-                ) {
-                    return res.status(400).json({
-                        message: 'Missing parametres.'
-                    });
-                }
-
-                const status = await productStore.addProduct(
-                    newProduct,
-                    newPrice
-                );
-
-                return res.status(201).json({
-                    product: newProduct,
-                    price: newPrice,
-                    dbstatus: status
-                });
-            } else {
-                logger.error(
-                    'Barcode %s is already assigned to product %s',
-                    product.barcode,
-                    product.product_name
-                );
-                return res.status(400).json({
-                    error_code: 'Product exists',
-                    messasge: 'Barcode is already assigned to a product.'
-                });
-            }
-        }
-    } catch (exception) {
+    let errors = fieldValidator.validateObject(req.body, productValidators);
+    if (errors.length > 0) {
         logger.error(
-            'Error at %s: %s',
-            req.baseUrl + req.path,
-            exception.stack
+            '%s %s: invalid request by user %s: %s',
+            req.method,
+            req.originalUrl,
+            req.rvuser.name,
+            errors.join(', ')
+        );
+        return res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors
+        });
+    }
+
+    try {
+        const product = await productStore.findByBarcode(req.body.barcode);
+        if (product) {
+            logger.error(
+                '%s %s: barcode %s is already assigned to product %s',
+                req.method,
+                req.originalUrl,
+                req.body.barcode,
+                product.descr
+            );
+            return res.status(403).json({
+                error_code: 'barcode_taken',
+                message: 'Barcode is already assigned to a product'
+            });
+        }
+
+        const newProduct = {
+            descr: req.body.descr,
+            pgrpid: req.body.pgrpid,
+            weight: req.body.weight
+        };
+
+        const newPrice = {
+            barcode: req.body.barcode,
+            count: req.body.count,
+            buyprice: req.body.buyprice,
+            sellprice: req.body.sellprice,
+            userid: req.rvuser.userid,
+            starttime: new Date(),
+            endtime: null
+        };
+
+        const newId = await productStore.addProduct(newProduct, newPrice, req.rvuser.userid);
+        newProduct.itemid = newId;
+        newPrice.itemid = newId;
+
+        logger.info(
+            '%s %s: user %s created new product "%s" with id %s',
+            req.method,
+            req.originalUrl,
+            req.rvuser.name,
+            newProduct.descr,
+            newProduct.itemid
+        );
+
+        return res.status(201).json({
+            product: newProduct,
+            price: newPrice
+        });
+    } catch (error) {
+        logger.error(
+            '%s %s: %s',
+            req.method,
+            req.originalUrl,
+            error.stack
         );
         return res.status(500).json({
             error_code: 'internal_error',

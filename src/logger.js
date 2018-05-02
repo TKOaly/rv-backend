@@ -1,5 +1,5 @@
 const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, printf } = format;
+const { combine, timestamp, label, printf, splat } = format;
 
 const logFormat = printf(info => {
     return `${info.timestamp} ${info.level.padEnd(8)}: ${info.message}`;
@@ -10,22 +10,22 @@ const logger = createLogger({
         new transports.File({
             filename: 'logs/errors.log',
             level: 'error',
-            format: combine(timestamp(), logFormat),
+            format: combine(timestamp(), splat(), logFormat),
             json: false
         }),
         new transports.File({
             filename: 'logs/combined.log',
             level: 'info',
-            format: combine(timestamp(), logFormat),
+            format: combine(timestamp(), splat(), logFormat),
             json: false
         })
     ]
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
     logger.add(
         new transports.Console({
-            format: format.simple(),
+            format: format.combine(splat(), format.simple()),
             colorize: true,
             timestamp: true
         })

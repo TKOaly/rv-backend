@@ -6,21 +6,12 @@ const knex = require('./knex');
  * @param {string} barcode barcode of the product
  * @returns product and price information if found, null otherwise
  */
-module.exports.findByBarcode = (barcode) => {
+module.exports.findByBarcode = async barcode => {
     return knex('PRICE')
-        .innerJoin('RVITEM', function() {
-            this.on('RVITEM.itemid', '=', 'PRICE.itemid');
-        })
-        .whereNotNull('starttime')
-        .andWhere('endtime', null)
-        .andWhere('barcode', barcode)
-        .then((rows) => {
-            if (rows.length > 0) {
-                return rows[0];
-            } else {
-                return null;
-            }
-        });
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .where('PRICE.barcode', barcode)
+        .orderBy('starttime', 'DESC')
+        .first();
 };
 
 /**
@@ -36,9 +27,7 @@ module.exports.findById = async id => {
                 .andOnNull('PRICE.endtime');
         })
         .where('RVITEM.itemid', id)
-        .then(rows => {
-            return rows.length > 0 ? rows[0] : null;
-        });
+        .first();
 };
 
 /**
@@ -73,6 +62,7 @@ module.exports.changeProductStock = async (
                 // update current valid price if only quantity changes
                 if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
                     return knex('PRICE')
+                        .transacting(trx)
                         .update('count', quantity)
                         .where('priceid', oldPrice.priceid)
                         .then(() => {
@@ -148,9 +138,13 @@ module.exports.changeProductStock = async (
                     });
                 }
 
-                return knex('ITEMHISTORY')
-                    .transacting(trx)
-                    .insert(actions);
+                if (actions.length > 0) {
+                    return knex('ITEMHISTORY')
+                        .transacting(trx)
+                        .insert(actions);
+                }
+
+                return trx;
             })
             .then(trx.commit)
             .catch(trx.rollback);
@@ -213,25 +207,99 @@ module.exports.findAll = () => {
  * Creates a new product if given barcode is not in use.
  * 
  */
-module.exports.addProduct = (product, price) => {
-    return knex.transaction(trx => {
-        return trx
-            .insert(product)
-            .into('RVITEM')
+module.exports.addProduct = (product, price, userid) => {
+    return knex.transaction(function (trx) {
+        return knex('RVITEM')
+            .transacting(trx)
+            .max('itemid as highestid')
+            .then(rows => {
+                product.itemid = rows[0].highestid + 1;
+                price.itemid = product.itemid;
+                return knex('RVITEM')
+                    .transacting(trx)
+                    .insert(product);
+            })
             .then(() => {
-                return trx
-                    .insert(price)
-                    .into('PRICE');
+                return knex('PRICE')
+                    .transacting(trx)
+                    .insert(price, 'priceid');
+            })
+            .then(priceid => {
+                return knex('ITEMHISTORY')
+                    .transacting(trx)
+                    .insert({
+                        time: price.starttime,
+                        count: price.count,
+                        itemid: price.itemid,
+                        userid: userid,
+                        actionid: 1,
+                        priceid1: priceid[0]
+                    });
+            })
+            .then(() => product.itemid);
+    });
+};
+
+/**
+ * Updates a product's information (name, category, weight)
+ * 
+ * @param {Object} product product to update
+ * @param {integer} id product id
+ * @param {string} name product name
+ * @param {integer} group product category id
+ * @param {weight} weight product weight
+ * @param {integer} userid id of the user updating the product
+ */
+module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
+    let oldProduct = await module.exports.findById(id);
+
+    return knex.transaction(function (trx) {
+        return knex('RVITEM')
+            .transacting(trx)
+            .update({
+                descr: name,
+                pgrpid: group,
+                weight
+            })
+            .where('itemid', id)
+            .then(() => {
+                // record changes in product history
+                let actions = [];
+                const action = {
+                    time: new Date(),
+                    count: oldProduct.count,
+                    itemid: id,
+                    userid,
+                    priceid1: oldProduct.priceid
+                };
+
+                if (name !== oldProduct.descr) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 2})
+                    );
+                }
+
+                if (group !== oldProduct.pgrpid) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 4 })
+                    );
+                }
+
+                if (weight !== oldProduct.weight) {
+                    actions.push(
+                        Object.assign({}, action, { actionid: 3 })
+                    );
+                }
+
+                if (actions.length > 0) {
+                    return knex('ITEMHISTORY')
+                        .transacting(trx)
+                        .insert(actions);
+                }
+
+                return trx;
             });
-    })
-        .then(() => {
-            console.log('Successful DB-transaction');
-            return 'success';
-        })
-        .catch(err => {
-            console.log('Failure in inserting to DB');
-            return 'failure';
-        });
+    });
 };
 
 /**
