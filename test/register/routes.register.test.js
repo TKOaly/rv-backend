@@ -65,7 +65,7 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(400);
-                    expect(res.body.error).to.equal('Username has at least 4 characters.');
+                    expect(res.body.error).to.equal('Username has less than 4 characters.');
                     done();
                 });
         });
@@ -83,7 +83,7 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(400);
-                    expect(res.body.error).to.equal('Password has at least 4 characters.');
+                    expect(res.body.error).to.equal('Password has less than 4 characters.');
                     done();
                 });
         });
@@ -104,7 +104,7 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(403);
-                    expect(res.body.error).to.equal('Username already in use.');
+                    expect(res.body.error).to.equal('Username is already in use.');
                     done();
                 });
         });
@@ -121,7 +121,7 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(403);
-                    expect(res.body.error).to.equal('Email already in use.');
+                    expect(res.body.error).to.equal('Email address already in use.');
                     done();
                 });
         });
