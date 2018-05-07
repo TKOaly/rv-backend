@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
         res
             .status(400)
             .json({
-                error: 'Username has at least 4 characters.'
+                error: 'Username has less than 4 characters.'
             })
             .end();
         return;
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         res
             .status(400)
             .json({
-                error: 'Password has at least 4 characters.'
+                error: 'Password has less than 4 characters.'
             })
             .end();
         return;
@@ -46,23 +46,21 @@ router.post('/', async (req, res) => {
     // Check if user, email exists
     const user = await userStore.findByUsername(body.username);
     if (user) {
-        res
+        return res
             .status(403)
             .json({
-                error: 'Username already in use.'
+                error: 'Username is already in use.'
             })
             .end();
-        return;
     }
     const userEmail = await userStore.findByEmail(body.email.trim());
     if (userEmail) {
-        res
+        return res
             .status(403)
             .json({
-                error: 'Email already in use.'
+                error: 'Email address already in use.'
             })
             .end();
-        return;
     }
 
     // All ok
@@ -72,10 +70,10 @@ router.post('/', async (req, res) => {
         const highestId = await userStore.findHighestUserId();
         const inserted = await userStore.insertUser(body, highestId.max);
         logger.info('Registered new user: ' + body.username);
-        res.status(201).json(inserted);
+        return res.status(201).json(inserted);
     } catch (exception) {
         logger.info('Error registering new user: ' + exception);
-        res.status(500).json({
+        return res.status(500).json({
             error_code: 'internal_error',
             message: exception
         });
