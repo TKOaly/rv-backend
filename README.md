@@ -65,6 +65,10 @@ Environment variables:
 | PORT         | Port used by the backend server                                                                                                                                                    |
 | NODE_ENV     | Environment for Node, can be one of `development`, `test` or `production`.                                                                                                         |
 
+## Testing practices
+
+When developing, create tests for created endpoints and when felt useful. Use Mocha to write tests and mocking.
+
 ## Using REST client with VSCode
 
 ### Admin routes
