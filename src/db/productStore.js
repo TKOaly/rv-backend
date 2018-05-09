@@ -2,7 +2,7 @@ const knex = require('./knex');
 
 /**
  * Finds a product by its barcode.
- * 
+ *
  * @param {string} barcode barcode of the product
  * @returns product and price information if found, null otherwise
  */
@@ -16,15 +16,16 @@ module.exports.findByBarcode = async barcode => {
 
 /**
  * Finds a product by its id.
- * 
+ *
  * @param {*} id id of the product
  * @returns product and price information if found, null otherwise
  */
 module.exports.findById = async id => {
     return knex('RVITEM')
         .leftJoin('PRICE', function() {
-            this.on('PRICE.itemid', '=', 'RVITEM.itemid')
-                .andOnNull('PRICE.endtime');
+            this.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull(
+                'PRICE.endtime'
+            );
         })
         .where('RVITEM.itemid', id)
         .first();
@@ -34,7 +35,7 @@ module.exports.findById = async id => {
  * Changes a product's stock and price information. If the product's
  * price changes, a new price will be created and old price will be
  * invalidated. Actions are recorded in product history.
- * 
+ *
  * @param {*} id product id
  * @param {*} buyprice buy price
  * @param {*} sellprice sell price
@@ -51,7 +52,8 @@ module.exports.changeProductStock = async (
     return knex.transaction(function(trx) {
         let oldPrice;
 
-        knex.select('*')
+        knex
+            .select('*')
             .transacting(trx)
             .from('PRICE')
             .where('PRICE.itemid', productid)
@@ -60,7 +62,10 @@ module.exports.changeProductStock = async (
                 oldPrice = rows[0];
 
                 // update current valid price if only quantity changes
-                if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
+                if (
+                    oldPrice.buyprice == buyprice &&
+                    oldPrice.sellprice == sellprice
+                ) {
                     return knex('PRICE')
                         .transacting(trx)
                         .update('count', quantity)
@@ -85,15 +90,18 @@ module.exports.changeProductStock = async (
                     .then(() => {
                         return knex('PRICE')
                             .transacting(trx)
-                            .insert({
-                                itemid: productid,
-                                barcode: oldPrice.barcode,
-                                count: quantity,
-                                buyprice,
-                                sellprice,
-                                userid,
-                                starttime: new Date()
-                            }, 'priceid');
+                            .insert(
+                                {
+                                    itemid: productid,
+                                    barcode: oldPrice.barcode,
+                                    count: quantity,
+                                    buyprice,
+                                    sellprice,
+                                    userid,
+                                    starttime: new Date()
+                                },
+                                'priceid'
+                            );
                     });
             })
             .then(id => {
@@ -153,7 +161,7 @@ module.exports.changeProductStock = async (
 
 /**
  * Records a product purchase in the database.
- * 
+ *
  * @param {integer} productid id of the product that is purchased
  * @param {integer} priceid price id of the product
  * @param {integer} userid id of the user who is purchasing this product
@@ -183,32 +191,39 @@ module.exports.addPurchase = (productid, priceid, userid, quantity) => {
 
 /**
  * Returns all products and their stock quantities, if available.
- * 
+ *
  */
 module.exports.findAll = () => {
     return knex('RVITEM')
         .leftJoin('PRICE', function() {
-            this.on('PRICE.itemid', '=', 'RVITEM.itemid')
-                .andOnNull('PRICE.endtime');
+            this.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull(
+                'PRICE.endtime'
+            );
         })
         .select(
             'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
+            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice'
         )
         .sum('PRICE.count as quantity')
-        .groupBy('RVITEM.itemid', 'PRICE.barcode', 'PRICE.buyprice', 'PRICE.sellprice');
+        .groupBy(
+            'RVITEM.itemid',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice'
+        );
 };
 
 /**
  * Creates a new product if given barcode is not in use.
- * 
+ *
  */
 module.exports.addProduct = (product, price, userid) => {
-    return knex.transaction(function (trx) {
+    return knex.transaction(function(trx) {
         return knex('RVITEM')
             .transacting(trx)
             .max('itemid as highestid')
@@ -242,7 +257,7 @@ module.exports.addProduct = (product, price, userid) => {
 
 /**
  * Updates a product's information (name, category, weight)
- * 
+ *
  * @param {Object} product product to update
  * @param {integer} id product id
  * @param {string} name product name
@@ -253,7 +268,7 @@ module.exports.addProduct = (product, price, userid) => {
 module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
     let oldProduct = await module.exports.findById(id);
 
-    return knex.transaction(function (trx) {
+    return knex.transaction(function(trx) {
         return knex('RVITEM')
             .transacting(trx)
             .update({
@@ -274,21 +289,15 @@ module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
                 };
 
                 if (name !== oldProduct.descr) {
-                    actions.push(
-                        Object.assign({}, action, { actionid: 2})
-                    );
+                    actions.push(Object.assign({}, action, { actionid: 2 }));
                 }
 
                 if (group !== oldProduct.pgrpid) {
-                    actions.push(
-                        Object.assign({}, action, { actionid: 4 })
-                    );
+                    actions.push(Object.assign({}, action, { actionid: 4 }));
                 }
 
                 if (weight !== oldProduct.weight) {
-                    actions.push(
-                        Object.assign({}, action, { actionid: 3 })
-                    );
+                    actions.push(Object.assign({}, action, { actionid: 3 }));
                 }
 
                 if (actions.length > 0) {
@@ -304,12 +313,8 @@ module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
 
 /**
  * Returns all categories.
- * 
+ *
  */
 module.exports.findAllCategories = () => {
-    return knex('PRODGROUP')
-        .select(
-            'PRODGROUP.pgrpid',
-            'PRODGROUP.descr'
-        );
+    return knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
 };

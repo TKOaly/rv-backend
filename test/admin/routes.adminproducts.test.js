@@ -66,7 +66,7 @@ describe('routes: admin products', () => {
                 .request(server)
                 .get('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
-                .end((err,res) => {
+                .end((err, res) => {
                     should.exist(res.body.itemid);
                     should.exist(res.body.pgrpid);
                     should.exist(res.body.descr);
@@ -76,6 +76,34 @@ describe('routes: admin products', () => {
                     should.exist(res.body.count);
                     should.exist(res.body.buyprice);
                     should.exist(res.body.sellprice);
+                    done();
+                });
+        });
+
+        it('admins should be able to get a product that exists', done => {
+            chai
+                .request(server)
+                .put('/api/v1/admin/products/product/1816')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    pgrpid: 3,
+                    quantity: 450,
+                    buyprice: 120,
+                    sellprice: 200,
+                    weight: 555
+                })
+                .end((err, res) => {
+                    should.exist(res.body.itemid);
+                    should.exist(res.body.pgrpid);
+                    should.exist(res.body.count);
+                    should.exist(res.body.sellprice);
+                    should.exist(res.body.buyprice);
+                    should.exist(res.body.weight);
+                    res.body.pgrpid.should.equal(3);
+                    res.body.buyprice.should.equal(120);
+                    res.body.sellprice.should.equal(200);
+                    res.body.count.should.equal(450);
+                    res.body.weight.should.equal(555);
                     done();
                 });
         });

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
+const categoryStore = require('../../db/categoryStore');
 const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
@@ -27,9 +28,77 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
     }
 });
 
+// Edit product
+router.put('/product/:productId(\\d+)', async (req, res) => {
+    try {
+        const errors = [];
+        const product = await productStore.findById(req.params.productId);
+        // Check that product exists
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        product.pgrpid = req.body.pgrpid ? req.body.pgrpid : product.pgrpid;
+
+        // Validate pgrpid
+        if (req.body.pgrpid) {
+            const productGroup = await categoryStore.findById(req.body.pgrpid);
+            if (!productGroup) {
+                errors.push('Product group does not exist');
+            }
+        }
+
+        product.descr = req.body.descr ? req.body.descr : product.descr;
+        product.weight = req.body.weight ? req.body.weight : product.weight;
+
+        product.buyprice = req.body.buyprice
+            ? req.body.buyprice
+            : product.buyprice;
+
+        product.sellprice = req.body.sellprice
+            ? req.body.sellprice
+            : product.sellprice;
+
+        product.count = req.body.quantity ? req.body.quantity : product.count;
+
+        // Validate weight
+        if (req.body.weight && req.body.weight < 0) {
+            errors.push('Weight can\'t be negative');
+        }
+
+        if (errors.length > 0) {
+            return res.status(400).json({ errors });
+        }
+
+        // Basic product info
+        const result = await productStore.updateProduct({
+            id: req.params.productId,
+            name: product.descr,
+            group: product.pgrpid,
+            weight: product.weight,
+            userid: req.rvuser.userid
+        });
+
+        // sellprice, buyprice, quantity
+        const result2 = await productStore.changeProductStock(
+            product.itemid,
+            product.buyprice,
+            product.sellprice,
+            product.count,
+            req.rvuser.userid
+        );
+
+        const newProd = await productStore.findById(product.itemid);
+        return res.status(200).json(prodFilter(newProd));
+    } catch (error) {
+        logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.get('/', async (req, res) => {
     try {
         var products = await productStore.findAll();
+
         const prods = products.map(product => {
             return {
                 product_id: product.itemid,
@@ -38,6 +107,7 @@ router.get('/', async (req, res) => {
                 product_group: product.pgrpid,
                 buyprice: product.buyprice,
                 sellprice: product.sellprice,
+                product_weight: parseInt(product.weight || 0),
                 quantity: parseInt(product.quantity || 0)
             };
         });
@@ -108,7 +178,11 @@ router.post('/', async (req, res) => {
             endtime: null
         };
 
-        const newId = await productStore.addProduct(newProduct, newPrice, req.rvuser.userid);
+        const newId = await productStore.addProduct(
+            newProduct,
+            newPrice,
+            req.rvuser.userid
+        );
         newProduct.itemid = newId;
         newPrice.itemid = newId;
 
@@ -126,12 +200,7 @@ router.post('/', async (req, res) => {
             price: newPrice
         });
     } catch (error) {
-        logger.error(
-            '%s %s: %s',
-            req.method,
-            req.originalUrl,
-            error.stack
-        );
+        logger.error('%s %s: %s', req.method, req.originalUrl, error.stack);
         return res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
