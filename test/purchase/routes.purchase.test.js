@@ -1,6 +1,3 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-
 const chai = require('chai');
 const should = chai.should();
 const expect = chai.expect;
@@ -30,13 +27,13 @@ describe('routes: purchase', () => {
 
         it('purchasing a valid product should deduct account balance', async () => {
             const oldUser = await userStore.findByUsername('normal_user');
-            const product = await productStore.findByBarcode('6465544332217');
+            const product = await productStore.findByBarcode('8855702006834');
 
             return chai.request(server)
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    barcode: '6465544332217',
+                    barcode: '8855702006834',
                     quantity: 1
                 })
                 .then((res) => {
@@ -80,7 +77,7 @@ describe('routes: purchase', () => {
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    barcode: '6465544332217',
+                    barcode: '8855702006834',
                     quantity: 1
                 })
                 .then((res) => {
@@ -98,7 +95,7 @@ describe('routes: purchase', () => {
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    barcode: '6465544332217'
+                    barcode: '8855702006834'
                 })
                 .then((res) => {
                     res.should.not.equal(200);

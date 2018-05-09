@@ -1,1 +1,1 @@
-test/**/*.js
+--require test/mocha.env.js test/**/*.js

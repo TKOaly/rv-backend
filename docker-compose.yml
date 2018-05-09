@@ -13,8 +13,10 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - NODE_ENV=${NODE_ENV}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_ADMIN_SECRET=${JWT_ADMIN_SECRET}
     volumes:
       - ./src:/usr/src/app/src
+      - ./logs:/usr/src/app/logs
 
   db:
     image: postgres:10-alpine
