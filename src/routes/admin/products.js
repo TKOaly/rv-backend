@@ -50,6 +50,16 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         product.descr = req.body.descr ? req.body.descr : product.descr;
         product.weight = req.body.weight ? req.body.weight : product.weight;
 
+        product.buyprice = req.body.buyprice
+            ? req.body.buyprice
+            : product.buyprice;
+
+        product.sellprice = req.body.sellprice
+            ? req.body.sellprice
+            : product.sellprice;
+
+        product.count = req.body.quantity ? req.body.quantity : product.count;
+
         // Validate weight
         if (req.body.weight && req.body.weight < 0) {
             errors.push('Weight can\'t be negative');
@@ -59,17 +69,28 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
             return res.status(400).json({ errors });
         }
 
+        // Basic product info
         const result = await productStore.updateProduct({
-            id: product.itemid,
+            id: req.params.productId,
             name: product.descr,
             group: product.pgrpid,
             weight: product.weight,
             userid: req.rvuser.userid
         });
+
+        // sellprice, buyprice, quantity
+        const result2 = await productStore.changeProductStock(
+            product.itemid,
+            product.buyprice,
+            product.sellprice,
+            product.count,
+            req.rvuser.userid
+        );
+
         const newProd = await productStore.findById(product.itemid);
         return res.status(200).json(prodFilter(newProd));
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -77,6 +98,7 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         var products = await productStore.findAll();
+
         const prods = products.map(product => {
             return {
                 product_id: product.itemid,
@@ -85,6 +107,7 @@ router.get('/', async (req, res) => {
                 product_group: product.pgrpid,
                 buyprice: product.buyprice,
                 sellprice: product.sellprice,
+                product_weight: parseInt(product.weight || 0),
                 quantity: parseInt(product.quantity || 0)
             };
         });

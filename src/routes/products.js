@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
                 product_group: product.pgrpid,
                 buyprice: product.buyprice,
                 sellprice: product.sellprice,
+                weight: product.weight,
                 quantity: parseInt(product.quantity || 0)
             };
         });

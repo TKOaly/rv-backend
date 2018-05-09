@@ -204,6 +204,7 @@ module.exports.findAll = () => {
             'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
+            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice'
