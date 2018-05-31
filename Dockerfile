@@ -2,8 +2,9 @@ FROM node:carbon-slim
 ARG NODE_ENV=production
 ENV NODE_ENV "$NODE_ENV"
 WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn
 COPY ./src ./src
 COPY ./knexfile.js .
 COPY ./startup.sh ./startup.sh

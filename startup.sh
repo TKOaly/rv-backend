@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $NODE_ENV != "production" ]
 then
-    npm run start-nodemon
+    yarn start-nodemon
 else
-    npm start
+    yarn start
 fi
