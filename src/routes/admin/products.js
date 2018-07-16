@@ -20,7 +20,9 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
     try {
         const product = await productStore.findById(req.params.productId);
         if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
+            return res.status(404).json({
+                error: 'Product not found'
+            });
         }
         return res.status(200).json(prodFilter(product));
     } catch (error) {
@@ -35,7 +37,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         const product = await productStore.findById(req.params.productId);
         // Check that product exists
         if (!product) {
-            return res.status(404).json({ error: 'Product not found' });
+            return res.status(404).json({
+                error: 'Product not found'
+            });
         }
         product.pgrpid = req.body.pgrpid ? req.body.pgrpid : product.pgrpid;
 
@@ -62,7 +66,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         }
 
         if (errors.length > 0) {
-            return res.status(400).json({ errors });
+            return res.status(400).json({
+                errors
+            });
         }
 
         // Basic product info
@@ -87,7 +93,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         return res.status(200).json(prodFilter(newProd));
     } catch (error) {
         logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({
+            error: 'Internal server error'
+        });
     }
 });
 

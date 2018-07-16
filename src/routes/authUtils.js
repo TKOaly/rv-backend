@@ -60,6 +60,9 @@ module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecr
             });
         }
     } else {
-        res.status(400).json({ error_code: 'bad_request', message: 'Bad request' });
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Bad request'
+        });
     }
 };
