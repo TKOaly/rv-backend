@@ -8,11 +8,8 @@ module.exports.sign = function(payload, tokenSecret = process.env.JWT_SECRET) {
     });
 };
 
-module.exports.verify = function(
-    jwtToken,
-    tokenSecret = process.env.JWT_SECRET
-) {
-    var decoded = null;
+module.exports.verify = function(jwtToken, tokenSecret = process.env.JWT_SECRET) {
+    let decoded = null;
 
     try {
         decoded = jwt.verify(jwtToken, tokenSecret, { algorithm: 'HS256' });

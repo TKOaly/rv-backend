@@ -5,8 +5,8 @@ const logger = require('winston');
 
 router.get('/', async (req, res) => {
     try {
-        var products = await productStore.findAll();
-        const prods = products.map(product => {
+        const products = await productStore.findAll();
+        const prods = products.map((product) => {
             return {
                 product_id: product.itemid,
                 product_name: product.descr,

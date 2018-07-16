@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
-    return knex.schema.hasTable('ACTION').then(exists => {
+    return knex.schema.hasTable('ACTION').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('ACTION', table => {
+            return knex.schema.createTable('ACTION', (table) => {
                 table
                     .increments('actionid')
                     .unsigned()

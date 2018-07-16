@@ -60,7 +60,8 @@ router.post('/:barcode(\\d+)', async (req, res) => {
                 '%s %s: box with barcode %s was not found',
                 req.method,
                 req.baseUrl + req.path,
-                req.params.barcode);
+                req.params.barcode
+            );
             return res.status(404).json({
                 error_code: 'box_not_found',
                 message: 'Box not found'
@@ -75,10 +76,10 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         const reqValidators = [
             validators.nonNegativeNumber('sellprice'),
             validators.nonNegativeNumber('buyprice'),
-            validators.positiveNumber('boxes'),
+            validators.positiveNumber('boxes')
         ];
 
-        let errors = fieldValidator.validateObject(req.body, reqValidators);
+        const errors = fieldValidator.validateObject(req.body, reqValidators);
 
         if (errors.length > 0) {
             logger.error(
@@ -98,13 +99,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
 
         // all good, boxes can be added
         const quantity = product.count + boxes * box.items_per_box;
-        await productStore.changeProductStock(
-            box.product_id,
-            buyprice,
-            sellprice,
-            quantity,
-            req.rvuser.userid
-        );
+        await productStore.changeProductStock(box.product_id, buyprice, sellprice, quantity, req.rvuser.userid);
 
         logger.info(
             '%s %s: user %s added %d boxes (%d pcs) of product %d (box %s, product barcode %s)',
@@ -137,10 +132,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
 
 router.put('/:barcode(\\d+)', async (req, res) => {
     // validate request
-    const boxValidators = [
-        validators.positiveNumber('items_per_box'),
-        validators.anObject('product')
-    ];
+    const boxValidators = [validators.positiveNumber('items_per_box'), validators.anObject('product')];
 
     const productValidators = [
         validators.numericBarcode('product_barcode'),
@@ -167,10 +159,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         });
     }
 
-    const productErrors = fieldValidator.validateObject(
-        req.body.product, 
-        productValidators
-    );
+    const productErrors = fieldValidator.validateObject(req.body.product, productValidators);
     if (productErrors.length > 0) {
         logger.error(
             '%s %s: invalid request by user %s: %s',
@@ -187,27 +176,31 @@ router.put('/:barcode(\\d+)', async (req, res) => {
     }
 
     try {
-        let productData = req.body.product;
-        let box = await boxStore.findByBoxBarcode(req.params.barcode);
+        const productData = req.body.product;
+        const box = await boxStore.findByBoxBarcode(req.params.barcode);
         let product = await productStore.findByBarcode(productData.product_barcode);
         let boxCreated = false;
 
         // create or update box and product
 
         if (!product) {
-            const prodId = await productStore.addProduct({
-                descr: productData.product_name,
-                pgrpid: productData.product_group,
-                weight: productData.product_weight
-            }, {
-                barcode: productData.product_barcode,
-                count: 0,
-                buyprice: productData.product_buyprice,
-                sellprice: productData.product_sellprice,
-                userid: req.rvuser.userid,
-                starttime: new Date(),
-                endtime: null
-            }, req.rvuser.userid);
+            const prodId = await productStore.addProduct(
+                {
+                    descr: productData.product_name,
+                    pgrpid: productData.product_group,
+                    weight: productData.product_weight
+                },
+                {
+                    barcode: productData.product_barcode,
+                    count: 0,
+                    buyprice: productData.product_buyprice,
+                    sellprice: productData.product_sellprice,
+                    userid: req.rvuser.userid,
+                    starttime: new Date(),
+                    endtime: null
+                },
+                req.rvuser.userid
+            );
 
             logger.info(
                 '%s %s: created product "%s" with id %s and barcode %s',
@@ -271,12 +264,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 req.rvuser.userid
             );
 
-            logger.info(
-                '%s %s: updated box %s',
-                req.method,
-                req.originalUrl,
-                req.params.barcode
-            );
+            logger.info('%s %s: updated box %s', req.method, req.originalUrl, req.params.barcode);
         }
 
         return res.status(boxCreated ? 201 : 200).json({

@@ -1,7 +1,8 @@
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 
 exports.seed = function(knex, Promise) {
-    return knex('SALDOHISTORY').del()
+    return knex('SALDOHISTORY')
+        .del()
         .then(() => {
             return knex('RVPERSON').del();
         })

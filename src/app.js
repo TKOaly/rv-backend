@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    
+
     const express = require('express');
     const cors = require('cors');
     const bodyParser = require('body-parser');
@@ -10,16 +10,16 @@
     app.use(bodyParser.json());
     app.use(cors());
 
-    var auth_route = require('./routes/auth');
-    var account_route = require('./routes/account');
-    var register_route = require('./routes/register');
-    var purchase_route = require('./routes/purchase');
-    var admin_auth = require('./routes/admin/adminAuth');
-    var admin_products = require('./routes/admin/products');
-    var user_products = require('./routes/products');
-    var user_categories = require('./routes/categories');
-    var admin_global_margin = require('./routes/admin/margin');
-    var admin_boxes = require('./routes/admin/boxes');
+    const auth_route = require('./routes/auth');
+    const account_route = require('./routes/account');
+    const register_route = require('./routes/register');
+    const purchase_route = require('./routes/purchase');
+    const admin_auth = require('./routes/admin/adminAuth');
+    const admin_products = require('./routes/admin/products');
+    const user_products = require('./routes/products');
+    const user_categories = require('./routes/categories');
+    const admin_global_margin = require('./routes/admin/margin');
+    const admin_boxes = require('./routes/admin/boxes');
 
     app.use('/api/v1/user/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
@@ -32,6 +32,6 @@
     app.use('/api/v1/admin/products', admin_products);
     app.use('/api/v1/admin/margin', admin_global_margin);
     app.use('/api/v1/admin/boxes', admin_boxes);
-    
+
     module.exports = app;
 })();

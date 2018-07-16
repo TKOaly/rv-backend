@@ -7,8 +7,7 @@ const productStore = require('./productStore');
 module.exports.findAll = () => {
     return knex('RVBOX')
         .leftJoin('PRICE', function() {
-            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode')
-                .andOnNull('PRICE.endtime');
+            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
         })
         .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
         .select(
@@ -22,14 +21,13 @@ module.exports.findAll = () => {
 
 /**
  * Finds a box by its barcode.
- * 
+ *
  * @param {} barcode barcode of the box
  */
-module.exports.findByBoxBarcode = barcode => {
+module.exports.findByBoxBarcode = (barcode) => {
     return knex('RVBOX')
         .leftJoin('PRICE', function() {
-            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode')
-                .andOnNull('PRICE.endtime');
+            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
         })
         .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
         .where('RVBOX.barcode', barcode)
@@ -45,7 +43,7 @@ module.exports.findByBoxBarcode = barcode => {
 
 /**
  * Creates a new box for a product.
- * 
+ *
  * @param {*} boxBarcode barcode of the box
  * @param {*} productBarcode barcode of the product in the box
  * @param {*} itemsPerBox number of items in the box
@@ -57,7 +55,7 @@ module.exports.createBox = async (boxBarcode, productBarcode, itemsPerBox, useri
         throw new Error('product not found');
     }
 
-    return knex.transaction(function (trx) {
+    return knex.transaction(function(trx) {
         return knex('RVBOX')
             .transacting(trx)
             .insert({
@@ -86,7 +84,7 @@ module.exports.updateBox = async (boxBarcode, productBarcode, itemsPerBox, useri
         throw new Error('product not found');
     }
 
-    return knex.transaction(function (trx) {
+    return knex.transaction(function(trx) {
         return knex('RVBOX')
             .transacting(trx)
             .update({

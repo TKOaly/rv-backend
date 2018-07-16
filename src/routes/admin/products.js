@@ -7,7 +7,7 @@ const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
 
-const prodFilter = product => {
+const prodFilter = (product) => {
     delete product.userid;
     delete product.starttime;
     delete product.endtime;
@@ -50,13 +50,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         product.descr = req.body.descr ? req.body.descr : product.descr;
         product.weight = req.body.weight ? req.body.weight : product.weight;
 
-        product.buyprice = req.body.buyprice
-            ? req.body.buyprice
-            : product.buyprice;
+        product.buyprice = req.body.buyprice ? req.body.buyprice : product.buyprice;
 
-        product.sellprice = req.body.sellprice
-            ? req.body.sellprice
-            : product.sellprice;
+        product.sellprice = req.body.sellprice ? req.body.sellprice : product.sellprice;
 
         product.count = req.body.quantity ? req.body.quantity : product.count;
 
@@ -97,9 +93,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        var products = await productStore.findAll();
+        const products = await productStore.findAll();
 
-        const prods = products.map(product => {
+        const prods = products.map((product) => {
             return {
                 product_id: product.itemid,
                 product_name: product.descr,
@@ -120,7 +116,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    let productValidators = [
+    const productValidators = [
         validators.numericBarcode('barcode'),
         validators.nonEmptyString('descr'),
         validators.positiveNumber('pgrpid'),
@@ -130,7 +126,7 @@ router.post('/', async (req, res) => {
         validators.nonNegativeNumber('sellprice')
     ];
 
-    let errors = fieldValidator.validateObject(req.body, productValidators);
+    const errors = fieldValidator.validateObject(req.body, productValidators);
     if (errors.length > 0) {
         logger.error(
             '%s %s: invalid request by user %s: %s',
@@ -178,11 +174,7 @@ router.post('/', async (req, res) => {
             endtime: null
         };
 
-        const newId = await productStore.addProduct(
-            newProduct,
-            newPrice,
-            req.rvuser.userid
-        );
+        const newId = await productStore.addProduct(newProduct, newPrice, req.rvuser.userid);
         newProduct.itemid = newId;
         newPrice.itemid = newId;
 
@@ -209,7 +201,7 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:barcode', async (req, res) => {
-    var barcode = req.params.barcode;
+    const barcode = req.params.barcode;
 
     if (!barcode.match('(^[0-9]{13})+$')) {
         logger.error('Bad barcode: ' + barcode);
@@ -232,11 +224,7 @@ router.get('/:barcode', async (req, res) => {
                 });
             }
         } catch (exception) {
-            logger.error(
-                'Error at %s: %s',
-                req.baseUrl + req.path,
-                exception.stack
-            );
+            logger.error('Error at %s: %s', req.baseUrl + req.path, exception.stack);
             return res.status(500).json({
                 error_code: 'internal_error',
                 message: 'Internal error'
@@ -255,9 +243,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         // check that product exists
         const product = await productStore.findById(id);
         if (!product) {
-            logger.error(
-                'User tried to do a buy-in for product that does not exist.'
-            );
+            logger.error('User tried to do a buy-in for product that does not exist.');
             return res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
@@ -268,13 +254,10 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         const errors = [];
         isNaN(buyprice) && errors.push('buyprice should be a number');
         isNaN(sellprice) && errors.push('sellprice should be a number');
-        (isNaN(quantity) || quantity <= 0) &&
-            errors.push('quantity should be a number > 0');
+        (isNaN(quantity) || quantity <= 0) && errors.push('quantity should be a number > 0');
 
         if (errors.length > 0) {
-            logger.error(
-                'Errors occured while doing a buy-in: ' + JSON.stringify(errors)
-            );
+            logger.error('Errors occured while doing a buy-in: ' + JSON.stringify(errors));
             return res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Missing or invalid fields in request',
@@ -292,12 +275,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         );
 
         // return updated information
-        logger.info(
-            'Successful buy-in of ' +
-                quantity +
-                ' pcs of Product #' +
-                parseInt(id, 10)
-        );
+        logger.info('Successful buy-in of ' + quantity + ' pcs of Product #' + parseInt(id, 10));
         return res.status(200).json({
             product_id: parseInt(id, 10),
             buyprice: buyprice,

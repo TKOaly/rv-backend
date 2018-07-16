@@ -4,12 +4,12 @@ const bcrypt = require('bcrypt');
 module.exports.getUsers = () => {
     return knex('RVPERSON')
         .select('*')
-        .then(persons => {
+        .then((persons) => {
             return persons;
         });
 };
 
-module.exports.findByUsername = username => {
+module.exports.findByUsername = (username) => {
     return knex('RVPERSON')
         .where('RVPERSON.name', '=', username)
         .select('*')
@@ -22,7 +22,7 @@ module.exports.findHighestUserId = () => {
         .first();
 };
 
-module.exports.findByEmail = email => {
+module.exports.findByEmail = (email) => {
     return knex('RVPERSON')
         .where('RVPERSON.univident', '=', email)
         .select('*')
@@ -46,19 +46,15 @@ module.exports.verifyPassword = (password, passwordHash) => {
     return bcrypt.compare(password, passwordHash);
 };
 
-module.exports.findUserRoles = username => {
+module.exports.findUserRoles = (username) => {
     return knex
         .select('role')
         .from('ROLE')
         .join('RVPERSON', function() {
-            this.on('RVPERSON.roleid', '=', 'ROLE.roleid').andOn(
-                'RVPERSON.name',
-                '=',
-                knex.raw('?', [username])
-            );
+            this.on('RVPERSON.roleid', '=', 'ROLE.roleid').andOn('RVPERSON.name', '=', knex.raw('?', [username]));
         })
-        .then(rows => {
-            return rows.map(row => row.role);
+        .then((rows) => {
+            return rows.map((row) => row.role);
         });
 };
 
@@ -69,8 +65,8 @@ module.exports.updateAccountBalance = (username, difference) => {
             .select('userid', 'saldo')
             .from('RVPERSON')
             .where({ name: username })
-            .then(rows => rows[0])
-            .then(user => {
+            .then((rows) => rows[0])
+            .then((user) => {
                 user.saldo += difference;
                 return knex('RVPERSON')
                     .transacting(trx)
@@ -80,7 +76,7 @@ module.exports.updateAccountBalance = (username, difference) => {
                     })
                     .then(() => user);
             })
-            .then(user => {
+            .then((user) => {
                 return knex
                     .transacting(trx)
                     .insert({

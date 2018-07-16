@@ -1,9 +1,9 @@
 const prices = require('../seeddata/PRICE');
 
-exports.seed = function (knex, Promise) {
+exports.seed = function(knex, Promise) {
     return knex('PRICE')
         .del()
         .then(() => {
-            return knex('PRICE').insert(prices.filter(p => p.itemid >= 1750));
+            return knex('PRICE').insert(prices.filter((p) => p.itemid >= 1750));
         });
 };

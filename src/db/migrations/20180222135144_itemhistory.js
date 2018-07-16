@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
-    return knex.schema.hasTable('ITEMHISTORY').then(exists => {
+    return knex.schema.hasTable('ITEMHISTORY').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('ITEMHISTORY', table => {
+            return knex.schema.createTable('ITEMHISTORY', (table) => {
                 table
                     .increments('itemhistid')
                     .unsigned()
@@ -10,9 +10,7 @@ exports.up = function(knex, Promise) {
                 table
                     .dateTime('time')
                     .notNullable()
-                    .comment(
-                        'When item properties changed (buy-transactions NOT recorded here)'
-                    );
+                    .comment('When item properties changed (buy-transactions NOT recorded here)');
                 table
                     .integer('count')
                     .unsigned()
@@ -42,9 +40,7 @@ exports.up = function(knex, Promise) {
                     .integer('priceid1')
                     .notNullable()
                     .unsigned()
-                    .comment(
-                        'Reference to currently related price or priceid that is obsoleted'
-                    )
+                    .comment('Reference to currently related price or priceid that is obsoleted')
                     .references('priceid')
                     .inTable('PRICE');
                 table

@@ -8,7 +8,7 @@ const logger = require('./../logger');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
-    var user = req.rvuser;
+    const user = req.rvuser;
 
     return res.status(200).json({
         username: user.name,
@@ -20,15 +20,12 @@ router.get('/', async (req, res) => {
 
 router.post('/debit', async (req, res) => {
     try {
-        var user = req.rvuser;
-        var amount = parseInt(req.body.amount, 10);
+        const user = req.rvuser;
+        const amount = parseInt(req.body.amount, 10);
 
         if (!isNaN(amount) && amount > 0) {
             if (user.saldo > 0) {
-                user.saldo = await userStore.updateAccountBalance(
-                    user.name,
-                    -amount
-                );
+                user.saldo = await userStore.updateAccountBalance(user.name, -amount);
                 return res.status(200).json({
                     account_balance: user.saldo
                 });
@@ -54,14 +51,11 @@ router.post('/debit', async (req, res) => {
 
 router.post('/credit', async (req, res) => {
     try {
-        var user = req.rvuser;
-        var amount = parseInt(req.body.amount, 10);
+        const user = req.rvuser;
+        const amount = parseInt(req.body.amount, 10);
 
         if (!isNaN(amount) && amount > 0) {
-            user.saldo = await userStore.updateAccountBalance(
-                user.name,
-                amount
-            );
+            user.saldo = await userStore.updateAccountBalance(user.name, amount);
             res.status(200).json({
                 account_balance: user.saldo
             });

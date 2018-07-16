@@ -8,18 +8,17 @@ const logger = require('./../logger');
 router.use(authMiddleware());
 
 router.post('/', async (req, res) => {
-    var barcode = req.body.barcode;
-    var quantity = parseInt(req.body.quantity, 10);
+    const barcode = req.body.barcode;
+    const quantity = parseInt(req.body.quantity, 10);
 
     // verify that barcode and quantity are valid
     if (barcode && !isNaN(quantity) && quantity > 0) {
         try {
-            var product = await productStore.findByBarcode(barcode);
-            var user = req.rvuser;
+            const product = await productStore.findByBarcode(barcode);
+            const user = req.rvuser;
 
             // product and price found
             if (product) {
-
                 // user has enough money to purchase
                 if (user.saldo > 0) {
                     // record purchase
@@ -31,18 +30,8 @@ router.post('/', async (req, res) => {
                     );
 
                     // update account balance
-                    const newBalance = await userStore.updateAccountBalance(
-                        user.name,
-                        -quantity * product.sellprice
-                    );
-                    logger.info(
-                        'User #' +
-                            user.userid +
-                            ' purchased ' +
-                            quantity +
-                            ' x item #' +
-                            product.itemid
-                    );
+                    const newBalance = await userStore.updateAccountBalance(user.name, -quantity * product.sellprice);
+                    logger.info('User #' + user.userid + ' purchased ' + quantity + ' x item #' + product.itemid);
                     // all done, respond with success
                     res.status(200).json({
                         product_name: product.descr,
@@ -67,11 +56,7 @@ router.post('/', async (req, res) => {
                     });
                 }
             } else {
-                logger.error(
-                    'User #' +
-                        user.userid +
-                        ' tried to purchase a product that does not exist.'
-                );
+                logger.error('User #' + user.userid + ' tried to purchase a product that does not exist.');
                 // unknown product, no valid price or out of stock
                 res.status(404).json({
                     error_code: 'product_not_found',
@@ -79,9 +64,7 @@ router.post('/', async (req, res) => {
                 });
             }
         } catch (error) {
-            logger.error(
-                'Database error when trying to purchase a product: ' + error
-            );
+            logger.error('Database error when trying to purchase a product: ' + error);
             // other errors
             res.status(500).json({
                 error_code: 'internal_error',

@@ -3,19 +3,16 @@ const userStore = require('../db/userStore');
 const verifyRoles = require('./authUtils').verifyRoles;
 const logger = require('./../logger');
 
-const authMiddleware = function(
-    roles = [],
-    tokenSecret = process.env.JWT_SECRET
-) {
+const authMiddleware = function(roles = [], tokenSecret = process.env.JWT_SECRET) {
     return async function(req, res, next) {
-        var authHeader = req.get('Authorization');
-        var rvusername = null;
+        const authHeader = req.get('Authorization');
+        let rvusername = null;
 
         // verify that Authorization header contains a token
         if (authHeader !== undefined) {
-            var parts = authHeader.split(' ');
+            const parts = authHeader.split(' ');
             if (parts.length == 2 && parts[0] == 'Bearer') {
-                var token = jwt.verify(parts[1], tokenSecret);
+                const token = jwt.verify(parts[1], tokenSecret);
 
                 if (token) {
                     rvusername = token.data.username;
@@ -31,16 +28,10 @@ const authMiddleware = function(
                 if (req.rvuser && req.rvroles) {
                     // finally, verify that user is authorized
                     if (verifyRoles(roles, req.rvroles)) {
-                        logger.info(
-                            'User ' +
-                                req.rvuser.name +
-                                ' successfully verified'
-                        );
+                        logger.info('User ' + req.rvuser.name + ' successfully verified');
                         next();
                     } else {
-                        logger.error(
-                            'User ' + req.rvuser.name + ' is not authorized'
-                        );
+                        logger.error('User ' + req.rvuser.name + ' is not authorized');
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized'
@@ -48,9 +39,7 @@ const authMiddleware = function(
                     }
                 } else {
                     // token contains nonexistent user or no roles
-                    logger.error(
-                        'Invalid authorization token (token contains nonexistent user or no roles)'
-                    );
+                    logger.error('Invalid authorization token (token contains nonexistent user or no roles)');
                     res.status(403).json({
                         error_code: 'invalid_token',
                         message: 'Invalid authorization token'

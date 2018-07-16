@@ -11,12 +11,11 @@ router.post('/', async (req, res) => {
 
     // Missing fields
     const newAccountKeys = Object.keys(body);
-    const missingKeys = neededKeys.filter(key => {
+    const missingKeys = neededKeys.filter((key) => {
         return !newAccountKeys.includes(key);
     });
     if (missingKeys.length > 0) {
-        res
-            .status(400)
+        res.status(400)
             .json({
                 error: `Missing: ${missingKeys.join()}`
             })
@@ -26,16 +25,14 @@ router.post('/', async (req, res) => {
 
     // Check username, password length
     if (body.username.length < 4) {
-        res
-            .status(400)
+        res.status(400)
             .json({
                 error: 'Username has less than 4 characters.'
             })
             .end();
         return;
     } else if (body.password.length < 4) {
-        res
-            .status(400)
+        res.status(400)
             .json({
                 error: 'Password has less than 4 characters.'
             })
