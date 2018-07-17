@@ -24,17 +24,17 @@ router.post('/', async (req, res) => {
     }
 
     // Check username, password length
-    if (body.username.length < 4) {
+    if (body.username.length === 0) {
         res.status(400)
             .json({
-                error: 'Username has less than 4 characters.'
+                error: 'Username is empty.'
             })
             .end();
         return;
-    } else if (body.password.length < 4) {
+    } else if (body.password.length === 0) {
         res.status(400)
             .json({
-                error: 'Password has less than 4 characters.'
+                error: 'Password is empty.'
             })
             .end();
         return;
