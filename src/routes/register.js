@@ -17,7 +17,8 @@ router.post('/', async (req, res) => {
     if (missingKeys.length > 0) {
         res.status(400)
             .json({
-                error: `Missing: ${missingKeys.join()}`
+                error_code: 'bad_request',
+                message: `Missing: ${missingKeys.join()}`
             })
             .end();
         return;
@@ -27,14 +28,16 @@ router.post('/', async (req, res) => {
     if (body.username.length === 0) {
         res.status(400)
             .json({
-                error: 'Username is empty.'
+                error_code: 'bad_request',
+                message: 'Username is empty.'
             })
             .end();
         return;
     } else if (body.password.length === 0) {
         res.status(400)
             .json({
-                error: 'Password is empty.'
+                error_code: 'bad_request',
+                message: 'Password is empty.'
             })
             .end();
         return;
@@ -46,7 +49,8 @@ router.post('/', async (req, res) => {
         return res
             .status(403)
             .json({
-                error: 'Username is already in use.'
+                error_code: 'identifier_taken',
+                message: 'Username is already in use.'
             })
             .end();
     }
@@ -55,7 +59,8 @@ router.post('/', async (req, res) => {
         return res
             .status(403)
             .json({
-                error: 'Email address already in use.'
+                error_code: 'identifier_taken',
+                message: 'Email address already in use.'
             })
             .end();
     }

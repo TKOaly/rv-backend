@@ -21,7 +21,8 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
         const product = await productStore.findById(req.params.productId);
         if (!product) {
             return res.status(404).json({
-                error: 'Product not found'
+                error_code: 'product_not_found',
+                message: 'Product not found'
             });
         }
         return res.status(200).json(prodFilter(product));
@@ -38,7 +39,8 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         // Check that product exists
         if (!product) {
             return res.status(404).json({
-                error: 'Product not found'
+                error_code: 'product_not_found',
+                message: 'Product not found'
             });
         }
         product.pgrpid = req.body.pgrpid ? req.body.pgrpid : product.pgrpid;
@@ -94,7 +96,8 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
     } catch (error) {
         logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
         return res.status(500).json({
-            error: 'Internal server error'
+            error_code: 'internal_error',
+            message: 'Internal error'
         });
     }
 });
@@ -214,7 +217,7 @@ router.get('/:barcode', async (req, res) => {
     if (!barcode.match('(^[0-9]{13})+$')) {
         logger.error('Bad barcode: ' + barcode);
         return res.status(400).json({
-            error_code: 'Bad _request',
+            error_code: 'bad_request',
             message: 'not a barcode'
         });
     } else {
@@ -227,7 +230,7 @@ router.get('/:barcode', async (req, res) => {
                 });
             } else {
                 return res.status(404).json({
-                    error_code: 'Not_found',
+                    error_code: 'product_not_found',
                     messasge: 'item not found on database'
                 });
             }
