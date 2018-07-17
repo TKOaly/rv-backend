@@ -17,7 +17,7 @@ const verifyRoles = (requiredRoles, userRoles) => {
 module.exports.verifyRoles = verifyRoles;
 
 module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecret = process.env.JWT_SECRET) => {
-    if (req.body.username && req.body.password) {
+    if (typeof req.body.username === 'string' && typeof req.body.password === 'string') {
         const username = req.body.username;
         const password = req.body.password;
 
