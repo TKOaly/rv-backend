@@ -1,16 +1,4 @@
 /**
- * Creates a validator.
- *
- * @param {*} validatorFunction function for validating a value, should return true if valid, false otherwise
- * @param {*} errorMessage error message to return if validation fails
- */
-module.exports.createValidator = (validatorFunc, errorMessage) => {
-    return (value) => {
-        return validatorFunc(value) ? null : errorMessage;
-    };
-};
-
-/**
  * Validates an object.
  *
  * @param {*} obj object to validate

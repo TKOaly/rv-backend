@@ -1,49 +1,66 @@
-const fieldValidator = require('./fieldValidator');
 const isObject = require('util').isObject;
 
 module.exports.numericBarcode = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            (v) => typeof v === 'string' && v.match('^\\d+$'),
-            fieldname + ' should be a string of digits'
-        )
+        validator: (value) => {
+            if (typeof value === 'string' && value.match('^\\d+$')) {
+                return null;
+            } else {
+                return fieldname + ' should be a string of digits';
+            }
+        }
     };
 };
 
 module.exports.nonEmptyString = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            (v) => typeof v === 'string' && v && v.length > 0,
-            fieldname + ' should be a non-empty string'
-        )
+        validator: (value) => {
+            if (typeof value === 'string' && value.length > 0) {
+                return null;
+            } else {
+                return fieldname + ' should be a non-empty string';
+            }
+        }
     };
 };
 
 module.exports.nonNegativeNumber = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            (v) => !isNaN(parseInt(v, 10)) && v >= 0,
-            fieldname + ' should be a non-negative number'
-        )
+        validator: (value) => {
+            if (!isNaN(parseInt(value, 10)) && value >= 0) {
+                return null;
+            } else {
+                return fieldname + ' should be a non-negative number';
+            }
+        }
     };
 };
 
 module.exports.positiveNumber = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            (v) => !isNaN(parseInt(v, 10)) && v > 0,
-            fieldname + ' should be a positive number'
-        )
+        validator: (value) => {
+            if (!isNaN(parseInt(value, 10)) && value > 0) {
+                return null;
+            } else {
+                return fieldname + ' should be a positive number';
+            }
+        }
     };
 };
 
 module.exports.anObject = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator((v) => isObject(v), fieldname + ' should be an object')
+        validator: (value) => {
+            if (isObject(value)) {
+                return null;
+            } else {
+                return fieldname + ' should be an object';
+            }
+        }
     };
 };
