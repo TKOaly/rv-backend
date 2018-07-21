@@ -13,10 +13,10 @@ router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 router.get('/', async (req, res) => {
     try {
         const boxes = await boxStore.findAll();
-        return res.status(200).json(boxes);
+        res.status(200).json(boxes);
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
@@ -34,16 +34,17 @@ router.get('/:barcode(\\d+)', async (req, res) => {
                 req.baseUrl + req.path,
                 req.params.barcode
             );
-            return res.status(404).json({
+            res.status(404).json({
                 error_code: 'box_not_found',
                 message: 'Box not found'
             });
+            return;
         }
 
-        return res.status(200).json(box);
+        res.status(200).json(box);
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
@@ -62,10 +63,11 @@ router.post('/:barcode(\\d+)', async (req, res) => {
                 req.baseUrl + req.path,
                 req.params.barcode
             );
-            return res.status(404).json({
+            res.status(404).json({
                 error_code: 'box_not_found',
                 message: 'Box not found'
             });
+            return;
         }
 
         const sellprice = parseInt(req.body.sellprice, 10);
@@ -90,11 +92,12 @@ router.post('/:barcode(\\d+)', async (req, res) => {
                 errors.join(', ')
             );
 
-            return res.status(400).json({
+            res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Missing or invalid fields in request',
                 errors
             });
+            return;
         }
 
         // all good, boxes can be added
@@ -113,7 +116,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
             box.product_barcode
         );
 
-        return res.status(200).json({
+        res.status(200).json({
             box_barcode: box.box_barcode,
             product_barcode: box.product_barcode,
             product_id: box.product_id,
@@ -123,7 +126,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
@@ -152,11 +155,12 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             req.rvuser.name,
             boxErrors.join(', ')
         );
-        return res.status(400).json({
+        res.status(400).json({
             error_code: 'bad_request',
             message: 'Missing or invalid fields in request',
             errors: boxErrors
         });
+        return;
     }
 
     const productErrors = fieldValidator.validateObject(req.body.product, productValidators);
@@ -168,11 +172,12 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             req.rvuser.name,
             productErrors.join(', ')
         );
-        return res.status(400).json({
+        res.status(400).json({
             error_code: 'bad_request',
             message: 'Missing or invalid fields in request',
             errors: productErrors
         });
+        return;
     }
 
     try {
@@ -267,7 +272,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             logger.info('%s %s: updated box %s', req.method, req.originalUrl, req.params.barcode);
         }
 
-        return res.status(boxCreated ? 201 : 200).json({
+        res.status(boxCreated ? 201 : 200).json({
             box_barcode: req.params.barcode,
             items_per_box: req.body.items_per_box,
             product: {
@@ -282,7 +287,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });

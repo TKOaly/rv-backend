@@ -15,54 +15,44 @@ router.post('/', async (req, res) => {
         return !newAccountKeys.includes(key);
     });
     if (missingKeys.length > 0) {
-        res.status(400)
-            .json({
-                error_code: 'bad_request',
-                message: `Missing: ${missingKeys.join()}`
-            })
-            .end();
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: `Missing: ${missingKeys.join()}`
+        });
         return;
     }
 
     // Check username, password length
     if (body.username.length === 0) {
-        res.status(400)
-            .json({
-                error_code: 'bad_request',
-                message: 'Username is empty.'
-            })
-            .end();
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Username is empty.'
+        });
         return;
     } else if (body.password.length === 0) {
-        res.status(400)
-            .json({
-                error_code: 'bad_request',
-                message: 'Password is empty.'
-            })
-            .end();
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Password is empty.'
+        });
         return;
     }
 
     // Check if user, email exists
     const user = await userStore.findByUsername(body.username);
     if (user) {
-        return res
-            .status(403)
-            .json({
-                error_code: 'identifier_taken',
-                message: 'Username is already in use.'
-            })
-            .end();
+        res.status(403).json({
+            error_code: 'identifier_taken',
+            message: 'Username is already in use.'
+        });
+        return;
     }
     const userEmail = await userStore.findByEmail(body.email.trim());
     if (userEmail) {
-        return res
-            .status(403)
-            .json({
-                error_code: 'identifier_taken',
-                message: 'Email address already in use.'
-            })
-            .end();
+        res.status(403).json({
+            error_code: 'identifier_taken',
+            message: 'Email address already in use.'
+        });
+        return;
     }
 
     // All ok
@@ -72,10 +62,10 @@ router.post('/', async (req, res) => {
         const highestId = await userStore.findHighestUserId();
         const inserted = await userStore.insertUser(body, highestId.max);
         logger.info('Registered new user: ' + body.username);
-        return res.status(201).json(inserted);
+        res.status(201).json(inserted);
     } catch (exception) {
         logger.info('Error registering new user: ' + exception);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: exception
         });

@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
                 category_description: category.descr
             };
         });
-        return res.status(200).json({
+        res.status(200).json({
             categories: parsedCategories
         });
     } catch (error) {

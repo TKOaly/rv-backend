@@ -20,12 +20,14 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
     try {
         const product = await productStore.findById(req.params.productId);
         if (!product) {
-            return res.status(404).json({
+            res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
             });
+            return;
         }
-        return res.status(200).json(prodFilter(product));
+
+        res.status(200).json(prodFilter(product));
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
     }
@@ -38,10 +40,11 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         const product = await productStore.findById(req.params.productId);
         // Check that product exists
         if (!product) {
-            return res.status(404).json({
+            res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
             });
+            return;
         }
         product.pgrpid = req.body.pgrpid ? req.body.pgrpid : product.pgrpid;
 
@@ -68,9 +71,10 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         }
 
         if (errors.length > 0) {
-            return res.status(400).json({
+            res.status(400).json({
                 errors
             });
+            return;
         }
 
         // Basic product info
@@ -92,10 +96,10 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         );
 
         const newProd = await productStore.findById(product.itemid);
-        return res.status(200).json(prodFilter(newProd));
+        res.status(200).json(prodFilter(newProd));
     } catch (error) {
         logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
@@ -118,7 +122,7 @@ router.get('/', async (req, res) => {
                 quantity: parseInt(product.quantity || 0)
             };
         });
-        return res.status(200).json({
+        res.status(200).json({
             products: prods
         });
     } catch (error) {
@@ -146,11 +150,12 @@ router.post('/', async (req, res) => {
             req.rvuser.name,
             errors.join(', ')
         );
-        return res.status(400).json({
+        res.status(400).json({
             error_code: 'bad_request',
             message: 'Missing or invalid fields in request',
             errors
         });
+        return;
     }
 
     try {
@@ -163,10 +168,11 @@ router.post('/', async (req, res) => {
                 req.body.barcode,
                 product.descr
             );
-            return res.status(403).json({
+            res.status(403).json({
                 error_code: 'barcode_taken',
                 message: 'Barcode is already assigned to a product'
             });
+            return;
         }
 
         const newProduct = {
@@ -198,13 +204,13 @@ router.post('/', async (req, res) => {
             newProduct.itemid
         );
 
-        return res.status(201).json({
+        res.status(201).json({
             product: newProduct,
             price: newPrice
         });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.originalUrl, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });
@@ -216,7 +222,7 @@ router.get('/:barcode', async (req, res) => {
 
     if (!barcode.match('(^[0-9]{13})+$')) {
         logger.error('Bad barcode: ' + barcode);
-        return res.status(400).json({
+        res.status(400).json({
             error_code: 'bad_request',
             message: 'not a barcode'
         });
@@ -225,18 +231,18 @@ router.get('/:barcode', async (req, res) => {
             const product = await productStore.findByBarcode(barcode);
 
             if (product) {
-                return res.status(200).json({
+                res.status(200).json({
                     product: product
                 });
             } else {
-                return res.status(404).json({
+                res.status(404).json({
                     error_code: 'product_not_found',
                     messasge: 'item not found on database'
                 });
             }
         } catch (exception) {
             logger.error('Error at %s: %s', req.baseUrl + req.path, exception.stack);
-            return res.status(500).json({
+            res.status(500).json({
                 error_code: 'internal_error',
                 message: 'Internal error'
             });
@@ -255,10 +261,11 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         const product = await productStore.findById(id);
         if (!product) {
             logger.error('User tried to do a buy-in for product that does not exist.');
-            return res.status(404).json({
+            res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
             });
+            return;
         }
 
         // check that request is valid
@@ -269,11 +276,12 @@ router.post('/product/:id(\\d+)', async (req, res) => {
 
         if (errors.length > 0) {
             logger.error('Errors occured while doing a buy-in: ' + JSON.stringify(errors));
-            return res.status(400).json({
+            res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Missing or invalid fields in request',
                 errors
             });
+            return;
         }
 
         // update information
@@ -287,7 +295,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
 
         // return updated information
         logger.info('Successful buy-in of ' + quantity + ' pcs of Product #' + parseInt(id, 10));
-        return res.status(200).json({
+        res.status(200).json({
             product_id: parseInt(id, 10),
             buyprice: buyprice,
             sellprice: sellprice,
@@ -295,7 +303,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
         });

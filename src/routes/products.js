@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
                 quantity: parseInt(product.quantity || 0)
             };
         });
-        return res.status(200).json({
+        res.status(200).json({
             products: prods
         });
     } catch (error) {
