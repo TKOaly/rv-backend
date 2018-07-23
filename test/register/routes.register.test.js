@@ -34,7 +34,7 @@ describe('routes: register', () => {
         // var token = jwt.sign({
         //     username: 'normal_user'
 
-        it('with missing keys error should be sent with list of missing fields', (done) => {
+        it('Request should not have missing keys', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
                 .send({
@@ -43,16 +43,16 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(400);
-                    expect(res.body.error).to.equal('Missing: username,password,realname,email');
+                    expect(res.body.error_code).to.equal('bad_request');
                     done();
                 });
         });
 
-        it('User name should have length of 4 or more', (done) => {
+        it('Username should not be empty', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
                 .send({
-                    username: 'tes',
+                    username: '',
                     password: 'test',
                     realname: 'm.erkki',
                     email: 'erkki@testi.com'
@@ -60,24 +60,24 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(400);
-                    expect(res.body.error).to.equal('Username has less than 4 characters.');
+                    expect(res.body.error_code).to.equal('bad_request');
                     done();
                 });
         });
 
-        it('User password should have length of 4 or more', (done) => {
+        it('User password should not be empty', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
                 .send({
                     username: 'test',
-                    password: 'tes',
+                    password: '',
                     realname: 'm.erkki',
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(400);
-                    expect(res.body.error).to.equal('Password has less than 4 characters.');
+                    expect(res.body.error_code).to.equal('bad_request');
                     done();
                 });
         });
@@ -96,12 +96,12 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(403);
-                    expect(res.body.error).to.equal('Username is already in use.');
+                    expect(res.body.error_code).to.equal('identifier_taken');
                     done();
                 });
         });
 
-        it('Username should be unique', (done) => {
+        it('Email should be unique', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
                 .send({
@@ -113,7 +113,7 @@ describe('routes: register', () => {
                 .end((err, res) => {
                     should.exist(err);
                     res.status.should.equal(403);
-                    expect(res.body.error).to.equal('Email address already in use.');
+                    expect(res.body.error_code).to.equal('identifier_taken');
                     done();
                 });
         });
