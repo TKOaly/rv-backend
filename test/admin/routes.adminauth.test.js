@@ -10,25 +10,20 @@ const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 
 describe('routes: admin authentication', () => {
-
     beforeEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                knex.migrate.latest()
-                    .then(() => {
-                        knex.seed.run()
-                            .then(() => {
-                                done();
-                            });
-                    });
+        knex.migrate.rollback().then(() => {
+            knex.migrate.latest().then(() => {
+                knex.seed.run().then(() => {
+                    done();
+                });
             });
+        });
     });
 
     afterEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                done();
-            });
+        knex.migrate.rollback().then(() => {
+            done();
+        });
     });
 
     describe('Admin authentication', () => {
@@ -42,7 +37,7 @@ describe('routes: admin authentication', () => {
                 .end((err, res) => {
                     should.not.exist(err);
 
-                    var decoded = jwt.verify(res.body.access_token, process.env.JWT_ADMIN_SECRET);
+                    const decoded = jwt.verify(res.body.access_token, process.env.JWT_ADMIN_SECRET);
                     expect(decoded.data.username).to.equal('admin_user');
                     done();
                 });
@@ -57,7 +52,7 @@ describe('routes: admin authentication', () => {
                 })
                 .end((err, res) => {
                     should.not.exist(err);
-                    var decoded = jwt.verify(res.body.access_token, process.env.JWT_SECRET);
+                    const decoded = jwt.verify(res.body.access_token, process.env.JWT_SECRET);
                     expect(decoded).to.equal(null);
                     done();
                 });

@@ -16,7 +16,7 @@ describe('routes: admin products', () => {
     const server = require('../../src/app');
     const request = chai.request(server);
 
-    beforeEach(done => {
+    beforeEach((done) => {
         knex.migrate.rollback().then(() => {
             knex.migrate.latest().then(() => {
                 knex.seed.run().then(() => {
@@ -26,21 +26,17 @@ describe('routes: admin products', () => {
         });
     });
 
-    afterEach(done => {
+    afterEach((done) => {
         knex.migrate.rollback().then(() => {
             done();
         });
     });
 
     describe('products', () => {
-        const token = jwt.sign(
-            { username: 'admin_user' },
-            process.env.JWT_ADMIN_SECRET
-        );
+        const token = jwt.sign({ username: 'admin_user' }, process.env.JWT_ADMIN_SECRET);
 
-        it('admins should be able to get product list', done => {
-            chai
-                .request(server)
+        it('admins should be able to get product list', (done) => {
+            chai.request(server)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
@@ -50,9 +46,8 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('admins should not be able to get a product that does not exist', done => {
-            chai
-                .request(server)
+        it('admins should not be able to get a product that does not exist', (done) => {
+            chai.request(server)
                 .get('/api/v1/admin/products/product/9999')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
@@ -61,9 +56,8 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('admins should be able to get a product that exists', done => {
-            chai
-                .request(server)
+        it('admins should be able to get a product that exists', (done) => {
+            chai.request(server)
                 .get('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
@@ -80,9 +74,8 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('admins should be able to get a product that exists', done => {
-            chai
-                .request(server)
+        it('admins should be able to get a product that exists', (done) => {
+            chai.request(server)
                 .put('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -113,14 +106,11 @@ describe('routes: admin products', () => {
                 .request(server)
                 .get('/api/v1/admin/products/5029578000972')
                 .set('Authorization', 'Bearer ' + token)
-                .then(res => {
-                    res.status.should.equal(
-                        200,
-                        'Existing barcode should return product'
-                    );
+                .then((res) => {
+                    res.status.should.equal(200, 'Existing barcode should return product');
                     res.body.product['barcode'].should.equal('5029578000972');
                 })
-                .catch(err => {
+                .catch((err) => {
                     throw err;
                 });
         });
@@ -130,14 +120,11 @@ describe('routes: admin products', () => {
                 .request(server)
                 .get('/api/v1/admin/products/1337')
                 .set('Authorization', 'Bearer ' + token)
-                .then(res => {
+                .then((res) => {
                     res.status.should.not.equal(200);
                 })
-                .catch(err => {
-                    err.status.should.equal(
-                        400,
-                        'malformated barcode should return error'
-                    );
+                .catch((err) => {
+                    err.status.should.equal(400, 'malformated barcode should return error');
                 });
         });
 
@@ -146,19 +133,16 @@ describe('routes: admin products', () => {
                 .request(server)
                 .get('/api/v1/admin/products/1234567890123')
                 .set('Authorization', 'Bearer ' + token)
-                .then(res => {
+                .then((res) => {
                     res.status.should.not.equal(200);
                 })
-                .catch(err => {
-                    err.status.should.equal(
-                        404,
-                        'Barcode that doesn\'t exits should return error'
-                    );
+                .catch((err) => {
+                    err.status.should.equal(404, 'Barcode that doesn\'t exits should return error');
                 });
         });
 
-        it('POST /, returns created product on valid parametres', done => {
-            let product = {
+        it('POST /, returns created product on valid parametres', (done) => {
+            const product = {
                 descr: 'body.descr',
                 pgrpid: '21',
                 weight: 500,
@@ -168,8 +152,7 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai
-                .request(server)
+            chai.request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
@@ -181,8 +164,8 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('POST /, returns error on invalid barcode', done => {
-            let product = {
+        it('POST /, returns error on invalid barcode', (done) => {
+            const product = {
                 descr: 'body.descr',
                 pgrpid: '21',
                 weight: 500,
@@ -192,8 +175,7 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai
-                .request(server)
+            chai.request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
@@ -204,8 +186,8 @@ describe('routes: admin products', () => {
                 });
         });
 
-        it('POST /, returns error on missing parametres', done => {
-            let product = {
+        it('POST /, returns error on missing parametres', (done) => {
+            const product = {
                 weight: 500,
                 barcode: '4560000033333',
                 count: 12,
@@ -213,8 +195,7 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai
-                .request(server)
+            chai.request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
@@ -237,14 +218,14 @@ describe('routes: admin products', () => {
                     sellprice: 350,
                     quantity: 50
                 })
-                .then(res => {
+                .then((res) => {
                     res.status.should.equal(200);
                     res.body.product_id.should.equal(1750);
                     res.body.buyprice.should.equal(300);
                     res.body.sellprice.should.equal(350);
                     res.body.quantity.should.equal(product.count + 50);
                 })
-                .catch(err => {
+                .catch((err) => {
                     throw err;
                 });
         });
@@ -259,10 +240,10 @@ describe('routes: admin products', () => {
                     sellprice: 350,
                     quantity: 50
                 })
-                .then(res => {
+                .then((res) => {
                     res.status.should.not.equal(200);
                 })
-                .catch(err => {
+                .catch((err) => {
                     err.status.should.equal(404);
                     should.exist(err.response.body.error_code);
                     should.exist(err.response.body.message);
@@ -275,10 +256,10 @@ describe('routes: admin products', () => {
                 .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
                 .send({})
-                .then(res => {
+                .then((res) => {
                     res.status.should.not.equal(200);
                 })
-                .catch(err => {
+                .catch((err) => {
                     err.status.should.equal(400);
                     should.exist(err.response.body.error_code);
                     should.exist(err.response.body.message);

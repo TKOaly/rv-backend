@@ -15,29 +15,24 @@ const userStore = require('../../src/db/userStore');
 
 describe('routes: register', () => {
     beforeEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                knex.migrate.latest()
-                    .then(() => {
-                        knex.seed.run()
-                            .then(() => {
-                                done();
-                            });
-                    });
+        knex.migrate.rollback().then(() => {
+            knex.migrate.latest().then(() => {
+                knex.seed.run().then(() => {
+                    done();
+                });
             });
+        });
     });
 
     afterEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                done();
-            });
+        knex.migrate.rollback().then(() => {
+            done();
+        });
     });
 
     describe('Trying to register with missing field or bad password etc', () => {
         // var token = jwt.sign({
         //     username: 'normal_user'
-
 
         it('with missing keys error should be sent with list of missing fields', (done) => {
             chai.request(server)
@@ -70,7 +65,6 @@ describe('routes: register', () => {
                 });
         });
 
-
         it('User password should have length of 4 or more', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
@@ -87,11 +81,9 @@ describe('routes: register', () => {
                     done();
                 });
         });
-
     });
 
     describe('Usernames and Emails should be uniques', () => {
-
         it('Username should be unique', (done) => {
             chai.request(server)
                 .post('/api/v1/user/register')
@@ -145,4 +137,3 @@ describe('routes: register', () => {
         });
     });
 });
-

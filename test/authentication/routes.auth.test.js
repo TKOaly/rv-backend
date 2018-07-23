@@ -11,29 +11,23 @@ const jwt = require('../../src/jwt/token');
 const AUTH_PATH = '/api/v1/user/authenticate';
 
 describe('routes: authentication', () => {
-
     beforeEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                knex.migrate.latest()
-                    .then(() => {
-                        knex.seed.run()
-                            .then(() => {
-                                done();
-                            });
-                    });
+        knex.migrate.rollback().then(() => {
+            knex.migrate.latest().then(() => {
+                knex.seed.run().then(() => {
+                    done();
+                });
             });
+        });
     });
 
     afterEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                done();
-            });
+        knex.migrate.rollback().then(() => {
+            done();
+        });
     });
-  
-    describe('User authentication', () => {
 
+    describe('User authentication', () => {
         it('with valid credentials, should respond with an authentication token', (done) => {
             chai.request(server)
                 .post(AUTH_PATH)
@@ -46,8 +40,8 @@ describe('routes: authentication', () => {
                     should.not.exist(err);
                     res.status.should.equal(200);
                     should.exist(res.body.access_token);
-        
-                    var token = jwt.verify(res.body.access_token);
+
+                    const token = jwt.verify(res.body.access_token);
                     should.exist(token.data.username);
                     token.data.username.should.equal('normal_user');
 
@@ -96,6 +90,5 @@ describe('routes: authentication', () => {
                     done();
                 });
         });
-
     });
 });

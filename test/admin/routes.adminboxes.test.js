@@ -16,10 +16,7 @@ const productStore = require('../../src/db/productStore');
 describe('routes: admin boxes', () => {
     const server = require('../../src/app');
     const request = chai.request(server);
-    const token = jwt.sign(
-        { username: 'admin_user' },
-        process.env.JWT_ADMIN_SECRET
-    );
+    const token = jwt.sign({ username: 'admin_user' }, process.env.JWT_ADMIN_SECRET);
 
     beforeEach(async function() {
         await knex.migrate.rollback();
@@ -36,10 +33,10 @@ describe('routes: admin boxes', () => {
             .request(server)
             .get('/api/v1/admin/boxes')
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('array');
-                res.body.every(box => {
+                res.body.every((box) => {
                     box.should.include.keys(
                         'box_barcode',
                         'product_barcode',
@@ -56,7 +53,7 @@ describe('routes: admin boxes', () => {
             .request(server)
             .get('/api/v1/admin/boxes/01766756')
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('object');
                 res.body.should.include.keys(
@@ -74,10 +71,10 @@ describe('routes: admin boxes', () => {
             .request(server)
             .get('/api/v1/admin/boxes/00000000')
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.not.equal(200);
             })
-            .catch(err => {
+            .catch((err) => {
                 err.status.should.equal(404);
             });
     });
@@ -95,7 +92,7 @@ describe('routes: admin boxes', () => {
                 sellprice: 390
             })
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('object');
 
@@ -119,8 +116,8 @@ describe('routes: admin boxes', () => {
             });
     });
 
-    it('PUT /api/v1/admin/boxes/:barcode should create a new box', async() => {
-        let reqData = {
+    it('PUT /api/v1/admin/boxes/:barcode should create a new box', async () => {
+        const reqData = {
             items_per_box: 12,
             product: {
                 product_barcode: '8855702006834',
@@ -137,14 +134,10 @@ describe('routes: admin boxes', () => {
             .put('/api/v1/admin/boxes/01020304')
             .send(reqData)
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(201);
                 res.body.should.be.an('object');
-                res.body.should.include.all.keys(
-                    'box_barcode',
-                    'items_per_box',
-                    'product'
-                );
+                res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
 
                 const box = res.body;
                 box.box_barcode.should.equal('01020304');
@@ -155,10 +148,10 @@ describe('routes: admin boxes', () => {
                     product_id: box.product.product_id
                 });
                 box.product.should.deep.equal(expectedProduct);
-            });       
+            });
     });
 
-    it('PUT /api/v1/admin/boxes/:barcode should update an existing box', async() => {
+    it('PUT /api/v1/admin/boxes/:barcode should update an existing box', async () => {
         const reqData = {
             items_per_box: 15,
             product: {
@@ -176,14 +169,10 @@ describe('routes: admin boxes', () => {
             .put('/api/v1/admin/boxes/00101010')
             .send(reqData)
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('object');
-                res.body.should.include.all.keys(
-                    'box_barcode',
-                    'items_per_box',
-                    'product'
-                );
+                res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
 
                 const box = res.body;
                 box.box_barcode.should.equal('00101010');
@@ -194,10 +183,10 @@ describe('routes: admin boxes', () => {
                     product_id: box.product.product_id
                 });
                 box.product.should.deep.equal(expectedProduct);
-            });       
+            });
     });
 
-    it('PUT /api/v1/admin/boxes/:barcode should create a product if it doesn\'t exist', async() => {
+    it('PUT /api/v1/admin/boxes/:barcode should create a product if it doesn\'t exist', async () => {
         const reqData = {
             items_per_box: 37,
             product: {
@@ -215,14 +204,10 @@ describe('routes: admin boxes', () => {
             .put('/api/v1/admin/boxes/00101010')
             .send(reqData)
             .set('Authorization', 'Bearer ' + token)
-            .then(res => {
+            .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('object');
-                res.body.should.include.all.keys(
-                    'box_barcode',
-                    'items_per_box',
-                    'product'
-                );
+                res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
 
                 const box = res.body;
                 box.box_barcode.should.equal('00101010');
@@ -233,6 +218,6 @@ describe('routes: admin boxes', () => {
                     product_id: box.product.product_id
                 });
                 box.product.should.deep.equal(expectedProduct);
-            });       
+            });
     });
 });

@@ -15,27 +15,23 @@ const userStore = require('../../src/db/userStore');
 
 describe('routes: account', () => {
     beforeEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                knex.migrate.latest()
-                    .then(() => {
-                        knex.seed.run()
-                            .then(() => {
-                                done();
-                            });
-                    });
+        knex.migrate.rollback().then(() => {
+            knex.migrate.latest().then(() => {
+                knex.seed.run().then(() => {
+                    done();
+                });
             });
+        });
     });
 
     afterEach((done) => {
-        knex.migrate.rollback()
-            .then(() => {
-                done();
-            });
+        knex.migrate.rollback().then(() => {
+            done();
+        });
     });
-  
+
     describe('User info', () => {
-        var token = jwt.sign({
+        const token = jwt.sign({
             username: 'normal_user'
         });
 
@@ -52,7 +48,7 @@ describe('routes: account', () => {
     });
 
     describe('User account actions', () => {
-        var token = jwt.sign({
+        const token = jwt.sign({
             username: 'normal_user'
         });
 
@@ -133,4 +129,3 @@ describe('routes: account', () => {
         });
     });
 });
-

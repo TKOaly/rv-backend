@@ -29,7 +29,8 @@ describe('routes: purchase', () => {
             const oldUser = await userStore.findByUsername('normal_user');
             const product = await productStore.findByBarcode('8855702006834');
 
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -41,13 +42,12 @@ describe('routes: purchase', () => {
                     res.body.product_name.should.equal('Thai-Cube Sweet and Sour Chicken');
                     res.body.quantity.should.equal(1, 'Expected quantity to equal 1');
 
-                    return userStore.findByUsername('normal_user')
-                        .then((newUser) => {
-                            newUser.saldo.should.equal(
-                                oldUser.saldo - product.sellprice,
-                                'Product price should be deducted from user\'s account balance'
-                            );
-                        });
+                    return userStore.findByUsername('normal_user').then((newUser) => {
+                        newUser.saldo.should.equal(
+                            oldUser.saldo - product.sellprice,
+                            'Product price should be deducted from user\'s account balance'
+                        );
+                    });
                 })
                 .catch((err) => {
                     throw err;
@@ -55,7 +55,8 @@ describe('routes: purchase', () => {
         });
 
         it('purchasing a nonexistent product should not work', async () => {
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -73,7 +74,8 @@ describe('routes: purchase', () => {
         it('trying to purchase without enough money should not work', async () => {
             await userStore.updateAccountBalance('normal_user', -500);
 
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -91,7 +93,8 @@ describe('routes: purchase', () => {
         it('missing fields should result in a 400 response', async () => {
             await userStore.updateAccountBalance('normal_user', -500);
 
-            return chai.request(server)
+            return chai
+                .request(server)
                 .post('/api/v1/product/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
