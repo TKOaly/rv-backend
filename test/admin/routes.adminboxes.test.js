@@ -35,8 +35,9 @@ describe('routes: admin boxes', () => {
             .set('Authorization', 'Bearer ' + token)
             .then((res) => {
                 res.status.should.equal(200);
-                res.body.should.be.an('array');
-                res.body.every((box) => {
+                res.body.should.be.an('object');
+                res.body.should.include.keys('boxes');
+                res.body.boxes.every((box) => {
                     box.should.include.keys(
                         'box_barcode',
                         'product_barcode',
@@ -56,7 +57,8 @@ describe('routes: admin boxes', () => {
             .then((res) => {
                 res.status.should.equal(200);
                 res.body.should.be.an('object');
-                res.body.should.include.keys(
+                res.body.should.include.keys('box');
+                res.body.box.should.include.keys(
                     'box_barcode',
                     'product_barcode',
                     'product_name',

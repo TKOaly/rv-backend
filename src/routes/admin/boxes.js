@@ -13,7 +13,9 @@ router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
 router.get('/', async (req, res) => {
     try {
         const boxes = await boxStore.findAll();
-        res.status(200).json(boxes);
+        res.status(200).json({
+            boxes: boxes
+        });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
         res.status(500).json({
@@ -41,7 +43,9 @@ router.get('/:barcode(\\d+)', async (req, res) => {
             return;
         }
 
-        res.status(200).json(box);
+        res.status(200).json({
+            box: box
+        });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
         res.status(500).json({

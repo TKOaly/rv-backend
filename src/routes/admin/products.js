@@ -27,7 +27,9 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
             return;
         }
 
-        res.status(200).json(prodFilter(product));
+        res.status(200).json({
+            product: prodFilter(product)
+        });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
     }
@@ -72,6 +74,8 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
 
         if (errors.length > 0) {
             res.status(400).json({
+                error_code: 'bad_request',
+                message: 'Missing or invalid fields in request',
                 errors
             });
             return;
@@ -96,7 +100,9 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         );
 
         const newProd = await productStore.findById(product.itemid);
-        res.status(200).json(prodFilter(newProd));
+        res.status(200).json({
+            product: prodFilter(newProd)
+        });
     } catch (error) {
         logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
         res.status(500).json({
@@ -237,7 +243,7 @@ router.get('/:barcode', async (req, res) => {
             } else {
                 res.status(404).json({
                     error_code: 'product_not_found',
-                    messasge: 'item not found on database'
+                    message: 'item not found on database'
                 });
             }
         } catch (exception) {

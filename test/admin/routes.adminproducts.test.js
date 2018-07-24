@@ -61,20 +61,21 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.exist(res.body.itemid);
-                    should.exist(res.body.pgrpid);
-                    should.exist(res.body.descr);
-                    should.exist(res.body.weight);
-                    should.exist(res.body.priceid);
-                    should.exist(res.body.barcode);
-                    should.exist(res.body.count);
-                    should.exist(res.body.buyprice);
-                    should.exist(res.body.sellprice);
+                    should.exist(res.body.product);
+                    should.exist(res.body.product.itemid);
+                    should.exist(res.body.product.pgrpid);
+                    should.exist(res.body.product.descr);
+                    should.exist(res.body.product.weight);
+                    should.exist(res.body.product.priceid);
+                    should.exist(res.body.product.barcode);
+                    should.exist(res.body.product.count);
+                    should.exist(res.body.product.buyprice);
+                    should.exist(res.body.product.sellprice);
                     done();
                 });
         });
 
-        it('admins should be able to get a product that exists', (done) => {
+        it('admins should be able to edit a product that exists', (done) => {
             chai.request(server)
                 .put('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
@@ -86,17 +87,18 @@ describe('routes: admin products', () => {
                     weight: 555
                 })
                 .end((err, res) => {
-                    should.exist(res.body.itemid);
-                    should.exist(res.body.pgrpid);
-                    should.exist(res.body.count);
-                    should.exist(res.body.sellprice);
-                    should.exist(res.body.buyprice);
-                    should.exist(res.body.weight);
-                    res.body.pgrpid.should.equal(3);
-                    res.body.buyprice.should.equal(120);
-                    res.body.sellprice.should.equal(200);
-                    res.body.count.should.equal(450);
-                    res.body.weight.should.equal(555);
+                    should.exist(res.body.product);
+                    should.exist(res.body.product.itemid);
+                    should.exist(res.body.product.pgrpid);
+                    should.exist(res.body.product.count);
+                    should.exist(res.body.product.sellprice);
+                    should.exist(res.body.product.buyprice);
+                    should.exist(res.body.product.weight);
+                    res.body.product.pgrpid.should.equal(3);
+                    res.body.product.buyprice.should.equal(120);
+                    res.body.product.sellprice.should.equal(200);
+                    res.body.product.count.should.equal(450);
+                    res.body.product.weight.should.equal(555);
                     done();
                 });
         });
