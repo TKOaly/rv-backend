@@ -80,6 +80,7 @@ describe('routes: admin products', () => {
                 .put('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
+                    descr: 'good product',
                     pgrpid: 3,
                     quantity: 450,
                     buyprice: 120,
@@ -126,7 +127,7 @@ describe('routes: admin products', () => {
                     res.status.should.not.equal(200);
                 })
                 .catch((err) => {
-                    err.status.should.equal(400, 'malformated barcode should return error');
+                    err.status.should.equal(404, 'malformated barcode should return error');
                 });
         });
 
@@ -139,14 +140,14 @@ describe('routes: admin products', () => {
                     res.status.should.not.equal(200);
                 })
                 .catch((err) => {
-                    err.status.should.equal(404, 'Barcode that doesn\'t exits should return error');
+                    err.status.should.equal(404, 'Barcode that doesn\'t exist should return error');
                 });
         });
 
         it('POST /, returns created product on valid parametres', (done) => {
             const product = {
                 descr: 'body.descr',
-                pgrpid: '21',
+                pgrpid: 21,
                 weight: 500,
                 barcode: '6411501656247',
                 count: 12,
@@ -169,7 +170,7 @@ describe('routes: admin products', () => {
         it('POST /, returns error on invalid barcode', (done) => {
             const product = {
                 descr: 'body.descr',
-                pgrpid: '21',
+                pgrpid: 21,
                 weight: 500,
                 barcode: 'invalid',
                 count: 12,

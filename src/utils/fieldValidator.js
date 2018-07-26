@@ -6,12 +6,12 @@
  */
 module.exports.validateObject = (obj, fieldValidators) => {
     const errors = [];
-    fieldValidators.forEach((v) => {
-        if (Object.keys(obj).includes(v.field)) {
-            const error = v.validator(obj[v.field]);
-            error && errors.push(error);
+    fieldValidators.forEach((val) => {
+        if (Object.keys(obj).includes(val.field)) {
+            const fieldErrors = val.validator(obj[val.field]);
+            errors.push(...fieldErrors);
         } else {
-            errors.push(v.field + ' is missing');
+            errors.push(val.field + ' is missing');
         }
     });
 

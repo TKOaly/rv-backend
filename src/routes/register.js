@@ -1,67 +1,60 @@
 const express = require('express');
 const router = express.Router();
-const userStore = require('../db/userStore'); // not used
+const userStore = require('../db/userStore');
 const logger = require('./../logger');
-
-const neededKeys = ['username', 'password', 'realname', 'email'];
+const fieldValidator = require('../utils/fieldValidator');
+const validators = require('../utils/validators');
 
 // Register a new user
 router.post('/', async (req, res) => {
     const body = req.body;
 
-    // Missing fields
-    const newAccountKeys = Object.keys(body);
-    const missingKeys = neededKeys.filter((key) => {
-        return !newAccountKeys.includes(key);
-    });
-    if (missingKeys.length > 0) {
+    const inputValidators = [
+        validators.nonEmptyString('username'),
+        validators.nonEmptyString('password'),
+        validators.nonEmptyString('realname'),
+        validators.nonEmptyString('email')
+    ];
+
+    const errors = fieldValidator.validateObject(body, inputValidators);
+    if (errors.length > 0) {
+        logger.error('%s %s: invalid request: %s', req.method, req.originalUrl, errors.join(', '));
         res.status(400).json({
             error_code: 'bad_request',
-            message: `Missing: ${missingKeys.join()}`
+            message: 'Missing or invalid fields in request',
+            errors
         });
         return;
     }
 
-    // Check username, password length
-    if (body.username.length === 0) {
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Username is empty.'
-        });
-        return;
-    } else if (body.password.length === 0) {
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Password is empty.'
-        });
-        return;
-    }
+    const username = body.username;
+    const email = body.email;
 
-    // Check if user, email exists
-    const user = await userStore.findByUsername(body.username);
-    if (user) {
-        res.status(403).json({
-            error_code: 'identifier_taken',
-            message: 'Username is already in use.'
-        });
-        return;
-    }
-    const userEmail = await userStore.findByEmail(body.email.trim());
-    if (userEmail) {
-        res.status(403).json({
-            error_code: 'identifier_taken',
-            message: 'Email address already in use.'
-        });
-        return;
-    }
-
-    // All ok
-
-    // Add user to db
     try {
+        // Check if user, email exists
+        const user = await userStore.findByUsername(username);
+        if (user) {
+            res.status(403).json({
+                error_code: 'identifier_taken',
+                message: 'Username already in use.'
+            });
+            return;
+        }
+        const userEmail = await userStore.findByEmail(email);
+        if (userEmail) {
+            res.status(403).json({
+                error_code: 'identifier_taken',
+                message: 'Email address already in use.'
+            });
+            return;
+        }
+
+        // All ok
+
+        // Add user to db
         const highestId = await userStore.findHighestUserId();
         const inserted = await userStore.insertUser(body, highestId.max);
-        logger.info('Registered new user: ' + body.username);
+        logger.info('Registered new user: ' + username);
         res.status(201).json({
             user: inserted
         });
@@ -72,9 +65,6 @@ router.post('/', async (req, res) => {
             message: exception
         });
     }
-
-    // for debugging
-    // console.log(await userStore.getUsers())
 });
 
 module.exports = router;
