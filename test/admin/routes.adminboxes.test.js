@@ -52,7 +52,7 @@ describe('routes: admin boxes', () => {
     it('GET /api/v1/admin/boxes/:barcode should return a known box', async () => {
         return chai
             .request(server)
-            .get('/api/v1/admin/boxes/01766756')
+            .get('/api/v1/admin/boxes/01766752')
             .set('Authorization', 'Bearer ' + token)
             .then((res) => {
                 res.status.should.equal(200);
@@ -82,7 +82,7 @@ describe('routes: admin boxes', () => {
     });
 
     it('POST /api/v1/admin/boxes/:barcode should add boxes of products correctly', async () => {
-        const box = await boxStore.findByBoxBarcode('00101010');
+        const box = await boxStore.findByBoxBarcode('00101011');
         const product = await productStore.findById(box.product_id);
 
         return chai
@@ -168,7 +168,7 @@ describe('routes: admin boxes', () => {
 
         return chai
             .request(server)
-            .put('/api/v1/admin/boxes/00101010')
+            .put('/api/v1/admin/boxes/00101011')
             .send(reqData)
             .set('Authorization', 'Bearer ' + token)
             .then((res) => {
@@ -177,7 +177,7 @@ describe('routes: admin boxes', () => {
                 res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
 
                 const box = res.body;
-                box.box_barcode.should.equal('00101010');
+                box.box_barcode.should.equal('00101011');
                 box.items_per_box.should.equal(reqData.items_per_box);
                 should.exist(box.product.product_id);
 
@@ -203,7 +203,7 @@ describe('routes: admin boxes', () => {
 
         return chai
             .request(server)
-            .put('/api/v1/admin/boxes/00101010')
+            .put('/api/v1/admin/boxes/00101011')
             .send(reqData)
             .set('Authorization', 'Bearer ' + token)
             .then((res) => {
@@ -212,7 +212,7 @@ describe('routes: admin boxes', () => {
                 res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
 
                 const box = res.body;
-                box.box_barcode.should.equal('00101010');
+                box.box_barcode.should.equal('00101011');
                 box.items_per_box.should.equal(reqData.items_per_box);
                 should.exist(box.product.product_id);
 
