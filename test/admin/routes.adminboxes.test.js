@@ -192,7 +192,7 @@ describe('routes: admin boxes', () => {
         const reqData = {
             items_per_box: 37,
             product: {
-                product_barcode: '00112233',
+                product_barcode: '00112239',
                 product_name: 'Test product 5000',
                 product_group: 1,
                 product_weight: 5000,

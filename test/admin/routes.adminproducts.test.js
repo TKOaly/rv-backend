@@ -148,7 +148,7 @@ describe('routes: admin products', () => {
                 descr: 'body.descr',
                 pgrpid: '21',
                 weight: 500,
-                barcode: '6411501656249',
+                barcode: '6411501656247',
                 count: 12,
                 buyprice: 50,
                 sellprice: 150
