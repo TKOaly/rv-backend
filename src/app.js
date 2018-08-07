@@ -23,7 +23,7 @@
 
     app.use('/api/v1/user/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
-    app.use('/api/v1/user/register', register_route);
+    app.use('/api/v1/register', register_route);
     app.use('/api/v1/products', user_products);
     app.use('/api/v1/categories', user_categories);
     app.use('/api/v1/product/purchase', purchase_route);

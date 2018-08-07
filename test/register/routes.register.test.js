@@ -36,7 +36,7 @@ describe('routes: register', () => {
 
         it('Request should not have missing keys', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     // empty string
                 })
@@ -50,7 +50,7 @@ describe('routes: register', () => {
 
         it('Username should not be empty', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     username: '',
                     password: 'test',
@@ -67,7 +67,7 @@ describe('routes: register', () => {
 
         it('User password should not be empty', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: '',
@@ -86,7 +86,7 @@ describe('routes: register', () => {
     describe('Usernames and Emails should be uniques', () => {
         it('Username should be unique', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     username: 'normal_user',
                     password: 'test',
@@ -103,7 +103,7 @@ describe('routes: register', () => {
 
         it('Email should be unique', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: 'test',
@@ -122,7 +122,7 @@ describe('routes: register', () => {
     describe('User should be able to register to service', () => {
         it('With all required fields user should be registered to service', (done) => {
             chai.request(server)
-                .post('/api/v1/user/register')
+                .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: 'test',
