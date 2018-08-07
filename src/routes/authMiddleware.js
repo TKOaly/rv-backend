@@ -40,7 +40,7 @@ const authMiddleware = function(roles = [], tokenSecret = process.env.JWT_SECRET
                 } else {
                     // token contains nonexistent user or no roles
                     logger.error('Invalid authorization token (token contains nonexistent user or no roles)');
-                    res.status(403).json({
+                    res.status(401).json({
                         error_code: 'invalid_token',
                         message: 'Invalid authorization token'
                     });
@@ -55,7 +55,7 @@ const authMiddleware = function(roles = [], tokenSecret = process.env.JWT_SECRET
         } else {
             logger.error('Invalid authorization token (no username in token)');
             // no username in token
-            res.status(403).json({
+            res.status(401).json({
                 error_code: 'invalid_token',
                 message: 'Invalid authorization token'
             });
