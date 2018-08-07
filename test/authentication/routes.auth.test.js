@@ -1,5 +1,6 @@
 const chai = require('chai');
 const should = chai.should();
+const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
@@ -8,7 +9,7 @@ const request = chai.request(server);
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 
-const AUTH_PATH = '/api/v1/user/authenticate';
+const AUTH_PATH = '/api/v1/authenticate';
 
 describe('routes: authentication', () => {
     beforeEach((done) => {
@@ -39,9 +40,9 @@ describe('routes: authentication', () => {
                 .end((err, res) => {
                     should.not.exist(err);
                     res.status.should.equal(200);
-                    should.exist(res.body.access_token);
+                    expect(res.body).to.have.all.keys('accessToken');
 
-                    const token = jwt.verify(res.body.access_token);
+                    const token = jwt.verify(res.body.accessToken);
                     should.exist(token.data.username);
                     token.data.username.should.equal('normal_user');
 
@@ -49,7 +50,7 @@ describe('routes: authentication', () => {
                 });
         });
 
-        it('with invalid password, should return a 403 forbidden response', (done) => {
+        it('with invalid password, should return a 401 unauthorized response', (done) => {
             chai.request(server)
                 .post(AUTH_PATH)
                 .type('form')
@@ -59,12 +60,12 @@ describe('routes: authentication', () => {
                 })
                 .end((err, res) => {
                     should.exist(err);
-                    res.status.should.equal(403);
+                    res.status.should.equal(401);
                     done();
                 });
         });
 
-        it('with nonexistent user, should return a 403 forbidden response', (done) => {
+        it('with nonexistent user, should return a 401 unauthorized response', (done) => {
             chai.request(server)
                 .post(AUTH_PATH)
                 .type('form')
@@ -74,7 +75,7 @@ describe('routes: authentication', () => {
                 })
                 .end((err, res) => {
                     should.exist(err);
-                    res.status.should.equal(403);
+                    res.status.should.equal(401);
                     done();
                 });
         });

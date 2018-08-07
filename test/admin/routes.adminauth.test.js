@@ -36,8 +36,9 @@ describe('routes: admin authentication', () => {
                 })
                 .end((err, res) => {
                     should.not.exist(err);
+                    expect(res.body).to.have.all.keys('accessToken');
 
-                    const decoded = jwt.verify(res.body.access_token, process.env.JWT_ADMIN_SECRET);
+                    const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
                     expect(decoded.data.username).to.equal('admin_user');
                     done();
                 });
@@ -52,7 +53,7 @@ describe('routes: admin authentication', () => {
                 })
                 .end((err, res) => {
                     should.not.exist(err);
-                    const decoded = jwt.verify(res.body.access_token, process.env.JWT_SECRET);
+                    const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
                     expect(decoded).to.equal(null);
                     done();
                 });

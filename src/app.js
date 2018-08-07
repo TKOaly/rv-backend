@@ -21,7 +21,7 @@
     const admin_global_margin = require('./routes/admin/margin');
     const admin_boxes = require('./routes/admin/boxes');
 
-    app.use('/api/v1/user/authenticate', auth_route);
+    app.use('/api/v1/authenticate', auth_route);
     app.use('/api/v1/user/account', account_route);
     app.use('/api/v1/register', register_route);
     app.use('/api/v1/products', user_products);

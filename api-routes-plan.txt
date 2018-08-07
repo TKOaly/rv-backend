@@ -1,6 +1,6 @@
 * api/v1/register POST {username, password, fullName, email} => {user: {username, fullName, email, moneyBalance}}
-api/v1/authenticate POST {username, password} => {accessToken}
-api/v1/admin/authenticate POST {username, password} => {accessToken}
+* api/v1/authenticate POST {username, password} => {accessToken}
+* api/v1/admin/authenticate POST {username, password} => {accessToken}
 
 api/v1/products GET => {products: [{barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}...]}
 api/v1/products/:barcode GET => {product: {barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}}
