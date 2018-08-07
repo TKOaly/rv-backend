@@ -54,7 +54,7 @@ describe('routes: register', () => {
                 .send({
                     username: '',
                     password: 'test',
-                    realname: 'm.erkki',
+                    fullName: 'm.erkki',
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
@@ -71,7 +71,7 @@ describe('routes: register', () => {
                 .send({
                     username: 'test',
                     password: '',
-                    realname: 'm.erkki',
+                    fullName: 'm.erkki',
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
@@ -90,12 +90,12 @@ describe('routes: register', () => {
                 .send({
                     username: 'normal_user',
                     password: 'test',
-                    realname: 'm.erkki',
+                    fullName: 'm.erkki',
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
                     should.exist(err);
-                    res.status.should.equal(403);
+                    res.status.should.equal(409);
                     expect(res.body.error_code).to.equal('identifier_taken');
                     done();
                 });
@@ -107,12 +107,12 @@ describe('routes: register', () => {
                 .send({
                     username: 'test',
                     password: 'test',
-                    realname: 'm.erkki',
+                    fullName: 'm.erkki',
                     email: 'user@example.com'
                 })
                 .end((err, res) => {
                     should.exist(err);
-                    res.status.should.equal(403);
+                    res.status.should.equal(409);
                     expect(res.body.error_code).to.equal('identifier_taken');
                     done();
                 });
@@ -126,12 +126,14 @@ describe('routes: register', () => {
                 .send({
                     username: 'test',
                     password: 'test',
-                    realname: 'm.erkki',
+                    fullName: 'm.erkki',
                     email: 'erkki@test.com'
                 })
                 .end((err, res) => {
                     should.not.exist(err);
                     res.status.should.equal(201);
+                    expect(res.body).to.have.all.keys('user');
+                    expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
                     done();
                 });
         });

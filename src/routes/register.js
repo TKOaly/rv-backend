@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     const inputValidators = [
         validators.nonEmptyString('username'),
         validators.nonEmptyString('password'),
-        validators.nonEmptyString('realname'),
+        validators.nonEmptyString('fullName'),
         validators.nonEmptyString('email')
     ];
 
@@ -28,35 +28,48 @@ router.post('/', async (req, res) => {
     }
 
     const username = body.username;
+    const password = body.password;
+    const fullName = body.fullName;
     const email = body.email;
 
     try {
         // Check if user, email exists
-        const user = await userStore.findByUsername(username);
-        if (user) {
-            res.status(403).json({
+        const userByUsername = await userStore.findByUsername(username);
+        if (userByUsername) {
+            res.status(409).json({
                 error_code: 'identifier_taken',
                 message: 'Username already in use.'
             });
             return;
         }
-        const userEmail = await userStore.findByEmail(email);
-        if (userEmail) {
-            res.status(403).json({
+        const userByEmail = await userStore.findByEmail(email);
+        if (userByEmail) {
+            res.status(409).json({
                 error_code: 'identifier_taken',
                 message: 'Email address already in use.'
             });
             return;
         }
 
-        // All ok
-
         // Add user to db
         const highestId = await userStore.findHighestUserId();
-        const inserted = await userStore.insertUser(body, highestId.max);
+        await userStore.insertUser(
+            {
+                username,
+                password,
+                realname: fullName,
+                email
+            },
+            highestId.max
+        );
         logger.info('Registered new user: ' + username);
         res.status(201).json({
-            user: inserted
+            user: {
+                username,
+                fullName,
+                email,
+                moneyBalance: 0
+            }
         });
     } catch (exception) {
         logger.info('Error registering new user: ' + exception);
