@@ -1,1 +1,2 @@
---require test/mocha.env.js test/**/*.js
+--require test/mocha.env.js
+--recursive
