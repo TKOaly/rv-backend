@@ -12,7 +12,7 @@ router.use(authMiddleware());
 router.post('/', async (req, res) => {
     const body = req.body;
 
-    const inputValidators = [validators.gtin('barcode'), validators.positiveInteger('quantity')];
+    const inputValidators = [validators.numericBarcode('barcode'), validators.positiveInteger('quantity')];
 
     const errors = fieldValidator.validateObject(body, inputValidators);
     if (errors.length > 0) {

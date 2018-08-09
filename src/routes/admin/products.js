@@ -156,7 +156,7 @@ router.post('/', async (req, res) => {
     const body = req.body;
 
     const inputValidators = [
-        validators.gtin('barcode'),
+        validators.numericBarcode('barcode'),
         validators.nonEmptyString('descr'),
         validators.integer('pgrpid'),
         validators.nonNegativeInteger('weight'),
@@ -253,7 +253,7 @@ router.post('/', async (req, res) => {
 router.get('/:barcode(\\d+)', async (req, res) => {
     const params = req.params;
 
-    const paramValidators = [validators.gtin('barcode')];
+    const paramValidators = [validators.numericBarcode('barcode')];
 
     const errors = fieldValidator.validateObject(params, paramValidators);
     if (errors.length > 0) {

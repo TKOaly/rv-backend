@@ -27,7 +27,7 @@ router.get('/', async (req, res) => {
 router.get('/:barcode(\\d+)', async (req, res) => {
     const params = req.params;
 
-    const paramValidators = [validators.gtin('barcode')];
+    const paramValidators = [validators.numericBarcode('barcode')];
 
     const errors = fieldValidator.validateObject(params, paramValidators);
     if (errors.length > 0) {
@@ -75,7 +75,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
     const params = req.params;
     const body = req.body;
 
-    const paramValidators = [validators.gtin('barcode')];
+    const paramValidators = [validators.numericBarcode('barcode')];
     const inputValidators = [
         validators.nonNegativeInteger('sellprice'),
         validators.nonNegativeInteger('buyprice'),
@@ -171,11 +171,11 @@ router.put('/:barcode(\\d+)', async (req, res) => {
     const params = req.params;
     const body = req.body;
 
-    const paramValidators = [validators.gtin('barcode')];
+    const paramValidators = [validators.numericBarcode('barcode')];
     const inputValidators = [
         validators.positiveInteger('items_per_box'),
         validators.objectWithFields('product', [
-            validators.gtin('product_barcode'),
+            validators.numericBarcode('product_barcode'),
             validators.nonEmptyString('product_name'),
             validators.integer('product_group'),
             validators.nonNegativeInteger('product_weight'),

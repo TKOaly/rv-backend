@@ -1,14 +1,13 @@
 const fieldValidator = require('./fieldValidator');
-const gtinValidator = require('./gtinValidator');
 
-module.exports.gtin = (fieldname) => {
+module.exports.numericBarcode = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
-            if (typeof value === 'string' && gtinValidator.validateGtin(value)) {
+            if (typeof value === 'string' && value.match(/^\d{1,14}$/)) {
                 return [];
             } else {
-                return [fieldname + ' should be a valid gtin code'];
+                return [fieldname + ' should be a numeric 1-14 digit barcode'];
             }
         }
     };
