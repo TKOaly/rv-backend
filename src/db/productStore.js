@@ -9,8 +9,20 @@ const knex = require('./knex');
 module.exports.findByBarcode = async (barcode) => {
     return knex('PRICE')
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+        .select(
+            'RVITEM.itemid',
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
+        )
         .where('PRICE.barcode', barcode)
-        .orderBy('starttime', 'DESC')
+        .andWhere('PRICE.endtime', null)
         .first();
 };
 
@@ -183,20 +195,20 @@ module.exports.addPurchase = (productid, priceid, userid, quantity) => {
  */
 module.exports.findAll = () => {
     return knex('RVITEM')
-        .leftJoin('PRICE', function() {
-            this.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull('PRICE.endtime');
-        })
+        .leftJoin('PRICE', 'RVITEM.itemid', 'PRICE.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
             'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
             'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
-            'PRICE.sellprice'
+            'PRICE.sellprice',
+            'PRICE.count'
         )
-        .sum('PRICE.count as quantity')
-        .groupBy('RVITEM.itemid', 'PRICE.barcode', 'PRICE.buyprice', 'PRICE.sellprice');
+        .where('PRICE.endtime', null);
 };
 
 /**

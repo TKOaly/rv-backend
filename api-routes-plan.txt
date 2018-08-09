@@ -2,8 +2,8 @@
 * api/v1/authenticate POST {username, password} => {accessToken}
 * api/v1/admin/authenticate POST {username, password} => {accessToken}
 
-api/v1/products GET => {products: [{barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}...]}
-api/v1/products/:barcode GET => {product: {barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}}
+* api/v1/products GET => {products: [{barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}...]}
+* api/v1/products/:barcode GET => {product: {barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}}
 api/v1/products/:barcode/purchase POST {count} => {accountBalance, productStock}
 api/v1/categories GET => {categories: [{categoryId, description}...]}
 api/v1/categories/:categoryId GET => {category: {categoryId, description}}
