@@ -304,11 +304,3 @@ module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
             });
     });
 };
-
-/**
- * Returns all categories.
- *
- */
-module.exports.findAllCategories = () => {
-    return knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
-};
