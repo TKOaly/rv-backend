@@ -10,6 +10,8 @@ const server = require('../src/app');
 const request = chai.request(server);
 const knex = require('../src/db/knex.js');
 const jwt = require('../src/jwt/token');
+const userStore = require('../src/db/userStore');
+const productStore = require('../src/db/productStore');
 
 const token = jwt.sign({
     username: 'normal_user'
@@ -96,6 +98,68 @@ describe('routes: products', () => {
 
                     done();
                 });
+        });
+    });
+
+    describe('Purchasing product', () => {
+        it('should deduct account balance and product stock', async () => {
+            const oldUser = await userStore.findByUsername('normal_user');
+            const oldProduct = await productStore.findByBarcode('8855702006834');
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/8855702006834/purchase')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1
+                });
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('accountBalance', 'productStock');
+
+            const newUser = await userStore.findByUsername('normal_user');
+            const newProduct = await productStore.findByBarcode('8855702006834');
+
+            expect(newUser.saldo).to.equal(oldUser.saldo - oldProduct.sellprice);
+            expect(newUser.saldo).to.equal(res.body.accountBalance);
+
+            expect(newProduct.count).to.equal(oldProduct.count - 1);
+            expect(newProduct.count).to.equal(res.body.productStock);
+        });
+
+        it('should return 404 on nonexistent product', async () => {
+            try {
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/products/1234567890123/purchase')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send({
+                        count: 1
+                    });
+
+                expect(res).to.not.exist;
+            } catch (err) {
+                expect(err.status).to.equal(404);
+            }
+        });
+
+        it('should error on insufficient funds', async () => {
+            await userStore.updateAccountBalance('normal_user', -500);
+
+            try {
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/products/8855702006834/purchase')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send({
+                        count: 1
+                    });
+
+                expect(res).to.not.exist;
+            } catch (err) {
+                expect(err.response.body.error_code).to.equal('insufficient_funds');
+            }
         });
     });
 });

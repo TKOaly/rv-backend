@@ -16,6 +16,7 @@ module.exports.findByBarcode = async (barcode) => {
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
             'RVITEM.weight',
+            'PRICE.priceid',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',

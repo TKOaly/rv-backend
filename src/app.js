@@ -13,7 +13,6 @@
     const auth_route = require('./routes/auth');
     const account_route = require('./routes/account');
     const register_route = require('./routes/register');
-    const purchase_route = require('./routes/purchase');
     const admin_auth = require('./routes/admin/adminAuth');
     const admin_products = require('./routes/admin/products');
     const user_products = require('./routes/products');
@@ -26,7 +25,6 @@
     app.use('/api/v1/register', register_route);
     app.use('/api/v1/products', user_products);
     app.use('/api/v1/categories', user_categories);
-    app.use('/api/v1/product/purchase', purchase_route);
 
     app.use('/api/v1/admin/authenticate', admin_auth);
     app.use('/api/v1/admin/products', admin_products);
