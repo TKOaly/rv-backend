@@ -136,4 +136,39 @@ router.post('/deposit', async (req, res) => {
     }
 });
 
+router.post('/changePassword', async (req, res) => {
+    const inputValidators = [validators.nonEmptyString('password')];
+
+    const errors = fieldValidator.validateObject(req.body, inputValidators);
+    if (errors.length > 0) {
+        logger.error(
+            '%s %s: invalid request by user %s: %s',
+            req.method,
+            req.originalUrl,
+            req.rvuser.name,
+            errors.join(', ')
+        );
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors
+        });
+        return;
+    }
+
+    const user = req.rvuser;
+    const password = req.body.password;
+
+    try {
+        await userStore.updatePassword(user.userid, password);
+
+        res.status(204).end();
+    } catch (error) {
+        res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
+    }
+});
+
 module.exports = router;

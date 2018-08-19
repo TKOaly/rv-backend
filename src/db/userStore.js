@@ -83,6 +83,12 @@ module.exports.updateEmail = (userId, newEmail) => {
         .where({ userid: userId });
 };
 
+module.exports.updatePassword = (userId, newPassword) => {
+    return knex('RVPERSON')
+        .update({ pass: bcrypt.hashSync(newPassword, 11) })
+        .where({ userid: userId });
+};
+
 module.exports.updateAccountBalance = (username, difference) => {
     return knex.transaction(function(trx) {
         return knex

@@ -169,4 +169,23 @@ describe('routes: user', () => {
             }
         });
     });
+
+    describe('Changing password', () => {
+        it('should change the password', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/changePassword')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    password: 'abcdefg'
+                });
+
+            expect(res.status).to.equal(204);
+
+            const user = await userStore.findById(1);
+            const passwordMatches = await userStore.verifyPassword('abcdefg', user.pass);
+
+            expect(passwordMatches).to.be.true;
+        });
+    });
 });
