@@ -9,6 +9,13 @@ module.exports.getUsers = () => {
         });
 };
 
+module.exports.findById = (id) => {
+    return knex('RVPERSON')
+        .where('RVPERSON.userid', '=', id)
+        .select('*')
+        .first();
+};
+
 module.exports.findByUsername = (username) => {
     return knex('RVPERSON')
         .where('RVPERSON.name', '=', username)
@@ -56,6 +63,24 @@ module.exports.findUserRoles = (username) => {
         .then((rows) => {
             return rows.map((row) => row.role);
         });
+};
+
+module.exports.updateUsername = (userId, newUsername) => {
+    return knex('RVPERSON')
+        .update({ name: newUsername })
+        .where({ userid: userId });
+};
+
+module.exports.updateFullName = (userId, newFullName) => {
+    return knex('RVPERSON')
+        .update({ realname: newFullName })
+        .where({ userid: userId });
+};
+
+module.exports.updateEmail = (userId, newEmail) => {
+    return knex('RVPERSON')
+        .update({ univident: newEmail })
+        .where({ userid: userId });
 };
 
 module.exports.updateAccountBalance = (username, difference) => {
