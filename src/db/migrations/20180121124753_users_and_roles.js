@@ -45,27 +45,6 @@ exports.up = function(knex, Promise) {
                     });
                 }
             });
-        })
-        .then(() => {
-            return knex.schema.hasTable('SALDOHISTORY').then((exists) => {
-                if (!exists) {
-                    return knex.schema.createTable('SALDOHISTORY', (table) => {
-                        table.increments('saldhistid');
-                        table
-                            .integer('userid')
-                            .notNullable()
-                            .references('userid')
-                            .inTable('RVPERSON')
-                            .index();
-                        table
-                            .dateTime('time')
-                            .notNullable()
-                            .index();
-                        table.integer('saldo').index();
-                        table.integer('difference').notNullable();
-                    });
-                }
-            });
         });
 };
 
@@ -73,9 +52,6 @@ exports.down = function(knex, Promise) {
     if (process.env.NODE_ENV === 'production') {
         throw new Error('dont drop stuff in production');
     } else {
-        return knex.schema
-            .dropTableIfExists('SALDOHISTORY')
-            .dropTableIfExists('RVPERSON')
-            .dropTableIfExists('ROLE');
+        return knex.schema.dropTableIfExists('RVPERSON').dropTableIfExists('ROLE');
     }
 };

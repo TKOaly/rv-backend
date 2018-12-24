@@ -7,7 +7,7 @@ const data = [
         sellprice: 250,
         itemid: 2,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -18,7 +18,7 @@ const data = [
         sellprice: 38,
         itemid: 4,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -29,7 +29,7 @@ const data = [
         sellprice: 146,
         itemid: 6,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -40,7 +40,7 @@ const data = [
         sellprice: 146,
         itemid: 8,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -51,7 +51,7 @@ const data = [
         sellprice: 146,
         itemid: 10,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -62,7 +62,7 @@ const data = [
         sellprice: 146,
         itemid: 12,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -73,7 +73,7 @@ const data = [
         sellprice: 146,
         itemid: 14,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -84,7 +84,7 @@ const data = [
         sellprice: 146,
         itemid: 16,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -95,7 +95,7 @@ const data = [
         sellprice: 146,
         itemid: 18,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -106,7 +106,7 @@ const data = [
         sellprice: 146,
         itemid: 20,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -117,7 +117,7 @@ const data = [
         sellprice: 24,
         itemid: 26,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -128,7 +128,7 @@ const data = [
         sellprice: 24,
         itemid: 28,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -139,7 +139,7 @@ const data = [
         sellprice: 24,
         itemid: 30,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -150,7 +150,7 @@ const data = [
         sellprice: 24,
         itemid: 32,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -161,7 +161,7 @@ const data = [
         sellprice: 88,
         itemid: 36,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -172,7 +172,7 @@ const data = [
         sellprice: 116,
         itemid: 38,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -183,7 +183,7 @@ const data = [
         sellprice: 92,
         itemid: 40,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -194,7 +194,7 @@ const data = [
         sellprice: 135,
         itemid: 42,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -205,7 +205,7 @@ const data = [
         sellprice: 12,
         itemid: 46,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -216,7 +216,7 @@ const data = [
         sellprice: 500,
         itemid: 48,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -227,7 +227,7 @@ const data = [
         sellprice: 40,
         itemid: 52,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -238,7 +238,7 @@ const data = [
         sellprice: -20,
         itemid: 56,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -249,7 +249,7 @@ const data = [
         sellprice: 146,
         itemid: 64,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -260,7 +260,7 @@ const data = [
         sellprice: 146,
         itemid: 70,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -271,7 +271,7 @@ const data = [
         sellprice: 78,
         itemid: 74,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -282,7 +282,7 @@ const data = [
         sellprice: 136,
         itemid: 110,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -293,7 +293,7 @@ const data = [
         sellprice: 183,
         itemid: 114,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -304,7 +304,7 @@ const data = [
         sellprice: 38,
         itemid: 116,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -315,7 +315,7 @@ const data = [
         sellprice: 38,
         itemid: 118,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -326,7 +326,7 @@ const data = [
         sellprice: 38,
         itemid: 120,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -337,7 +337,7 @@ const data = [
         sellprice: 96,
         itemid: 126,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -348,7 +348,7 @@ const data = [
         sellprice: 100,
         itemid: 128,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -359,7 +359,7 @@ const data = [
         sellprice: 146,
         itemid: 130,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -370,7 +370,7 @@ const data = [
         sellprice: 1500,
         itemid: 132,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -381,7 +381,7 @@ const data = [
         sellprice: 34,
         itemid: 136,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -392,7 +392,7 @@ const data = [
         sellprice: 34,
         itemid: 138,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -403,7 +403,7 @@ const data = [
         sellprice: 146,
         itemid: 140,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -414,7 +414,7 @@ const data = [
         sellprice: 146,
         itemid: 142,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -425,7 +425,7 @@ const data = [
         sellprice: 82,
         itemid: 144,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -436,7 +436,7 @@ const data = [
         sellprice: 92,
         itemid: 146,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -447,7 +447,7 @@ const data = [
         sellprice: 8,
         itemid: 152,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -458,7 +458,7 @@ const data = [
         sellprice: 58,
         itemid: 158,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -469,7 +469,7 @@ const data = [
         sellprice: 58,
         itemid: 160,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -480,7 +480,7 @@ const data = [
         sellprice: 0,
         itemid: 162,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -491,7 +491,7 @@ const data = [
         sellprice: 33,
         itemid: 174,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -502,7 +502,7 @@ const data = [
         sellprice: 224,
         itemid: 178,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -513,7 +513,7 @@ const data = [
         sellprice: 146,
         itemid: 202,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -524,7 +524,7 @@ const data = [
         sellprice: 146,
         itemid: 204,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -535,7 +535,7 @@ const data = [
         sellprice: 120,
         itemid: 206,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -546,7 +546,7 @@ const data = [
         sellprice: 57,
         itemid: 208,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -557,7 +557,7 @@ const data = [
         sellprice: 56,
         itemid: 220,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -568,7 +568,7 @@ const data = [
         sellprice: 8,
         itemid: 224,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -579,7 +579,7 @@ const data = [
         sellprice: 80,
         itemid: 232,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -590,7 +590,7 @@ const data = [
         sellprice: 75,
         itemid: 238,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -601,7 +601,7 @@ const data = [
         sellprice: 140,
         itemid: 254,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -612,7 +612,7 @@ const data = [
         sellprice: 131,
         itemid: 262,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -623,7 +623,7 @@ const data = [
         sellprice: 73,
         itemid: 272,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -634,7 +634,7 @@ const data = [
         sellprice: 350,
         itemid: 278,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -645,7 +645,7 @@ const data = [
         sellprice: 70,
         itemid: 280,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -656,7 +656,7 @@ const data = [
         sellprice: 70,
         itemid: 282,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -667,7 +667,7 @@ const data = [
         sellprice: 45,
         itemid: 284,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -678,7 +678,7 @@ const data = [
         sellprice: 45,
         itemid: 286,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -689,7 +689,7 @@ const data = [
         sellprice: 124,
         itemid: 288,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -700,7 +700,7 @@ const data = [
         sellprice: 241,
         itemid: 292,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -711,7 +711,7 @@ const data = [
         sellprice: 180,
         itemid: 294,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -722,7 +722,7 @@ const data = [
         sellprice: 500,
         itemid: 296,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -733,7 +733,7 @@ const data = [
         sellprice: 40,
         itemid: 298,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -744,7 +744,7 @@ const data = [
         sellprice: 30,
         itemid: 302,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -755,7 +755,7 @@ const data = [
         sellprice: 111,
         itemid: 322,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -766,7 +766,7 @@ const data = [
         sellprice: 75,
         itemid: 326,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -777,7 +777,7 @@ const data = [
         sellprice: 75,
         itemid: 328,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -788,7 +788,7 @@ const data = [
         sellprice: 240,
         itemid: 332,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -799,7 +799,7 @@ const data = [
         sellprice: 51,
         itemid: 334,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -810,7 +810,7 @@ const data = [
         sellprice: 220,
         itemid: 340,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -821,7 +821,7 @@ const data = [
         sellprice: 83,
         itemid: 348,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -832,7 +832,7 @@ const data = [
         sellprice: 118,
         itemid: 350,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -843,7 +843,7 @@ const data = [
         sellprice: 61,
         itemid: 352,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -854,7 +854,7 @@ const data = [
         sellprice: 183,
         itemid: 364,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -865,7 +865,7 @@ const data = [
         sellprice: 165,
         itemid: 368,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -876,7 +876,7 @@ const data = [
         sellprice: 46,
         itemid: 378,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -887,7 +887,7 @@ const data = [
         sellprice: 50,
         itemid: 382,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -898,7 +898,7 @@ const data = [
         sellprice: 320,
         itemid: 386,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -909,7 +909,7 @@ const data = [
         sellprice: 96,
         itemid: 388,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -920,7 +920,7 @@ const data = [
         sellprice: 46,
         itemid: 390,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -931,7 +931,7 @@ const data = [
         sellprice: 96,
         itemid: 394,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -942,7 +942,7 @@ const data = [
         sellprice: 96,
         itemid: 396,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -953,7 +953,7 @@ const data = [
         sellprice: 46,
         itemid: 400,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -964,7 +964,7 @@ const data = [
         sellprice: 400,
         itemid: 402,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -975,7 +975,7 @@ const data = [
         sellprice: 400,
         itemid: 404,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -986,7 +986,7 @@ const data = [
         sellprice: 400,
         itemid: 406,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -997,7 +997,7 @@ const data = [
         sellprice: 400,
         itemid: 408,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1008,7 +1008,7 @@ const data = [
         sellprice: 400,
         itemid: 410,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1019,7 +1019,7 @@ const data = [
         sellprice: 78,
         itemid: 412,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1030,7 +1030,7 @@ const data = [
         sellprice: 78,
         itemid: 414,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1041,7 +1041,7 @@ const data = [
         sellprice: 78,
         itemid: 416,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1052,7 +1052,7 @@ const data = [
         sellprice: 50,
         itemid: 418,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1063,7 +1063,7 @@ const data = [
         sellprice: 180,
         itemid: 428,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1074,7 +1074,7 @@ const data = [
         sellprice: 180,
         itemid: 430,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1085,7 +1085,7 @@ const data = [
         sellprice: 180,
         itemid: 432,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1096,7 +1096,7 @@ const data = [
         sellprice: 33,
         itemid: 434,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1107,7 +1107,7 @@ const data = [
         sellprice: 150,
         itemid: 440,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1118,7 +1118,7 @@ const data = [
         sellprice: 150,
         itemid: 446,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1129,7 +1129,7 @@ const data = [
         sellprice: 130,
         itemid: 448,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1140,7 +1140,7 @@ const data = [
         sellprice: 120,
         itemid: 452,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1151,7 +1151,7 @@ const data = [
         sellprice: -15,
         itemid: 58,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1162,7 +1162,7 @@ const data = [
         sellprice: 146,
         itemid: 66,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1173,7 +1173,7 @@ const data = [
         sellprice: 90,
         itemid: 192,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1184,7 +1184,7 @@ const data = [
         sellprice: 51,
         itemid: 236,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1195,7 +1195,7 @@ const data = [
         sellprice: 57,
         itemid: 76,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1206,7 +1206,7 @@ const data = [
         sellprice: 128,
         itemid: 260,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1217,7 +1217,7 @@ const data = [
         sellprice: 128,
         itemid: 256,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1228,7 +1228,7 @@ const data = [
         sellprice: 126,
         itemid: 194,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1239,7 +1239,7 @@ const data = [
         sellprice: 120,
         itemid: 252,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1250,7 +1250,7 @@ const data = [
         sellprice: 175,
         itemid: 176,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1261,7 +1261,7 @@ const data = [
         sellprice: 125,
         itemid: 274,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1272,7 +1272,7 @@ const data = [
         sellprice: 50,
         itemid: 226,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1283,7 +1283,7 @@ const data = [
         sellprice: 40,
         itemid: 148,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1294,7 +1294,7 @@ const data = [
         sellprice: 146,
         itemid: 68,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1305,7 +1305,7 @@ const data = [
         sellprice: 71,
         itemid: 212,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1316,7 +1316,7 @@ const data = [
         sellprice: 86,
         itemid: 190,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1327,7 +1327,7 @@ const data = [
         sellprice: 86,
         itemid: 184,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1338,7 +1338,7 @@ const data = [
         sellprice: 86,
         itemid: 186,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1349,7 +1349,7 @@ const data = [
         sellprice: 87,
         itemid: 182,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1360,7 +1360,7 @@ const data = [
         sellprice: 142,
         itemid: 72,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1371,7 +1371,7 @@ const data = [
         sellprice: 108,
         itemid: 108,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1382,7 +1382,7 @@ const data = [
         sellprice: 63,
         itemid: 78,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1393,7 +1393,7 @@ const data = [
         sellprice: 49,
         itemid: 102,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1404,7 +1404,7 @@ const data = [
         sellprice: 51,
         itemid: 98,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1415,7 +1415,7 @@ const data = [
         sellprice: 120,
         itemid: 258,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1426,7 +1426,7 @@ const data = [
         sellprice: 62,
         itemid: 268,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1437,7 +1437,7 @@ const data = [
         sellprice: 68,
         itemid: 156,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1448,7 +1448,7 @@ const data = [
         sellprice: 68,
         itemid: 154,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1459,7 +1459,7 @@ const data = [
         sellprice: 175,
         itemid: 244,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1470,7 +1470,7 @@ const data = [
         sellprice: 170,
         itemid: 342,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1481,7 +1481,7 @@ const data = [
         sellprice: 49,
         itemid: 356,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1492,7 +1492,7 @@ const data = [
         sellprice: 40,
         itemid: 166,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1503,7 +1503,7 @@ const data = [
         sellprice: 59,
         itemid: 188,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1514,7 +1514,7 @@ const data = [
         sellprice: 335,
         itemid: 248,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1525,7 +1525,7 @@ const data = [
         sellprice: 335,
         itemid: 172,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1536,7 +1536,7 @@ const data = [
         sellprice: 90,
         itemid: 180,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1547,7 +1547,7 @@ const data = [
         sellprice: 77,
         itemid: 346,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1558,7 +1558,7 @@ const data = [
         sellprice: 205,
         itemid: 398,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1569,7 +1569,7 @@ const data = [
         sellprice: 150,
         itemid: 316,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1580,7 +1580,7 @@ const data = [
         sellprice: 150,
         itemid: 22,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1591,7 +1591,7 @@ const data = [
         sellprice: 150,
         itemid: 308,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1602,7 +1602,7 @@ const data = [
         sellprice: 150,
         itemid: 310,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1613,7 +1613,7 @@ const data = [
         sellprice: 150,
         itemid: 314,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1624,7 +1624,7 @@ const data = [
         sellprice: 200,
         itemid: 290,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1635,7 +1635,7 @@ const data = [
         sellprice: 220,
         itemid: 24,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1646,7 +1646,7 @@ const data = [
         sellprice: 210,
         itemid: 450,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1657,7 +1657,7 @@ const data = [
         sellprice: 80,
         itemid: 464,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1668,7 +1668,7 @@ const data = [
         sellprice: 130,
         itemid: 468,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1679,7 +1679,7 @@ const data = [
         sellprice: 150,
         itemid: 472,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1690,7 +1690,7 @@ const data = [
         sellprice: 65,
         itemid: 476,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1701,7 +1701,7 @@ const data = [
         sellprice: 55,
         itemid: 478,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1712,7 +1712,7 @@ const data = [
         sellprice: 150,
         itemid: 484,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1723,7 +1723,7 @@ const data = [
         sellprice: 150,
         itemid: 486,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1734,7 +1734,7 @@ const data = [
         sellprice: 150,
         itemid: 488,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1745,7 +1745,7 @@ const data = [
         sellprice: 150,
         itemid: 490,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1756,7 +1756,7 @@ const data = [
         sellprice: 60,
         itemid: 492,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1767,7 +1767,7 @@ const data = [
         sellprice: 90,
         itemid: 500,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1778,7 +1778,7 @@ const data = [
         sellprice: 165,
         itemid: 502,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1789,7 +1789,7 @@ const data = [
         sellprice: 100,
         itemid: 504,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1800,7 +1800,7 @@ const data = [
         sellprice: 130,
         itemid: 510,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1811,7 +1811,7 @@ const data = [
         sellprice: 130,
         itemid: 512,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1822,7 +1822,7 @@ const data = [
         sellprice: 130,
         itemid: 514,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1833,7 +1833,7 @@ const data = [
         sellprice: 128,
         itemid: 516,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1844,7 +1844,7 @@ const data = [
         sellprice: 210,
         itemid: 520,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1855,7 +1855,7 @@ const data = [
         sellprice: 184,
         itemid: 522,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1866,7 +1866,7 @@ const data = [
         sellprice: 150,
         itemid: 526,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1877,7 +1877,7 @@ const data = [
         sellprice: 150,
         itemid: 532,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1888,7 +1888,7 @@ const data = [
         sellprice: 200,
         itemid: 540,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1899,7 +1899,7 @@ const data = [
         sellprice: 200,
         itemid: 542,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1910,7 +1910,7 @@ const data = [
         sellprice: 150,
         itemid: 444,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1921,7 +1921,7 @@ const data = [
         sellprice: 50,
         itemid: 544,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1932,7 +1932,7 @@ const data = [
         sellprice: 300,
         itemid: 546,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1943,7 +1943,7 @@ const data = [
         sellprice: 300,
         itemid: 548,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1954,7 +1954,7 @@ const data = [
         sellprice: 300,
         itemid: 550,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1965,7 +1965,7 @@ const data = [
         sellprice: 180,
         itemid: 554,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1976,7 +1976,7 @@ const data = [
         sellprice: 110,
         itemid: 556,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1987,7 +1987,7 @@ const data = [
         sellprice: 150,
         itemid: 562,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -1998,7 +1998,7 @@ const data = [
         sellprice: 150,
         itemid: 566,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2009,7 +2009,7 @@ const data = [
         sellprice: 90,
         itemid: 568,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2020,7 +2020,7 @@ const data = [
         sellprice: 200,
         itemid: 570,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2031,7 +2031,7 @@ const data = [
         sellprice: 110,
         itemid: 572,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2042,7 +2042,7 @@ const data = [
         sellprice: 150,
         itemid: 574,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2053,7 +2053,7 @@ const data = [
         sellprice: 100,
         itemid: 124,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2064,7 +2064,7 @@ const data = [
         sellprice: 100,
         itemid: 578,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2075,7 +2075,7 @@ const data = [
         sellprice: 180,
         itemid: 582,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2086,7 +2086,7 @@ const data = [
         sellprice: 110,
         itemid: 584,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2097,7 +2097,7 @@ const data = [
         sellprice: 110,
         itemid: 586,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2108,7 +2108,7 @@ const data = [
         sellprice: 70,
         itemid: 588,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2119,7 +2119,7 @@ const data = [
         sellprice: 110,
         itemid: 590,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2130,7 +2130,7 @@ const data = [
         sellprice: 100,
         itemid: 592,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2141,7 +2141,7 @@ const data = [
         sellprice: 100,
         itemid: 594,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2152,7 +2152,7 @@ const data = [
         sellprice: 150,
         itemid: 564,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2163,7 +2163,7 @@ const data = [
         sellprice: 150,
         itemid: 596,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2174,7 +2174,7 @@ const data = [
         sellprice: 220,
         itemid: 598,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2185,7 +2185,7 @@ const data = [
         sellprice: 220,
         itemid: 600,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2196,7 +2196,7 @@ const data = [
         sellprice: 70,
         itemid: 604,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2207,7 +2207,7 @@ const data = [
         sellprice: 5,
         itemid: 610,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2218,7 +2218,7 @@ const data = [
         sellprice: 86,
         itemid: 614,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2229,7 +2229,7 @@ const data = [
         sellprice: 30,
         itemid: 616,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2240,7 +2240,7 @@ const data = [
         sellprice: 30,
         itemid: 618,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2251,7 +2251,7 @@ const data = [
         sellprice: 30,
         itemid: 620,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2262,7 +2262,7 @@ const data = [
         sellprice: 150,
         itemid: 624,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2273,7 +2273,7 @@ const data = [
         sellprice: 140,
         itemid: 612,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2284,7 +2284,7 @@ const data = [
         sellprice: 55,
         itemid: 628,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2295,7 +2295,7 @@ const data = [
         sellprice: 150,
         itemid: 630,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2306,7 +2306,7 @@ const data = [
         sellprice: 80,
         itemid: 634,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2317,7 +2317,7 @@ const data = [
         sellprice: 80,
         itemid: 636,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2328,7 +2328,7 @@ const data = [
         sellprice: 335,
         itemid: 170,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2339,7 +2339,7 @@ const data = [
         sellprice: 52,
         itemid: 106,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2350,7 +2350,7 @@ const data = [
         sellprice: 285,
         itemid: 640,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2361,7 +2361,7 @@ const data = [
         sellprice: 285,
         itemid: 642,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2372,7 +2372,7 @@ const data = [
         sellprice: 285,
         itemid: 644,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2383,7 +2383,7 @@ const data = [
         sellprice: 140,
         itemid: 498,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2394,7 +2394,7 @@ const data = [
         sellprice: 126,
         itemid: 470,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2405,7 +2405,7 @@ const data = [
         sellprice: 335,
         itemid: 168,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2416,7 +2416,7 @@ const data = [
         sellprice: 900,
         itemid: 648,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2427,7 +2427,7 @@ const data = [
         sellprice: 50,
         itemid: 652,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2438,7 +2438,7 @@ const data = [
         sellprice: 260,
         itemid: 650,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2449,7 +2449,7 @@ const data = [
         sellprice: 130,
         itemid: 654,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2460,7 +2460,7 @@ const data = [
         sellprice: 285,
         itemid: 656,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2471,7 +2471,7 @@ const data = [
         sellprice: 150,
         itemid: 658,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2482,7 +2482,7 @@ const data = [
         sellprice: 150,
         itemid: 660,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2493,7 +2493,7 @@ const data = [
         sellprice: 49,
         itemid: 662,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2504,7 +2504,7 @@ const data = [
         sellprice: 300,
         itemid: 638,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2515,7 +2515,7 @@ const data = [
         sellprice: 150,
         itemid: 666,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2526,7 +2526,7 @@ const data = [
         sellprice: 150,
         itemid: 668,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2537,7 +2537,7 @@ const data = [
         sellprice: 200,
         itemid: 670,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2548,7 +2548,7 @@ const data = [
         sellprice: 400,
         itemid: 672,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2559,7 +2559,7 @@ const data = [
         sellprice: 115,
         itemid: 674,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2570,7 +2570,7 @@ const data = [
         sellprice: 150,
         itemid: 676,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2581,7 +2581,7 @@ const data = [
         sellprice: 1200,
         itemid: 678,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2592,7 +2592,7 @@ const data = [
         sellprice: 285,
         itemid: 680,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2603,7 +2603,7 @@ const data = [
         sellprice: 285,
         itemid: 682,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2614,7 +2614,7 @@ const data = [
         sellprice: 55,
         itemid: 684,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2625,7 +2625,7 @@ const data = [
         sellprice: 150,
         itemid: 686,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2636,7 +2636,7 @@ const data = [
         sellprice: 190,
         itemid: 688,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2647,7 +2647,7 @@ const data = [
         sellprice: 140,
         itemid: 690,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2658,7 +2658,7 @@ const data = [
         sellprice: 150,
         itemid: 694,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2669,7 +2669,7 @@ const data = [
         sellprice: 120,
         itemid: 692,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2680,7 +2680,7 @@ const data = [
         sellprice: 36,
         itemid: 696,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2691,7 +2691,7 @@ const data = [
         sellprice: 230,
         itemid: 698,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2702,7 +2702,7 @@ const data = [
         sellprice: 270,
         itemid: 700,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2713,7 +2713,7 @@ const data = [
         sellprice: 150,
         itemid: 702,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2724,7 +2724,7 @@ const data = [
         sellprice: 120,
         itemid: 704,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2735,7 +2735,7 @@ const data = [
         sellprice: 120,
         itemid: 708,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2746,7 +2746,7 @@ const data = [
         sellprice: 50,
         itemid: 710,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2757,7 +2757,7 @@ const data = [
         sellprice: 50,
         itemid: 712,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2768,7 +2768,7 @@ const data = [
         sellprice: 175,
         itemid: 714,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2779,7 +2779,7 @@ const data = [
         sellprice: 90,
         itemid: 718,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2790,7 +2790,7 @@ const data = [
         sellprice: 100,
         itemid: 726,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2801,7 +2801,7 @@ const data = [
         sellprice: 150,
         itemid: 728,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2812,7 +2812,7 @@ const data = [
         sellprice: 230,
         itemid: 732,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2823,7 +2823,7 @@ const data = [
         sellprice: 120,
         itemid: 744,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2834,7 +2834,7 @@ const data = [
         sellprice: 114,
         itemid: 746,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2845,7 +2845,7 @@ const data = [
         sellprice: 114,
         itemid: 748,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2856,7 +2856,7 @@ const data = [
         sellprice: 125,
         itemid: 754,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2867,7 +2867,7 @@ const data = [
         sellprice: 50,
         itemid: 756,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2878,7 +2878,7 @@ const data = [
         sellprice: 46,
         itemid: 760,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2889,7 +2889,7 @@ const data = [
         sellprice: 80,
         itemid: 762,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2900,7 +2900,7 @@ const data = [
         sellprice: 90,
         itemid: 764,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2911,7 +2911,7 @@ const data = [
         sellprice: 0,
         itemid: 766,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2922,7 +2922,7 @@ const data = [
         sellprice: 40,
         itemid: 772,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2933,7 +2933,7 @@ const data = [
         sellprice: 50,
         itemid: 774,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2944,7 +2944,7 @@ const data = [
         sellprice: 100,
         itemid: 780,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2955,7 +2955,7 @@ const data = [
         sellprice: 100,
         itemid: 782,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2966,7 +2966,7 @@ const data = [
         sellprice: 160,
         itemid: 790,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2977,7 +2977,7 @@ const data = [
         sellprice: 350,
         itemid: 794,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2988,7 +2988,7 @@ const data = [
         sellprice: 120,
         itemid: 798,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -2999,7 +2999,7 @@ const data = [
         sellprice: 140,
         itemid: 454,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3010,7 +3010,7 @@ const data = [
         sellprice: 95,
         itemid: 354,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3021,7 +3021,7 @@ const data = [
         sellprice: 155,
         itemid: 792,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3032,7 +3032,7 @@ const data = [
         sellprice: 105,
         itemid: 576,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3043,7 +3043,7 @@ const data = [
         sellprice: 120,
         itemid: 730,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3054,7 +3054,7 @@ const data = [
         sellprice: 120,
         itemid: 716,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3065,7 +3065,7 @@ const data = [
         sellprice: 180,
         itemid: 800,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3076,7 +3076,7 @@ const data = [
         sellprice: 90,
         itemid: 424,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3087,7 +3087,7 @@ const data = [
         sellprice: 240,
         itemid: 770,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3098,7 +3098,7 @@ const data = [
         sellprice: 140,
         itemid: 802,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3109,7 +3109,7 @@ const data = [
         sellprice: 100,
         itemid: 804,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3120,7 +3120,7 @@ const data = [
         sellprice: 100,
         itemid: 806,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3131,7 +3131,7 @@ const data = [
         sellprice: 10,
         itemid: 104,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3142,7 +3142,7 @@ const data = [
         sellprice: 65,
         itemid: 808,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3153,7 +3153,7 @@ const data = [
         sellprice: 120,
         itemid: 810,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3164,7 +3164,7 @@ const data = [
         sellprice: 65,
         itemid: 812,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3175,7 +3175,7 @@ const data = [
         sellprice: 50,
         itemid: 816,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3186,7 +3186,7 @@ const data = [
         sellprice: 108,
         itemid: 112,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3197,7 +3197,7 @@ const data = [
         sellprice: 130,
         itemid: 820,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3208,7 +3208,7 @@ const data = [
         sellprice: 100,
         itemid: 826,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3219,7 +3219,7 @@ const data = [
         sellprice: 120,
         itemid: 828,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3230,7 +3230,7 @@ const data = [
         sellprice: 150,
         itemid: 830,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3241,7 +3241,7 @@ const data = [
         sellprice: 210,
         itemid: 832,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3252,7 +3252,7 @@ const data = [
         sellprice: 75,
         itemid: 834,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3263,7 +3263,7 @@ const data = [
         sellprice: 120,
         itemid: 842,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3274,7 +3274,7 @@ const data = [
         sellprice: 210,
         itemid: 846,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3285,7 +3285,7 @@ const data = [
         sellprice: 240,
         itemid: 848,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3296,7 +3296,7 @@ const data = [
         sellprice: 100,
         itemid: 858,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3307,7 +3307,7 @@ const data = [
         sellprice: 150,
         itemid: 864,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3318,7 +3318,7 @@ const data = [
         sellprice: 61,
         itemid: 866,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3329,7 +3329,7 @@ const data = [
         sellprice: 140,
         itemid: 870,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3340,7 +3340,7 @@ const data = [
         sellprice: 80,
         itemid: 872,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3351,7 +3351,7 @@ const data = [
         sellprice: 80,
         itemid: 874,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3362,7 +3362,7 @@ const data = [
         sellprice: 65,
         itemid: 878,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3373,7 +3373,7 @@ const data = [
         sellprice: 75,
         itemid: 880,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3384,7 +3384,7 @@ const data = [
         sellprice: 95,
         itemid: 886,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3395,7 +3395,7 @@ const data = [
         sellprice: 200,
         itemid: 892,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3406,7 +3406,7 @@ const data = [
         sellprice: 150,
         itemid: 894,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3417,7 +3417,7 @@ const data = [
         sellprice: 200,
         itemid: 62,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3428,7 +3428,7 @@ const data = [
         sellprice: 130,
         itemid: 890,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3439,7 +3439,7 @@ const data = [
         sellprice: 140,
         itemid: 370,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3450,7 +3450,7 @@ const data = [
         sellprice: 170,
         itemid: 646,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3461,7 +3461,7 @@ const data = [
         sellprice: 470,
         itemid: 506,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3472,7 +3472,7 @@ const data = [
         sellprice: 170,
         itemid: 330,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3483,7 +3483,7 @@ const data = [
         sellprice: 20,
         itemid: 896,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3494,7 +3494,7 @@ const data = [
         sellprice: 190,
         itemid: 742,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3505,7 +3505,7 @@ const data = [
         sellprice: 175,
         itemid: 740,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3516,7 +3516,7 @@ const data = [
         sellprice: 175,
         itemid: 898,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3527,7 +3527,7 @@ const data = [
         sellprice: 80,
         itemid: 706,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3538,7 +3538,7 @@ const data = [
         sellprice: 45,
         itemid: 912,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3549,7 +3549,7 @@ const data = [
         sellprice: 65,
         itemid: 916,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3560,7 +3560,7 @@ const data = [
         sellprice: 150,
         itemid: 932,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3571,7 +3571,7 @@ const data = [
         sellprice: 30,
         itemid: 818,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3582,7 +3582,7 @@ const data = [
         sellprice: 150,
         itemid: 250,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3593,7 +3593,7 @@ const data = [
         sellprice: 60,
         itemid: 938,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3604,7 +3604,7 @@ const data = [
         sellprice: 30,
         itemid: 796,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3615,7 +3615,7 @@ const data = [
         sellprice: 100,
         itemid: 784,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3626,7 +3626,7 @@ const data = [
         sellprice: 100,
         itemid: 664,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3637,7 +3637,7 @@ const data = [
         sellprice: 130,
         itemid: 888,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3648,7 +3648,7 @@ const data = [
         sellprice: 140,
         itemid: 814,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3659,7 +3659,7 @@ const data = [
         sellprice: 60,
         itemid: 940,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3670,7 +3670,7 @@ const data = [
         sellprice: 360,
         itemid: 906,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3681,7 +3681,7 @@ const data = [
         sellprice: 200,
         itemid: 838,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3692,7 +3692,7 @@ const data = [
         sellprice: 70,
         itemid: 200,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3703,7 +3703,7 @@ const data = [
         sellprice: 20,
         itemid: 80,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3714,7 +3714,7 @@ const data = [
         sellprice: 55,
         itemid: 856,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3725,7 +3725,7 @@ const data = [
         sellprice: 49,
         itemid: 88,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3736,7 +3736,7 @@ const data = [
         sellprice: 60,
         itemid: 946,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3747,7 +3747,7 @@ const data = [
         sellprice: 160,
         itemid: 724,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3758,7 +3758,7 @@ const data = [
         sellprice: 50,
         itemid: 210,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3769,7 +3769,7 @@ const data = [
         sellprice: 60,
         itemid: 436,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3780,7 +3780,7 @@ const data = [
         sellprice: 60,
         itemid: 944,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3791,7 +3791,7 @@ const data = [
         sellprice: 165,
         itemid: 954,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3802,7 +3802,7 @@ const data = [
         sellprice: 185,
         itemid: 958,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3813,7 +3813,7 @@ const data = [
         sellprice: 180,
         itemid: 966,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3824,7 +3824,7 @@ const data = [
         sellprice: 180,
         itemid: 968,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3835,7 +3835,7 @@ const data = [
         sellprice: 170,
         itemid: 970,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3846,7 +3846,7 @@ const data = [
         sellprice: 75,
         itemid: 840,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3857,7 +3857,7 @@ const data = [
         sellprice: 95,
         itemid: 466,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3868,7 +3868,7 @@ const data = [
         sellprice: 50,
         itemid: 164,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3879,7 +3879,7 @@ const data = [
         sellprice: 95,
         itemid: 508,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3890,7 +3890,7 @@ const data = [
         sellprice: 95,
         itemid: 602,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3901,7 +3901,7 @@ const data = [
         sellprice: 225,
         itemid: 914,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3912,7 +3912,7 @@ const data = [
         sellprice: 140,
         itemid: 720,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3923,7 +3923,7 @@ const data = [
         sellprice: 225,
         itemid: 722,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3934,7 +3934,7 @@ const data = [
         sellprice: 190,
         itemid: 974,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3945,7 +3945,7 @@ const data = [
         sellprice: 90,
         itemid: 822,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3956,7 +3956,7 @@ const data = [
         sellprice: 90,
         itemid: 824,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3967,7 +3967,7 @@ const data = [
         sellprice: 210,
         itemid: 980,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3978,7 +3978,7 @@ const data = [
         sellprice: 75,
         itemid: 984,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -3989,7 +3989,7 @@ const data = [
         sellprice: 160,
         itemid: 456,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4000,7 +4000,7 @@ const data = [
         sellprice: 160,
         itemid: 462,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4011,7 +4011,7 @@ const data = [
         sellprice: 180,
         itemid: 988,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4022,7 +4022,7 @@ const data = [
         sellprice: 140,
         itemid: 92,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4033,7 +4033,7 @@ const data = [
         sellprice: 55,
         itemid: 990,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4044,7 +4044,7 @@ const data = [
         sellprice: 55,
         itemid: 992,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4055,7 +4055,7 @@ const data = [
         sellprice: 165,
         itemid: 246,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4066,7 +4066,7 @@ const data = [
         sellprice: 200,
         itemid: 998,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4077,7 +4077,7 @@ const data = [
         sellprice: 200,
         itemid: 1000,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4088,7 +4088,7 @@ const data = [
         sellprice: 260,
         itemid: 1002,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4099,7 +4099,7 @@ const data = [
         sellprice: 235,
         itemid: 1004,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4110,7 +4110,7 @@ const data = [
         sellprice: 240,
         itemid: 1006,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4121,7 +4121,7 @@ const data = [
         sellprice: 70,
         itemid: 384,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4132,7 +4132,7 @@ const data = [
         sellprice: 70,
         itemid: 788,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4143,7 +4143,7 @@ const data = [
         sellprice: 235,
         itemid: 1012,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4154,7 +4154,7 @@ const data = [
         sellprice: 235,
         itemid: 1014,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4165,7 +4165,7 @@ const data = [
         sellprice: 45,
         itemid: 1018,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4176,7 +4176,7 @@ const data = [
         sellprice: 150,
         itemid: 1026,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4187,7 +4187,7 @@ const data = [
         sellprice: 145,
         itemid: 1028,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4198,7 +4198,7 @@ const data = [
         sellprice: 200,
         itemid: 1034,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4209,7 +4209,7 @@ const data = [
         sellprice: 115,
         itemid: 1036,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4220,7 +4220,7 @@ const data = [
         sellprice: 345,
         itemid: 1038,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4231,7 +4231,7 @@ const data = [
         sellprice: 115,
         itemid: 1040,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4242,7 +4242,7 @@ const data = [
         sellprice: 140,
         itemid: 1042,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4253,7 +4253,7 @@ const data = [
         sellprice: 155,
         itemid: 1044,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4264,7 +4264,7 @@ const data = [
         sellprice: 60,
         itemid: 1048,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4275,7 +4275,7 @@ const data = [
         sellprice: 60,
         itemid: 1050,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4286,7 +4286,7 @@ const data = [
         sellprice: 130,
         itemid: 1052,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4297,7 +4297,7 @@ const data = [
         sellprice: 125,
         itemid: 1056,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4308,7 +4308,7 @@ const data = [
         sellprice: 400,
         itemid: 214,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4319,7 +4319,7 @@ const data = [
         sellprice: 82,
         itemid: 270,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4330,7 +4330,7 @@ const data = [
         sellprice: 160,
         itemid: 458,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4341,7 +4341,7 @@ const data = [
         sellprice: 130,
         itemid: 442,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4352,7 +4352,7 @@ const data = [
         sellprice: 240,
         itemid: 1060,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4363,7 +4363,7 @@ const data = [
         sellprice: 60,
         itemid: 1064,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4374,7 +4374,7 @@ const data = [
         sellprice: 165,
         itemid: 1066,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4385,7 +4385,7 @@ const data = [
         sellprice: 150,
         itemid: 134,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4396,7 +4396,7 @@ const data = [
         sellprice: 55,
         itemid: 234,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4407,7 +4407,7 @@ const data = [
         sellprice: 360,
         itemid: 1072,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4418,7 +4418,7 @@ const data = [
         sellprice: 360,
         itemid: 1074,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4429,7 +4429,7 @@ const data = [
         sellprice: 360,
         itemid: 1076,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4440,7 +4440,7 @@ const data = [
         sellprice: 80,
         itemid: 1082,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4451,7 +4451,7 @@ const data = [
         sellprice: 110,
         itemid: 1084,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4462,7 +4462,7 @@ const data = [
         sellprice: 210,
         itemid: 1086,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4473,7 +4473,7 @@ const data = [
         sellprice: 60,
         itemid: 494,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4484,7 +4484,7 @@ const data = [
         sellprice: 60,
         itemid: 496,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4495,7 +4495,7 @@ const data = [
         sellprice: 50,
         itemid: 392,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4506,7 +4506,7 @@ const data = [
         sellprice: 50,
         itemid: 380,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4517,7 +4517,7 @@ const data = [
         sellprice: 160,
         itemid: 948,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4528,7 +4528,7 @@ const data = [
         sellprice: 160,
         itemid: 950,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4539,7 +4539,7 @@ const data = [
         sellprice: 190,
         itemid: 882,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4550,7 +4550,7 @@ const data = [
         sellprice: 18,
         itemid: 1088,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4561,7 +4561,7 @@ const data = [
         sellprice: 90,
         itemid: 1090,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4572,7 +4572,7 @@ const data = [
         sellprice: 42,
         itemid: 196,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4583,7 +4583,7 @@ const data = [
         sellprice: 42,
         itemid: 150,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4594,7 +4594,7 @@ const data = [
         sellprice: 42,
         itemid: 216,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4605,7 +4605,7 @@ const data = [
         sellprice: 42,
         itemid: 198,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4616,7 +4616,7 @@ const data = [
         sellprice: 390,
         itemid: 1092,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4627,7 +4627,7 @@ const data = [
         sellprice: 52,
         itemid: 850,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4638,7 +4638,7 @@ const data = [
         sellprice: 49,
         itemid: 622,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4649,7 +4649,7 @@ const data = [
         sellprice: 196,
         itemid: 1094,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4660,7 +4660,7 @@ const data = [
         sellprice: 160,
         itemid: 936,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4671,7 +4671,7 @@ const data = [
         sellprice: 56,
         itemid: 1096,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4682,7 +4682,7 @@ const data = [
         sellprice: 57,
         itemid: 852,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4693,7 +4693,7 @@ const data = [
         sellprice: 410,
         itemid: 1098,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4704,7 +4704,7 @@ const data = [
         sellprice: 186,
         itemid: 1100,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4715,7 +4715,7 @@ const data = [
         sellprice: 40,
         itemid: 1102,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4726,7 +4726,7 @@ const data = [
         sellprice: 350,
         itemid: 982,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4737,7 +4737,7 @@ const data = [
         sellprice: 290,
         itemid: 1008,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4748,7 +4748,7 @@ const data = [
         sellprice: 235,
         itemid: 996,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4759,7 +4759,7 @@ const data = [
         sellprice: 340,
         itemid: 904,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4770,7 +4770,7 @@ const data = [
         sellprice: 315,
         itemid: 1112,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4781,7 +4781,7 @@ const data = [
         sellprice: 255,
         itemid: 1030,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4792,7 +4792,7 @@ const data = [
         sellprice: 30,
         itemid: 758,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4803,7 +4803,7 @@ const data = [
         sellprice: 30,
         itemid: 482,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4814,7 +4814,7 @@ const data = [
         sellprice: 320,
         itemid: 1114,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4825,7 +4825,7 @@ const data = [
         sellprice: 120,
         itemid: 1116,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4836,7 +4836,7 @@ const data = [
         sellprice: 380,
         itemid: 1118,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4847,7 +4847,7 @@ const data = [
         sellprice: 25,
         itemid: 480,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4858,7 +4858,7 @@ const data = [
         sellprice: 285,
         itemid: 1124,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4869,7 +4869,7 @@ const data = [
         sellprice: 250,
         itemid: 1130,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4880,7 +4880,7 @@ const data = [
         sellprice: 60,
         itemid: 1132,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4891,7 +4891,7 @@ const data = [
         sellprice: 170,
         itemid: 1136,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4902,7 +4902,7 @@ const data = [
         sellprice: 70,
         itemid: 1138,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4913,7 +4913,7 @@ const data = [
         sellprice: 250,
         itemid: 1140,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4924,7 +4924,7 @@ const data = [
         sellprice: 355,
         itemid: 1144,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4935,7 +4935,7 @@ const data = [
         sellprice: 160,
         itemid: 1146,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4946,7 +4946,7 @@ const data = [
         sellprice: 205,
         itemid: 1148,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4957,7 +4957,7 @@ const data = [
         sellprice: 45,
         itemid: 1150,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4968,7 +4968,7 @@ const data = [
         sellprice: 45,
         itemid: 1152,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4979,7 +4979,7 @@ const data = [
         sellprice: 45,
         itemid: 1154,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -4990,7 +4990,7 @@ const data = [
         sellprice: 170,
         itemid: 94,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5001,7 +5001,7 @@ const data = [
         sellprice: 205,
         itemid: 44,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5012,7 +5012,7 @@ const data = [
         sellprice: 165,
         itemid: 90,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5023,7 +5023,7 @@ const data = [
         sellprice: 40,
         itemid: 1158,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5034,7 +5034,7 @@ const data = [
         sellprice: 220,
         itemid: 1160,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5045,7 +5045,7 @@ const data = [
         sellprice: 210,
         itemid: 1162,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5056,7 +5056,7 @@ const data = [
         sellprice: 290,
         itemid: 1168,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5067,7 +5067,7 @@ const data = [
         sellprice: 525,
         itemid: 1170,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5078,7 +5078,7 @@ const data = [
         sellprice: 230,
         itemid: 1174,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5089,7 +5089,7 @@ const data = [
         sellprice: 245,
         itemid: 1176,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5100,7 +5100,7 @@ const data = [
         sellprice: 185,
         itemid: 1180,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5111,7 +5111,7 @@ const data = [
         sellprice: 240,
         itemid: 1182,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5122,7 +5122,7 @@ const data = [
         sellprice: 240,
         itemid: 1164,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5133,7 +5133,7 @@ const data = [
         sellprice: 240,
         itemid: 1184,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5144,7 +5144,7 @@ const data = [
         sellprice: 30,
         itemid: 1186,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5155,7 +5155,7 @@ const data = [
         sellprice: 30,
         itemid: 1192,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5166,7 +5166,7 @@ const data = [
         sellprice: 180,
         itemid: 956,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5177,7 +5177,7 @@ const data = [
         sellprice: 180,
         itemid: 952,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5188,7 +5188,7 @@ const data = [
         sellprice: 185,
         itemid: 606,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5199,7 +5199,7 @@ const data = [
         sellprice: 255,
         itemid: 1200,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5210,7 +5210,7 @@ const data = [
         sellprice: 255,
         itemid: 1202,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5221,7 +5221,7 @@ const data = [
         sellprice: 230,
         itemid: 1204,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5232,7 +5232,7 @@ const data = [
         sellprice: 230,
         itemid: 1206,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5243,7 +5243,7 @@ const data = [
         sellprice: 155,
         itemid: 1106,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5254,7 +5254,7 @@ const data = [
         sellprice: 185,
         itemid: 1208,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5265,7 +5265,7 @@ const data = [
         sellprice: 175,
         itemid: 338,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5276,7 +5276,7 @@ const data = [
         sellprice: 225,
         itemid: 1210,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5287,7 +5287,7 @@ const data = [
         sellprice: 70,
         itemid: 1212,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5298,7 +5298,7 @@ const data = [
         sellprice: 170,
         itemid: 1214,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5309,7 +5309,7 @@ const data = [
         sellprice: 170,
         itemid: 1216,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5320,7 +5320,7 @@ const data = [
         sellprice: 570,
         itemid: 1220,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5331,7 +5331,7 @@ const data = [
         sellprice: 50,
         itemid: 218,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5342,7 +5342,7 @@ const data = [
         sellprice: 75,
         itemid: 1224,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5353,7 +5353,7 @@ const data = [
         sellprice: 340,
         itemid: 902,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5364,7 +5364,7 @@ const data = [
         sellprice: 55,
         itemid: 1022,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5375,7 +5375,7 @@ const data = [
         sellprice: 200,
         itemid: 1234,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5386,7 +5386,7 @@ const data = [
         sellprice: 415,
         itemid: 1250,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5397,7 +5397,7 @@ const data = [
         sellprice: 185,
         itemid: 1258,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5408,7 +5408,7 @@ const data = [
         sellprice: 285,
         itemid: 1260,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5419,7 +5419,7 @@ const data = [
         sellprice: 215,
         itemid: 1262,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5430,7 +5430,7 @@ const data = [
         sellprice: 90,
         itemid: 1264,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5441,7 +5441,7 @@ const data = [
         sellprice: 370,
         itemid: 1266,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5452,7 +5452,7 @@ const data = [
         sellprice: 370,
         itemid: 1268,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5463,7 +5463,7 @@ const data = [
         sellprice: 365,
         itemid: 1270,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5474,7 +5474,7 @@ const data = [
         sellprice: 180,
         itemid: 1272,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5485,7 +5485,7 @@ const data = [
         sellprice: 300,
         itemid: 1274,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5496,7 +5496,7 @@ const data = [
         sellprice: 299,
         itemid: 1276,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5507,7 +5507,7 @@ const data = [
         sellprice: 300,
         itemid: 1278,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5518,7 +5518,7 @@ const data = [
         sellprice: 170,
         itemid: 1284,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5529,7 +5529,7 @@ const data = [
         sellprice: 370,
         itemid: 1286,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5540,7 +5540,7 @@ const data = [
         sellprice: 350,
         itemid: 1290,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5551,7 +5551,7 @@ const data = [
         sellprice: 180,
         itemid: 374,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5562,7 +5562,7 @@ const data = [
         sellprice: 180,
         itemid: 964,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5573,7 +5573,7 @@ const data = [
         sellprice: 180,
         itemid: 1194,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5584,7 +5584,7 @@ const data = [
         sellprice: 180,
         itemid: 524,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5595,7 +5595,7 @@ const data = [
         sellprice: 180,
         itemid: 750,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5606,7 +5606,7 @@ const data = [
         sellprice: 180,
         itemid: 318,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5617,7 +5617,7 @@ const data = [
         sellprice: 180,
         itemid: 1244,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5628,7 +5628,7 @@ const data = [
         sellprice: 290,
         itemid: 1298,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5639,7 +5639,7 @@ const data = [
         sellprice: 85,
         itemid: 1300,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5650,7 +5650,7 @@ const data = [
         sellprice: 85,
         itemid: 1302,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5661,7 +5661,7 @@ const data = [
         sellprice: 333,
         itemid: 1110,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5672,7 +5672,7 @@ const data = [
         sellprice: 105,
         itemid: 1304,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5683,7 +5683,7 @@ const data = [
         sellprice: 285,
         itemid: 1306,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5694,7 +5694,7 @@ const data = [
         sellprice: 75,
         itemid: 1308,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5705,7 +5705,7 @@ const data = [
         sellprice: 10,
         itemid: 1310,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5716,7 +5716,7 @@ const data = [
         sellprice: 150,
         itemid: 1316,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5727,7 +5727,7 @@ const data = [
         sellprice: 83,
         itemid: 1288,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5738,7 +5738,7 @@ const data = [
         sellprice: 180,
         itemid: 228,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5749,7 +5749,7 @@ const data = [
         sellprice: 180,
         itemid: 230,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5760,7 +5760,7 @@ const data = [
         sellprice: 180,
         itemid: 240,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5771,7 +5771,7 @@ const data = [
         sellprice: 180,
         itemid: 242,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5782,7 +5782,7 @@ const data = [
         sellprice: 180,
         itemid: 994,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5793,7 +5793,7 @@ const data = [
         sellprice: 185,
         itemid: 1318,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5804,7 +5804,7 @@ const data = [
         sellprice: 145,
         itemid: 1320,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5815,7 +5815,7 @@ const data = [
         sellprice: 60,
         itemid: 1068,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5826,7 +5826,7 @@ const data = [
         sellprice: 225,
         itemid: 372,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5837,7 +5837,7 @@ const data = [
         sellprice: 27,
         itemid: 1332,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5848,7 +5848,7 @@ const data = [
         sellprice: 160,
         itemid: 1256,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5859,7 +5859,7 @@ const data = [
         sellprice: 290,
         itemid: 1330,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5870,7 +5870,7 @@ const data = [
         sellprice: 260,
         itemid: 1016,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5881,7 +5881,7 @@ const data = [
         sellprice: 200,
         itemid: 1236,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5892,7 +5892,7 @@ const data = [
         sellprice: 200,
         itemid: 1346,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5903,7 +5903,7 @@ const data = [
         sellprice: 7,
         itemid: 50,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5914,7 +5914,7 @@ const data = [
         sellprice: 180,
         itemid: 1348,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5925,7 +5925,7 @@ const data = [
         sellprice: 85,
         itemid: 1232,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5936,7 +5936,7 @@ const data = [
         sellprice: 105,
         itemid: 366,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5947,7 +5947,7 @@ const data = [
         sellprice: 30,
         itemid: 1354,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5958,7 +5958,7 @@ const data = [
         sellprice: 160,
         itemid: 1362,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5969,7 +5969,7 @@ const data = [
         sellprice: 260,
         itemid: 1364,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5980,7 +5980,7 @@ const data = [
         sellprice: 60,
         itemid: 1366,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -5991,7 +5991,7 @@ const data = [
         sellprice: 120,
         itemid: 1368,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6002,7 +6002,7 @@ const data = [
         sellprice: 100,
         itemid: 1280,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6013,7 +6013,7 @@ const data = [
         sellprice: 95,
         itemid: 1370,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6024,7 +6024,7 @@ const data = [
         sellprice: 106,
         itemid: 1372,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6035,7 +6035,7 @@ const data = [
         sellprice: 105,
         itemid: 1380,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6046,7 +6046,7 @@ const data = [
         sellprice: 220,
         itemid: 1344,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6057,7 +6057,7 @@ const data = [
         sellprice: 115,
         itemid: 1020,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6068,7 +6068,7 @@ const data = [
         sellprice: 195,
         itemid: 1398,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6079,7 +6079,7 @@ const data = [
         sellprice: 215,
         itemid: 1322,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6090,7 +6090,7 @@ const data = [
         sellprice: 180,
         itemid: 1402,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6101,7 +6101,7 @@ const data = [
         sellprice: 180,
         itemid: 1404,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6112,7 +6112,7 @@ const data = [
         sellprice: 165,
         itemid: 1408,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6123,7 +6123,7 @@ const data = [
         sellprice: 90,
         itemid: 1410,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6134,7 +6134,7 @@ const data = [
         sellprice: 110,
         itemid: 1412,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6145,7 +6145,7 @@ const data = [
         sellprice: 390,
         itemid: 1228,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6156,7 +6156,7 @@ const data = [
         sellprice: 390,
         itemid: 1248,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6167,7 +6167,7 @@ const data = [
         sellprice: 200,
         itemid: 972,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6178,7 +6178,7 @@ const data = [
         sellprice: 55,
         itemid: 930,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6189,7 +6189,7 @@ const data = [
         sellprice: 0,
         itemid: 1418,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6200,7 +6200,7 @@ const data = [
         sellprice: 0,
         itemid: 1420,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6211,7 +6211,7 @@ const data = [
         sellprice: 50,
         itemid: 1422,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6222,7 +6222,7 @@ const data = [
         sellprice: 150,
         itemid: 1424,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6233,7 +6233,7 @@ const data = [
         sellprice: 230,
         itemid: 1426,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6244,7 +6244,7 @@ const data = [
         sellprice: 195,
         itemid: 1396,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6255,7 +6255,7 @@ const data = [
         sellprice: 65,
         itemid: 1134,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6266,7 +6266,7 @@ const data = [
         sellprice: -10,
         itemid: 1432,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6277,7 +6277,7 @@ const data = [
         sellprice: 195,
         itemid: 1292,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6288,7 +6288,7 @@ const data = [
         sellprice: 185,
         itemid: 1324,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6299,7 +6299,7 @@ const data = [
         sellprice: 260,
         itemid: 1440,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6310,7 +6310,7 @@ const data = [
         sellprice: 180,
         itemid: 1376,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6321,7 +6321,7 @@ const data = [
         sellprice: 230,
         itemid: 1444,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6332,7 +6332,7 @@ const data = [
         sellprice: 230,
         itemid: 1446,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6343,7 +6343,7 @@ const data = [
         sellprice: 60,
         itemid: 960,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6354,7 +6354,7 @@ const data = [
         sellprice: 90,
         itemid: 1448,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6365,7 +6365,7 @@ const data = [
         sellprice: 100,
         itemid: 1450,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6376,7 +6376,7 @@ const data = [
         sellprice: 100,
         itemid: 1452,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6387,7 +6387,7 @@ const data = [
         sellprice: 120,
         itemid: 1454,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6398,7 +6398,7 @@ const data = [
         sellprice: 120,
         itemid: 1360,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6409,7 +6409,7 @@ const data = [
         sellprice: 100,
         itemid: 1458,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6420,7 +6420,7 @@ const data = [
         sellprice: 50,
         itemid: 1460,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6431,7 +6431,7 @@ const data = [
         sellprice: 210,
         itemid: 962,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6442,7 +6442,7 @@ const data = [
         sellprice: 210,
         itemid: 1172,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6453,7 +6453,7 @@ const data = [
         sellprice: 95,
         itemid: 1468,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6464,7 +6464,7 @@ const data = [
         sellprice: 32,
         itemid: 1334,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6475,7 +6475,7 @@ const data = [
         sellprice: 32,
         itemid: 1350,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6486,7 +6486,7 @@ const data = [
         sellprice: 24,
         itemid: 1190,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6497,7 +6497,7 @@ const data = [
         sellprice: 185,
         itemid: 1470,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6508,7 +6508,7 @@ const data = [
         sellprice: 195,
         itemid: 528,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6519,7 +6519,7 @@ const data = [
         sellprice: 115,
         itemid: 1024,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6530,7 +6530,7 @@ const data = [
         sellprice: 180,
         itemid: 1472,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6541,7 +6541,7 @@ const data = [
         sellprice: 65,
         itemid: 1342,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6552,7 +6552,7 @@ const data = [
         sellprice: 115,
         itemid: 1474,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6563,7 +6563,7 @@ const data = [
         sellprice: 215,
         itemid: 900,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6574,7 +6574,7 @@ const data = [
         sellprice: 190,
         itemid: 1480,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6585,7 +6585,7 @@ const data = [
         sellprice: 155,
         itemid: 1414,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6596,7 +6596,7 @@ const data = [
         sellprice: 135,
         itemid: 1484,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6607,7 +6607,7 @@ const data = [
         sellprice: 190,
         itemid: 1486,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6618,7 +6618,7 @@ const data = [
         sellprice: 150,
         itemid: 1478,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6629,7 +6629,7 @@ const data = [
         sellprice: 100,
         itemid: 1382,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6640,7 +6640,7 @@ const data = [
         sellprice: 238,
         itemid: 1504,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6651,7 +6651,7 @@ const data = [
         sellprice: 144,
         itemid: 1508,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6662,7 +6662,7 @@ const data = [
         sellprice: 181,
         itemid: 1514,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6673,7 +6673,7 @@ const data = [
         sellprice: 234,
         itemid: 1518,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6684,7 +6684,7 @@ const data = [
         sellprice: 153,
         itemid: 1488,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6695,7 +6695,7 @@ const data = [
         sellprice: 146,
         itemid: 1314,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6706,7 +6706,7 @@ const data = [
         sellprice: 170,
         itemid: 1436,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6717,7 +6717,7 @@ const data = [
         sellprice: 170,
         itemid: 306,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6728,7 +6728,7 @@ const data = [
         sellprice: 109,
         itemid: 1498,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6739,7 +6739,7 @@ const data = [
         sellprice: 109,
         itemid: 1496,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6750,7 +6750,7 @@ const data = [
         sellprice: 276,
         itemid: 1528,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6761,7 +6761,7 @@ const data = [
         sellprice: 62,
         itemid: 942,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6772,7 +6772,7 @@ const data = [
         sellprice: 74,
         itemid: 1500,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6783,7 +6783,7 @@ const data = [
         sellprice: 172,
         itemid: 538,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6794,7 +6794,7 @@ const data = [
         sellprice: 129,
         itemid: 276,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6805,7 +6805,7 @@ const data = [
         sellprice: 247,
         itemid: 1442,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6816,7 +6816,7 @@ const data = [
         sellprice: 88,
         itemid: 360,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6827,7 +6827,7 @@ const data = [
         sellprice: 77,
         itemid: 1238,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6838,7 +6838,7 @@ const data = [
         sellprice: 76,
         itemid: 1536,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6849,7 +6849,7 @@ const data = [
         sellprice: 88,
         itemid: 836,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6860,7 +6860,7 @@ const data = [
         sellprice: 58,
         itemid: 34,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6871,7 +6871,7 @@ const data = [
         sellprice: 177,
         itemid: 1222,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6882,7 +6882,7 @@ const data = [
         sellprice: 168,
         itemid: 1540,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6893,7 +6893,7 @@ const data = [
         sellprice: 199,
         itemid: 1542,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6904,7 +6904,7 @@ const data = [
         sellprice: 109,
         itemid: 1546,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6915,7 +6915,7 @@ const data = [
         sellprice: 188,
         itemid: 552,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6926,7 +6926,7 @@ const data = [
         sellprice: 61,
         itemid: 1406,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6937,7 +6937,7 @@ const data = [
         sellprice: 38,
         itemid: 300,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6948,7 +6948,7 @@ const data = [
         sellprice: 84,
         itemid: 1534,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6959,7 +6959,7 @@ const data = [
         sellprice: 372,
         itemid: 1230,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6970,7 +6970,7 @@ const data = [
         sellprice: 372,
         itemid: 1142,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6981,7 +6981,7 @@ const data = [
         sellprice: 114,
         itemid: 1538,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -6992,7 +6992,7 @@ const data = [
         sellprice: 229,
         itemid: 1416,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7003,7 +7003,7 @@ const data = [
         sellprice: 64,
         itemid: 1552,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7014,7 +7014,7 @@ const data = [
         sellprice: 119,
         itemid: 1356,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7025,7 +7025,7 @@ const data = [
         sellprice: 199,
         itemid: 1548,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7036,7 +7036,7 @@ const data = [
         sellprice: 153,
         itemid: 1506,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7047,7 +7047,7 @@ const data = [
         sellprice: 23,
         itemid: 1120,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7058,7 +7058,7 @@ const data = [
         sellprice: 248,
         itemid: 1456,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7069,7 +7069,7 @@ const data = [
         sellprice: 204,
         itemid: 1166,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7080,7 +7080,7 @@ const data = [
         sellprice: 63,
         itemid: 1558,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7091,7 +7091,7 @@ const data = [
         sellprice: 45,
         itemid: 1378,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7102,7 +7102,7 @@ const data = [
         sellprice: 179,
         itemid: 1104,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7113,7 +7113,7 @@ const data = [
         sellprice: 106,
         itemid: 752,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7124,7 +7124,7 @@ const data = [
         sellprice: 19,
         itemid: 54,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7135,7 +7135,7 @@ const data = [
         sellprice: 39,
         itemid: 1010,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7146,7 +7146,7 @@ const data = [
         sellprice: 97,
         itemid: 1568,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7157,7 +7157,7 @@ const data = [
         sellprice: 21,
         itemid: 580,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7168,7 +7168,7 @@ const data = [
         sellprice: 171,
         itemid: 1400,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7179,7 +7179,7 @@ const data = [
         sellprice: 372,
         itemid: 1246,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7190,7 +7190,7 @@ const data = [
         sellprice: 177,
         itemid: 1580,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7201,7 +7201,7 @@ const data = [
         sellprice: 86,
         itemid: 1560,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7212,7 +7212,7 @@ const data = [
         sellprice: 190,
         itemid: 1586,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7223,7 +7223,7 @@ const data = [
         sellprice: 190,
         itemid: 1588,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7234,7 +7234,7 @@ const data = [
         sellprice: 100,
         itemid: 776,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7245,7 +7245,7 @@ const data = [
         sellprice: 59,
         itemid: 1340,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7256,7 +7256,7 @@ const data = [
         sellprice: 195,
         itemid: 1476,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7267,7 +7267,7 @@ const data = [
         sellprice: 190,
         itemid: 1594,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7278,7 +7278,7 @@ const data = [
         sellprice: 67,
         itemid: 1530,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7289,7 +7289,7 @@ const data = [
         sellprice: 48,
         itemid: 422,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7300,7 +7300,7 @@ const data = [
         sellprice: 56,
         itemid: 976,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7311,7 +7311,7 @@ const data = [
         sellprice: 19,
         itemid: 1596,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7322,7 +7322,7 @@ const data = [
         sellprice: 40,
         itemid: 1598,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7333,7 +7333,7 @@ const data = [
         sellprice: 242,
         itemid: 1582,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7344,7 +7344,7 @@ const data = [
         sellprice: 45,
         itemid: 1590,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7355,7 +7355,7 @@ const data = [
         sellprice: 122,
         itemid: 1604,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7366,7 +7366,7 @@ const data = [
         sellprice: 56,
         itemid: 1338,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7377,7 +7377,7 @@ const data = [
         sellprice: 122,
         itemid: 1606,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7388,7 +7388,7 @@ const data = [
         sellprice: 26,
         itemid: 1566,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7399,7 +7399,7 @@ const data = [
         sellprice: 249,
         itemid: 1610,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7410,7 +7410,7 @@ const data = [
         sellprice: 249,
         itemid: 1612,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7421,7 +7421,7 @@ const data = [
         sellprice: 45,
         itemid: 420,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7432,7 +7432,7 @@ const data = [
         sellprice: 15,
         itemid: 1616,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7443,7 +7443,7 @@ const data = [
         sellprice: 86,
         itemid: 1618,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7454,7 +7454,7 @@ const data = [
         sellprice: 165,
         itemid: 1620,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7465,7 +7465,7 @@ const data = [
         sellprice: 109,
         itemid: 1622,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7476,7 +7476,7 @@ const data = [
         sellprice: 50,
         itemid: 1624,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7487,7 +7487,7 @@ const data = [
         sellprice: 70,
         itemid: 1626,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7498,7 +7498,7 @@ const data = [
         sellprice: 15,
         itemid: 1630,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7509,7 +7509,7 @@ const data = [
         sellprice: 156,
         itemid: 1636,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7520,7 +7520,7 @@ const data = [
         sellprice: 119,
         itemid: 1638,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7531,7 +7531,7 @@ const data = [
         sellprice: 38,
         itemid: 1156,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7542,7 +7542,7 @@ const data = [
         sellprice: 83,
         itemid: 82,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7553,7 +7553,7 @@ const data = [
         sellprice: 34,
         itemid: 84,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7564,7 +7564,7 @@ const data = [
         sellprice: 81,
         itemid: 1640,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7575,7 +7575,7 @@ const data = [
         sellprice: 100,
         itemid: 978,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7586,7 +7586,7 @@ const data = [
         sellprice: 61,
         itemid: 884,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7597,7 +7597,7 @@ const data = [
         sellprice: 46,
         itemid: 1578,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7608,7 +7608,7 @@ const data = [
         sellprice: 59,
         itemid: 854,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7619,7 +7619,7 @@ const data = [
         sellprice: 61,
         itemid: 1352,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7630,7 +7630,7 @@ const data = [
         sellprice: 158,
         itemid: 460,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7641,7 +7641,7 @@ const data = [
         sellprice: 51,
         itemid: 1644,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7652,7 +7652,7 @@ const data = [
         sellprice: 180,
         itemid: 1430,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7663,7 +7663,7 @@ const data = [
         sellprice: 247,
         itemid: 1464,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7674,7 +7674,7 @@ const data = [
         sellprice: 106,
         itemid: 1108,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7685,7 +7685,7 @@ const data = [
         sellprice: 97,
         itemid: 1646,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7696,7 +7696,7 @@ const data = [
         sellprice: 35,
         itemid: 1386,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7707,7 +7707,7 @@ const data = [
         sellprice: 15,
         itemid: 1648,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7718,7 +7718,7 @@ const data = [
         sellprice: 290,
         itemid: 1650,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7729,7 +7729,7 @@ const data = [
         sellprice: 101,
         itemid: 1652,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7740,7 +7740,7 @@ const data = [
         sellprice: 179,
         itemid: 1562,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7751,7 +7751,7 @@ const data = [
         sellprice: 183,
         itemid: 1532,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7762,7 +7762,7 @@ const data = [
         sellprice: 95,
         itemid: 1654,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7773,7 +7773,7 @@ const data = [
         sellprice: 249,
         itemid: 1328,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7784,7 +7784,7 @@ const data = [
         sellprice: 217,
         itemid: 1656,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7795,7 +7795,7 @@ const data = [
         sellprice: 149,
         itemid: 1658,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7806,7 +7806,7 @@ const data = [
         sellprice: 28,
         itemid: 1188,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7817,7 +7817,7 @@ const data = [
         sellprice: 39,
         itemid: 924,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7828,7 +7828,7 @@ const data = [
         sellprice: 39,
         itemid: 928,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7839,7 +7839,7 @@ const data = [
         sellprice: 229,
         itemid: 1662,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7850,7 +7850,7 @@ const data = [
         sellprice: 149,
         itemid: 1664,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7861,7 +7861,7 @@ const data = [
         sellprice: 64,
         itemid: 1522,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7872,7 +7872,7 @@ const data = [
         sellprice: 185,
         itemid: 1046,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7883,7 +7883,7 @@ const data = [
         sellprice: 170,
         itemid: 1602,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7894,7 +7894,7 @@ const data = [
         sellprice: 170,
         itemid: 1666,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7905,7 +7905,7 @@ const data = [
         sellprice: 159,
         itemid: 1294,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7916,7 +7916,7 @@ const data = [
         sellprice: 28,
         itemid: 1668,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7927,7 +7927,7 @@ const data = [
         sellprice: 52,
         itemid: 1672,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7938,7 +7938,7 @@ const data = [
         sellprice: 242,
         itemid: 1676,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7949,7 +7949,7 @@ const data = [
         sellprice: 94,
         itemid: 1678,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7960,7 +7960,7 @@ const data = [
         sellprice: 60,
         itemid: 1218,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7971,7 +7971,7 @@ const data = [
         sellprice: 200,
         itemid: 1684,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7982,7 +7982,7 @@ const data = [
         sellprice: 145,
         itemid: 1674,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -7993,7 +7993,7 @@ const data = [
         sellprice: 290,
         itemid: 1688,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8004,7 +8004,7 @@ const data = [
         sellprice: 138,
         itemid: 1490,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8015,7 +8015,7 @@ const data = [
         sellprice: 244,
         itemid: 1690,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8026,7 +8026,7 @@ const data = [
         sellprice: 204,
         itemid: 1692,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8037,7 +8037,7 @@ const data = [
         sellprice: 173,
         itemid: 344,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8048,7 +8048,7 @@ const data = [
         sellprice: 173,
         itemid: 304,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8059,7 +8059,7 @@ const data = [
         sellprice: 173,
         itemid: 1384,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8070,7 +8070,7 @@ const data = [
         sellprice: 174,
         itemid: 376,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8081,7 +8081,7 @@ const data = [
         sellprice: 174,
         itemid: 426,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8092,7 +8092,7 @@ const data = [
         sellprice: 210,
         itemid: 778,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8103,7 +8103,7 @@ const data = [
         sellprice: 210,
         itemid: 768,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8114,7 +8114,7 @@ const data = [
         sellprice: 215,
         itemid: 1128,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8125,7 +8125,7 @@ const data = [
         sellprice: 215,
         itemid: 1126,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8136,7 +8136,7 @@ const data = [
         sellprice: 160,
         itemid: 738,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8147,7 +8147,7 @@ const data = [
         sellprice: 173,
         itemid: 868,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8158,7 +8158,7 @@ const data = [
         sellprice: 173,
         itemid: 1434,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8169,7 +8169,7 @@ const data = [
         sellprice: 173,
         itemid: 312,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8180,7 +8180,7 @@ const data = [
         sellprice: 173,
         itemid: 1438,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8191,7 +8191,7 @@ const data = [
         sellprice: 173,
         itemid: 1682,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8202,7 +8202,7 @@ const data = [
         sellprice: 215,
         itemid: 1634,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8213,7 +8213,7 @@ const data = [
         sellprice: 215,
         itemid: 1632,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8224,7 +8224,7 @@ const data = [
         sellprice: 173,
         itemid: 1358,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8235,7 +8235,7 @@ const data = [
         sellprice: 173,
         itemid: 786,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8246,7 +8246,7 @@ const data = [
         sellprice: 124,
         itemid: 1544,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8257,7 +8257,7 @@ const data = [
         sellprice: 124,
         itemid: 1494,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8268,7 +8268,7 @@ const data = [
         sellprice: 101,
         itemid: 362,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8279,7 +8279,7 @@ const data = [
         sellprice: 196,
         itemid: 1466,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8290,7 +8290,7 @@ const data = [
         sellprice: 196,
         itemid: 1526,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8301,7 +8301,7 @@ const data = [
         sellprice: 196,
         itemid: 1524,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8312,7 +8312,7 @@ const data = [
         sellprice: 196,
         itemid: 1680,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8323,7 +8323,7 @@ const data = [
         sellprice: 196,
         itemid: 60,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8334,7 +8334,7 @@ const data = [
         sellprice: 196,
         itemid: 1462,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8345,7 +8345,7 @@ const data = [
         sellprice: 143,
         itemid: 438,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8356,7 +8356,7 @@ const data = [
         sellprice: 143,
         itemid: 1492,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8367,7 +8367,7 @@ const data = [
         sellprice: 143,
         itemid: 320,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8378,7 +8378,7 @@ const data = [
         sellprice: 143,
         itemid: 1428,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8389,7 +8389,7 @@ const data = [
         sellprice: 249,
         itemid: 1326,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8400,7 +8400,7 @@ const data = [
         sellprice: 59,
         itemid: 1694,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8411,7 +8411,7 @@ const data = [
         sellprice: 242,
         itemid: 1178,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8422,7 +8422,7 @@ const data = [
         sellprice: 67,
         itemid: 1122,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8433,7 +8433,7 @@ const data = [
         sellprice: 67,
         itemid: 1696,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8444,7 +8444,7 @@ const data = [
         sellprice: 35,
         itemid: 1392,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8455,7 +8455,7 @@ const data = [
         sellprice: 21,
         itemid: 266,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8466,7 +8466,7 @@ const data = [
         sellprice: 240,
         itemid: 1700,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8477,7 +8477,7 @@ const data = [
         sellprice: 222,
         itemid: 1282,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8488,7 +8488,7 @@ const data = [
         sellprice: 60,
         itemid: 1554,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8499,7 +8499,7 @@ const data = [
         sellprice: 76,
         itemid: 736,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8510,7 +8510,7 @@ const data = [
         sellprice: 69,
         itemid: 1702,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8521,7 +8521,7 @@ const data = [
         sellprice: 199,
         itemid: 1704,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8532,7 +8532,7 @@ const data = [
         sellprice: 25,
         itemid: 632,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8543,7 +8543,7 @@ const data = [
         sellprice: 148,
         itemid: 530,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8554,7 +8554,7 @@ const data = [
         sellprice: 59,
         itemid: 860,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8565,7 +8565,7 @@ const data = [
         sellprice: 26,
         itemid: 734,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8576,7 +8576,7 @@ const data = [
         sellprice: 57,
         itemid: 1240,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8587,7 +8587,7 @@ const data = [
         sellprice: 59,
         itemid: 862,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8598,7 +8598,7 @@ const data = [
         sellprice: 74,
         itemid: 86,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8609,7 +8609,7 @@ const data = [
         sellprice: 102,
         itemid: 1584,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8620,7 +8620,7 @@ const data = [
         sellprice: 94,
         itemid: 1312,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8631,7 +8631,7 @@ const data = [
         sellprice: 205,
         itemid: 1708,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8642,7 +8642,7 @@ const data = [
         sellprice: 250,
         itemid: 1710,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8653,7 +8653,7 @@ const data = [
         sellprice: 190,
         itemid: 1712,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8664,7 +8664,7 @@ const data = [
         sellprice: 219,
         itemid: 1714,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8675,7 +8675,7 @@ const data = [
         sellprice: 188,
         itemid: 560,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8686,7 +8686,7 @@ const data = [
         sellprice: 188,
         itemid: 558,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8697,7 +8697,7 @@ const data = [
         sellprice: 157,
         itemid: 1550,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8708,7 +8708,7 @@ const data = [
         sellprice: 27,
         itemid: 1698,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8719,7 +8719,7 @@ const data = [
         sellprice: 27,
         itemid: 1482,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8730,7 +8730,7 @@ const data = [
         sellprice: 269,
         itemid: 1718,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8741,7 +8741,7 @@ const data = [
         sellprice: 187,
         itemid: 1722,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8752,7 +8752,7 @@ const data = [
         sellprice: 32,
         itemid: 100,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8763,7 +8763,7 @@ const data = [
         sellprice: 24,
         itemid: 1724,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8774,7 +8774,7 @@ const data = [
         sellprice: 59,
         itemid: 918,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8785,7 +8785,7 @@ const data = [
         sellprice: 182,
         itemid: 1726,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8796,7 +8796,7 @@ const data = [
         sellprice: 25,
         itemid: 336,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8807,7 +8807,7 @@ const data = [
         sellprice: 67,
         itemid: 324,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8818,7 +8818,7 @@ const data = [
         sellprice: 100,
         itemid: 1728,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8829,7 +8829,7 @@ const data = [
         sellprice: 93,
         itemid: 1730,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8840,7 +8840,7 @@ const data = [
         sellprice: 85,
         itemid: 1556,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8851,7 +8851,7 @@ const data = [
         sellprice: 23,
         itemid: 1614,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8862,7 +8862,7 @@ const data = [
         sellprice: 66,
         itemid: 1070,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8873,7 +8873,7 @@ const data = [
         sellprice: 48,
         itemid: 1510,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8884,7 +8884,7 @@ const data = [
         sellprice: 204,
         itemid: 920,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8895,7 +8895,7 @@ const data = [
         sellprice: 290,
         itemid: 1732,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8906,7 +8906,7 @@ const data = [
         sellprice: 427,
         itemid: 1716,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8917,7 +8917,7 @@ const data = [
         sellprice: 85,
         itemid: 1734,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8928,7 +8928,7 @@ const data = [
         sellprice: 204,
         itemid: 1736,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8939,7 +8939,7 @@ const data = [
         sellprice: 247,
         itemid: 1738,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8950,7 +8950,7 @@ const data = [
         sellprice: 58,
         itemid: 1374,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8961,7 +8961,7 @@ const data = [
         sellprice: 37,
         itemid: 1564,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8972,7 +8972,7 @@ const data = [
         sellprice: 40,
         itemid: 926,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8983,7 +8983,7 @@ const data = [
         sellprice: 90,
         itemid: 1742,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -8994,7 +8994,7 @@ const data = [
         sellprice: 30,
         itemid: 608,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9005,7 +9005,7 @@ const data = [
         sellprice: 52,
         itemid: 1746,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9016,7 +9016,7 @@ const data = [
         sellprice: 162,
         itemid: 1226,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9027,7 +9027,7 @@ const data = [
         sellprice: 165,
         itemid: 1748,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9038,7 +9038,7 @@ const data = [
         sellprice: 380,
         itemid: 1750,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9049,7 +9049,7 @@ const data = [
         sellprice: 380,
         itemid: 1608,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9060,7 +9060,7 @@ const data = [
         sellprice: 380,
         itemid: 1252,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9071,7 +9071,7 @@ const data = [
         sellprice: 73,
         itemid: 1752,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9082,7 +9082,7 @@ const data = [
         sellprice: 173,
         itemid: 1754,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9093,7 +9093,7 @@ const data = [
         sellprice: 163,
         itemid: 1756,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9104,7 +9104,7 @@ const data = [
         sellprice: 134,
         itemid: 1758,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9115,7 +9115,7 @@ const data = [
         sellprice: 173,
         itemid: 1760,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9126,7 +9126,7 @@ const data = [
         sellprice: 179,
         itemid: 1762,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9137,7 +9137,7 @@ const data = [
         sellprice: 107,
         itemid: 1628,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9148,7 +9148,7 @@ const data = [
         sellprice: 49,
         itemid: 1390,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9159,7 +9159,7 @@ const data = [
         sellprice: 201,
         itemid: 1686,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9170,7 +9170,7 @@ const data = [
         sellprice: 125,
         itemid: 1198,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9181,7 +9181,7 @@ const data = [
         sellprice: 59,
         itemid: 844,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9192,7 +9192,7 @@ const data = [
         sellprice: 61,
         itemid: 1242,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9203,7 +9203,7 @@ const data = [
         sellprice: 61,
         itemid: 1706,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9214,7 +9214,7 @@ const data = [
         sellprice: 38,
         itemid: 122,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9225,7 +9225,7 @@ const data = [
         sellprice: 247,
         itemid: 1764,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9236,7 +9236,7 @@ const data = [
         sellprice: 148,
         itemid: 536,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9247,7 +9247,7 @@ const data = [
         sellprice: 101,
         itemid: 358,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9258,7 +9258,7 @@ const data = [
         sellprice: 56,
         itemid: 1336,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9269,7 +9269,7 @@ const data = [
         sellprice: 247,
         itemid: 1766,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9280,7 +9280,7 @@ const data = [
         sellprice: 54,
         itemid: 264,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9291,7 +9291,7 @@ const data = [
         sellprice: 22,
         itemid: 518,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9302,7 +9302,7 @@ const data = [
         sellprice: 126,
         itemid: 1770,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9313,7 +9313,7 @@ const data = [
         sellprice: 133,
         itemid: 1772,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9324,7 +9324,7 @@ const data = [
         sellprice: 201,
         itemid: 1670,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9335,7 +9335,7 @@ const data = [
         sellprice: 158,
         itemid: 1512,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9346,7 +9346,7 @@ const data = [
         sellprice: 393,
         itemid: 1058,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9357,7 +9357,7 @@ const data = [
         sellprice: 393,
         itemid: 1032,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9368,7 +9368,7 @@ const data = [
         sellprice: 89,
         itemid: 1776,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9379,7 +9379,7 @@ const data = [
         sellprice: 201,
         itemid: 1780,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9390,7 +9390,7 @@ const data = [
         sellprice: 56,
         itemid: 1516,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9401,7 +9401,7 @@ const data = [
         sellprice: 236,
         itemid: 1784,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9412,7 +9412,7 @@ const data = [
         sellprice: 261,
         itemid: 1054,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9423,7 +9423,7 @@ const data = [
         sellprice: 148,
         itemid: 534,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9434,7 +9434,7 @@ const data = [
         sellprice: 182,
         itemid: 1786,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9445,7 +9445,7 @@ const data = [
         sellprice: 182,
         itemid: 1768,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9456,7 +9456,7 @@ const data = [
         sellprice: 74,
         itemid: 1572,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9467,7 +9467,7 @@ const data = [
         sellprice: 67,
         itemid: 876,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9478,7 +9478,7 @@ const data = [
         sellprice: 138,
         itemid: 1774,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9489,7 +9489,7 @@ const data = [
         sellprice: 141,
         itemid: 1062,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9500,7 +9500,7 @@ const data = [
         sellprice: 204,
         itemid: 1254,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9511,7 +9511,7 @@ const data = [
         sellprice: 137,
         itemid: 1788,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9522,7 +9522,7 @@ const data = [
         sellprice: 44,
         itemid: 1790,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9533,7 +9533,7 @@ const data = [
         sellprice: 27,
         itemid: 1740,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9544,7 +9544,7 @@ const data = [
         sellprice: 34,
         itemid: 96,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9555,7 +9555,7 @@ const data = [
         sellprice: 83,
         itemid: 1792,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9566,7 +9566,7 @@ const data = [
         sellprice: 59,
         itemid: 1520,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9577,7 +9577,7 @@ const data = [
         sellprice: 96,
         itemid: 1570,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9588,7 +9588,7 @@ const data = [
         sellprice: 32,
         itemid: 1794,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9599,7 +9599,7 @@ const data = [
         sellprice: 65,
         itemid: 1778,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9610,7 +9610,7 @@ const data = [
         sellprice: 33,
         itemid: 1796,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9621,7 +9621,7 @@ const data = [
         sellprice: 302,
         itemid: 1798,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9632,7 +9632,7 @@ const data = [
         sellprice: 190,
         itemid: 1642,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9643,8 +9643,8 @@ const data = [
         sellprice: 135,
         itemid: 1800,
         userid: 2,
-        starttime: new Date(),
-        endtime: null
+        starttime: new Date('2018-12-24T00:00:00Z'),
+        endtime: new Date('2018-12-24T00:00:02Z')
     },
     {
         priceid: 878,
@@ -9654,7 +9654,7 @@ const data = [
         sellprice: 189,
         itemid: 1574,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9665,7 +9665,7 @@ const data = [
         sellprice: 192,
         itemid: 1802,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9676,7 +9676,7 @@ const data = [
         sellprice: 65,
         itemid: 1744,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9687,7 +9687,7 @@ const data = [
         sellprice: 274,
         itemid: 1804,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9698,7 +9698,7 @@ const data = [
         sellprice: 255,
         itemid: 1600,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9709,7 +9709,7 @@ const data = [
         sellprice: 199,
         itemid: 1502,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9720,7 +9720,7 @@ const data = [
         sellprice: 66,
         itemid: 626,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9731,7 +9731,7 @@ const data = [
         sellprice: 147,
         itemid: 1806,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9742,7 +9742,7 @@ const data = [
         sellprice: 102,
         itemid: 474,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9753,7 +9753,7 @@ const data = [
         sellprice: 67,
         itemid: 1660,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9764,7 +9764,7 @@ const data = [
         sellprice: 187,
         itemid: 1196,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9775,7 +9775,7 @@ const data = [
         sellprice: 247,
         itemid: 1808,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9786,7 +9786,7 @@ const data = [
         sellprice: 248,
         itemid: 1782,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9797,7 +9797,7 @@ const data = [
         sellprice: 92,
         itemid: 1576,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9808,7 +9808,7 @@ const data = [
         sellprice: 59,
         itemid: 1592,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9819,7 +9819,7 @@ const data = [
         sellprice: 60,
         itemid: 1810,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9830,7 +9830,7 @@ const data = [
         sellprice: 104,
         itemid: 1296,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9841,7 +9841,7 @@ const data = [
         sellprice: 79,
         itemid: 1812,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9852,7 +9852,7 @@ const data = [
         sellprice: 59,
         itemid: 1814,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9863,7 +9863,7 @@ const data = [
         sellprice: 59,
         itemid: 1816,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
     },
     {
@@ -9874,7 +9874,18 @@ const data = [
         sellprice: 33,
         itemid: 222,
         userid: 2,
-        starttime: new Date(),
+        starttime: new Date('2018-12-24T00:00:00Z'),
+        endtime: null
+    },
+    {
+        priceid: 899,
+        barcode: '5410188030020',
+        count: 100,
+        buyprice: 135,
+        sellprice: 150,
+        itemid: 1800,
+        userid: 2,
+        starttime: new Date('2018-12-24T00:00:02Z'),
         endtime: null
     }
 ];
