@@ -7,7 +7,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 822,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 1
     },
     {
         itemhistid: 2,
@@ -17,7 +18,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 877,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 2
     },
     // admin changed sellprice
     {
@@ -28,7 +30,8 @@ const data = [
         userid: 2,
         actionid: 7,
         priceid1: 877,
-        priceid2: 899
+        priceid2: 899,
+        saldhistid: null
     },
     {
         itemhistid: 4,
@@ -38,7 +41,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 827,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 3
     },
     // two different products bought at the same time
     {
@@ -49,7 +53,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 827,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 4
     },
     {
         itemhistid: 6,
@@ -59,7 +64,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 822,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 5
     },
     // two same products bought at the same time
     {
@@ -70,7 +76,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 847,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 6
     },
     {
         itemhistid: 8,
@@ -80,7 +87,8 @@ const data = [
         userid: 1,
         actionid: 5,
         priceid1: 847,
-        priceid2: null
+        priceid2: null,
+        saldhistid: 7
     }
 ];
 
