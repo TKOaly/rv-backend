@@ -4,7 +4,7 @@ exports.up = function(knex, Promise) {
         .then((exists) => {
             if (!exists) {
                 return knex.schema.createTable('ROLE', (table) => {
-                    table.increments('roleid');
+                    table.increments('roleid').primary();
                     table.string('role', 32).notNullable();
                     table
                         .integer('buzzerlimit')
