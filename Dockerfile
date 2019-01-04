@@ -1,19 +1,16 @@
 FROM node:carbon-slim
 
-ARG NODE_ENV=production
+WORKDIR /usr/src/app
 
-ENV NODE_ENV "$NODE_ENV"
+COPY package.json package-lock.json ./
 
-WORKDIR /app
+RUN npm install
 
-COPY package.json /app
+COPY ./src ./src
+COPY ./test ./test
+COPY ./knexfile.js .
+COPY ./startup.sh ./startup.sh
 
-COPY yarn.lock /app
+RUN chmod +x ./startup.sh
 
-RUN yarn install
-
-COPY ./src /app/src
-
-COPY ./knexfile.js /app
-
-CMD ["yarn", "start"]
+CMD ["./startup.sh"]
