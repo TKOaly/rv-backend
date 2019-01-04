@@ -35,8 +35,7 @@
         "lint-staged": "^8.1.0",
         "mocha": "^5.2.0",
         "nodemon": "^1.15.1",
-        "nyc": "^13.1.0",
-        "sqlite3": "^4.0.4"
+        "nyc": "^13.1.0"
     },
     "lint-staged": {
         "src/**/*.js": [
