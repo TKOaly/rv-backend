@@ -1,7 +1,13 @@
 module.exports = {
     development: {
         client: 'pg',
-        connection: process.env.DATABASE_URL,
+        connection: {
+            host: process.env.DB_HOST,
+            user: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME + '_dev',
+            port: process.env.DB_PORT
+        },
         migrations: {
             directory: __dirname + '/src/db/migrations'
         },
@@ -11,22 +17,31 @@ module.exports = {
     },
 
     test: {
-        client: 'sqlite3',
+        client: 'pg',
         connection: {
-            filename: 'testdb.sqlite'
+            host: process.env.DB_HOST,
+            user: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME + '_test',
+            port: process.env.DB_PORT
         },
         migrations: {
             directory: __dirname + '/src/db/migrations'
         },
         seeds: {
             directory: __dirname + '/src/db/seeds/test'
-        },
-        useNullAsDefault: true
+        }
     },
 
     production: {
         client: 'pg',
-        connection: process.env.DATABASE_URL,
+        connection: {
+            host: process.env.DB_HOST,
+            user: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            port: process.env.DB_PORT
+        },
         migrations: {
             directory: __dirname + '/src/db/migrations'
         },
