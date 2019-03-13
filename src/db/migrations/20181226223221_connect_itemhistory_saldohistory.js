@@ -97,7 +97,11 @@ exports.up = async function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-    return knex.schema.table('ITEMHISTORY', (table) => {
-        table.dropColumn('saldhistid');
-    });
+    if (process.env.NODE_ENV !== 'production') {
+        return knex.schema.table('ITEMHISTORY', (table) => {
+            table.dropColumn('saldhistid');
+        });
+    } else {
+        throw new Error('dont drop stuff in production');
+    }
 };
