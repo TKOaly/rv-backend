@@ -42,7 +42,7 @@ const data = [
         actionid: 5,
         priceid1: 827,
         priceid2: null,
-        saldhistid: 3
+        saldhistid: 4
     },
     // two different products bought at the same time
     {
@@ -54,7 +54,7 @@ const data = [
         actionid: 5,
         priceid1: 827,
         priceid2: null,
-        saldhistid: 4
+        saldhistid: 6
     },
     {
         itemhistid: 6,
@@ -65,7 +65,7 @@ const data = [
         actionid: 5,
         priceid1: 822,
         priceid2: null,
-        saldhistid: 5
+        saldhistid: 7
     },
     // two same products bought at the same time
     {
@@ -77,7 +77,7 @@ const data = [
         actionid: 5,
         priceid1: 847,
         priceid2: null,
-        saldhistid: 6
+        saldhistid: 9
     },
     {
         itemhistid: 8,
@@ -88,7 +88,7 @@ const data = [
         actionid: 5,
         priceid1: 847,
         priceid2: null,
-        saldhistid: 7
+        saldhistid: 10
     }
 ];
 

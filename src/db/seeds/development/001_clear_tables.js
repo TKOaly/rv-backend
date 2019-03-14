@@ -1,6 +1,9 @@
 exports.seed = function(knex, Promise) {
-    return knex('RVBOX')
+    return knex('PERSONHIST')
         .del()
+        .then(() => {
+            return knex('RVBOX').del();
+        })
         .then(() => {
             return knex('ITEMHISTORY').del();
         })
