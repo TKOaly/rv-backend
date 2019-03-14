@@ -1,3 +1,3 @@
 #!/bin/bash
 docker-compose down
-echo "Docker shut down."
+echo "RV backend & PostgreSQL server shut down."
