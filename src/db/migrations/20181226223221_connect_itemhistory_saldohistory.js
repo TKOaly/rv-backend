@@ -1,11 +1,11 @@
 exports.up = async function(knex, Promise) {
     const itemhistory = await knex('ITEMHISTORY')
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
-        .select()
+        .select('ITEMHISTORY.itemhistid', 'ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice')
         .where('ITEMHISTORY.actionid', 5)
         .orderBy(['ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice']);
     const saldohistory = await knex('SALDOHISTORY')
-        .select()
+        .select('saldhistid', 'time', 'userid', 'difference')
         .orderBy('time', 'userid', { column: 'difference', order: 'desc' });
 
     /* It is guaranteed that there is always one saldo event for every item event. However sometimes there are batches
