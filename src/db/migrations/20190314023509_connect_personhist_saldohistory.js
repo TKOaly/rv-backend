@@ -75,11 +75,13 @@ exports.up = async function(knex, Promise) {
     }
 };
 
-exports.down = function(knex, Promise) {
+exports.down = async function(knex, Promise) {
     if (process.env.NODE_ENV !== 'production') {
-        return knex.schema.table('PERSONHIST', (table) => {
-            table.dropColumn('saldhistid');
-        });
+        if (await knex.schema.hasColumn('PERSONHIST', 'saldhistid')) {
+            await knex.schema.table('PERSONHIST', (table) => {
+                table.dropColumn('saldhistid');
+            });
+        }
     } else {
         throw new Error('dont drop stuff in production');
     }
