@@ -40,7 +40,6 @@ describe('routes: products', () => {
                 .get('/api/v1/products')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    expect(err).to.not.exist;
                     expect(res.status).to.equal(200);
 
                     expect(res.body).to.have.all.keys('products');
@@ -69,7 +68,6 @@ describe('routes: products', () => {
                 .get('/api/v1/products/5053990127443')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    expect(err).to.not.exist;
                     expect(res.status).to.equal(200);
 
                     expect(res.body).to.have.all.keys('product');
@@ -93,7 +91,6 @@ describe('routes: products', () => {
                 .get('/api/v1/products/99999995')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    expect(err).to.exist;
                     expect(res.status).to.equal(404);
 
                     done();
@@ -129,37 +126,29 @@ describe('routes: products', () => {
         });
 
         it('should return 404 on nonexistent product', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .post('/api/v1/products/1234567890123/purchase')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        count: 1
-                    });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/1234567890123/purchase')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1
+                });
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(404);
-            }
+            expect(res.status).to.equal(404);
         });
 
         it('should error on insufficient funds', async () => {
             await userStore.updateAccountBalance('normal_user', -500);
 
-            try {
-                const res = await chai
-                    .request(server)
-                    .post('/api/v1/products/8855702006834/purchase')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        count: 1
-                    });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/8855702006834/purchase')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1
+                });
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.response.body.error_code).to.equal('insufficient_funds');
-            }
+            expect(res.response.body.error_code).to.equal('insufficient_funds');
         });
     });
 });

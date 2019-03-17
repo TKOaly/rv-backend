@@ -40,7 +40,6 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.not.exist(err);
                     should.exist(res.body.products);
                     done();
                 });
@@ -51,7 +50,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/product/9999')
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.exist(err);
+                    expect(res.status).to.equal(404);
                     done();
                 });
         });
@@ -112,9 +111,6 @@ describe('routes: admin products', () => {
                 .then((res) => {
                     res.status.should.equal(200, 'Existing barcode should return product');
                     res.body.product['barcode'].should.equal('5029578000972');
-                })
-                .catch((err) => {
-                    throw err;
                 });
         });
 
@@ -124,10 +120,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/1337')
                 .set('Authorization', 'Bearer ' + token)
                 .then((res) => {
-                    res.status.should.not.equal(200);
-                })
-                .catch((err) => {
-                    err.status.should.equal(404, 'malformated barcode should return error');
+                    res.status.should.equal(404, 'malformated barcode should return error');
                 });
         });
 
@@ -137,10 +130,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/1234567890123')
                 .set('Authorization', 'Bearer ' + token)
                 .then((res) => {
-                    res.status.should.not.equal(200);
-                })
-                .catch((err) => {
-                    err.status.should.equal(404, 'Barcode that doesn\'t exist should return error');
+                    res.status.should.equal(404, 'Barcode that doesn\'t exist should return error');
                 });
         });
 
@@ -160,7 +150,6 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.not.exist(err);
                     should.exist(res.body.product);
                     res.status.should.equal(201);
                     done();
@@ -183,7 +172,6 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     done();
                 });
@@ -203,7 +191,6 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token)
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     done();
                 });
@@ -227,9 +214,6 @@ describe('routes: admin products', () => {
                     res.body.buyprice.should.equal(300);
                     res.body.sellprice.should.equal(350);
                     res.body.quantity.should.equal(product.count + 50);
-                })
-                .catch((err) => {
-                    throw err;
                 });
         });
 
@@ -244,12 +228,9 @@ describe('routes: admin products', () => {
                     quantity: 50
                 })
                 .then((res) => {
-                    res.status.should.not.equal(200);
-                })
-                .catch((err) => {
-                    err.status.should.equal(404);
-                    should.exist(err.response.body.error_code);
-                    should.exist(err.response.body.message);
+                    res.status.should.equal(404);
+                    should.exist(res.response.body.error_code);
+                    should.exist(res.response.body.message);
                 });
         });
 
@@ -260,13 +241,10 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({})
                 .then((res) => {
-                    res.status.should.not.equal(200);
-                })
-                .catch((err) => {
-                    err.status.should.equal(400);
-                    should.exist(err.response.body.error_code);
-                    should.exist(err.response.body.message);
-                    should.exist(err.response.body.errors);
+                    res.status.should.equal(400);
+                    should.exist(res.response.body.error_code);
+                    should.exist(res.response.body.message);
+                    should.exist(res.response.body.errors);
                 });
         });
     });

@@ -86,49 +86,37 @@ describe('routes: user', () => {
         });
 
         it('should deny changing username to one already taken', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .patch('/api/v1/user')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        username: 'admin_user'
-                    });
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/user')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    username: 'admin_user'
+                });
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(409);
-            }
+            expect(res.status).to.equal(409);
         });
 
         it('should deny changing email to one already taken', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .patch('/api/v1/user')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        email: 'admin@example.com'
-                    });
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/user')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    email: 'admin@example.com'
+                });
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(409);
-            }
+            expect(res.status).to.equal(409);
         });
 
         it('should error if no fields are specified', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .patch('/api/v1/user')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({});
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/user')
+                .set('Authorization', 'Bearer ' + token)
+                .send({});
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(400);
-            }
+            expect(res.status).to.equal(400);
         });
     });
 
@@ -154,19 +142,15 @@ describe('routes: user', () => {
         });
 
         it('should error on depositing a negative amount', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .post('/api/v1/user/deposit')
-                    .set('Authorization', 'Bearer ' + token)
-                    .send({
-                        amount: -200
-                    });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/deposit')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    amount: -200
+                });
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(400);
-            }
+            expect(res.status).to.equal(400);
         });
     });
 

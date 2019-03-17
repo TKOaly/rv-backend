@@ -61,16 +61,12 @@ describe('routes: userPurchaseHistory', () => {
         });
 
         it('should return 404 on nonexistent purchase event', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .get('/api/v1/user/purchaseHistory/8319')
-                    .set('Authorization', 'Bearer ' + token);
+            const res = await chai
+                .request(server)
+                .get('/api/v1/user/purchaseHistory/8319')
+                .set('Authorization', 'Bearer ' + token);
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(404);
-            }
+            expect(res.status).to.equal(404);
         });
 
         it('should have the time as string in ISO 8601 format', async () => {

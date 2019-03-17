@@ -41,7 +41,6 @@ describe('routes: register', () => {
                     // empty string
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     expect(res.body.error_code).to.equal('bad_request');
                     done();
@@ -58,7 +57,6 @@ describe('routes: register', () => {
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     expect(res.body.error_code).to.equal('bad_request');
                     done();
@@ -75,7 +73,6 @@ describe('routes: register', () => {
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     expect(res.body.error_code).to.equal('bad_request');
                     done();
@@ -94,7 +91,6 @@ describe('routes: register', () => {
                     email: 'erkki@testi.com'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(409);
                     expect(res.body.error_code).to.equal('identifier_taken');
                     done();
@@ -111,7 +107,6 @@ describe('routes: register', () => {
                     email: 'user@example.com'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(409);
                     expect(res.body.error_code).to.equal('identifier_taken');
                     done();
@@ -130,7 +125,6 @@ describe('routes: register', () => {
                     email: 'erkki@test.com'
                 })
                 .end((err, res) => {
-                    should.not.exist(err);
                     res.status.should.equal(201);
                     expect(res.body).to.have.all.keys('user');
                     expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');

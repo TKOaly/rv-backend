@@ -74,10 +74,7 @@ describe('routes: admin boxes', () => {
             .get('/api/v1/admin/boxes/00000000')
             .set('Authorization', 'Bearer ' + token)
             .then((res) => {
-                res.status.should.not.equal(200);
-            })
-            .catch((err) => {
-                err.status.should.equal(404);
+                res.status.should.equal(404);
             });
     });
 

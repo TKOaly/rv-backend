@@ -38,7 +38,6 @@ describe('routes: authentication', () => {
                     password: 'hunter2'
                 })
                 .end((err, res) => {
-                    should.not.exist(err);
                     res.status.should.equal(200);
                     expect(res.body).to.have.all.keys('accessToken');
 
@@ -59,7 +58,6 @@ describe('routes: authentication', () => {
                     password: 'incorrect'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(401);
                     done();
                 });
@@ -74,7 +72,6 @@ describe('routes: authentication', () => {
                     password: 'something'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(401);
                     done();
                 });
@@ -86,7 +83,6 @@ describe('routes: authentication', () => {
                 .type('form')
                 .send('garbage')
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(400);
                     done();
                 });

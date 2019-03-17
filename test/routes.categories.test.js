@@ -57,16 +57,12 @@ describe('routes: categories', () => {
         });
 
         it('should return 404 on nonexistent category', async () => {
-            try {
-                const res = await chai
-                    .request(server)
-                    .get('/api/v1/categories/548')
-                    .set('Authorization', 'Bearer ' + token);
+            const res = await chai
+                .request(server)
+                .get('/api/v1/categories/548')
+                .set('Authorization', 'Bearer ' + token);
 
-                expect(res).to.not.exist;
-            } catch (err) {
-                expect(err.status).to.equal(404);
-            }
+            expect(res.status).to.equal(404);
         });
     });
 });

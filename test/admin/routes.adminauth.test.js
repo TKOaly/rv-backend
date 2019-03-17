@@ -35,7 +35,6 @@ describe('routes: admin authentication', () => {
                     password: 'admin123'
                 })
                 .end((err, res) => {
-                    should.not.exist(err);
                     expect(res.body).to.have.all.keys('accessToken');
 
                     const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
@@ -52,7 +51,6 @@ describe('routes: admin authentication', () => {
                     password: 'admin123'
                 })
                 .end((err, res) => {
-                    should.not.exist(err);
                     const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
                     expect(decoded).to.equal(null);
                     done();
@@ -67,7 +65,6 @@ describe('routes: admin authentication', () => {
                     password: 'hunter2'
                 })
                 .end((err, res) => {
-                    should.exist(err);
                     res.status.should.equal(403);
                     done();
                 });
