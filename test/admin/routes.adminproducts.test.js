@@ -229,8 +229,8 @@ describe('routes: admin products', () => {
                 })
                 .then((res) => {
                     res.status.should.equal(404);
-                    should.exist(res.response.body.error_code);
-                    should.exist(res.response.body.message);
+                    should.exist(res.body.error_code);
+                    should.exist(res.body.message);
                 });
         });
 
@@ -242,9 +242,9 @@ describe('routes: admin products', () => {
                 .send({})
                 .then((res) => {
                     res.status.should.equal(400);
-                    should.exist(res.response.body.error_code);
-                    should.exist(res.response.body.message);
-                    should.exist(res.response.body.errors);
+                    should.exist(res.body.error_code);
+                    should.exist(res.body.message);
+                    should.exist(res.body.errors);
                 });
         });
     });

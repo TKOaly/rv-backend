@@ -148,7 +148,7 @@ describe('routes: products', () => {
                     count: 1
                 });
 
-            expect(res.response.body.error_code).to.equal('insufficient_funds');
+            expect(res.body.error_code).to.equal('insufficient_funds');
         });
     });
 });
