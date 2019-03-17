@@ -1,4 +1,4 @@
-exports.up = async function(knex, Promise) {
+exports.up = async (knex) => {
     const itemhistory = await knex('ITEMHISTORY')
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
         .select('ITEMHISTORY.itemhistid', 'ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice')
@@ -96,7 +96,7 @@ exports.up = async function(knex, Promise) {
     }
 };
 
-exports.down = async function(knex, Promise) {
+exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         if (await knex.schema.hasColumn('ITEMHISTORY', 'saldhistid')) {
             await knex.schema.table('ITEMHISTORY', (table) => {

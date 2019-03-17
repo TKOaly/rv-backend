@@ -1,23 +1,21 @@
-exports.up = function(knex, Promise) {
-    return knex.schema.hasTable('ACTION').then((exists) => {
-        if (!exists) {
-            return knex.schema.createTable('ACTION', (table) => {
-                table
-                    .increments('actionid')
-                    .primary()
-                    .comment('Action ID');
-                table
-                    .string('action', 64)
-                    .notNullable()
-                    .comment('Description of action');
-            });
-        }
-    });
+exports.up = async (knex) => {
+    if (!(await knex.schema.hasTable('ACTION'))) {
+        await knex.schema.createTable('ACTION', (table) => {
+            table
+                .increments('actionid')
+                .primary()
+                .comment('Action ID');
+            table
+                .string('action', 64)
+                .notNullable()
+                .comment('Description of action');
+        });
+    }
 };
 
-exports.down = function(knex, Promise) {
+exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        return knex.schema.dropTableIfExists('ACTION');
+        await knex.schema.dropTableIfExists('ACTION');
     } else {
         throw new Error('dont drop stuff in production');
     }

@@ -1,4 +1,4 @@
-exports.up = async function(knex, Promise) {
+exports.up = async (knex) => {
     const itemhistory = await knex('ITEMHISTORY')
         .select('saldhistid')
         .where('actionid', 5);
@@ -75,7 +75,7 @@ exports.up = async function(knex, Promise) {
     }
 };
 
-exports.down = async function(knex, Promise) {
+exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         if (await knex.schema.hasColumn('PERSONHIST', 'saldhistid')) {
             await knex.schema.table('PERSONHIST', (table) => {
