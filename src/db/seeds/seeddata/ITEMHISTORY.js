@@ -1,4 +1,4 @@
-const data = [
+module.exports = [
     {
         itemhistid: 1,
         time: new Date('2018-12-24T00:00:00Z'),
@@ -91,5 +91,3 @@ const data = [
         saldhistid: 10
     }
 ];
-
-module.exports = data;

@@ -1,31 +1,12 @@
-exports.seed = function(knex, Promise) {
-    return knex('PERSONHIST')
-        .del()
-        .then(() => {
-            return knex('RVBOX').del();
-        })
-        .then(() => {
-            return knex('ITEMHISTORY').del();
-        })
-        .then(() => {
-            return knex('SALDOHISTORY').del();
-        })
-        .then(() => {
-            return knex('ACTION').del();
-        })
-        .then(() => {
-            return knex('PRICE').del();
-        })
-        .then(() => {
-            return knex('RVITEM').del();
-        })
-        .then(() => {
-            return knex('PRODGROUP').del();
-        })
-        .then(() => {
-            return knex('RVPERSON').del();
-        })
-        .then(() => {
-            return knex('ROLE').del();
-        });
+exports.seed = async (knex) => {
+    await knex('PERSONHIST').del();
+    await knex('RVBOX').del();
+    await knex('ITEMHISTORY').del();
+    await knex('SALDOHISTORY').del();
+    await knex('ACTION').del();
+    await knex('PRICE').del();
+    await knex('RVITEM').del();
+    await knex('PRODGROUP').del();
+    await knex('RVPERSON').del();
+    await knex('ROLE').del();
 };

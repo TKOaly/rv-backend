@@ -1,4 +1,4 @@
-const data = [
+module.exports = [
     {
         saldhistid: 1,
         userid: 1,
@@ -70,5 +70,3 @@ const data = [
         difference: -133
     }
 ];
-
-module.exports = data;

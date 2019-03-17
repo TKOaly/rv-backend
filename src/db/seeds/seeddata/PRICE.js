@@ -1,4 +1,4 @@
-const data = [
+module.exports = [
     {
         priceid: 1,
         barcode: '6413600006527',
@@ -9889,5 +9889,3 @@ const data = [
         endtime: null
     }
 ];
-
-module.exports = data;

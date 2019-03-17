@@ -1,73 +1,19 @@
-const bcrypt = require('bcrypt');
+const roles = require('../seeddata/ROLE.json');
+const rvpersons = require('../seeddata/RVPERSON.js');
 
-exports.seed = function(knex, Promise) {
-    return knex('ROLE')
-        .insert([
-            {
-                role: 'ADMIN',
-                buzzerlimit: -1000,
-                fgcolor: 37,
-                bgcolor: 40
-            },
-            {
-                role: 'USER1',
-                buzzerlimit: -1000,
-                fgcolor: 37,
-                bgcolor: 40
-            },
-            {
-                role: 'USER2',
-                buzzerlimit: -1000,
-                fgcolor: 31,
-                bgcolor: 47
-            },
-            {
-                role: 'USER3',
-                buzzerlimit: -5000,
-                fgcolor: 32,
-                bgcolor: 40
-            },
-            {
-                role: 'USER4',
-                buzzerlimit: -1000,
-                fgcolor: 37,
-                bgcolor: 40
-            },
-            {
-                role: 'MULKKU',
-                buzzerlimit: -1000,
-                fgcolor: 37,
-                bgcolor: 40
-            },
-            {
-                role: 'INACTIVE',
-                buzzerlimit: -1000,
-                fgcolor: 37,
-                bgcolor: 40
-            }
-        ])
-        .then(() => {
-            return knex('RVPERSON').insert([
-                {
-                    userid: 1,
-                    createdate: new Date(),
-                    roleid: 2,
-                    name: 'normal_user',
-                    univident: 'user@example.com',
-                    pass: bcrypt.hashSync('hunter2', 11),
-                    saldo: 500,
-                    realname: 'John Doe'
-                },
-                {
-                    userid: 2,
-                    createdate: new Date(),
-                    roleid: 1,
-                    name: 'admin_user',
-                    univident: 'admin@example.com',
-                    pass: bcrypt.hashSync('admin123', 11),
-                    saldo: 500,
-                    realname: 'BOFH'
-                }
-            ]);
-        });
+exports.seed = async (knex) => {
+    await knex('ROLE').insert(roles);
+    await knex.raw(`
+        select setval(
+            pg_get_serial_sequence('"ROLE"', 'roleid'),
+            coalesce(max(roleid), 0)
+        ) from "ROLE"
+    `);
+    await knex('RVPERSON').insert(rvpersons);
+    await knex.raw(`
+        select setval(
+            pg_get_serial_sequence('"RVPERSON"', 'userid'),
+            coalesce(max(userid), 0)
+        ) from "RVPERSON"
+    `);
 };

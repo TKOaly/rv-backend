@@ -28,7 +28,6 @@ exports.up = function(knex, Promise) {
                         table
                             .increments('boxhistory_id')
                             .primary()
-                            .notNullable()
                             .comment('Box history ID');
                         table
                             .dateTime('time')

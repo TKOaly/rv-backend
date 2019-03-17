@@ -4,7 +4,6 @@ exports.up = function(knex, Promise) {
             return knex.schema.createTable('PRICE', (table) => {
                 table
                     .increments('priceid')
-                    .unsigned()
                     .primary()
                     .comment('Price ID');
                 table

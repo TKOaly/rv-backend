@@ -5,10 +5,8 @@ exports.up = function(knex, Promise) {
             if (!exists) {
                 return knex.schema.createTable('PRODGROUP', (table) => {
                     table
-                        .integer('pgrpid')
-                        .unsigned()
+                        .increments('pgrpid')
                         .primary()
-                        .notNullable()
                         .comment('Product group ID');
                     table
                         .string('descr', 64)
@@ -24,10 +22,8 @@ exports.up = function(knex, Promise) {
                 if (!exists) {
                     return knex.schema.createTable('RVITEM', (table) => {
                         table
-                            .integer('itemid')
-                            .unsigned()
+                            .increments('itemid')
                             .primary()
-                            .notNullable()
                             .comment('Item ID (unique)');
                         table
                             .integer('pgrpid')

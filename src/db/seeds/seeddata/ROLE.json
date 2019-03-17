@@ -1,0 +1,51 @@
+[
+    {
+        "roleid": 1,
+        "role": "ADMIN",
+        "buzzerlimit": -1000,
+        "fgcolor": 37,
+        "bgcolor": 40
+    },
+    {
+        "roleid": 2,
+        "role": "USER1",
+        "buzzerlimit": -1000,
+        "fgcolor": 37,
+        "bgcolor": 40
+    },
+    {
+        "roleid": 3,
+        "role": "USER2",
+        "buzzerlimit": -1000,
+        "fgcolor": 31,
+        "bgcolor": 47
+    },
+    {
+        "roleid": 4,
+        "role": "USER3",
+        "buzzerlimit": -5000,
+        "fgcolor": 32,
+        "bgcolor": 40
+    },
+    {
+        "roleid": 5,
+        "role": "USER4",
+        "buzzerlimit": -1000,
+        "fgcolor": 37,
+        "bgcolor": 40
+    },
+    {
+        "roleid": 6,
+        "role": "MULKKU",
+        "buzzerlimit": -1000,
+        "fgcolor": 37,
+        "bgcolor": 40
+    },
+    {
+        "roleid": 7,
+        "role": "INACTIVE",
+        "buzzerlimit": -1000,
+        "fgcolor": 37,
+        "bgcolor": 40
+    }
+]

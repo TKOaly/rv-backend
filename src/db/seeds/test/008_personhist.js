@@ -1,5 +1,1 @@
-const personhist = require('../seeddata/PERSONHIST.js');
-
-exports.seed = function(knex, Promise) {
-    return knex('PERSONHIST').insert(personhist);
-};
+exports.seed = require('../development/008_personhist').seed;

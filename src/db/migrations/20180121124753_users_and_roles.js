@@ -25,7 +25,7 @@ exports.up = function(knex, Promise) {
             return knex.schema.hasTable('RVPERSON').then((exists) => {
                 if (!exists) {
                     return knex.schema.createTable('RVPERSON', (table) => {
-                        table.integer('userid').primary();
+                        table.increments('userid').primary();
                         table.dateTime('createdate').notNullable();
                         table
                             .integer('roleid')

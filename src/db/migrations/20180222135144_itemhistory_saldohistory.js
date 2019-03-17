@@ -6,7 +6,6 @@ exports.up = function(knex, Promise) {
                 return knex.schema.createTable('ITEMHISTORY', (table) => {
                     table
                         .increments('itemhistid')
-                        .unsigned()
                         .primary()
                         .comment('Item history ID');
                     table

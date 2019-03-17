@@ -1,4 +1,4 @@
-const data = [
+module.exports = [
     {
         pershistid: 1,
         time: new Date('2018-12-24T00:00:04Z'),
@@ -27,5 +27,3 @@ const data = [
         saldhistid: 8
     }
 ];
-
-module.exports = data;

@@ -1,5 +1,1 @@
-const actions = require('../seeddata/ACTION.json');
-
-exports.seed = function(knex, Promise) {
-    return knex('ACTION').insert(actions);
-};
+exports.seed = require('../development/005_action').seed;
