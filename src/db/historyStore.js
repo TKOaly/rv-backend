@@ -52,3 +52,28 @@ module.exports.findUserPurchaseById = async (userId, purchaseId) => {
             .first()
     );
 };
+
+module.exports.getUserDepositHistory = async (userId) => {
+    return (
+        knex('PERSONHIST')
+            .leftJoin('SALDOHISTORY', 'PERSONHIST.saldhistid', 'SALDOHISTORY.saldhistid')
+            .select('PERSONHIST.pershistid', 'PERSONHIST.time', 'SALDOHISTORY.difference', 'SALDOHISTORY.saldo')
+            .where('PERSONHIST.userid1', userId)
+            /* actionid 17 = deposit action */
+            .andWhere('PERSONHIST.actionid', 17)
+            .orderBy('PERSONHIST.time', 'desc')
+    );
+};
+
+module.exports.findUserDepositById = async (userId, depositId) => {
+    return (
+        knex('PERSONHIST')
+            .leftJoin('SALDOHISTORY', 'PERSONHIST.saldhistid', 'SALDOHISTORY.saldhistid')
+            .select('PERSONHIST.pershistid', 'PERSONHIST.time', 'SALDOHISTORY.difference', 'SALDOHISTORY.saldo')
+            .where('PERSONHIST.userid1', userId)
+            .andWhere('PERSONHIST.pershistid', depositId)
+            /* actionid 17 = deposit action */
+            .andWhere('PERSONHIST.actionid', 17)
+            .first()
+    );
+};

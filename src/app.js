@@ -13,6 +13,7 @@
     const auth_route = require('./routes/auth');
     const user_route = require('./routes/user');
     const user_purchase_history_route = require('./routes/userPurchaseHistory');
+    const user_deposit_history_route = require('./routes/userDepositHistory');
     const register_route = require('./routes/register');
     const admin_auth = require('./routes/admin/adminAuth');
     const admin_products = require('./routes/admin/products');
@@ -23,6 +24,7 @@
 
     app.use('/api/v1/authenticate', auth_route);
     app.use('/api/v1/user/purchaseHistory', user_purchase_history_route);
+    app.use('/api/v1/user/depositHistory', user_deposit_history_route);
     app.use('/api/v1/user', user_route);
     app.use('/api/v1/register', register_route);
     app.use('/api/v1/products', user_products);

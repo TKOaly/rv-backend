@@ -13,8 +13,8 @@
 * api/v1/user/deposit POST {amount} => {accountBalance}
 * api/v1/user/purchaseHistory GET => {purchases: [{purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}...]}
 * api/v1/user/purchaseHistory/:purchaseId GET => {purchase: {purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}}
-api/v1/user/depositHistory GET => {deposits: [{depositId, time, amount, balanceAfter}...]}
-api/v1/user/depositHistory/:depositId GET => {deposit: {depositId, time, amount, balanceAfter}}
+* api/v1/user/depositHistory GET => {deposits: [{depositId, time, amount, balanceAfter}...]}
+* api/v1/user/depositHistory/:depositId GET => {deposit: {depositId, time, amount, balanceAfter}}
 
 api/v1/admin/defaultMargin GET => {margin}
 api/v1/admin/defaultMargin PATCH {margin} => {margin}
