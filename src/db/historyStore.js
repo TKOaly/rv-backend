@@ -22,7 +22,10 @@ module.exports.getUserPurchaseHistory = async (userId) => {
             .where('ITEMHISTORY.userid', userId)
             /* actionid 5 = buy action */
             .andWhere('ITEMHISTORY.actionid', 5)
-            .orderBy('ITEMHISTORY.time', 'desc')
+            .orderBy([
+                { column: 'ITEMHISTORY.time', order: 'desc' },
+                { column: 'ITEMHISTORY.itemhistid', order: 'desc' }
+            ])
     );
 };
 
@@ -61,7 +64,7 @@ module.exports.getUserDepositHistory = async (userId) => {
             .where('PERSONHIST.userid1', userId)
             /* actionid 17 = deposit action */
             .andWhere('PERSONHIST.actionid', 17)
-            .orderBy('PERSONHIST.time', 'desc')
+            .orderBy([{ column: 'PERSONHIST.time', order: 'desc' }, { column: 'PERSONHIST.pershistid', order: 'desc' }])
     );
 };
 
