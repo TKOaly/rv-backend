@@ -108,10 +108,15 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
              * achieved by allowing only a single product to be bought on credit. */
             if (product.sellprice <= 0 || user.saldo > product.sellprice * (count - 1)) {
                 // record purchase
-                await productStore.addPurchase(product.itemid, product.priceid, user.userid, product.count - count);
-
-                // update account balance
-                await userStore.updateAccountBalance(user.name, -count * product.sellprice);
+                await productStore.recordPurchase(
+                    product.itemid,
+                    product.priceid,
+                    user.userid,
+                    count,
+                    product.sellprice,
+                    product.count,
+                    user.saldo
+                );
                 logger.info('User #' + user.userid + ' purchased ' + count + ' x item #' + product.itemid);
 
                 const newBalance = user.saldo - count * product.sellprice;

@@ -166,27 +166,52 @@ module.exports.changeProductStock = async (productid, buyprice, sellprice, quant
  * @param {integer} productid id of the product that is purchased
  * @param {integer} priceid price id of the product
  * @param {integer} userid id of the user who is purchasing this product
- * @param {integer} quantity product quantity in stock after purchase
+ * @param {integer} count how many products are purchased
+ * @param {integer} price price of a single product
+ * @param {integer} stockBefore product stock before purchasing
+ * @param {integer} balanceBefore user balance before purchasing
  */
-module.exports.addPurchase = (productid, priceid, userid, quantity) => {
-    return knex.transaction(function(trx) {
-        return knex('PRICE')
+module.exports.recordPurchase = async (productid, priceid, userid, count, price, stockBefore, balanceBefore) => {
+    return knex.transaction(async (trx) => {
+        const now = new Date();
+        let stock = stockBefore;
+        let balance = balanceBefore;
+
+        /* Storing multibuy into history as multiple individual history events. */
+        for (let i = 0; i < count; i++) {
+            stock--;
+            balance -= price;
+
+            const saldhistids = await knex('SALDOHISTORY')
+                .transacting(trx)
+                .insert({
+                    userid: userid,
+                    time: now,
+                    saldo: balance,
+                    difference: -price
+                })
+                .returning('saldhistid');
+            await knex('ITEMHISTORY')
+                .transacting(trx)
+                .insert({
+                    time: now,
+                    count: stock,
+                    actionid: 5,
+                    itemid: productid,
+                    userid: userid,
+                    priceid1: priceid,
+                    saldhistid: saldhistids[0]
+                });
+        }
+
+        await knex('PRICE')
             .transacting(trx)
-            .where('priceid', priceid)
-            .update('count', quantity)
-            .then(() => {
-                return knex
-                    .transacting(trx)
-                    .insert({
-                        time: new Date(),
-                        count: quantity,
-                        itemid: productid,
-                        userid: userid,
-                        actionid: 5,
-                        priceid1: priceid
-                    })
-                    .into('ITEMHISTORY');
-            });
+            .where({ priceid: priceid })
+            .update({ count: stock });
+        await knex('RVPERSON')
+            .transacting(trx)
+            .where({ userid: userid })
+            .update({ saldo: balance });
     });
 };
 

@@ -12,6 +12,7 @@ const knex = require('../src/db/knex.js');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
 const productStore = require('../src/db/productStore');
+const historyStore = require('../src/db/historyStore');
 
 const token = jwt.sign({
     username: 'normal_user'
@@ -123,6 +124,30 @@ describe('routes: products', () => {
 
             expect(newProduct.count).to.equal(oldProduct.count - 1);
             expect(newProduct.count).to.equal(res.body.productStock);
+        });
+
+        it('should create an event into purchase history', async () => {
+            const user = await userStore.findByUsername('normal_user');
+            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/8855702006834/purchase')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1
+                });
+
+            expect(res.status).to.equal(200);
+
+            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+
+            expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 1);
+
+            const purchaseEvent = newPurchaseHistory[0];
+
+            expect(purchaseEvent.barcode).to.equal('8855702006834');
+            expect(purchaseEvent.saldo).to.equal(res.body.accountBalance);
         });
 
         it('should return 404 on nonexistent product', async () => {
