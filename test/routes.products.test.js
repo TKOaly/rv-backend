@@ -132,7 +132,7 @@ describe('routes: products', () => {
 
             const res = await chai
                 .request(server)
-                .post('/api/v1/products/8855702006834/purchase')
+                .post('/api/v1/products/6417901011105/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     count: 1
@@ -146,8 +146,27 @@ describe('routes: products', () => {
 
             const purchaseEvent = newPurchaseHistory[0];
 
-            expect(purchaseEvent.barcode).to.equal('8855702006834');
+            expect(purchaseEvent.barcode).to.equal('6417901011105');
             expect(purchaseEvent.saldo).to.equal(res.body.accountBalance);
+        });
+
+        it('should create multiple history events on multibuy', async () => {
+            const user = await userStore.findByUsername('normal_user');
+            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/6417901011105/purchase')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 3
+                });
+
+            expect(res.status).to.equal(200);
+
+            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+
+            expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 3);
         });
 
         it('should return 404 on nonexistent product', async () => {
