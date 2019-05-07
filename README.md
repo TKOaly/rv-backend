@@ -8,6 +8,31 @@ RV backend
 
 [Production](https://rv-backend.herokuapp.com)
 
+## New updated starting instructions May 2019
+
+These apply if you only want to run the backend without the frontend. To run it together with frontend, check the frontend repository for instructions.
+
+### On the first time
+
+- install node.js
+- install npm
+- install docker
+- add your user to the docker group
+- install docker-compose
+- install vs code
+- install plugins to vs code
+- clone backend from github
+- run npm install
+- run docker-compose up
+- run npm run db-migrate in the backend container
+- run npm run db-seed in the backend container
+
+### Testing the backend
+
+- run npm test
+
+## Old instructions below
+
 ## Local development
 
 To run the backend locally, you can either use [Docker](https://wwww.docker.com) or run it without Docker.
@@ -103,6 +128,8 @@ When developing, create tests for created endpoints and when felt useful. Use Mo
 4. You can now use REST client to make requests to the back end.
 
 ## API
+
+NOTE! The API is currently experiencing large changes and this API documentation is mostly obsolete. New API plan can be found in the file api-routes-plan.txt. May 2019.
 
 ### Authentication
 
