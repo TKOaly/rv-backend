@@ -11,6 +11,7 @@ const request = chai.request(server);
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
+const historyStore = require('../src/db/historyStore');
 
 const token = jwt.sign({
     username: 'normal_user'
@@ -139,6 +140,30 @@ describe('routes: user', () => {
             const user = await userStore.findById(1);
 
             expect(user.saldo).to.equal(650);
+        });
+
+        it('should create an event into deposit history', async () => {
+            const user = await userStore.findByUsername('normal_user');
+            const oldDepositHistory = await historyStore.getUserDepositHistory(user.userid);
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/deposit')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    amount: 2371
+                });
+
+            expect(res.status).to.equal(200);
+
+            const newDepositHistory = await historyStore.getUserDepositHistory(user.userid);
+
+            expect(newDepositHistory.length).to.equal(oldDepositHistory.length + 1);
+
+            const depositEvent = newDepositHistory[0];
+
+            expect(depositEvent.difference).to.equal(2371);
+            expect(depositEvent.saldo).to.equal(res.body.accountBalance);
         });
 
         it('should error on depositing a negative amount', async () => {

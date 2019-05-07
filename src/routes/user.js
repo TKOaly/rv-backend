@@ -124,7 +124,7 @@ router.post('/deposit', async (req, res) => {
     const amount = req.body.amount;
 
     try {
-        await userStore.updateAccountBalance(user.name, amount);
+        await userStore.recordDeposit(user.userid, amount, user.saldo);
         res.status(200).json({
             accountBalance: user.saldo + amount
         });

@@ -89,35 +89,39 @@ module.exports.updatePassword = (userId, newPassword) => {
         .where({ userid: userId });
 };
 
-module.exports.updateAccountBalance = (username, difference) => {
-    return knex.transaction(function(trx) {
-        return knex
+module.exports.updateAccountBalance = async (userId, newBalance) => {
+    await knex('RVPERSON')
+        .where({ userid: userId })
+        .update({ saldo: newBalance });
+};
+
+module.exports.recordDeposit = async (userid, amount, balanceBefore) => {
+    return knex.transaction(async (trx) => {
+        const now = new Date();
+        const newBalance = balanceBefore + amount;
+
+        const saldhistids = await knex('SALDOHISTORY')
             .transacting(trx)
-            .select('userid', 'saldo')
-            .from('RVPERSON')
-            .where({ name: username })
-            .then((rows) => rows[0])
-            .then((user) => {
-                user.saldo += difference;
-                return knex('RVPERSON')
-                    .transacting(trx)
-                    .where({ name: username })
-                    .update({
-                        saldo: user.saldo
-                    })
-                    .then(() => user);
+            .insert({
+                userid: userid,
+                time: now,
+                saldo: newBalance,
+                difference: amount
             })
-            .then((user) => {
-                return knex
-                    .transacting(trx)
-                    .insert({
-                        userid: user.userid,
-                        time: new Date(),
-                        saldo: user.saldo,
-                        difference: difference
-                    })
-                    .into('SALDOHISTORY')
-                    .then(() => user.saldo);
+            .returning('saldhistid');
+        await knex('PERSONHIST')
+            .transacting(trx)
+            .insert({
+                time: now,
+                actionid: 17,
+                userid1: userid,
+                userid2: userid,
+                saldhistid: saldhistids[0]
             });
+
+        await knex('RVPERSON')
+            .transacting(trx)
+            .where({ userid: userid })
+            .update({ saldo: newBalance });
     });
 };

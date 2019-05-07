@@ -182,7 +182,8 @@ describe('routes: products', () => {
         });
 
         it('should error on insufficient funds', async () => {
-            await userStore.updateAccountBalance('normal_user', -500);
+            const user = await userStore.findByUsername('normal_user');
+            await userStore.updateAccountBalance(user.userid, 0);
 
             const res = await chai
                 .request(server)
