@@ -4,11 +4,11 @@ exports.up = async (knex) => {
         .where('actionid', 5);
     const saldohistory = await knex('SALDOHISTORY')
         .select('saldhistid', 'time', 'userid')
-        .orderBy('time', 'userid');
+        .orderBy(['time', 'userid']);
     const personhist = await knex('PERSONHIST')
         .select('pershistid', 'time', 'userid1')
         .where('actionid', 17)
-        .orderBy('time', 'userid1');
+        .orderBy(['time', 'userid1']);
 
     /* Saldo event ids that have already been associated with an item event. */
     const connectedSaldoIds = new Set(itemhistory.map((itemEvent) => itemEvent.saldhistid));

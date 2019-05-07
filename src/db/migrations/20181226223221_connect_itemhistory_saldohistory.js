@@ -6,7 +6,7 @@ exports.up = async (knex) => {
         .orderBy(['ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice']);
     const saldohistory = await knex('SALDOHISTORY')
         .select('saldhistid', 'time', 'userid', 'difference')
-        .orderBy('time', 'userid', { column: 'difference', order: 'desc' });
+        .orderBy(['time', 'userid', { column: 'difference', order: 'desc' }]);
 
     /* It is guaranteed that there is always one saldo event for every item event. However sometimes there are batches
      * of n item events and n saldo events with the same timestamps, userids and prices/saldo changes. These are called
