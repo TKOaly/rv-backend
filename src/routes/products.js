@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const productStore = require('../db/productStore');
-const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 const logger = require('./../logger');
 const fieldValidator = require('../utils/fieldValidator');
