@@ -12,80 +12,69 @@ const jwt = require('../../src/jwt/token');
 const AUTH_PATH = '/api/v1/authenticate';
 
 describe('routes: authentication', () => {
-    beforeEach((done) => {
-        knex.migrate.rollback().then(() => {
-            knex.migrate.latest().then(() => {
-                knex.seed.run().then(() => {
-                    done();
-                });
-            });
-        });
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
-    afterEach((done) => {
-        knex.migrate.rollback().then(() => {
-            done();
-        });
+    afterEach(async () => {
+        await knex.migrate.rollback();
     });
 
     describe('User authentication', () => {
-        it('with valid credentials, should respond with an authentication token', (done) => {
-            chai.request(server)
+        it('with valid credentials, should respond with an authentication token', async () => {
+            const res = await chai
+                .request(server)
                 .post(AUTH_PATH)
                 .type('form')
                 .send({
                     username: 'normal_user',
                     password: 'hunter2'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(200);
-                    expect(res.body).to.have.all.keys('accessToken');
-
-                    const token = jwt.verify(res.body.accessToken);
-                    should.exist(token.data.username);
-                    token.data.username.should.equal('normal_user');
-
-                    done();
                 });
+
+            res.status.should.equal(200);
+            expect(res.body).to.have.all.keys('accessToken');
+
+            const token = jwt.verify(res.body.accessToken);
+            should.exist(token.data.username);
+            token.data.username.should.equal('normal_user');
         });
 
-        it('with invalid password, should return a 401 unauthorized response', (done) => {
-            chai.request(server)
+        it('with invalid password, should return a 401 unauthorized response', async () => {
+            const res = await chai
+                .request(server)
                 .post(AUTH_PATH)
                 .type('form')
                 .send({
                     username: 'normal_user',
                     password: 'incorrect'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(401);
-                    done();
                 });
+
+            res.status.should.equal(401);
         });
 
-        it('with nonexistent user, should return a 401 unauthorized response', (done) => {
-            chai.request(server)
+        it('with nonexistent user, should return a 401 unauthorized response', async () => {
+            const res = await chai
+                .request(server)
                 .post(AUTH_PATH)
                 .type('form')
                 .send({
                     username: 'nobody',
                     password: 'something'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(401);
-                    done();
                 });
+
+            res.status.should.equal(401);
         });
 
-        it('invalid request should result in a 400 bad request response', (done) => {
-            chai.request(server)
+        it('invalid request should result in a 400 bad request response', async () => {
+            const res = await chai
+                .request(server)
                 .post(AUTH_PATH)
                 .type('form')
-                .send('garbage')
-                .end((err, res) => {
-                    res.status.should.equal(400);
-                    done();
-                });
+                .send('garbage');
+
+            res.status.should.equal(400);
         });
     });
 });

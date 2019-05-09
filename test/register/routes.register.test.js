@@ -14,122 +14,107 @@ const jwt = require('../../src/jwt/token');
 const userStore = require('../../src/db/userStore');
 
 describe('routes: register', () => {
-    beforeEach((done) => {
-        knex.migrate.rollback().then(() => {
-            knex.migrate.latest().then(() => {
-                knex.seed.run().then(() => {
-                    done();
-                });
-            });
-        });
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
-    afterEach((done) => {
-        knex.migrate.rollback().then(() => {
-            done();
-        });
+    afterEach(async () => {
+        await knex.migrate.rollback();
     });
 
     describe('Trying to register with missing field or bad password etc', () => {
-        // var token = jwt.sign({
-        //     username: 'normal_user'
-
-        it('Request should not have missing keys', (done) => {
-            chai.request(server)
+        it('Request should not have missing keys', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     // empty string
-                })
-                .end((err, res) => {
-                    res.status.should.equal(400);
-                    expect(res.body.error_code).to.equal('bad_request');
-                    done();
                 });
+
+            res.status.should.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
         });
 
-        it('Username should not be empty', (done) => {
-            chai.request(server)
+        it('Username should not be empty', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     username: '',
                     password: 'test',
                     fullName: 'm.erkki',
                     email: 'erkki@testi.com'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(400);
-                    expect(res.body.error_code).to.equal('bad_request');
-                    done();
                 });
+
+            res.status.should.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
         });
 
-        it('User password should not be empty', (done) => {
-            chai.request(server)
+        it('User password should not be empty', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: '',
                     fullName: 'm.erkki',
                     email: 'erkki@testi.com'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(400);
-                    expect(res.body.error_code).to.equal('bad_request');
-                    done();
                 });
+
+            res.status.should.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
         });
     });
 
     describe('Usernames and Emails should be uniques', () => {
-        it('Username should be unique', (done) => {
-            chai.request(server)
+        it('Username should be unique', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     username: 'normal_user',
                     password: 'test',
                     fullName: 'm.erkki',
                     email: 'erkki@testi.com'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(409);
-                    expect(res.body.error_code).to.equal('identifier_taken');
-                    done();
                 });
+
+            res.status.should.equal(409);
+            expect(res.body.error_code).to.equal('identifier_taken');
         });
 
-        it('Email should be unique', (done) => {
-            chai.request(server)
+        it('Email should be unique', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: 'test',
                     fullName: 'm.erkki',
                     email: 'user@example.com'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(409);
-                    expect(res.body.error_code).to.equal('identifier_taken');
-                    done();
                 });
+
+            res.status.should.equal(409);
+            expect(res.body.error_code).to.equal('identifier_taken');
         });
     });
 
     describe('User should be able to register to service', () => {
-        it('With all required fields user should be registered to service', (done) => {
-            chai.request(server)
+        it('With all required fields user should be registered to service', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/register')
                 .send({
                     username: 'test',
                     password: 'test',
                     fullName: 'm.erkki',
                     email: 'erkki@test.com'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(201);
-                    expect(res.body).to.have.all.keys('user');
-                    expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
-                    done();
                 });
+
+            res.status.should.equal(201);
+            expect(res.body).to.have.all.keys('user');
+            expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
         });
     });
 });

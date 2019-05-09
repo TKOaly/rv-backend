@@ -10,64 +10,55 @@ const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 
 describe('routes: admin authentication', () => {
-    beforeEach((done) => {
-        knex.migrate.rollback().then(() => {
-            knex.migrate.latest().then(() => {
-                knex.seed.run().then(() => {
-                    done();
-                });
-            });
-        });
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
-    afterEach((done) => {
-        knex.migrate.rollback().then(() => {
-            done();
-        });
+    afterEach(async () => {
+        await knex.migrate.rollback();
     });
 
     describe('Admin authentication', () => {
-        it('logging in with admin role should work', (done) => {
-            chai.request(server)
+        it('logging in with admin role should work', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
                     password: 'admin123'
-                })
-                .end((err, res) => {
-                    expect(res.body).to.have.all.keys('accessToken');
-
-                    const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
-                    expect(decoded.data.username).to.equal('admin_user');
-                    done();
                 });
+
+            expect(res.body).to.have.all.keys('accessToken');
+
+            const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
+            expect(decoded.data.username).to.equal('admin_user');
         });
 
-        it('admin tokens should not be signed with the same key as user tokens', (done) => {
-            chai.request(server)
+        it('admin tokens should not be signed with the same key as user tokens', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
                     password: 'admin123'
-                })
-                .end((err, res) => {
-                    const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
-                    expect(decoded).to.equal(null);
-                    done();
                 });
+
+            const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
+            expect(decoded).to.equal(null);
         });
 
-        it('only admins should be able to authenticate', (done) => {
-            chai.request(server)
+        it('only admins should be able to authenticate', async () => {
+            const res = await chai
+                .request(server)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'normal_user',
                     password: 'hunter2'
-                })
-                .end((err, res) => {
-                    res.status.should.equal(403);
-                    done();
                 });
+
+            res.status.should.equal(403);
         });
     });
 });

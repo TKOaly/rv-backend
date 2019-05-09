@@ -1,30 +1,26 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
 
-module.exports.getUsers = () => {
-    return knex('RVPERSON')
-        .select('*')
-        .then((persons) => {
-            return persons;
-        });
+module.exports.getUsers = async () => {
+    return await knex('RVPERSON').select('*');
 };
 
-module.exports.findById = (id) => {
-    return knex('RVPERSON')
+module.exports.findById = async (id) => {
+    return await knex('RVPERSON')
         .where('RVPERSON.userid', '=', id)
         .select('*')
         .first();
 };
 
-module.exports.findByUsername = (username) => {
-    return knex('RVPERSON')
+module.exports.findByUsername = async (username) => {
+    return await knex('RVPERSON')
         .where('RVPERSON.name', '=', username)
         .select('*')
         .first();
 };
 
-module.exports.findByEmail = (email) => {
-    return knex('RVPERSON')
+module.exports.findByEmail = async (email) => {
+    return await knex('RVPERSON')
         .where('RVPERSON.univident', '=', email)
         .select('*')
         .first();
@@ -43,42 +39,40 @@ module.exports.insertUser = async (user) => {
     });
 };
 
-module.exports.verifyPassword = (password, passwordHash) => {
-    return bcrypt.compare(password, passwordHash);
+module.exports.verifyPassword = async (password, passwordHash) => {
+    return await bcrypt.compare(password, passwordHash);
 };
 
-module.exports.findUserRoles = (username) => {
-    return knex
+module.exports.findUserRoles = async (username) => {
+    const rows = await knex
         .select('role')
         .from('ROLE')
-        .join('RVPERSON', function() {
-            this.on('RVPERSON.roleid', '=', 'ROLE.roleid').andOn('RVPERSON.name', '=', knex.raw('?', [username]));
-        })
-        .then((rows) => {
-            return rows.map((row) => row.role);
+        .join('RVPERSON', (builder) => {
+            builder.on('RVPERSON.roleid', '=', 'ROLE.roleid').andOn('RVPERSON.name', '=', knex.raw('?', [username]));
         });
+    return rows.map((row) => row.role);
 };
 
-module.exports.updateUsername = (userId, newUsername) => {
-    return knex('RVPERSON')
+module.exports.updateUsername = async (userId, newUsername) => {
+    await knex('RVPERSON')
         .update({ name: newUsername })
         .where({ userid: userId });
 };
 
-module.exports.updateFullName = (userId, newFullName) => {
-    return knex('RVPERSON')
+module.exports.updateFullName = async (userId, newFullName) => {
+    await knex('RVPERSON')
         .update({ realname: newFullName })
         .where({ userid: userId });
 };
 
-module.exports.updateEmail = (userId, newEmail) => {
-    return knex('RVPERSON')
+module.exports.updateEmail = async (userId, newEmail) => {
+    await knex('RVPERSON')
         .update({ univident: newEmail })
         .where({ userid: userId });
 };
 
-module.exports.updatePassword = (userId, newPassword) => {
-    return knex('RVPERSON')
+module.exports.updatePassword = async (userId, newPassword) => {
+    await knex('RVPERSON')
         .update({ pass: bcrypt.hashSync(newPassword, 11) })
         .where({ userid: userId });
 };
@@ -90,7 +84,7 @@ module.exports.updateAccountBalance = async (userId, newBalance) => {
 };
 
 module.exports.recordDeposit = async (userid, amount, balanceBefore) => {
-    return knex.transaction(async (trx) => {
+    await knex.transaction(async (trx) => {
         const now = new Date();
         const newBalance = balanceBefore + amount;
 

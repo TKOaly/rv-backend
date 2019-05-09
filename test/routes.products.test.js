@@ -19,83 +19,71 @@ const token = jwt.sign({
 });
 
 describe('routes: products', () => {
-    beforeEach((done) => {
-        knex.migrate.rollback().then(() => {
-            knex.migrate.latest().then(() => {
-                knex.seed.run().then(() => {
-                    done();
-                });
-            });
-        });
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
-    afterEach((done) => {
-        knex.migrate.rollback().then(() => {
-            done();
-        });
+    afterEach(async () => {
+        await knex.migrate.rollback();
     });
 
     describe('Fetching all products', () => {
-        it('should return all products', (done) => {
-            chai.request(server)
+        it('should return all products', async () => {
+            const res = await chai
+                .request(server)
                 .get('/api/v1/products')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    expect(res.status).to.equal(200);
+                .set('Authorization', 'Bearer ' + token);
 
-                    expect(res.body).to.have.all.keys('products');
-                    expect(res.body.products).to.be.an('array');
-                    for (const product of res.body.products) {
-                        expect(product).to.have.all.keys(
-                            'barcode',
-                            'productId',
-                            'name',
-                            'category',
-                            'weight',
-                            'sellPrice',
-                            'stock'
-                        );
-                        expect(product.category).to.have.all.keys('categoryId', 'description');
-                    }
+            expect(res.status).to.equal(200);
 
-                    done();
-                });
+            expect(res.body).to.have.all.keys('products');
+            expect(res.body.products).to.be.an('array');
+            for (const product of res.body.products) {
+                expect(product).to.have.all.keys(
+                    'barcode',
+                    'productId',
+                    'name',
+                    'category',
+                    'weight',
+                    'sellPrice',
+                    'stock'
+                );
+                expect(product.category).to.have.all.keys('categoryId', 'description');
+            }
         });
     });
 
     describe('Fetching product by barcode', () => {
-        it('should return the product', (done) => {
-            chai.request(server)
+        it('should return the product', async () => {
+            const res = await chai
+                .request(server)
                 .get('/api/v1/products/5053990127443')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    expect(res.status).to.equal(200);
+                .set('Authorization', 'Bearer ' + token);
 
-                    expect(res.body).to.have.all.keys('product');
-                    expect(res.body.product).to.have.all.keys(
-                        'barcode',
-                        'productId',
-                        'name',
-                        'category',
-                        'weight',
-                        'sellPrice',
-                        'stock'
-                    );
-                    expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res.status).to.equal(200);
 
-                    done();
-                });
+            expect(res.body).to.have.all.keys('product');
+            expect(res.body.product).to.have.all.keys(
+                'barcode',
+                'productId',
+                'name',
+                'category',
+                'weight',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
         });
 
-        it('should return 404 on nonexistent product', (done) => {
-            chai.request(server)
+        it('should return 404 on nonexistent product', async () => {
+            const res = await chai
+                .request(server)
                 .get('/api/v1/products/99999995')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    expect(res.status).to.equal(404);
+                .set('Authorization', 'Bearer ' + token);
 
-                    done();
-                });
+            expect(res.status).to.equal(404);
         });
     });
 

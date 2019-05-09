@@ -7,7 +7,7 @@ const knex = require('./knex');
  * @returns category information if found, null otherwise
  */
 module.exports.findById = async (pgrpid) => {
-    return knex('PRODGROUP')
+    return await knex('PRODGROUP')
         .select('PRODGROUP.pgrpid', 'PRODGROUP.descr')
         .where({ pgrpid: pgrpid })
         .first();
@@ -17,6 +17,6 @@ module.exports.findById = async (pgrpid) => {
  * Returns all categories.
  *
  */
-module.exports.findAllCategories = () => {
-    return knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
+module.exports.findAllCategories = async () => {
+    return await knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
 };

@@ -3,8 +3,8 @@ const userStore = require('../db/userStore');
 const verifyRoles = require('./authUtils').verifyRoles;
 const logger = require('./../logger');
 
-const authMiddleware = function(roles = [], tokenSecret = process.env.JWT_SECRET) {
-    return async function(req, res, next) {
+const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
+    return async (req, res, next) => {
         const authHeader = req.get('Authorization');
         let rvusername = null;
 

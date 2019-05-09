@@ -7,7 +7,7 @@ const knex = require('./knex');
  * @returns product and price information if found, null otherwise
  */
 module.exports.findByBarcode = async (barcode) => {
-    return knex('PRICE')
+    return await knex('PRICE')
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
@@ -34,9 +34,9 @@ module.exports.findByBarcode = async (barcode) => {
  * @returns product and price information if found, null otherwise
  */
 module.exports.findById = async (id) => {
-    return knex('RVITEM')
-        .leftJoin('PRICE', function() {
-            this.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull('PRICE.endtime');
+    return await knex('RVITEM')
+        .leftJoin('PRICE', (builder) => {
+            builder.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull('PRICE.endtime');
         })
         .where('RVITEM.itemid', id)
         .first();
@@ -54,109 +54,98 @@ module.exports.findById = async (id) => {
  * @param {*} userid id of the user doing the change
  */
 module.exports.changeProductStock = async (productid, buyprice, sellprice, quantity, userid) => {
-    return knex.transaction(function(trx) {
-        let oldPrice;
-
-        knex.select('*')
+    await knex.transaction(async (trx) => {
+        const rows = await knex
+            .select('*')
             .transacting(trx)
             .from('PRICE')
             .where('PRICE.itemid', productid)
-            .andWhere('PRICE.endtime', null)
-            .then((rows) => {
-                oldPrice = rows[0];
+            .andWhere('PRICE.endtime', null);
+        const oldPrice = rows[0];
+        let id;
 
-                // update current valid price if only quantity changes
-                if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
-                    return knex('PRICE')
-                        .transacting(trx)
-                        .update('count', quantity)
-                        .where('priceid', oldPrice.priceid)
-                        .then(() => {
-                            const newPriceId = oldPrice.priceid;
-                            oldPrice.priceid = null;
+        // update current valid price if only quantity changes
+        if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
+            await knex('PRICE')
+                .transacting(trx)
+                .update('count', quantity)
+                .where('priceid', oldPrice.priceid);
+            const newPriceId = oldPrice.priceid;
+            oldPrice.priceid = null;
 
-                            return [newPriceId];
-                        });
-                }
-
-                // otherwise invalidate old price and create a new price
-                return knex('PRICE')
-                    .transacting(trx)
-                    .update({
-                        endtime: new Date(),
-                        count: 0
-                    })
-                    .where('itemid', productid)
-                    .andWhere('endtime', null)
-                    .then(() => {
-                        return knex('PRICE')
-                            .transacting(trx)
-                            .insert(
-                                {
-                                    itemid: productid,
-                                    barcode: oldPrice.barcode,
-                                    count: quantity,
-                                    buyprice,
-                                    sellprice,
-                                    userid,
-                                    starttime: new Date()
-                                },
-                                'priceid'
-                            );
-                    });
-            })
-            .then((id) => {
-                // record changes in product history
-                const newPriceId = id[0];
-                const actions = [];
-                const timestamp = new Date();
-
-                if (buyprice !== oldPrice.buyprice) {
-                    actions.push({
-                        time: timestamp,
-                        count: quantity,
+            id = [newPriceId];
+        } else {
+            // otherwise invalidate old price and create a new price
+            await knex('PRICE')
+                .transacting(trx)
+                .update({
+                    endtime: new Date(),
+                    count: 0
+                })
+                .where('itemid', productid)
+                .andWhere('endtime', null);
+            id = await knex('PRICE')
+                .transacting(trx)
+                .insert(
+                    {
                         itemid: productid,
-                        userid: userid,
-                        actionid: 6,
-                        priceid1: newPriceId,
-                        priceid2: oldPrice.priceid
-                    });
-                }
-
-                if (sellprice !== oldPrice.sellprice) {
-                    actions.push({
-                        time: timestamp,
+                        barcode: oldPrice.barcode,
                         count: quantity,
-                        itemid: productid,
-                        userid: userid,
-                        actionid: 7,
-                        priceid1: newPriceId,
-                        priceid2: oldPrice.priceid
-                    });
-                }
+                        buyprice,
+                        sellprice,
+                        userid,
+                        starttime: new Date()
+                    },
+                    'priceid'
+                );
+        }
 
-                if (quantity !== oldPrice.count) {
-                    actions.push({
-                        time: timestamp,
-                        count: quantity,
-                        itemid: productid,
-                        userid: userid,
-                        actionid: 8,
-                        priceid1: newPriceId,
-                        priceid2: oldPrice.priceid
-                    });
-                }
+        // record changes in product history
+        const newPriceId = id[0];
+        const actions = [];
+        const timestamp = new Date();
 
-                if (actions.length > 0) {
-                    return knex('ITEMHISTORY')
-                        .transacting(trx)
-                        .insert(actions);
-                }
+        if (buyprice !== oldPrice.buyprice) {
+            actions.push({
+                time: timestamp,
+                count: quantity,
+                itemid: productid,
+                userid: userid,
+                actionid: 6,
+                priceid1: newPriceId,
+                priceid2: oldPrice.priceid
+            });
+        }
 
-                return trx;
-            })
-            .then(trx.commit)
-            .catch(trx.rollback);
+        if (sellprice !== oldPrice.sellprice) {
+            actions.push({
+                time: timestamp,
+                count: quantity,
+                itemid: productid,
+                userid: userid,
+                actionid: 7,
+                priceid1: newPriceId,
+                priceid2: oldPrice.priceid
+            });
+        }
+
+        if (quantity !== oldPrice.count) {
+            actions.push({
+                time: timestamp,
+                count: quantity,
+                itemid: productid,
+                userid: userid,
+                actionid: 8,
+                priceid1: newPriceId,
+                priceid2: oldPrice.priceid
+            });
+        }
+
+        if (actions.length > 0) {
+            await knex('ITEMHISTORY')
+                .transacting(trx)
+                .insert(actions);
+        }
     });
 };
 
@@ -172,7 +161,7 @@ module.exports.changeProductStock = async (productid, buyprice, sellprice, quant
  * @param {integer} balanceBefore user balance before purchasing
  */
 module.exports.recordPurchase = async (productid, priceid, userid, count, price, stockBefore, balanceBefore) => {
-    return knex.transaction(async (trx) => {
+    await knex.transaction(async (trx) => {
         const now = new Date();
         let stock = stockBefore;
         let balance = balanceBefore;
@@ -219,8 +208,8 @@ module.exports.recordPurchase = async (productid, priceid, userid, count, price,
  * Returns all products and their stock quantities, if available.
  *
  */
-module.exports.findAll = () => {
-    return knex('RVITEM')
+module.exports.findAll = async () => {
+    return await knex('RVITEM')
         .leftJoin('PRICE', 'RVITEM.itemid', 'PRICE.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
@@ -279,45 +268,37 @@ module.exports.addProduct = async (product, price, userid) => {
 module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
     const oldProduct = await module.exports.findById(id);
 
-    return knex.transaction(function(trx) {
-        return knex('RVITEM')
+    await knex.transaction(async (trx) => {
+        await knex('RVITEM')
             .transacting(trx)
             .update({
                 descr: name,
                 pgrpid: group,
                 weight
             })
-            .where('itemid', id)
-            .then(() => {
-                // record changes in product history
-                const actions = [];
-                const action = {
-                    time: new Date(),
-                    count: oldProduct.count,
-                    itemid: id,
-                    userid,
-                    priceid1: oldProduct.priceid
-                };
-
-                if (name !== oldProduct.descr) {
-                    actions.push(Object.assign({}, action, { actionid: 2 }));
-                }
-
-                if (group !== oldProduct.pgrpid) {
-                    actions.push(Object.assign({}, action, { actionid: 4 }));
-                }
-
-                if (weight !== oldProduct.weight) {
-                    actions.push(Object.assign({}, action, { actionid: 3 }));
-                }
-
-                if (actions.length > 0) {
-                    return knex('ITEMHISTORY')
-                        .transacting(trx)
-                        .insert(actions);
-                }
-
-                return trx;
-            });
+            .where('itemid', id);
+        // record changes in product history
+        const actions = [];
+        const action = {
+            time: new Date(),
+            count: oldProduct.count,
+            itemid: id,
+            userid,
+            priceid1: oldProduct.priceid
+        };
+        if (name !== oldProduct.descr) {
+            actions.push(Object.assign({}, action, { actionid: 2 }));
+        }
+        if (group !== oldProduct.pgrpid) {
+            actions.push(Object.assign({}, action, { actionid: 4 }));
+        }
+        if (weight !== oldProduct.weight) {
+            actions.push(Object.assign({}, action, { actionid: 3 }));
+        }
+        if (actions.length > 0) {
+            await knex('ITEMHISTORY')
+                .transacting(trx)
+                .insert(actions);
+        }
     });
 };
