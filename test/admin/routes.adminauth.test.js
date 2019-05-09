@@ -1,5 +1,4 @@
 const chai = require('chai');
-const should = chai.should();
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
@@ -58,7 +57,7 @@ describe('routes: admin authentication', () => {
                     password: 'hunter2'
                 });
 
-            res.status.should.equal(403);
+            expect(res.status).to.equal(403);
         });
     });
 });

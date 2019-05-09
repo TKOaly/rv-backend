@@ -3,7 +3,6 @@ process.env.JWT_SECRET = 'test secret';
 process.env.JWT_ADMIN_SECRET = 'admin test secret';
 
 const chai = require('chai');
-const should = chai.should();
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
@@ -34,11 +33,11 @@ describe('routes: admin boxes', () => {
             .get('/api/v1/admin/boxes')
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(200);
-        res.body.should.be.an('object');
-        res.body.should.include.keys('boxes');
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.keys('boxes');
         res.body.boxes.every((box) => {
-            box.should.include.keys('box_barcode', 'product_barcode', 'product_name', 'items_per_box', 'product_id');
+            expect(box).to.include.keys('box_barcode', 'product_barcode', 'product_name', 'items_per_box', 'product_id');
         });
     });
 
@@ -48,10 +47,10 @@ describe('routes: admin boxes', () => {
             .get('/api/v1/admin/boxes/01766752')
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(200);
-        res.body.should.be.an('object');
-        res.body.should.include.keys('box');
-        res.body.box.should.include.keys(
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.keys('box');
+        expect(res.body.box).to.include.keys(
             'box_barcode',
             'product_barcode',
             'product_name',
@@ -66,7 +65,7 @@ describe('routes: admin boxes', () => {
             .get('/api/v1/admin/boxes/00000000')
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(404);
+        expect(res.status).to.equal(404);
     });
 
     it('POST /api/v1/admin/boxes/:barcode should add boxes of products correctly', async () => {
@@ -83,11 +82,11 @@ describe('routes: admin boxes', () => {
             })
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(200);
-        res.body.should.be.an('object');
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
 
         const response = res.body;
-        response.should.include.keys(
+        expect(response).to.include.keys(
             'box_barcode',
             'product_barcode',
             'product_name',
@@ -96,13 +95,13 @@ describe('routes: admin boxes', () => {
             'total_quantity'
         );
 
-        response.box_barcode.should.equal(box.box_barcode);
-        response.product_barcode.should.equal(box.product_barcode);
-        response.product_name.should.equal(product.descr);
+        expect(response.box_barcode).to.equal(box.box_barcode);
+        expect(response.product_barcode).to.equal(box.product_barcode);
+        expect(response.product_name).to.equal(product.descr);
 
         const expectedQty = box.items_per_box * 2;
-        response.quantity_added.should.equal(expectedQty);
-        response.total_quantity.should.equal(product.count + expectedQty);
+        expect(response.quantity_added).to.equal(expectedQty);
+        expect(response.total_quantity).to.equal(product.count + expectedQty);
     });
 
     it('PUT /api/v1/admin/boxes/:barcode should create a new box', async () => {
@@ -124,19 +123,19 @@ describe('routes: admin boxes', () => {
             .send(reqData)
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(201);
-        res.body.should.be.an('object');
-        res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
+        expect(res.status).to.equal(201);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
 
         const box = res.body;
-        box.box_barcode.should.equal('01020304');
-        box.items_per_box.should.equal(reqData.items_per_box);
-        should.exist(box.product.product_id);
+        expect(box.box_barcode).to.equal('01020304');
+        expect(box.items_per_box).to.equal(reqData.items_per_box);
+        expect(box.product.product_id).to.exist;
 
         const expectedProduct = Object.assign({}, reqData.product, {
             product_id: box.product.product_id
         });
-        box.product.should.deep.equal(expectedProduct);
+        expect(box.product).to.deep.equal(expectedProduct);
     });
 
     it('PUT /api/v1/admin/boxes/:barcode should update an existing box', async () => {
@@ -158,19 +157,19 @@ describe('routes: admin boxes', () => {
             .send(reqData)
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(200);
-        res.body.should.be.an('object');
-        res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
 
         const box = res.body;
-        box.box_barcode.should.equal('00101011');
-        box.items_per_box.should.equal(reqData.items_per_box);
-        should.exist(box.product.product_id);
+        expect(box.box_barcode).to.equal('00101011');
+        expect(box.items_per_box).to.equal(reqData.items_per_box);
+        expect(box.product.product_id).to.exist;
 
         const expectedProduct = Object.assign({}, reqData.product, {
             product_id: box.product.product_id
         });
-        box.product.should.deep.equal(expectedProduct);
+        expect(box.product).to.deep.equal(expectedProduct);
     });
 
     it('PUT /api/v1/admin/boxes/:barcode should create a product if it doesn\'t exist', async () => {
@@ -192,18 +191,18 @@ describe('routes: admin boxes', () => {
             .send(reqData)
             .set('Authorization', 'Bearer ' + token);
 
-        res.status.should.equal(200);
-        res.body.should.be.an('object');
-        res.body.should.include.all.keys('box_barcode', 'items_per_box', 'product');
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('object');
+        expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
 
         const box = res.body;
-        box.box_barcode.should.equal('00101011');
-        box.items_per_box.should.equal(reqData.items_per_box);
-        should.exist(box.product.product_id);
+        expect(box.box_barcode).to.equal('00101011');
+        expect(box.items_per_box).to.equal(reqData.items_per_box);
+        expect(box.product.product_id).to.exist;
 
         const expectedProduct = Object.assign({}, reqData.product, {
             product_id: box.product.product_id
         });
-        box.product.should.deep.equal(expectedProduct);
+        expect(box.product).to.deep.equal(expectedProduct);
     });
 });

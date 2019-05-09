@@ -35,7 +35,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
-            should.exist(res.body.products);
+            expect(res.body.products).to.exist;
         });
 
         it('admins should not be able to get a product that does not exist', async () => {
@@ -53,16 +53,16 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token);
 
-            should.exist(res.body.product);
-            should.exist(res.body.product.itemid);
-            should.exist(res.body.product.pgrpid);
-            should.exist(res.body.product.descr);
-            should.exist(res.body.product.weight);
-            should.exist(res.body.product.priceid);
-            should.exist(res.body.product.barcode);
-            should.exist(res.body.product.count);
-            should.exist(res.body.product.buyprice);
-            should.exist(res.body.product.sellprice);
+            expect(res.body.product).to.exist;
+            expect(res.body.product.itemid).to.exist;
+            expect(res.body.product.pgrpid).to.exist;
+            expect(res.body.product.descr).to.exist;
+            expect(res.body.product.weight).to.exist;
+            expect(res.body.product.priceid).to.exist;
+            expect(res.body.product.barcode).to.exist;
+            expect(res.body.product.count).to.exist;
+            expect(res.body.product.buyprice).to.exist;
+            expect(res.body.product.sellprice).to.exist;
         });
 
         it('admins should be able to edit a product that exists', async () => {
@@ -79,18 +79,18 @@ describe('routes: admin products', () => {
                     weight: 555
                 });
 
-            should.exist(res.body.product);
-            should.exist(res.body.product.itemid);
-            should.exist(res.body.product.pgrpid);
-            should.exist(res.body.product.count);
-            should.exist(res.body.product.sellprice);
-            should.exist(res.body.product.buyprice);
-            should.exist(res.body.product.weight);
-            res.body.product.pgrpid.should.equal(3);
-            res.body.product.buyprice.should.equal(120);
-            res.body.product.sellprice.should.equal(200);
-            res.body.product.count.should.equal(450);
-            res.body.product.weight.should.equal(555);
+            expect(res.body.product).to.exist;
+            expect(res.body.product.itemid).to.exist;
+            expect(res.body.product.pgrpid).to.exist;
+            expect(res.body.product.count).to.exist;
+            expect(res.body.product.sellprice).to.exist;
+            expect(res.body.product.buyprice).to.exist;
+            expect(res.body.product.weight).to.exist;
+            expect(res.body.product.pgrpid).to.equal(3);
+            expect(res.body.product.buyprice).to.equal(120);
+            expect(res.body.product.sellprice).to.equal(200);
+            expect(res.body.product.count).to.equal(450);
+            expect(res.body.product.weight).to.equal(555);
         });
 
         it('Requesting product with existing barcode', async () => {
@@ -99,8 +99,8 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/5029578000972')
                 .set('Authorization', 'Bearer ' + token);
 
-            res.status.should.equal(200, 'Existing barcode should return product');
-            res.body.product['barcode'].should.equal('5029578000972');
+            expect(res.status).to.equal(200, 'Existing barcode should return product');
+            expect(res.body.product['barcode']).to.equal('5029578000972');
         });
 
         it('Requesting product with malformated barcode', async () => {
@@ -109,7 +109,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/1337')
                 .set('Authorization', 'Bearer ' + token);
 
-            res.status.should.equal(404, 'malformated barcode should return error');
+            expect(res.status).to.equal(404, 'malformated barcode should return error');
         });
 
         it('Requesting product with nonexisting barcode', async () => {
@@ -118,7 +118,7 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products/1234567890123')
                 .set('Authorization', 'Bearer ' + token);
 
-            res.status.should.equal(404, 'Barcode that doesn\'t exist should return error');
+            expect(res.status).to.equal(404, 'Barcode that doesn\'t exist should return error');
         });
 
         it('POST /, returns created product on valid parametres', async () => {
@@ -138,8 +138,8 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token);
 
-            should.exist(res.body.product);
-            res.status.should.equal(201);
+            expect(res.body.product).to.exist;
+            expect(res.status).to.equal(201);
         });
 
         it('POST /, returns error on invalid barcode', async () => {
@@ -159,7 +159,7 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token);
 
-            res.status.should.equal(400);
+            expect(res.status).to.equal(400);
         });
 
         it('POST /, returns error on missing parametres', async () => {
@@ -177,7 +177,7 @@ describe('routes: admin products', () => {
                 .send(product)
                 .set('Authorization', 'Bearer ' + token);
 
-            res.status.should.equal(400);
+            expect(res.status).to.equal(400);
         });
 
         it('Adding products to stock should work', async () => {
@@ -193,11 +193,11 @@ describe('routes: admin products', () => {
                     quantity: 50
                 });
 
-            res.status.should.equal(200);
-            res.body.product_id.should.equal(1750);
-            res.body.buyprice.should.equal(300);
-            res.body.sellprice.should.equal(350);
-            res.body.quantity.should.equal(product.count + 50);
+            expect(res.status).to.equal(200);
+            expect(res.body.product_id).to.equal(1750);
+            expect(res.body.buyprice).to.equal(300);
+            expect(res.body.sellprice).to.equal(350);
+            expect(res.body.quantity).to.equal(product.count + 50);
         });
 
         it('Adding nonexistent product to stock should not work', async () => {
@@ -211,9 +211,9 @@ describe('routes: admin products', () => {
                     quantity: 50
                 });
 
-            res.status.should.equal(404);
-            should.exist(res.body.error_code);
-            should.exist(res.body.message);
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.exist;
+            expect(res.body.message).to.exist;
         });
 
         it('Request with missing fields should be rejected', async () => {
@@ -223,10 +223,10 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({});
 
-            res.status.should.equal(400);
-            should.exist(res.body.error_code);
-            should.exist(res.body.message);
-            should.exist(res.body.errors);
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.exist;
+            expect(res.body.message).to.exist;
+            expect(res.body.errors).to.exist;
         });
     });
 });

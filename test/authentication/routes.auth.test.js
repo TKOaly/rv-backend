@@ -33,12 +33,12 @@ describe('routes: authentication', () => {
                     password: 'hunter2'
                 });
 
-            res.status.should.equal(200);
+            expect(res.status).to.equal(200);
             expect(res.body).to.have.all.keys('accessToken');
 
             const token = jwt.verify(res.body.accessToken);
-            should.exist(token.data.username);
-            token.data.username.should.equal('normal_user');
+            expect(token.data.username).to.exist;
+            expect(token.data.username).to.equal('normal_user');
         });
 
         it('with invalid password, should return a 401 unauthorized response', async () => {
@@ -51,7 +51,7 @@ describe('routes: authentication', () => {
                     password: 'incorrect'
                 });
 
-            res.status.should.equal(401);
+            expect(res.status).to.equal(401);
         });
 
         it('with nonexistent user, should return a 401 unauthorized response', async () => {
@@ -64,7 +64,7 @@ describe('routes: authentication', () => {
                     password: 'something'
                 });
 
-            res.status.should.equal(401);
+            expect(res.status).to.equal(401);
         });
 
         it('invalid request should result in a 400 bad request response', async () => {
@@ -74,7 +74,7 @@ describe('routes: authentication', () => {
                 .type('form')
                 .send('garbage');
 
-            res.status.should.equal(400);
+            expect(res.status).to.equal(400);
         });
     });
 });
