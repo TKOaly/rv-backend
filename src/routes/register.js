@@ -52,16 +52,12 @@ router.post('/', async (req, res) => {
         }
 
         // Add user to db
-        const highestId = await userStore.findHighestUserId();
-        await userStore.insertUser(
-            {
-                username,
-                password,
-                realname: fullName,
-                email
-            },
-            highestId.max
-        );
+        await userStore.insertUser({
+            username,
+            password,
+            realname: fullName,
+            email
+        });
         logger.info('Registered new user: ' + username);
         res.status(201).json({
             user: {

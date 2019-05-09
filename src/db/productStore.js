@@ -241,36 +241,28 @@ module.exports.findAll = () => {
  * Creates a new product if given barcode is not in use.
  *
  */
-module.exports.addProduct = (product, price, userid) => {
-    return knex.transaction(function(trx) {
-        return knex('RVITEM')
+module.exports.addProduct = async (product, price, userid) => {
+    return await knex.transaction(async (trx) => {
+        const itemids = await knex('RVITEM')
             .transacting(trx)
-            .max('itemid as highestid')
-            .then((rows) => {
-                product.itemid = rows[0].highestid + 1;
-                price.itemid = product.itemid;
-                return knex('RVITEM')
-                    .transacting(trx)
-                    .insert(product);
-            })
-            .then(() => {
-                return knex('PRICE')
-                    .transacting(trx)
-                    .insert(price, 'priceid');
-            })
-            .then((priceid) => {
-                return knex('ITEMHISTORY')
-                    .transacting(trx)
-                    .insert({
-                        time: price.starttime,
-                        count: price.count,
-                        itemid: price.itemid,
-                        userid: userid,
-                        actionid: 1,
-                        priceid1: priceid[0]
-                    });
-            })
-            .then(() => product.itemid);
+            .insert(product)
+            .returning('itemid');
+        price.itemid = itemids[0];
+        const priceids = await knex('PRICE')
+            .transacting(trx)
+            .insert(price)
+            .returning('priceid');
+        await knex('ITEMHISTORY')
+            .transacting(trx)
+            .insert({
+                time: price.starttime,
+                count: price.count,
+                itemid: price.itemid,
+                userid: userid,
+                actionid: 1,
+                priceid1: priceids[0]
+            });
+        return itemids[0];
     });
 };
 

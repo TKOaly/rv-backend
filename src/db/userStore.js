@@ -23,12 +23,6 @@ module.exports.findByUsername = (username) => {
         .first();
 };
 
-module.exports.findHighestUserId = () => {
-    return knex('RVPERSON')
-        .max('userid')
-        .first();
-};
-
 module.exports.findByEmail = (email) => {
     return knex('RVPERSON')
         .where('RVPERSON.univident', '=', email)
@@ -36,10 +30,10 @@ module.exports.findByEmail = (email) => {
         .first();
 };
 
-module.exports.insertUser = (user, highestId) => {
-    return knex('RVPERSON').insert({
-        userid: highestId + 1,
+module.exports.insertUser = async (user) => {
+    await knex('RVPERSON').insert({
         createdate: new Date(),
+        // roleid 2 = normal user
         roleid: 2,
         name: user.username,
         univident: user.email.trim(),
