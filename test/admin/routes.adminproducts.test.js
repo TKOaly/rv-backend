@@ -26,7 +26,7 @@ describe('routes: admin products', () => {
         await knex.migrate.rollback();
     });
 
-    describe('products', () => {
+    describe('Admin products', () => {
         it('admins should be able to get product list', async () => {
             const res = await chai
                 .request(server)

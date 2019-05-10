@@ -3,8 +3,8 @@ const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
+const server = require('../src/app');
+const knex = require('../src/db/knex');
 
 describe('routes: register', () => {
     beforeEach(async () => {

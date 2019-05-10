@@ -3,9 +3,9 @@ const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
+const server = require('../src/app');
+const knex = require('../src/db/knex');
+const jwt = require('../src/jwt/token');
 
 describe('routes: authentication', () => {
     beforeEach(async () => {
