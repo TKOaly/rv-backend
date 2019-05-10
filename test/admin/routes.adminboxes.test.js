@@ -1,21 +1,22 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-process.env.JWT_ADMIN_SECRET = 'admin test secret';
-
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
+const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const boxStore = require('../../src/db/boxStore');
 const productStore = require('../../src/db/productStore');
 
-describe('routes: admin boxes', () => {
-    const server = require('../../src/app');
-    const token = jwt.sign({ username: 'admin_user' }, process.env.JWT_ADMIN_SECRET);
+const token = jwt.sign(
+    {
+        username: 'admin_user'
+    },
+    process.env.JWT_ADMIN_SECRET
+);
 
+describe('routes: admin boxes', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();

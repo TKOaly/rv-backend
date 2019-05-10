@@ -1,19 +1,21 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-process.env.JWT_ADMIN_SECRET = 'admin test secret';
-
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
+const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const productStore = require('../../src/db/productStore');
 
-describe('routes: admin products', () => {
-    const server = require('../../src/app');
+const token = jwt.sign(
+    {
+        username: 'admin_user'
+    },
+    process.env.JWT_ADMIN_SECRET
+);
 
+describe('routes: admin products', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();
@@ -25,8 +27,6 @@ describe('routes: admin products', () => {
     });
 
     describe('products', () => {
-        const token = jwt.sign({ username: 'admin_user' }, process.env.JWT_ADMIN_SECRET);
-
         it('admins should be able to get product list', async () => {
             const res = await chai
                 .request(server)

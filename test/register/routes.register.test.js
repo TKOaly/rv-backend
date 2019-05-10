@@ -1,13 +1,10 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 const server = require('../../src/app');
-const knex = require('../../src/db/knex.js');
+const knex = require('../../src/db/knex');
 
 describe('routes: register', () => {
     beforeEach(async () => {

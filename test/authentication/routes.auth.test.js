@@ -7,8 +7,6 @@ const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 
-const AUTH_PATH = '/api/v1/authenticate';
-
 describe('routes: authentication', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
@@ -24,8 +22,7 @@ describe('routes: authentication', () => {
         it('with valid credentials, should respond with an authentication token', async () => {
             const res = await chai
                 .request(server)
-                .post(AUTH_PATH)
-                .type('form')
+                .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
                     password: 'hunter2'
@@ -42,8 +39,7 @@ describe('routes: authentication', () => {
         it('with invalid password, should return a 401 unauthorized response', async () => {
             const res = await chai
                 .request(server)
-                .post(AUTH_PATH)
-                .type('form')
+                .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
                     password: 'incorrect'
@@ -55,8 +51,7 @@ describe('routes: authentication', () => {
         it('with nonexistent user, should return a 401 unauthorized response', async () => {
             const res = await chai
                 .request(server)
-                .post(AUTH_PATH)
-                .type('form')
+                .post('/api/v1/authenticate')
                 .send({
                     username: 'nobody',
                     password: 'something'
@@ -68,8 +63,7 @@ describe('routes: authentication', () => {
         it('invalid request should result in a 400 bad request response', async () => {
             const res = await chai
                 .request(server)
-                .post(AUTH_PATH)
-                .type('form')
+                .post('/api/v1/authenticate')
                 .send('garbage');
 
             expect(res.status).to.equal(400);
