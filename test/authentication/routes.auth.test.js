@@ -1,11 +1,9 @@
 const chai = require('chai');
-const should = chai.should();
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 const server = require('../../src/app');
-const request = chai.request(server);
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 

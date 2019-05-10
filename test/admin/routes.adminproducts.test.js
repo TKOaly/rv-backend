@@ -3,7 +3,6 @@ process.env.JWT_SECRET = 'test secret';
 process.env.JWT_ADMIN_SECRET = 'admin test secret';
 
 const chai = require('chai');
-const should = chai.should();
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
@@ -14,7 +13,6 @@ const productStore = require('../../src/db/productStore');
 
 describe('routes: admin products', () => {
     const server = require('../../src/app');
-    const request = chai.request(server);
 
     beforeEach(async () => {
         await knex.migrate.rollback();

@@ -14,7 +14,6 @@ const productStore = require('../../src/db/productStore');
 
 describe('routes: admin boxes', () => {
     const server = require('../../src/app');
-    const request = chai.request(server);
     const token = jwt.sign({ username: 'admin_user' }, process.env.JWT_ADMIN_SECRET);
 
     beforeEach(async () => {
@@ -37,7 +36,13 @@ describe('routes: admin boxes', () => {
         expect(res.body).to.be.an('object');
         expect(res.body).to.include.keys('boxes');
         res.body.boxes.every((box) => {
-            expect(box).to.include.keys('box_barcode', 'product_barcode', 'product_name', 'items_per_box', 'product_id');
+            expect(box).to.include.keys(
+                'box_barcode',
+                'product_barcode',
+                'product_name',
+                'items_per_box',
+                'product_id'
+            );
         });
     });
 

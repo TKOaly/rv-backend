@@ -1,5 +1,5 @@
 const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, label, printf, splat } = format;
+const { combine, timestamp, printf, splat } = format;
 
 const logFormat = printf((info) => {
     return `${info.timestamp} ${info.level.padEnd(8)}: ${info.message}`;
