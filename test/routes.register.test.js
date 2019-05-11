@@ -5,6 +5,7 @@ chai.use(chaiHttp);
 
 const server = require('../src/app');
 const knex = require('../src/db/knex');
+const userStore = require('../src/db/userStore');
 
 describe('routes: register', () => {
     beforeEach(async () => {
@@ -108,6 +109,23 @@ describe('routes: register', () => {
             expect(res.status).to.equal(201);
             expect(res.body).to.have.all.keys('user');
             expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
+        });
+
+        it('Registering should create a new user to the database', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/register')
+                .send({
+                    username: 'abc',
+                    password: 'def',
+                    fullName: 'No Body',
+                    email: 'person@email.com'
+                });
+
+            expect(res.status).to.equal(201);
+
+            const user = await userStore.findByUsername('abc');
+            expect(user).to.exist;
         });
     });
 });
