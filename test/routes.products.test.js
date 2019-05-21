@@ -98,7 +98,7 @@ describe('routes: products', () => {
 
             expect(res.status).to.equal(200);
 
-            expect(res.body).to.have.all.keys('accountBalance', 'productStock');
+            expect(res.body).to.have.all.keys('accountBalance', 'productStock', 'purchases');
 
             const newUser = await userStore.findByUsername('normal_user');
             const newProduct = await productStore.findByBarcode('8855702006834');

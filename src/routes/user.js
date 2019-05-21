@@ -124,9 +124,16 @@ router.post('/deposit', async (req, res) => {
     const amount = req.body.amount;
 
     try {
-        await userStore.recordDeposit(user.userid, amount, user.saldo);
+        const insertedEventPair = await userStore.recordDeposit(user.userid, amount, user.saldo);
+
         res.status(200).json({
-            accountBalance: user.saldo + amount
+            accountBalance: user.saldo + amount,
+            deposit: {
+                depositId: insertedEventPair.personEvent.pershistid,
+                time: new Date(insertedEventPair.personEvent.time).toISOString(),
+                amount: insertedEventPair.saldoEvent.difference,
+                balanceAfter: insertedEventPair.saldoEvent.saldo
+            }
         });
     } catch (error) {
         res.status(500).json({

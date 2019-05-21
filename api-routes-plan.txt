@@ -4,13 +4,13 @@
 
 * api/v1/products GET => {products: [{barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}...]}
 * api/v1/products/:barcode GET => {product: {barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}}
-* api/v1/products/:barcode/purchase POST {count} => {accountBalance, productStock}
+* api/v1/products/:barcode/purchase POST {count} => {accountBalance, productStock, purchases: [{purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}...]}
 * api/v1/categories GET => {categories: [{categoryId, description}...]}
 * api/v1/categories/:categoryId GET => {category: {categoryId, description}}
 * api/v1/user GET => {user: {username, fullName, email, moneyBalance}}
 * api/v1/user PATCH {username?, fullName?, email?} => {user: {username, fullName, email, moneyBalance}}
 * api/v1/user/changePassword POST {password} =>
-* api/v1/user/deposit POST {amount} => {accountBalance}
+* api/v1/user/deposit POST {amount} => {accountBalance, deposit: {depositId, time, amount, balanceAfter}}
 * api/v1/user/purchaseHistory GET => {purchases: [{purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}...]}
 * api/v1/user/purchaseHistory/:purchaseId GET => {purchase: {purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}}
 * api/v1/user/depositHistory GET => {deposits: [{depositId, time, amount, balanceAfter}...]}

@@ -161,7 +161,9 @@ module.exports.changeProductStock = async (productid, buyprice, sellprice, quant
  * @param {integer} balanceBefore user balance before purchasing
  */
 module.exports.recordPurchase = async (productid, priceid, userid, count, price, stockBefore, balanceBefore) => {
-    await knex.transaction(async (trx) => {
+    return await knex.transaction(async (trx) => {
+        const insertedHistory = [];
+
         const now = new Date();
         let stock = stockBefore;
         let balance = balanceBefore;
@@ -171,7 +173,7 @@ module.exports.recordPurchase = async (productid, priceid, userid, count, price,
             stock--;
             balance -= price;
 
-            const saldhistids = await knex('SALDOHISTORY')
+            const insertedSaldoRows = await knex('SALDOHISTORY')
                 .transacting(trx)
                 .insert({
                     userid: userid,
@@ -179,8 +181,8 @@ module.exports.recordPurchase = async (productid, priceid, userid, count, price,
                     saldo: balance,
                     difference: -price
                 })
-                .returning('saldhistid');
-            await knex('ITEMHISTORY')
+                .returning('*');
+            const insertedItemRows = await knex('ITEMHISTORY')
                 .transacting(trx)
                 .insert({
                     time: now,
@@ -189,8 +191,15 @@ module.exports.recordPurchase = async (productid, priceid, userid, count, price,
                     itemid: productid,
                     userid: userid,
                     priceid1: priceid,
-                    saldhistid: saldhistids[0]
-                });
+                    saldhistid: insertedSaldoRows[0].saldhistid
+                })
+                .returning('*');
+
+            /* Storing inserted history rows so they can be returned. */
+            insertedHistory.push({
+                saldoEvent: insertedSaldoRows[0],
+                itemEvent: insertedItemRows[0]
+            });
         }
 
         await knex('PRICE')
@@ -201,6 +210,8 @@ module.exports.recordPurchase = async (productid, priceid, userid, count, price,
             .transacting(trx)
             .where({ userid: userid })
             .update({ saldo: balance });
+
+        return insertedHistory;
     });
 };
 

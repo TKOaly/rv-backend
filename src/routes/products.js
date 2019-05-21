@@ -107,7 +107,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
              * achieved by allowing only a single product to be bought on credit. */
             if (product.sellprice <= 0 || user.saldo > product.sellprice * (count - 1)) {
                 // record purchase
-                await productStore.recordPurchase(
+                const insertedHistory = await productStore.recordPurchase(
                     product.itemid,
                     product.priceid,
                     user.userid,
@@ -120,10 +120,31 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
 
                 const newBalance = user.saldo - count * product.sellprice;
                 const newStock = product.count - count;
+
+                const newPurchases = insertedHistory.map((eventPair) => {
+                    return {
+                        purchaseId: eventPair.itemEvent.itemhistid,
+                        time: new Date(eventPair.itemEvent.time).toISOString(),
+                        product: {
+                            barcode: product.barcode,
+                            productId: product.itemid,
+                            name: product.descr,
+                            category: {
+                                categoryId: product.pgrpid,
+                                description: product.pgrpdescr
+                            },
+                            weight: product.weight
+                        },
+                        price: product.sellprice,
+                        balanceAfter: eventPair.saldoEvent.saldo
+                    };
+                });
+
                 // all done, respond with success
                 res.status(200).json({
                     accountBalance: newBalance,
-                    productStock: newStock
+                    productStock: newStock,
+                    purchases: newPurchases
                 });
             } else {
                 logger.error(

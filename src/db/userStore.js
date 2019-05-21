@@ -84,11 +84,11 @@ module.exports.updateAccountBalance = async (userId, newBalance) => {
 };
 
 module.exports.recordDeposit = async (userid, amount, balanceBefore) => {
-    await knex.transaction(async (trx) => {
+    return await knex.transaction(async (trx) => {
         const now = new Date();
         const newBalance = balanceBefore + amount;
 
-        const saldhistids = await knex('SALDOHISTORY')
+        const insertedSaldoRows = await knex('SALDOHISTORY')
             .transacting(trx)
             .insert({
                 userid: userid,
@@ -96,20 +96,26 @@ module.exports.recordDeposit = async (userid, amount, balanceBefore) => {
                 saldo: newBalance,
                 difference: amount
             })
-            .returning('saldhistid');
-        await knex('PERSONHIST')
+            .returning('*');
+        const insertedPersonRows = await knex('PERSONHIST')
             .transacting(trx)
             .insert({
                 time: now,
                 actionid: 17,
                 userid1: userid,
                 userid2: userid,
-                saldhistid: saldhistids[0]
-            });
+                saldhistid: insertedSaldoRows[0].saldhistid
+            })
+            .returning('*');
 
         await knex('RVPERSON')
             .transacting(trx)
             .where({ userid: userid })
             .update({ saldo: newBalance });
+
+        return {
+            saldoEvent: insertedSaldoRows[0],
+            personEvent: insertedPersonRows[0]
+        };
     });
 };

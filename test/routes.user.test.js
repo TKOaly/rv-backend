@@ -129,7 +129,7 @@ describe('routes: user', () => {
 
             expect(res.status).to.equal(200);
 
-            expect(res.body).to.have.all.keys('accountBalance');
+            expect(res.body).to.have.all.keys('accountBalance', 'deposit');
 
             expect(res.body.accountBalance).to.equal(650);
 
