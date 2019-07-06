@@ -8,7 +8,7 @@ const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 
 const token = jwt.sign({
-    username: 'normal_user'
+    userId: 1
 });
 
 describe('routes: userDepositHistory', () => {

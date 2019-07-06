@@ -10,7 +10,7 @@ const userStore = require('../src/db/userStore');
 const historyStore = require('../src/db/historyStore');
 
 const token = jwt.sign({
-    username: 'normal_user'
+    userId: 1
 });
 
 describe('routes: user', () => {

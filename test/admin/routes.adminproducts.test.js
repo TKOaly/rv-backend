@@ -10,7 +10,7 @@ const productStore = require('../../src/db/productStore');
 
 const token = jwt.sign(
     {
-        username: 'admin_user'
+        userId: 2
     },
     process.env.JWT_ADMIN_SECRET
 );

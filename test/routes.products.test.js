@@ -11,7 +11,7 @@ const productStore = require('../src/db/productStore');
 const historyStore = require('../src/db/historyStore');
 
 const token = jwt.sign({
-    username: 'normal_user'
+    userId: 1
 });
 
 describe('routes: products', () => {

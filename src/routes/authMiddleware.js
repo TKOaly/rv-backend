@@ -6,7 +6,7 @@ const logger = require('./../logger');
 const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
     return async (req, res, next) => {
         const authHeader = req.get('Authorization');
-        let rvusername = null;
+        let userId = null;
 
         // verify that Authorization header contains a token
         if (authHeader !== undefined) {
@@ -15,15 +15,15 @@ const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
                 const token = jwt.verify(parts[1], tokenSecret);
 
                 if (token) {
-                    rvusername = token.data.username;
+                    userId = token.data.userId;
                 }
             }
         }
 
-        if (rvusername) {
+        if (userId !== null) {
             try {
-                req.rvuser = await userStore.findByUsername(rvusername);
-                req.rvroles = await userStore.findUserRoles(rvusername);
+                req.rvuser = await userStore.findById(userId);
+                req.rvroles = await userStore.findUserRoles(req.rvuser.name);
 
                 if (req.rvuser && req.rvroles) {
                     // finally, verify that user is authorized

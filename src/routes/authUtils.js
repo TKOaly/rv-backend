@@ -51,7 +51,7 @@ module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecr
                 if (verifyRoles(requiredRoles, roles)) {
                     logger.info('Generated and signed new JWT for user ' + user.name);
                     res.status(200).json({
-                        accessToken: token.sign({ username: user.name }, tokenSecret)
+                        accessToken: token.sign({ userId: user.userid }, tokenSecret)
                     });
                 } else {
                     logger.error('User ' + user.name + ' is not authorized to view this resource.');

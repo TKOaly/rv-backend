@@ -6,6 +6,7 @@ chai.use(chaiHttp);
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
+const userStore = require('../src/db/userStore');
 
 describe('routes: authentication', () => {
     beforeEach(async () => {
@@ -32,8 +33,10 @@ describe('routes: authentication', () => {
             expect(res.body).to.have.all.keys('accessToken');
 
             const token = jwt.verify(res.body.accessToken);
-            expect(token.data.username).to.exist;
-            expect(token.data.username).to.equal('normal_user');
+            expect(token.data.userId).to.exist;
+
+            const user = await userStore.findByUsername('normal_user');
+            expect(token.data.userId).to.equal(user.userid);
         });
 
         it('with invalid password, should return a 401 unauthorized response', async () => {
