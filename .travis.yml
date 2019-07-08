@@ -13,6 +13,8 @@ node_js:
 cache:
   directories:
     - node_modules
+before_install:
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 762E3157
 install:
   - npm i
   - npm i -g codecov
