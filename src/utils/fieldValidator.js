@@ -1,31 +1,40 @@
 /**
- * Creates a validator.
- * 
- * @param {*} validatorFunction function for validating a value, should return true if valid, false otherwise
- * @param {*} errorMessage error message to return if validation fails
- */
-module.exports.createValidator = (validatorFunc, errorMessage) => {
-    return value => {
-        return validatorFunc(value) ? null : errorMessage;
-    };
-};
-
-/**
  * Validates an object.
- * 
+ *
  * @param {*} obj object to validate
  * @param {*} fieldValidators list of fields and validators for each field
  */
 module.exports.validateObject = (obj, fieldValidators) => {
-    let errors = [];
-    fieldValidators.forEach(v => {
-        if (Object.keys(obj).includes(v.field)) {
-            let error = v.validator(obj[v.field]);
-            error && errors.push(error);
+    const errors = [];
+
+    fieldValidators.forEach((val) => {
+        if (Object.keys(obj).includes(val.field)) {
+            const fieldErrors = val.validator(obj[val.field]);
+            errors.push(...fieldErrors);
         } else {
-            errors.push(v.field + ' is missing');
+            errors.push(val.field + ' is missing');
         }
     });
+
+    return errors;
+};
+
+module.exports.validateOptionalFields = (obj, fieldValidators) => {
+    const errors = [];
+    let someFieldPresent = false;
+
+    fieldValidators.forEach((val) => {
+        if (Object.keys(obj).includes(val.field)) {
+            someFieldPresent = true;
+
+            const fieldErrors = val.validator(obj[val.field]);
+            errors.push(...fieldErrors);
+        }
+    });
+
+    if (!someFieldPresent) {
+        errors.push('no fields are present');
+    }
 
     return errors;
 };

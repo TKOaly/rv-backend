@@ -4,11 +4,10 @@ const productStore = require('./productStore');
 /**
  * Retrieves all boxes and their associated products.
  */
-module.exports.findAll = () => {
-    return knex('RVBOX')
-        .leftJoin('PRICE', function() {
-            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode')
-                .andOnNull('PRICE.endtime');
+module.exports.findAll = async () => {
+    return await knex('RVBOX')
+        .leftJoin('PRICE', (builder) => {
+            builder.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
         })
         .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
         .select(
@@ -22,14 +21,13 @@ module.exports.findAll = () => {
 
 /**
  * Finds a box by its barcode.
- * 
+ *
  * @param {} barcode barcode of the box
  */
-module.exports.findByBoxBarcode = barcode => {
-    return knex('RVBOX')
-        .leftJoin('PRICE', function() {
-            this.on('PRICE.barcode', '=', 'RVBOX.itembarcode')
-                .andOnNull('PRICE.endtime');
+module.exports.findByBoxBarcode = async (barcode) => {
+    return await knex('RVBOX')
+        .leftJoin('PRICE', (builder) => {
+            builder.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
         })
         .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
         .where('RVBOX.barcode', barcode)
@@ -45,7 +43,7 @@ module.exports.findByBoxBarcode = barcode => {
 
 /**
  * Creates a new box for a product.
- * 
+ *
  * @param {*} boxBarcode barcode of the box
  * @param {*} productBarcode barcode of the product in the box
  * @param {*} itemsPerBox number of items in the box
@@ -57,25 +55,23 @@ module.exports.createBox = async (boxBarcode, productBarcode, itemsPerBox, useri
         throw new Error('product not found');
     }
 
-    return knex.transaction(function (trx) {
-        return knex('RVBOX')
+    await knex.transaction(async (trx) => {
+        await knex('RVBOX')
             .transacting(trx)
             .insert({
                 barcode: boxBarcode,
                 itembarcode: productBarcode,
                 itemcount: itemsPerBox
-            })
-            .then(() => {
-                return knex('BOXHISTORY')
-                    .transacting(trx)
-                    .insert({
-                        barcode: boxBarcode,
-                        itemid: product.itemid,
-                        time: new Date(),
-                        itemcount: itemsPerBox,
-                        userid: userid,
-                        actionid: 24
-                    });
+            });
+        await knex('BOXHISTORY')
+            .transacting(trx)
+            .insert({
+                barcode: boxBarcode,
+                itemid: product.itemid,
+                time: new Date(),
+                itemcount: itemsPerBox,
+                userid: userid,
+                actionid: 24
             });
     });
 };
@@ -86,26 +82,24 @@ module.exports.updateBox = async (boxBarcode, productBarcode, itemsPerBox, useri
         throw new Error('product not found');
     }
 
-    return knex.transaction(function (trx) {
-        return knex('RVBOX')
+    await knex.transaction(async (trx) => {
+        await knex('RVBOX')
             .transacting(trx)
             .update({
                 barcode: boxBarcode,
                 itembarcode: productBarcode,
                 itemcount: itemsPerBox
             })
-            .where('barcode', boxBarcode)
-            .then(() => {
-                return knex('BOXHISTORY')
-                    .transacting(trx)
-                    .insert({
-                        barcode: boxBarcode,
-                        itemid: product.itemid,
-                        time: new Date(),
-                        itemcount: itemsPerBox,
-                        userid: userid,
-                        actionid: 25
-                    });
+            .where('barcode', boxBarcode);
+        await knex('BOXHISTORY')
+            .transacting(trx)
+            .insert({
+                barcode: boxBarcode,
+                itemid: product.itemid,
+                time: new Date(),
+                itemcount: itemsPerBox,
+                userid: userid,
+                actionid: 25
             });
     });
 };

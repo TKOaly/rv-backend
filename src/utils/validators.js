@@ -1,52 +1,92 @@
 const fieldValidator = require('./fieldValidator');
-const isObject = require('util').isObject;
 
-module.exports.numericBarcode = fieldname => {
+module.exports.numericBarcode = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            v => typeof v === 'string' && v.match('^\\d+$'),
-            fieldname + ' should be a string of digits'
-        )
+        validator: (value) => {
+            if (typeof value === 'string' && value.match(/^\d{1,14}$/)) {
+                return [];
+            } else {
+                return [fieldname + ' should be a numeric 1-14 digit barcode'];
+            }
+        }
     };
 };
 
-module.exports.nonEmptyString = fieldname => {
+module.exports.string = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            v => typeof v === 'string' && v && v.length > 0,
-            fieldname + ' should be a non-empty string'
-        )
+        validator: (value) => {
+            if (typeof value === 'string') {
+                return [];
+            } else {
+                return [fieldname + ' should be a string'];
+            }
+        }
     };
 };
 
-module.exports.nonNegativeNumber = fieldname => {
+module.exports.nonEmptyString = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            v => !isNaN(parseInt(v, 10)) && v >= 0,
-            fieldname + ' should be a non-negative number'
-        )
+        validator: (value) => {
+            if (typeof value === 'string' && value.length > 0) {
+                return [];
+            } else {
+                return [fieldname + ' should be a non-empty string'];
+            }
+        }
     };
 };
 
-module.exports.positiveNumber = fieldname => {
+module.exports.integer = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            v => !isNaN(parseInt(v, 10)) && v > 0,
-            fieldname + ' should be a positive number'
-        )
+        validator: (value) => {
+            if (typeof value === 'number' && Number.isInteger(value)) {
+                return [];
+            } else {
+                return [fieldname + ' should be an integer'];
+            }
+        }
     };
 };
 
-module.exports.anObject = fieldname => {
+module.exports.positiveInteger = (fieldname) => {
     return {
         field: fieldname,
-        validator: fieldValidator.createValidator(
-            v => isObject(v),
-            fieldname + ' should be an object'
-        )
+        validator: (value) => {
+            if (typeof value === 'number' && Number.isInteger(value) && value > 0) {
+                return [];
+            } else {
+                return [fieldname + ' should be a positive integer'];
+            }
+        }
+    };
+};
+
+module.exports.nonNegativeInteger = (fieldname) => {
+    return {
+        field: fieldname,
+        validator: (value) => {
+            if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
+                return [];
+            } else {
+                return [fieldname + ' should be a non-negative integer'];
+            }
+        }
+    };
+};
+
+module.exports.objectWithFields = (fieldname, fieldValidators) => {
+    return {
+        field: fieldname,
+        validator: (value) => {
+            if (typeof value === 'object' && value !== null) {
+                return fieldValidator.validateObject(value, fieldValidators).map((err) => fieldname + ' ' + err);
+            } else {
+                return [fieldname + ' should be an object'];
+            }
+        }
     };
 };

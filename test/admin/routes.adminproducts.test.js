@@ -1,190 +1,149 @@
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = 'test secret';
-process.env.JWT_ADMIN_SECRET = 'admin test secret';
-
 const chai = require('chai');
-const should = chai.should();
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
+const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const productStore = require('../../src/db/productStore');
 
+const token = jwt.sign(
+    {
+        userId: 2
+    },
+    process.env.JWT_ADMIN_SECRET
+);
+
 describe('routes: admin products', () => {
-    const server = require('../../src/app');
-    const request = chai.request(server);
-
-    beforeEach(done => {
-        knex.migrate.rollback().then(() => {
-            knex.migrate.latest().then(() => {
-                knex.seed.run().then(() => {
-                    done();
-                });
-            });
-        });
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
     });
 
-    afterEach(done => {
-        knex.migrate.rollback().then(() => {
-            done();
-        });
+    afterEach(async () => {
+        await knex.migrate.rollback();
     });
 
-    describe('products', () => {
-        const token = jwt.sign(
-            { username: 'admin_user' },
-            process.env.JWT_ADMIN_SECRET
-        );
-
-        it('admins should be able to get product list', done => {
-            chai
+    describe('Admin products', () => {
+        it('admins should be able to get product list', async () => {
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.not.exist(err);
-                    should.exist(res.body.products);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.body.products).to.exist;
         });
 
-        it('admins should not be able to get a product that does not exist', done => {
-            chai
+        it('admins should not be able to get a product that does not exist', async () => {
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products/product/9999')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(err);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
         });
 
-        it('admins should be able to get a product that exists', done => {
-            chai
+        it('admins should be able to get a product that exists', async () => {
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products/product/1816')
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(res.body.itemid);
-                    should.exist(res.body.pgrpid);
-                    should.exist(res.body.descr);
-                    should.exist(res.body.weight);
-                    should.exist(res.body.priceid);
-                    should.exist(res.body.barcode);
-                    should.exist(res.body.count);
-                    should.exist(res.body.buyprice);
-                    should.exist(res.body.sellprice);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.body.product).to.exist;
+            expect(res.body.product.itemid).to.exist;
+            expect(res.body.product.pgrpid).to.exist;
+            expect(res.body.product.descr).to.exist;
+            expect(res.body.product.weight).to.exist;
+            expect(res.body.product.priceid).to.exist;
+            expect(res.body.product.barcode).to.exist;
+            expect(res.body.product.count).to.exist;
+            expect(res.body.product.buyprice).to.exist;
+            expect(res.body.product.sellprice).to.exist;
         });
 
-        it('admins should be able to get a product that exists', done => {
-            chai
+        it('admins should be able to edit a product that exists', async () => {
+            const res = await chai
                 .request(server)
                 .put('/api/v1/admin/products/product/1816')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
+                    descr: 'good product',
                     pgrpid: 3,
                     quantity: 450,
                     buyprice: 120,
                     sellprice: 200,
                     weight: 555
-                })
-                .end((err, res) => {
-                    should.exist(res.body.itemid);
-                    should.exist(res.body.pgrpid);
-                    should.exist(res.body.count);
-                    should.exist(res.body.sellprice);
-                    should.exist(res.body.buyprice);
-                    should.exist(res.body.weight);
-                    res.body.pgrpid.should.equal(3);
-                    res.body.buyprice.should.equal(120);
-                    res.body.sellprice.should.equal(200);
-                    res.body.count.should.equal(450);
-                    res.body.weight.should.equal(555);
-                    done();
                 });
+
+            expect(res.body.product).to.exist;
+            expect(res.body.product.itemid).to.exist;
+            expect(res.body.product.pgrpid).to.exist;
+            expect(res.body.product.count).to.exist;
+            expect(res.body.product.sellprice).to.exist;
+            expect(res.body.product.buyprice).to.exist;
+            expect(res.body.product.weight).to.exist;
+            expect(res.body.product.pgrpid).to.equal(3);
+            expect(res.body.product.buyprice).to.equal(120);
+            expect(res.body.product.sellprice).to.equal(200);
+            expect(res.body.product.count).to.equal(450);
+            expect(res.body.product.weight).to.equal(555);
         });
 
         it('Requesting product with existing barcode', async () => {
-            return chai
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products/5029578000972')
-                .set('Authorization', 'Bearer ' + token)
-                .then(res => {
-                    res.status.should.equal(
-                        200,
-                        'Existing barcode should return product'
-                    );
-                    res.body.product['barcode'].should.equal('5029578000972');
-                })
-                .catch(err => {
-                    throw err;
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200, 'Existing barcode should return product');
+            expect(res.body.product['barcode']).to.equal('5029578000972');
         });
 
         it('Requesting product with malformated barcode', async () => {
-            return chai
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products/1337')
-                .set('Authorization', 'Bearer ' + token)
-                .then(res => {
-                    res.status.should.not.equal(200);
-                })
-                .catch(err => {
-                    err.status.should.equal(
-                        400,
-                        'malformated barcode should return error'
-                    );
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404, 'malformated barcode should return error');
         });
 
         it('Requesting product with nonexisting barcode', async () => {
-            return chai
+            const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products/1234567890123')
-                .set('Authorization', 'Bearer ' + token)
-                .then(res => {
-                    res.status.should.not.equal(200);
-                })
-                .catch(err => {
-                    err.status.should.equal(
-                        404,
-                        'Barcode that doesn\'t exits should return error'
-                    );
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404, 'Barcode that doesn\'t exist should return error');
         });
 
-        it('POST /, returns created product on valid parametres', done => {
-            let product = {
+        it('POST /, returns created product on valid parametres', async () => {
+            const product = {
                 descr: 'body.descr',
-                pgrpid: '21',
+                pgrpid: 21,
                 weight: 500,
-                barcode: '6411501656249',
+                barcode: '6411501656247',
                 count: 12,
                 buyprice: 50,
                 sellprice: 150
             };
 
-            chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.not.exist(err);
-                    should.exist(res.body.product);
-                    res.status.should.equal(201);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.body.product).to.exist;
+            expect(res.status).to.equal(201);
         });
 
-        it('POST /, returns error on invalid barcode', done => {
-            let product = {
+        it('POST /, returns error on invalid barcode', async () => {
+            const product = {
                 descr: 'body.descr',
-                pgrpid: '21',
+                pgrpid: 21,
                 weight: 500,
                 barcode: 'invalid',
                 count: 12,
@@ -192,20 +151,17 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(err);
-                    res.status.should.equal(400);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(400);
         });
 
-        it('POST /, returns error on missing parametres', done => {
-            let product = {
+        it('POST /, returns error on missing parametres', async () => {
+            const product = {
                 weight: 500,
                 barcode: '4560000033333',
                 count: 12,
@@ -213,22 +169,19 @@ describe('routes: admin products', () => {
                 sellprice: 150
             };
 
-            chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products')
                 .send(product)
-                .set('Authorization', 'Bearer ' + token)
-                .end((err, res) => {
-                    should.exist(err);
-                    res.status.should.equal(400);
-                    done();
-                });
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(400);
         });
 
         it('Adding products to stock should work', async () => {
             const product = await productStore.findById(1750);
 
-            return chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
@@ -236,21 +189,17 @@ describe('routes: admin products', () => {
                     buyprice: 300,
                     sellprice: 350,
                     quantity: 50
-                })
-                .then(res => {
-                    res.status.should.equal(200);
-                    res.body.product_id.should.equal(1750);
-                    res.body.buyprice.should.equal(300);
-                    res.body.sellprice.should.equal(350);
-                    res.body.quantity.should.equal(product.count + 50);
-                })
-                .catch(err => {
-                    throw err;
                 });
+
+            expect(res.status).to.equal(200);
+            expect(res.body.product_id).to.equal(1750);
+            expect(res.body.buyprice).to.equal(300);
+            expect(res.body.sellprice).to.equal(350);
+            expect(res.body.quantity).to.equal(product.count + 50);
         });
 
         it('Adding nonexistent product to stock should not work', async () => {
-            return chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products/product/123456890')
                 .set('Authorization', 'Bearer ' + token)
@@ -258,32 +207,24 @@ describe('routes: admin products', () => {
                     buyprice: 300,
                     sellprice: 350,
                     quantity: 50
-                })
-                .then(res => {
-                    res.status.should.not.equal(200);
-                })
-                .catch(err => {
-                    err.status.should.equal(404);
-                    should.exist(err.response.body.error_code);
-                    should.exist(err.response.body.message);
                 });
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.exist;
+            expect(res.body.message).to.exist;
         });
 
         it('Request with missing fields should be rejected', async () => {
-            return chai
+            const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
-                .send({})
-                .then(res => {
-                    res.status.should.not.equal(200);
-                })
-                .catch(err => {
-                    err.status.should.equal(400);
-                    should.exist(err.response.body.error_code);
-                    should.exist(err.response.body.message);
-                    should.exist(err.response.body.errors);
-                });
+                .send({});
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.exist;
+            expect(res.body.message).to.exist;
+            expect(res.body.errors).to.exist;
         });
     });
 });

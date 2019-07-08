@@ -1,86 +1,79 @@
 const express = require('express');
 const router = express.Router();
-const userStore = require('../db/userStore'); // not used
+const userStore = require('../db/userStore');
 const logger = require('./../logger');
-
-const neededKeys = ['username', 'password', 'realname', 'email'];
+const fieldValidator = require('../utils/fieldValidator');
+const validators = require('../utils/validators');
 
 // Register a new user
 router.post('/', async (req, res) => {
     const body = req.body;
 
-    // Missing fields
-    const newAccountKeys = Object.keys(body);
-    const missingKeys = neededKeys.filter(key => {
-        return !newAccountKeys.includes(key);
-    });
-    if (missingKeys.length > 0) {
-        res
-            .status(400)
-            .json({
-                error: `Missing: ${missingKeys.join()}`
-            })
-            .end();
+    const inputValidators = [
+        validators.nonEmptyString('username'),
+        validators.nonEmptyString('password'),
+        validators.nonEmptyString('fullName'),
+        validators.nonEmptyString('email')
+    ];
+
+    const errors = fieldValidator.validateObject(body, inputValidators);
+    if (errors.length > 0) {
+        logger.error('%s %s: invalid request: %s', req.method, req.originalUrl, errors.join(', '));
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors
+        });
         return;
     }
 
-    // Check username, password length
-    if (body.username.length < 4) {
-        res
-            .status(400)
-            .json({
-                error: 'Username has less than 4 characters.'
-            })
-            .end();
-        return;
-    } else if (body.password.length < 4) {
-        res
-            .status(400)
-            .json({
-                error: 'Password has less than 4 characters.'
-            })
-            .end();
-        return;
-    }
+    const username = body.username;
+    const password = body.password;
+    const fullName = body.fullName;
+    const email = body.email;
 
-    // Check if user, email exists
-    const user = await userStore.findByUsername(body.username);
-    if (user) {
-        return res
-            .status(403)
-            .json({
-                error: 'Username is already in use.'
-            })
-            .end();
-    }
-    const userEmail = await userStore.findByEmail(body.email.trim());
-    if (userEmail) {
-        return res
-            .status(403)
-            .json({
-                error: 'Email address already in use.'
-            })
-            .end();
-    }
-
-    // All ok
-
-    // Add user to db
     try {
-        const highestId = await userStore.findHighestUserId();
-        const inserted = await userStore.insertUser(body, highestId.max);
-        logger.info('Registered new user: ' + body.username);
-        return res.status(201).json(inserted);
+        // Check if user, email exists
+        const userByUsername = await userStore.findByUsername(username);
+        if (userByUsername) {
+            res.status(409).json({
+                error_code: 'identifier_taken',
+                message: 'Username already in use.'
+            });
+            return;
+        }
+        const userByEmail = await userStore.findByEmail(email);
+        if (userByEmail) {
+            res.status(409).json({
+                error_code: 'identifier_taken',
+                message: 'Email address already in use.'
+            });
+            return;
+        }
+
+        // Add user to db
+        await userStore.insertUser({
+            username,
+            password,
+            realname: fullName,
+            email
+        });
+        logger.info('Registered new user: ' + username);
+        res.status(201).json({
+            user: {
+                username,
+                fullName,
+                email,
+                moneyBalance: 0
+            }
+        });
     } catch (exception) {
         logger.info('Error registering new user: ' + exception);
-        return res.status(500).json({
+        res.status(500).json({
             error_code: 'internal_error',
             message: exception
         });
     }
-
-    // for debugging
-    // console.log(await userStore.getUsers())
 });
 
 module.exports = router;
