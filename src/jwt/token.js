@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken');
 const logger = require('./../logger');
-const expiration = Math.floor(Date.now() / 1000) + 86400;
 
 module.exports.sign = (payload, tokenSecret = process.env.JWT_SECRET) => {
-    return jwt.sign({ exp: expiration, data: payload }, tokenSecret, {
+    return jwt.sign({ exp: Math.floor(Date.now() / 1000) + 86400, data: payload }, tokenSecret, {
         algorithm: 'HS256'
     });
 };
