@@ -7,6 +7,8 @@ const logger = require('./../logger');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
+    const user = req.user;
+
     try {
         const categories = await categoryStore.findAllCategories();
         const mappedCategories = categories.map((category) => {
@@ -16,7 +18,7 @@ router.get('/', async (req, res) => {
             };
         });
 
-        logger.info('User %s fetched categories', req.rvuser.name);
+        logger.info('User %s fetched categories', user.username);
         res.status(200).json({
             categories: mappedCategories
         });
@@ -30,13 +32,14 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:categoryId(\\d+)', async (req, res) => {
+    const user = req.user;
     const categoryId = req.params.categoryId;
 
     try {
         const category = await categoryStore.findById(categoryId);
 
         if (!category) {
-            logger.error('User %s tried to fetch unknown category %s', req.rvuser.name, categoryId);
+            logger.error('User %s tried to fetch unknown category %s', user.username, categoryId);
             res.status(404).json({
                 error_code: 'category_not_found',
                 message: 'Category does not exist'
@@ -44,7 +47,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
             return;
         }
 
-        logger.info('User %s fetched category %s', req.rvuser.name, categoryId);
+        logger.info('User %s fetched category %s', user.username, categoryId);
         res.status(200).json({
             category: {
                 categoryId: category.pgrpid,

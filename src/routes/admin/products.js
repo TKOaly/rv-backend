@@ -41,6 +41,7 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
 
 // Edit product
 router.put('/product/:productId(\\d+)', async (req, res) => {
+    const user = req.user;
     const body = req.body;
 
     const inputValidators = [
@@ -58,7 +59,7 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -69,7 +70,6 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const productId = req.params.productId;
     const descr = body.descr;
     const pgrpid = body.pgrpid;
@@ -105,11 +105,11 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
             name: descr,
             group: pgrpid,
             weight: weight,
-            userid: user.userid
+            userid: user.userId
         });
 
         // sellprice, buyprice, quantity
-        await productStore.changeProductStock(productId, buyprice, sellprice, quantity, user.userid);
+        await productStore.changeProductStock(productId, buyprice, sellprice, quantity, user.userId);
 
         const newProd = await productStore.findById(productId);
         res.status(200).json({
@@ -153,6 +153,7 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+    const user = req.user;
     const body = req.body;
 
     const inputValidators = [
@@ -171,7 +172,7 @@ router.post('/', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -182,7 +183,6 @@ router.post('/', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const barcode = body.barcode;
     const descr = body.descr;
     const pgrpid = body.pgrpid;
@@ -219,12 +219,12 @@ router.post('/', async (req, res) => {
             count: count,
             buyprice: buyprice,
             sellprice: sellprice,
-            userid: user.userid,
+            userid: user.userId,
             starttime: new Date(),
             endtime: null
         };
 
-        const newId = await productStore.addProduct(newProduct, newPrice, user.userid);
+        const newId = await productStore.addProduct(newProduct, newPrice, user.userId);
         newProduct.itemid = newId;
         newPrice.itemid = newId;
 
@@ -232,7 +232,7 @@ router.post('/', async (req, res) => {
             '%s %s: user %s created new product "%s" with id %s',
             req.method,
             req.originalUrl,
-            user.name,
+            user.username,
             newProduct.descr,
             newProduct.itemid
         );
@@ -251,6 +251,7 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/:barcode(\\d+)', async (req, res) => {
+    const user = req.user;
     const params = req.params;
 
     const paramValidators = [validators.numericBarcode('barcode')];
@@ -261,7 +262,7 @@ router.get('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(404).json({
@@ -296,6 +297,7 @@ router.get('/:barcode(\\d+)', async (req, res) => {
 });
 
 router.post('/product/:id(\\d+)', async (req, res) => {
+    const user = req.user;
     const body = req.body;
 
     const inputValidators = [
@@ -310,7 +312,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -321,7 +323,6 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const id = req.params.id;
     const quantity = body.quantity;
     const buyprice = body.buyprice;
@@ -345,7 +346,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
             buyprice,
             sellprice,
             product.count + quantity,
-            user.userid
+            user.userId
         );
 
         // return updated information

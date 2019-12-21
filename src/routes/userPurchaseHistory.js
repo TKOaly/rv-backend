@@ -7,10 +7,10 @@ const logger = require('../logger');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
-    const user = req.rvuser;
+    const user = req.user;
 
     try {
-        const purchases = await historyStore.getUserPurchaseHistory(user.userid);
+        const purchases = await historyStore.getUserPurchaseHistory(user.userId);
         const mappedPurchases = purchases.map((purchase) => {
             return {
                 purchaseId: purchase.itemhistid,
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
             };
         });
 
-        logger.info('User %s fetched purchase history', user.name);
+        logger.info('User %s fetched purchase history', user.username);
         res.status(200).json({
             purchases: mappedPurchases
         });
@@ -44,14 +44,14 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:purchaseId(\\d+)', async (req, res) => {
-    const user = req.rvuser;
+    const user = req.user;
     const purchaseId = req.params.purchaseId;
 
     try {
-        const purchase = await historyStore.findUserPurchaseById(user.userid, purchaseId);
+        const purchase = await historyStore.findUserPurchaseById(user.userId, purchaseId);
 
         if (!purchase) {
-            logger.error('User %s tried to fetch unknown purchase %s', user.name, purchaseId);
+            logger.error('User %s tried to fetch unknown purchase %s', user.username, purchaseId);
             res.status(404).json({
                 error_code: 'purchase_not_found',
                 message: 'Purchase event does not exist'
@@ -59,7 +59,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
             return;
         }
 
-        logger.info('User %s fetched purchase %s', user.name, purchaseId);
+        logger.info('User %s fetched purchase %s', user.username, purchaseId);
         res.status(200).json({
             purchase: {
                 purchaseId: purchase.itemhistid,

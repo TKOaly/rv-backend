@@ -9,20 +9,22 @@ const validators = require('../utils/validators');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
-    const user = req.rvuser;
+    const user = req.user;
 
-    logger.info('User %s fetched user data', user.name);
+    logger.info('User %s fetched user data', user.username);
     res.status(200).json({
         user: {
-            username: user.name,
-            fullName: user.realname,
-            email: user.univident,
-            moneyBalance: user.saldo
+            username: user.username,
+            fullName: user.fullName,
+            email: user.email,
+            moneyBalance: user.moneyBalance
         }
     });
 });
 
 router.patch('/', async (req, res) => {
+    const user = req.user;
+
     const inputValidators = [
         validators.nonEmptyString('username'),
         validators.nonEmptyString('fullName'),
@@ -35,7 +37,7 @@ router.patch('/', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -46,7 +48,6 @@ router.patch('/', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const username = req.body.username;
     const fullName = req.body.fullName;
     const email = req.body.email;
@@ -56,7 +57,7 @@ router.patch('/', async (req, res) => {
         if (username !== undefined) {
             const userByUsername = await userStore.findByUsername(username);
             if (userByUsername) {
-                logger.error('User %s tried to change username to %s but it was taken', user.name, username);
+                logger.error('User %s tried to change username to %s but it was taken', user.username, username);
                 res.status(409).json({
                     error_code: 'identifier_taken',
                     message: 'Username already in use.'
@@ -69,8 +70,8 @@ router.patch('/', async (req, res) => {
             if (userByEmail) {
                 logger.error(
                     'User %s tried to change email from %s to %s but it was taken',
-                    user.name,
-                    user.univident,
+                    user.username,
+                    user.email,
                     email
                 );
                 res.status(409).json({
@@ -82,31 +83,31 @@ router.patch('/', async (req, res) => {
         }
 
         if (username !== undefined) {
-            await userStore.updateUsername(user.userid, username);
+            await userStore.updateUsername(user.userId, username);
         }
         if (fullName !== undefined) {
-            await userStore.updateFullName(user.userid, fullName);
+            await userStore.updateFullName(user.userId, fullName);
         }
         if (email !== undefined) {
-            await userStore.updateEmail(user.userid, email);
+            await userStore.updateEmail(user.userId, email);
         }
 
         logger.info(
             'User %s changed user data from {%s, %s, %s} to {%s, %s, %s}',
-            user.name,
-            user.name,
-            user.realname,
-            user.univident,
+            user.username,
+            user.username,
+            user.fullName,
+            user.email,
             username,
             fullName,
             email
         );
         res.status(200).json({
             user: {
-                username: username !== undefined ? username : user.name,
-                fullName: fullName !== undefined ? fullName : user.realname,
-                email: email !== undefined ? email : user.univident,
-                moneyBalance: user.saldo
+                username: username !== undefined ? username : user.username,
+                fullName: fullName !== undefined ? fullName : user.fullName,
+                email: email !== undefined ? email : user.email,
+                moneyBalance: user.moneyBalance
             }
         });
     } catch (error) {
@@ -119,6 +120,8 @@ router.patch('/', async (req, res) => {
 });
 
 router.post('/deposit', async (req, res) => {
+    const user = req.user;
+
     const inputValidators = [validators.positiveInteger('amount')];
 
     const errors = fieldValidator.validateObject(req.body, inputValidators);
@@ -127,7 +130,7 @@ router.post('/deposit', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -138,15 +141,14 @@ router.post('/deposit', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const amount = req.body.amount;
 
     try {
-        const insertedEventPair = await userStore.recordDeposit(user.userid, amount, user.saldo);
+        const insertedEventPair = await userStore.recordDeposit(user.userId, amount, user.moneyBalance);
 
-        logger.info('User %s deposited %s cents', user.name, amount);
+        logger.info('User %s deposited %s cents', user.username, amount);
         res.status(200).json({
-            accountBalance: user.saldo + amount,
+            accountBalance: user.moneyBalance + amount,
             deposit: {
                 depositId: insertedEventPair.personEvent.pershistid,
                 time: new Date(insertedEventPair.personEvent.time).toISOString(),
@@ -164,6 +166,8 @@ router.post('/deposit', async (req, res) => {
 });
 
 router.post('/changePassword', async (req, res) => {
+    const user = req.user;
+
     const inputValidators = [validators.nonEmptyString('password')];
 
     const errors = fieldValidator.validateObject(req.body, inputValidators);
@@ -172,7 +176,7 @@ router.post('/changePassword', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -183,13 +187,12 @@ router.post('/changePassword', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const password = req.body.password;
 
     try {
-        await userStore.updatePassword(user.userid, password);
+        await userStore.updatePassword(user.userId, password);
 
-        logger.info('User %s changed password', user.name);
+        logger.info('User %s changed password', user.username);
         res.status(204).end();
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);

@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:barcode(\\d+)', async (req, res) => {
+    const user = req.user;
     const params = req.params;
 
     const paramValidators = [validators.numericBarcode('barcode')];
@@ -35,7 +36,7 @@ router.get('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(404).json({
@@ -72,6 +73,7 @@ router.get('/:barcode(\\d+)', async (req, res) => {
 });
 
 router.post('/:barcode(\\d+)', async (req, res) => {
+    const user = req.user;
     const params = req.params;
     const body = req.body;
 
@@ -88,7 +90,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             paramErrors.join(', ')
         );
         res.status(404).json({
@@ -104,7 +106,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             fieldErrors.join(', ')
         );
         res.status(400).json({
@@ -115,7 +117,6 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const barcode = params.barcode;
     const sellprice = body.sellprice;
     const buyprice = body.buyprice;
@@ -136,13 +137,13 @@ router.post('/:barcode(\\d+)', async (req, res) => {
 
         // all good, boxes can be added
         const quantity = product.count + boxes * box.items_per_box;
-        await productStore.changeProductStock(box.product_id, buyprice, sellprice, quantity, user.userid);
+        await productStore.changeProductStock(box.product_id, buyprice, sellprice, quantity, user.userId);
 
         logger.info(
             '%s %s: user %s added %d boxes (%d pcs) of product %d (box %s, product barcode %s)',
             req.method,
             req.baseUrl + req.path,
-            user.name,
+            user.username,
             boxes,
             box.items_per_box * boxes,
             box.product_id,
@@ -168,6 +169,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
 });
 
 router.put('/:barcode(\\d+)', async (req, res) => {
+    const user = req.user;
     const params = req.params;
     const body = req.body;
 
@@ -190,7 +192,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             paramErrors.join(', ')
         );
         res.status(400).json({
@@ -206,7 +208,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             fieldErrors.join(', ')
         );
         res.status(400).json({
@@ -217,7 +219,6 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const barcode = params.barcode;
     const items_per_box = body.items_per_box;
     const productData = body.product;
@@ -241,11 +242,11 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                     count: 0,
                     buyprice: productData.product_buyprice,
                     sellprice: productData.product_sellprice,
-                    userid: user.userid,
+                    userid: user.userId,
                     starttime: new Date(),
                     endtime: null
                 },
-                user.userid
+                user.userId
             );
 
             logger.info(
@@ -263,7 +264,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 productData.product_buyprice,
                 productData.product_sellprice,
                 product.count,
-                user.userid
+                user.userId
             );
 
             await productStore.updateProduct({
@@ -271,7 +272,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 name: productData.product_name,
                 group: productData.product_group,
                 weight: productData.product_weight,
-                userid: user.userid
+                userid: user.userId
             });
 
             logger.info(
@@ -286,7 +287,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         product = await productStore.findByBarcode(productData.product_barcode);
 
         if (!box) {
-            await boxStore.createBox(barcode, productData.product_barcode, items_per_box, user.userid);
+            await boxStore.createBox(barcode, productData.product_barcode, items_per_box, user.userId);
             boxCreated = true;
 
             logger.info(
@@ -298,7 +299,7 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 productData.product_barcode
             );
         } else {
-            await boxStore.updateBox(barcode, productData.product_barcode, items_per_box, user.userid);
+            await boxStore.updateBox(barcode, productData.product_barcode, items_per_box, user.userId);
 
             logger.info('%s %s: updated box %s', req.method, req.originalUrl, barcode);
         }

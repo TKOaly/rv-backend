@@ -7,10 +7,10 @@ const logger = require('../logger');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
-    const user = req.rvuser;
+    const user = req.user;
 
     try {
-        const deposits = await historyStore.getUserDepositHistory(user.userid);
+        const deposits = await historyStore.getUserDepositHistory(user.userId);
         const mappedDeposits = deposits.map((deposit) => {
             return {
                 depositId: deposit.pershistid,
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
             };
         });
 
-        logger.info('User %s fetched deposit history', user.name);
+        logger.info('User %s fetched deposit history', user.username);
         res.status(200).json({
             deposits: mappedDeposits
         });
@@ -34,14 +34,14 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:depositId(\\d+)', async (req, res) => {
-    const user = req.rvuser;
+    const user = req.user;
     const depositId = req.params.depositId;
 
     try {
-        const deposit = await historyStore.findUserDepositById(user.userid, depositId);
+        const deposit = await historyStore.findUserDepositById(user.userId, depositId);
 
         if (!deposit) {
-            logger.error('User %s tried to fetch unknown deposit %s', user.name, depositId);
+            logger.error('User %s tried to fetch unknown deposit %s', user.username, depositId);
             res.status(404).json({
                 error_code: 'deposit_not_found',
                 message: 'Deposit event does not exist'
@@ -49,7 +49,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
             return;
         }
 
-        logger.info('User %s fetched deposit %s', user.name, depositId);
+        logger.info('User %s fetched deposit %s', user.username, depositId);
         res.status(200).json({
             deposit: {
                 depositId: deposit.pershistid,

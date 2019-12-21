@@ -9,6 +9,8 @@ const validators = require('../utils/validators');
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
+    const user = req.user;
+
     try {
         const products = await productStore.findAll();
         const mappedProds = products.map((product) => {
@@ -26,7 +28,7 @@ router.get('/', async (req, res) => {
             };
         });
 
-        logger.info('User %s fetched products', req.rvuser.name);
+        logger.info('User %s fetched products', user.username);
         res.status(200).json({
             products: mappedProds
         });
@@ -40,13 +42,14 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:barcode(\\d{1,14})', async (req, res) => {
+    const user = req.user;
     const barcode = req.params.barcode;
 
     try {
         const product = await productStore.findByBarcode(barcode);
 
         if (!product) {
-            logger.error('User %s tried to fetch unknown product %s', req.rvuser.name, barcode);
+            logger.error('User %s tried to fetch unknown product %s', user.username, barcode);
             res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product does not exist'
@@ -54,7 +57,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
             return;
         }
 
-        logger.info('User %s fetched product %s', req.rvuser.name, barcode);
+        logger.info('User %s fetched product %s', user.username, barcode);
         res.status(200).json({
             product: {
                 barcode: product.barcode,
@@ -79,6 +82,8 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
 });
 
 router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
+    const user = req.user;
+
     const inputValidators = [validators.positiveInteger('count')];
 
     const errors = fieldValidator.validateObject(req.body, inputValidators);
@@ -87,7 +92,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
             '%s %s: invalid request by user %s: %s',
             req.method,
             req.originalUrl,
-            req.rvuser.name,
+            user.username,
             errors.join(', ')
         );
         res.status(400).json({
@@ -98,7 +103,6 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
         return;
     }
 
-    const user = req.rvuser;
     const barcode = req.params.barcode;
     const count = req.body.count;
 
@@ -109,19 +113,19 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
         if (product) {
             /* User can always empty his account completely, but resulting negative saldo should be minimized. This is
              * achieved by allowing only a single product to be bought on credit. */
-            if (product.sellprice <= 0 || user.saldo > product.sellprice * (count - 1)) {
+            if (product.sellprice <= 0 || user.moneyBalance > product.sellprice * (count - 1)) {
                 // record purchase
                 const insertedHistory = await productStore.recordPurchase(
                     product.itemid,
                     product.priceid,
-                    user.userid,
+                    user.userId,
                     count,
                     product.sellprice,
                     product.count,
-                    user.saldo
+                    user.moneyBalance
                 );
 
-                const newBalance = user.saldo - count * product.sellprice;
+                const newBalance = user.moneyBalance - count * product.sellprice;
                 const newStock = product.count - count;
 
                 const newPurchases = insertedHistory.map((eventPair) => {
@@ -144,7 +148,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 });
 
                 // all done, respond with success
-                logger.info('User %s purchased %s x product %s', user.name, count, barcode);
+                logger.info('User %s purchased %s x product %s', user.username, count, barcode);
                 res.status(200).json({
                     accountBalance: newBalance,
                     productStock: newStock,
@@ -154,7 +158,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 // user doesn't have enough money
                 logger.error(
                     'User %s tried to purchase %s x product %s but didn\'t have enough money.',
-                    user.name,
+                    user.username,
                     count,
                     barcode
                 );
@@ -165,7 +169,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
             }
         } else {
             // unknown product, no valid price or out of stock
-            logger.error('User %s tried to purchase unknown product %s', user.name, barcode);
+            logger.error('User %s tried to purchase unknown product %s', user.username, barcode);
             res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
