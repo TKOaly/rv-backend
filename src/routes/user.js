@@ -11,6 +11,7 @@ router.use(authMiddleware());
 router.get('/', async (req, res) => {
     const user = req.rvuser;
 
+    logger.info('User %s fetched user data', user.name);
     res.status(200).json({
         user: {
             username: user.name,
@@ -55,6 +56,7 @@ router.patch('/', async (req, res) => {
         if (username !== undefined) {
             const userByUsername = await userStore.findByUsername(username);
             if (userByUsername) {
+                logger.error('User %s tried to change username to %s but it was taken', user.name, username);
                 res.status(409).json({
                     error_code: 'identifier_taken',
                     message: 'Username already in use.'
@@ -65,6 +67,12 @@ router.patch('/', async (req, res) => {
         if (email !== undefined) {
             const userByEmail = await userStore.findByEmail(email);
             if (userByEmail) {
+                logger.error(
+                    'User %s tried to change email from %s to %s but it was taken',
+                    user.name,
+                    user.univident,
+                    email
+                );
                 res.status(409).json({
                     error_code: 'identifier_taken',
                     message: 'Email address already in use.'
@@ -83,6 +91,16 @@ router.patch('/', async (req, res) => {
             await userStore.updateEmail(user.userid, email);
         }
 
+        logger.info(
+            'User %s changed user data from {%s, %s, %s} to {%s, %s, %s}',
+            user.name,
+            user.name,
+            user.realname,
+            user.univident,
+            username,
+            fullName,
+            email
+        );
         res.status(200).json({
             user: {
                 username: username !== undefined ? username : user.name,
@@ -91,11 +109,11 @@ router.patch('/', async (req, res) => {
                 moneyBalance: user.saldo
             }
         });
-    } catch (err) {
-        logger.info('Error modifying user: ' + err);
+    } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: err
+            message: 'Internal error'
         });
     }
 });
@@ -126,6 +144,7 @@ router.post('/deposit', async (req, res) => {
     try {
         const insertedEventPair = await userStore.recordDeposit(user.userid, amount, user.saldo);
 
+        logger.info('User %s deposited %s cents', user.name, amount);
         res.status(200).json({
             accountBalance: user.saldo + amount,
             deposit: {
@@ -136,6 +155,7 @@ router.post('/deposit', async (req, res) => {
             }
         });
     } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -169,8 +189,10 @@ router.post('/changePassword', async (req, res) => {
     try {
         await userStore.updatePassword(user.userid, password);
 
+        logger.info('User %s changed password', user.name);
         res.status(204).end();
     } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

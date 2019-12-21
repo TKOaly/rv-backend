@@ -36,6 +36,7 @@ router.post('/', async (req, res) => {
         // Check if user, email exists
         const userByUsername = await userStore.findByUsername(username);
         if (userByUsername) {
+            logger.error('Failed to register new user, username was taken', username);
             res.status(409).json({
                 error_code: 'identifier_taken',
                 message: 'Username already in use.'
@@ -44,6 +45,7 @@ router.post('/', async (req, res) => {
         }
         const userByEmail = await userStore.findByEmail(email);
         if (userByEmail) {
+            logger.error('Failed to register new user, email was taken', email);
             res.status(409).json({
                 error_code: 'identifier_taken',
                 message: 'Email address already in use.'
@@ -58,6 +60,7 @@ router.post('/', async (req, res) => {
             realname: fullName,
             email
         });
+
         logger.info('Registered new user: ' + username);
         res.status(201).json({
             user: {
@@ -67,11 +70,11 @@ router.post('/', async (req, res) => {
                 moneyBalance: 0
             }
         });
-    } catch (exception) {
-        logger.info('Error registering new user: ' + exception);
+    } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: exception
+            message: 'Internal error'
         });
     }
 });

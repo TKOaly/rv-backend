@@ -19,11 +19,13 @@ router.get('/', async (req, res) => {
                 balanceAfter: deposit.saldo
             };
         });
+
+        logger.info('User %s fetched deposit history', user.name);
         res.status(200).json({
             deposits: mappedDeposits
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -39,6 +41,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
         const deposit = await historyStore.findUserDepositById(user.userid, depositId);
 
         if (!deposit) {
+            logger.error('User %s tried to fetch unknown deposit %s', user.name, depositId);
             res.status(404).json({
                 error_code: 'deposit_not_found',
                 message: 'Deposit event does not exist'
@@ -46,6 +49,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
             return;
         }
 
+        logger.info('User %s fetched deposit %s', user.name, depositId);
         res.status(200).json({
             deposit: {
                 depositId: deposit.pershistid,
@@ -55,7 +59,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
             }
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

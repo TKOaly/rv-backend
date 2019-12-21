@@ -28,10 +28,20 @@ const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
                 if (req.rvuser && req.rvroles) {
                     // finally, verify that user is authorized
                     if (verifyRoles(roles, req.rvroles)) {
-                        logger.info('User ' + req.rvuser.name + ' successfully verified');
+                        logger.info(
+                            'User %s successfully authenticated for %s %s',
+                            req.rvuser.name,
+                            req.method,
+                            req.originalUrl
+                        );
                         next();
                     } else {
-                        logger.error('User ' + req.rvuser.name + ' is not authorized');
+                        logger.error(
+                            'User %s is not authorized for %s %s',
+                            req.rvuser.name,
+                            req.method,
+                            req.originalUrl
+                        );
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized'
@@ -46,15 +56,15 @@ const authMiddleware = (roles = [], tokenSecret = process.env.JWT_SECRET) => {
                     });
                 }
             } catch (error) {
-                logger.error('authMiddleware: %s', error);
+                logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
                 res.status(500).json({
                     error_code: 'internal_error',
                     message: 'Internal error'
                 });
             }
         } else {
-            logger.error('Invalid authorization token (no username in token)');
             // no username in token
+            logger.error('Invalid authorization token (no username in token)');
             res.status(401).json({
                 error_code: 'invalid_token',
                 message: 'Invalid authorization token'

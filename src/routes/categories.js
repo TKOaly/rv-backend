@@ -15,11 +15,13 @@ router.get('/', async (req, res) => {
                 description: category.descr
             };
         });
+
+        logger.info('User %s fetched categories', req.rvuser.name);
         res.status(200).json({
             categories: mappedCategories
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -34,6 +36,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         const category = await categoryStore.findById(categoryId);
 
         if (!category) {
+            logger.error('User %s tried to fetch unknown category %s', req.rvuser.name, categoryId);
             res.status(404).json({
                 error_code: 'category_not_found',
                 message: 'Category does not exist'
@@ -41,6 +44,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
             return;
         }
 
+        logger.info('User %s fetched category %s', req.rvuser.name, categoryId);
         res.status(200).json({
             category: {
                 categoryId: category.pgrpid,
@@ -48,7 +52,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
             }
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

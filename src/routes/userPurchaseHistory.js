@@ -29,11 +29,13 @@ router.get('/', async (req, res) => {
                 balanceAfter: purchase.saldo
             };
         });
+
+        logger.info('User %s fetched purchase history', user.name);
         res.status(200).json({
             purchases: mappedPurchases
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -49,6 +51,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
         const purchase = await historyStore.findUserPurchaseById(user.userid, purchaseId);
 
         if (!purchase) {
+            logger.error('User %s tried to fetch unknown purchase %s', user.name, purchaseId);
             res.status(404).json({
                 error_code: 'purchase_not_found',
                 message: 'Purchase event does not exist'
@@ -56,6 +59,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
             return;
         }
 
+        logger.info('User %s fetched purchase %s', user.name, purchaseId);
         res.status(200).json({
             purchase: {
                 purchaseId: purchase.itemhistid,
@@ -75,7 +79,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
             }
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

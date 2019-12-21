@@ -25,11 +25,13 @@ router.get('/', async (req, res) => {
                 stock: product.count
             };
         });
+
+        logger.info('User %s fetched products', req.rvuser.name);
         res.status(200).json({
             products: mappedProds
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -44,6 +46,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
         const product = await productStore.findByBarcode(barcode);
 
         if (!product) {
+            logger.error('User %s tried to fetch unknown product %s', req.rvuser.name, barcode);
             res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product does not exist'
@@ -51,6 +54,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
             return;
         }
 
+        logger.info('User %s fetched product %s', req.rvuser.name, barcode);
         res.status(200).json({
             product: {
                 barcode: product.barcode,
@@ -66,7 +70,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
             }
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -116,7 +120,6 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                     product.count,
                     user.saldo
                 );
-                logger.info('User #' + user.userid + ' purchased ' + count + ' x item #' + product.itemid);
 
                 const newBalance = user.saldo - count * product.sellprice;
                 const newStock = product.count - count;
@@ -141,38 +144,36 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 });
 
                 // all done, respond with success
+                logger.info('User %s purchased %s x product %s', user.name, count, barcode);
                 res.status(200).json({
                     accountBalance: newBalance,
                     productStock: newStock,
                     purchases: newPurchases
                 });
             } else {
-                logger.error(
-                    'User #' +
-                        user.userid +
-                        ' tried to purchase ' +
-                        count +
-                        ' x item #' +
-                        product.itemid +
-                        ' but the user didn\'t have enough money.'
-                );
                 // user doesn't have enough money
+                logger.error(
+                    'User %s tried to purchase %s x product %s but didn\'t have enough money.',
+                    user.name,
+                    count,
+                    barcode
+                );
                 res.status(403).json({
                     error_code: 'insufficient_funds',
                     message: 'Insufficient funds'
                 });
             }
         } else {
-            logger.error('User #' + user.userid + ' tried to purchase a product that does not exist.');
             // unknown product, no valid price or out of stock
+            logger.error('User %s tried to purchase unknown product %s', user.name, barcode);
             res.status(404).json({
                 error_code: 'product_not_found',
                 message: 'Product not found'
             });
         }
     } catch (error) {
-        logger.error('Database error when trying to purchase a product: ' + error);
         // other errors
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

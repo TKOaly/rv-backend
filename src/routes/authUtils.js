@@ -49,33 +49,37 @@ module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecr
                 const roles = await userStore.findUserRoles(user.name);
 
                 if (verifyRoles(requiredRoles, roles)) {
-                    logger.info('Generated and signed new JWT for user ' + user.name);
+                    logger.info('User %s logged in as roles [%s]', user.name, requiredRoles.join(', '));
                     res.status(200).json({
                         accessToken: token.sign({ userId: user.userid }, tokenSecret)
                     });
                 } else {
-                    logger.error('User ' + user.name + ' is not authorized to view this resource.');
+                    logger.error(
+                        'User %s is not authorized to login as roles [%s]',
+                        user.name,
+                        requiredRoles.join(', ')
+                    );
                     res.status(403).json({
                         error_code: 'not_authorized',
                         message: 'Not authorized'
                     });
                 }
             } else {
-                logger.error('Invalid username or password. Username that was entered: ' + username);
+                logger.error('Failed to login with username and password. Username was %s', username);
                 res.status(401).json({
                     error_code: 'invalid_credentials',
                     message: 'Invalid username or password'
                 });
             }
         } else {
-            logger.error('Invalid username or password. Username that was entered: ' + username);
+            logger.error('Failed to login with username and password. Username was %s', username);
             res.status(401).json({
                 error_code: 'invalid_credentials',
                 message: 'Invalid username or password'
             });
         }
     } catch (error) {
-        logger.error('Error: ' + error);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
