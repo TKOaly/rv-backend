@@ -7,8 +7,6 @@ const validators = require('../utils/validators');
 
 // Register a new user
 router.post('/', async (req, res) => {
-    const body = req.body;
-
     const inputValidators = [
         validators.nonEmptyString('username'),
         validators.nonEmptyString('password'),
@@ -16,7 +14,7 @@ router.post('/', async (req, res) => {
         validators.nonEmptyString('email')
     ];
 
-    const errors = fieldValidator.validateObject(body, inputValidators);
+    const errors = fieldValidator.validateObject(req.body, inputValidators);
     if (errors.length > 0) {
         logger.error('%s %s: invalid request: %s', req.method, req.originalUrl, errors.join(', '));
         res.status(400).json({
@@ -27,10 +25,10 @@ router.post('/', async (req, res) => {
         return;
     }
 
-    const username = body.username;
-    const password = body.password;
-    const fullName = body.fullName;
-    const email = body.email;
+    const username = req.body.username;
+    const password = req.body.password;
+    const fullName = req.body.fullName;
+    const email = req.body.email;
 
     try {
         // Check if user, email exists
@@ -54,7 +52,7 @@ router.post('/', async (req, res) => {
         }
 
         // Add user to db
-        await userStore.insertUser({
+        const newUser = await userStore.insertUser({
             username,
             password,
             fullName,
@@ -64,10 +62,10 @@ router.post('/', async (req, res) => {
         logger.info('Registered new user: %s', username);
         res.status(201).json({
             user: {
-                username,
-                fullName,
-                email,
-                moneyBalance: 0
+                username: newUser.username,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                moneyBalance: newUser.moneyBalance
             }
         });
     } catch (error) {
