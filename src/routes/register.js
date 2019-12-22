@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
         await userStore.insertUser({
             username,
             password,
-            realname: fullName,
+            fullName,
             email
         });
 

@@ -144,16 +144,16 @@ router.post('/deposit', async (req, res) => {
     const amount = req.body.amount;
 
     try {
-        const insertedEventPair = await userStore.recordDeposit(user.userId, amount, user.moneyBalance);
+        const deposit = await userStore.recordDeposit(user.userId, amount, user.moneyBalance);
 
         logger.info('User %s deposited %s cents', user.username, amount);
         res.status(200).json({
-            accountBalance: user.moneyBalance + amount,
+            accountBalance: deposit.balanceAfter,
             deposit: {
-                depositId: insertedEventPair.personEvent.pershistid,
-                time: new Date(insertedEventPair.personEvent.time).toISOString(),
-                amount: insertedEventPair.saldoEvent.difference,
-                balanceAfter: insertedEventPair.saldoEvent.saldo
+                depositId: deposit.depositId,
+                time: deposit.time,
+                amount: deposit.amount,
+                balanceAfter: deposit.balanceAfter
             }
         });
     } catch (error) {

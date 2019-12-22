@@ -61,9 +61,9 @@ describe('routes: user', () => {
 
             const user = await userStore.findById(1);
 
-            expect(user.name).to.equal('abcd');
-            expect(user.realname).to.equal('abcd efgh');
-            expect(user.univident).to.equal('abc@def.ghi');
+            expect(user.username).to.equal('abcd');
+            expect(user.fullName).to.equal('abcd efgh');
+            expect(user.email).to.equal('abc@def.ghi');
         });
 
         it('should allow modifying only some fields', async () => {
@@ -135,12 +135,12 @@ describe('routes: user', () => {
 
             const user = await userStore.findById(1);
 
-            expect(user.saldo).to.equal(650);
+            expect(user.moneyBalance).to.equal(650);
         });
 
         it('should create an event into deposit history', async () => {
             const user = await userStore.findByUsername('normal_user');
-            const oldDepositHistory = await historyStore.getUserDepositHistory(user.userid);
+            const oldDepositHistory = await historyStore.getUserDepositHistory(user.userId);
 
             const res = await chai
                 .request(server)
@@ -152,7 +152,7 @@ describe('routes: user', () => {
 
             expect(res.status).to.equal(200);
 
-            const newDepositHistory = await historyStore.getUserDepositHistory(user.userid);
+            const newDepositHistory = await historyStore.getUserDepositHistory(user.userId);
 
             expect(newDepositHistory.length).to.equal(oldDepositHistory.length + 1);
 
@@ -188,7 +188,7 @@ describe('routes: user', () => {
             expect(res.status).to.equal(204);
 
             const user = await userStore.findById(1);
-            const passwordMatches = await userStore.verifyPassword('abcdefg', user.pass);
+            const passwordMatches = await userStore.verifyPassword('abcdefg', user.passwordHash);
 
             expect(passwordMatches).to.be.true;
         });

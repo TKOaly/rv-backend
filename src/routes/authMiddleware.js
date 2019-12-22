@@ -1,9 +1,9 @@
 const jwt = require('../jwt/token');
 const userStore = require('../db/userStore');
-const verifyRoles = require('./authUtils').verifyRoles;
+const verifyRole = require('./authUtils').verifyRole;
 const logger = require('./../logger');
 
-const authMiddleware = (requiredRoles = [], tokenSecret = process.env.JWT_SECRET) => {
+const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRET) => {
     return async (req, res, next) => {
         const authHeader = req.get('Authorization');
         let userId = null;
@@ -23,28 +23,20 @@ const authMiddleware = (requiredRoles = [], tokenSecret = process.env.JWT_SECRET
         if (userId !== null) {
             try {
                 const user = await userStore.findById(userId);
-                const roles = await userStore.findUserRoles(user.name);
 
-                if (user && roles) {
+                if (user) {
                     // finally, verify that user is authorized
-                    if (verifyRoles(requiredRoles, roles)) {
+                    if (verifyRole(requiredRole, user.role)) {
                         logger.info(
                             'User %s successfully authenticated for %s %s',
-                            user.name,
+                            user.username,
                             req.method,
                             req.originalUrl
                         );
-                        req.user = {
-                            username: user.name,
-                            fullName: user.realname,
-                            email: user.univident,
-                            moneyBalance: user.saldo,
-                            userId: user.userid,
-                            roleId: user.roleid
-                        };
+                        req.user = user;
                         next();
                     } else {
-                        logger.error('User %s is not authorized for %s %s', user.name, req.method, req.originalUrl);
+                        logger.error('User %s is not authorized for %s %s', user.username, req.method, req.originalUrl);
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized'

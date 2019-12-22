@@ -14,7 +14,7 @@ const prodFilter = (product) => {
     return product;
 };
 
-router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
+router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/product/:productId(\\d+)', async (req, res) => {
     try {

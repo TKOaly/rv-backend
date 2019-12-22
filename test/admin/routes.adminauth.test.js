@@ -35,7 +35,7 @@ describe('routes: admin authentication', () => {
             expect(decoded.data.userId).to.exist;
 
             const user = await userStore.findByUsername('admin_user');
-            expect(decoded.data.userId).to.equal(user.userid);
+            expect(decoded.data.userId).to.equal(user.userId);
         });
 
         it('admin tokens should not be signed with the same key as user tokens', async () => {

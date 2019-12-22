@@ -4,21 +4,14 @@ const logger = require('./../logger');
 const fieldValidator = require('../utils/fieldValidator');
 const validators = require('../utils/validators');
 
-const verifyRoles = (requiredRoles, userRoles) => {
-    let verified = true;
-
-    requiredRoles.forEach((role) => {
-        if (!userRoles.includes(role)) {
-            verified = false;
-        }
-    });
-
-    return verified;
+/* null means no role requirements. */
+const verifyRole = (requiredRole, userRole) => {
+    return requiredRole === null || requiredRole === userRole;
 };
 
-module.exports.verifyRoles = verifyRoles;
+module.exports.verifyRole = verifyRole;
 
-module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecret = process.env.JWT_SECRET) => {
+module.exports.authenticateUser = async (req, res, requiredRole = null, tokenSecret = process.env.JWT_SECRET) => {
     const body = req.body;
 
     const inputValidators = [
@@ -45,20 +38,14 @@ module.exports.authenticateUser = async (req, res, requiredRoles = [], tokenSecr
     try {
         const user = await userStore.findByUsername(username);
         if (user) {
-            if (await userStore.verifyPassword(password, user.pass)) {
-                const roles = await userStore.findUserRoles(user.name);
-
-                if (verifyRoles(requiredRoles, roles)) {
-                    logger.info('User %s logged in as roles [%s]', user.name, requiredRoles.join(', '));
+            if (await userStore.verifyPassword(password, user.passwordHash)) {
+                if (verifyRole(requiredRole, user.role)) {
+                    logger.info('User %s logged in as role %s', user.username, requiredRole);
                     res.status(200).json({
-                        accessToken: token.sign({ userId: user.userid }, tokenSecret)
+                        accessToken: token.sign({ userId: user.userId }, tokenSecret)
                     });
                 } else {
-                    logger.error(
-                        'User %s is not authorized to login as roles [%s]',
-                        user.name,
-                        requiredRoles.join(', ')
-                    );
+                    logger.error('User %s is not authorized to login as role %s', user.username, requiredRole);
                     res.status(403).json({
                         error_code: 'not_authorized',
                         message: 'Not authorized'

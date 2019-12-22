@@ -7,7 +7,7 @@ const logger = require('./../../logger');
 const fieldValidator = require('./../../utils/fieldValidator');
 const validators = require('../../utils/validators');
 
-router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
+router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/', async (req, res) => {
     try {

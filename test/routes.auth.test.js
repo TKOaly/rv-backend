@@ -36,7 +36,7 @@ describe('routes: authentication', () => {
             expect(token.data.userId).to.exist;
 
             const user = await userStore.findByUsername('normal_user');
-            expect(token.data.userId).to.equal(user.userid);
+            expect(token.data.userId).to.equal(user.userId);
         });
 
         it('with invalid password, should return a 401 unauthorized response', async () => {

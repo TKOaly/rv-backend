@@ -3,7 +3,7 @@ const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const logger = require('./../../logger');
 
-router.use(authMiddleware(['ADMIN'], process.env.JWT_ADMIN_SECRET));
+router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 let global_margin = 8;
 

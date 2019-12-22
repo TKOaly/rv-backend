@@ -103,8 +103,8 @@ describe('routes: products', () => {
             const newUser = await userStore.findByUsername('normal_user');
             const newProduct = await productStore.findByBarcode('8855702006834');
 
-            expect(newUser.saldo).to.equal(oldUser.saldo - oldProduct.sellprice);
-            expect(newUser.saldo).to.equal(res.body.accountBalance);
+            expect(newUser.moneyBalance).to.equal(oldUser.moneyBalance - oldProduct.sellprice);
+            expect(newUser.moneyBalance).to.equal(res.body.accountBalance);
 
             expect(newProduct.count).to.equal(oldProduct.count - 1);
             expect(newProduct.count).to.equal(res.body.productStock);
@@ -112,7 +112,7 @@ describe('routes: products', () => {
 
         it('should create an event into purchase history', async () => {
             const user = await userStore.findByUsername('normal_user');
-            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             const res = await chai
                 .request(server)
@@ -124,7 +124,7 @@ describe('routes: products', () => {
 
             expect(res.status).to.equal(200);
 
-            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 1);
 
@@ -136,7 +136,7 @@ describe('routes: products', () => {
 
         it('should create multiple history events on multibuy', async () => {
             const user = await userStore.findByUsername('normal_user');
-            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+            const oldPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             const res = await chai
                 .request(server)
@@ -148,7 +148,7 @@ describe('routes: products', () => {
 
             expect(res.status).to.equal(200);
 
-            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userid);
+            const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 3);
         });
@@ -167,7 +167,7 @@ describe('routes: products', () => {
 
         it('should error on insufficient funds', async () => {
             const user = await userStore.findByUsername('normal_user');
-            await userStore.updateAccountBalance(user.userid, 0);
+            await userStore.updateAccountBalance(user.userId, 0);
 
             const res = await chai
                 .request(server)
