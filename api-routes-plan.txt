@@ -4,7 +4,7 @@
 
 * api/v1/products GET => {products: [{barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}...]}
 * api/v1/products/:barcode GET => {product: {barcode, productId, name, category: {categoryId, description}, weight, sellPrice, stock}}
-* api/v1/products/:barcode/purchase POST {count} => {accountBalance, productStock, purchases: [{purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter}...]}
+* api/v1/products/:barcode/purchase POST {count} => {accountBalance, productStock, purchases: [{purchaseId, time, product: {barcode, productId, name, category: {categoryId, description}, weight}, price, balanceAfter, stockAfter}...]}
 * api/v1/categories GET => {categories: [{categoryId, description}...]}
 * api/v1/categories/:categoryId GET => {category: {categoryId, description}}
 * api/v1/user GET => {user: {username, fullName, email, moneyBalance}}
@@ -30,8 +30,8 @@ api/v1/admin/products/:barcode GET => {product: {barcode, productId, name, categ
 api/v1/admin/products/:barcode PATCH {name?, categoryId?, weight?, buyPrice?, sellPrice?, stock?} => {product: {barcode, productId, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}
 api/v1/admin/products/:barcode DELETE => {deletedProduct: {barcode, productId, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}
 api/v1/admin/products/:barcode/buyIn POST {count, buyPrice, sellPrice} => {stock, buyPrice, sellPrice}
-api/v1/admin/products/:barcode/purchaseHistory GET => {purchases: [{purchaseId, time, user: {userId, username, fullName, email, role}, price}...]}
-api/v1/admin/products/:barcode/purchaseHistory/:purchaseId GET => {purchase: {purchaseId, time, user: {userId, username, fullName, email, role}, price}}
+api/v1/admin/products/:barcode/purchaseHistory GET => {purchases: [{purchaseId, time, user: {userId, username, fullName, email, role}, price, stockAfter}...]}
+api/v1/admin/products/:barcode/purchaseHistory/:purchaseId GET => {purchase: {purchaseId, time, user: {userId, username, fullName, email, role}, price, stockAfter}}
 api/v1/admin/categories GET => {categories: [{categoryId, description}...]}
 api/v1/admin/categories POST {description} => {category: {categoryId, description}}
 api/v1/admin/categories/:categoryId GET => {category: {categoryId, description}}
