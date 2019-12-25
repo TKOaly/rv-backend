@@ -13,20 +13,20 @@ router.get('/', async (req, res) => {
         const purchases = await historyStore.getUserPurchaseHistory(user.userId);
         const mappedPurchases = purchases.map((purchase) => {
             return {
-                purchaseId: purchase.itemhistid,
-                time: new Date(purchase.time).toISOString(),
+                purchaseId: purchase.purchaseId,
+                time: purchase.time,
                 product: {
-                    barcode: purchase.barcode,
-                    productId: purchase.itemid,
-                    name: purchase.descr,
+                    barcode: purchase.product.barcode,
+                    productId: purchase.product.productId,
+                    name: purchase.product.name,
                     category: {
-                        categoryId: purchase.pgrpid,
-                        description: purchase.pgrpdescr
+                        categoryId: purchase.product.category.categoryId,
+                        description: purchase.product.category.description
                     },
-                    weight: purchase.weight
+                    weight: purchase.product.weight
                 },
-                price: purchase.sellprice,
-                balanceAfter: purchase.saldo
+                price: purchase.price,
+                balanceAfter: purchase.balanceAfter
             };
         });
 
@@ -62,20 +62,20 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
         logger.info('User %s fetched purchase %s', user.username, purchaseId);
         res.status(200).json({
             purchase: {
-                purchaseId: purchase.itemhistid,
-                time: new Date(purchase.time).toISOString(),
+                purchaseId: purchase.purchaseId,
+                time: purchase.time,
                 product: {
-                    barcode: purchase.barcode,
-                    productId: purchase.itemid,
-                    name: purchase.descr,
+                    barcode: purchase.product.barcode,
+                    productId: purchase.product.productId,
+                    name: purchase.product.name,
                     category: {
-                        categoryId: purchase.pgrpid,
-                        description: purchase.pgrpdescr
+                        categoryId: purchase.product.category.categoryId,
+                        description: purchase.product.category.description
                     },
-                    weight: purchase.weight
+                    weight: purchase.product.weight
                 },
-                price: purchase.sellprice,
-                balanceAfter: purchase.saldo
+                price: purchase.price,
+                balanceAfter: purchase.balanceAfter
             }
         });
     } catch (error) {

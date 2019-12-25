@@ -158,8 +158,8 @@ describe('routes: user', () => {
 
             const depositEvent = newDepositHistory[0];
 
-            expect(depositEvent.difference).to.equal(2371);
-            expect(depositEvent.saldo).to.equal(res.body.accountBalance);
+            expect(depositEvent.amount).to.equal(2371);
+            expect(depositEvent.balanceAfter).to.equal(res.body.accountBalance);
         });
 
         it('should error on depositing a negative amount', async () => {

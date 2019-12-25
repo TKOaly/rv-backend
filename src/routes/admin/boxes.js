@@ -118,8 +118,8 @@ router.post('/:barcode(\\d+)', async (req, res) => {
     }
 
     const barcode = params.barcode;
-    const sellprice = body.sellprice;
-    const buyprice = body.buyprice;
+    const sellPrice = body.sellprice;
+    const buyPrice = body.buyprice;
     const boxes = body.boxes;
 
     try {
@@ -136,8 +136,8 @@ router.post('/:barcode(\\d+)', async (req, res) => {
         }
 
         // all good, boxes can be added
-        const quantity = product.count + boxes * box.items_per_box;
-        await productStore.changeProductStock(box.product_id, buyprice, sellprice, quantity, user.userId);
+        const stock = product.stock + boxes * box.items_per_box;
+        await productStore.updateProduct(product.barcode, { buyPrice, sellPrice, stock }, user.userId);
 
         logger.info(
             '%s %s: user %s added %d boxes (%d pcs) of product %d (box %s, product barcode %s)',
@@ -157,7 +157,7 @@ router.post('/:barcode(\\d+)', async (req, res) => {
             product_id: box.product_id,
             product_name: box.product_name,
             quantity_added: box.items_per_box * boxes,
-            total_quantity: quantity
+            total_quantity: stock
         });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
@@ -231,20 +231,15 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         // create or update box and product
 
         if (!product) {
-            const prodId = await productStore.addProduct(
+            const newProduct = await productStore.insertProduct(
                 {
-                    descr: productData.product_name,
-                    pgrpid: productData.product_group,
-                    weight: productData.product_weight
-                },
-                {
+                    name: productData.product_name,
+                    categoryId: productData.product_group,
+                    weight: productData.product_weight,
                     barcode: productData.product_barcode,
-                    count: 0,
-                    buyprice: productData.product_buyprice,
-                    sellprice: productData.product_sellprice,
-                    userid: user.userId,
-                    starttime: new Date(),
-                    endtime: null
+                    stock: 0,
+                    buyPrice: productData.product_buyprice,
+                    sellPrice: productData.product_sellprice
                 },
                 user.userId
             );
@@ -254,26 +249,23 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 req.method,
                 req.originalUrl,
                 productData.product_name,
-                prodId,
+                newProduct.productId,
                 productData.product_barcode
             );
         } else {
             // update product info and price
-            await productStore.changeProductStock(
-                product.itemid,
-                productData.product_buyprice,
-                productData.product_sellprice,
-                product.count,
+            await productStore.updateProduct(
+                product.barcode,
+                {
+                    name: productData.product_name,
+                    categoryId: productData.product_group,
+                    weight: productData.product_weight,
+                    buyPrice: productData.product_buyprice,
+                    sellPrice: productData.product_sellprice,
+                    stock: product.stock
+                },
                 user.userId
             );
-
-            await productStore.updateProduct({
-                id: product.itemid,
-                name: productData.product_name,
-                group: productData.product_group,
-                weight: productData.product_weight,
-                userid: user.userId
-            });
 
             logger.info(
                 '%s %s: updated product "%s" (barcode %s)',
@@ -308,13 +300,13 @@ router.put('/:barcode(\\d+)', async (req, res) => {
             box_barcode: barcode,
             items_per_box: items_per_box,
             product: {
-                product_id: product.itemid,
-                product_name: product.descr,
-                product_group: product.pgrpid,
+                product_id: product.productId,
+                product_name: product.name,
+                product_group: product.category.categoryId,
                 product_barcode: product.barcode,
                 product_weight: product.weight,
-                product_sellprice: product.sellprice,
-                product_buyprice: product.buyprice
+                product_sellprice: product.sellPrice,
+                product_buyprice: product.buyPrice
             }
         });
     } catch (error) {

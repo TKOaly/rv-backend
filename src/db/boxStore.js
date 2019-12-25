@@ -67,7 +67,7 @@ module.exports.createBox = async (boxBarcode, productBarcode, itemsPerBox, useri
             .transacting(trx)
             .insert({
                 barcode: boxBarcode,
-                itemid: product.itemid,
+                itemid: product.productId,
                 time: new Date(),
                 itemcount: itemsPerBox,
                 userid: userid,
@@ -95,7 +95,7 @@ module.exports.updateBox = async (boxBarcode, productBarcode, itemsPerBox, useri
             .transacting(trx)
             .insert({
                 barcode: boxBarcode,
-                itemid: product.itemid,
+                itemid: product.productId,
                 time: new Date(),
                 itemcount: itemsPerBox,
                 userid: userid,

@@ -13,10 +13,10 @@ router.get('/', async (req, res) => {
         const deposits = await historyStore.getUserDepositHistory(user.userId);
         const mappedDeposits = deposits.map((deposit) => {
             return {
-                depositId: deposit.pershistid,
-                time: new Date(deposit.time).toISOString(),
-                amount: deposit.difference,
-                balanceAfter: deposit.saldo
+                depositId: deposit.depositId,
+                time: deposit.time,
+                amount: deposit.amount,
+                balanceAfter: deposit.balanceAfter
             };
         });
 
@@ -52,10 +52,10 @@ router.get('/:depositId(\\d+)', async (req, res) => {
         logger.info('User %s fetched deposit %s', user.username, depositId);
         res.status(200).json({
             deposit: {
-                depositId: deposit.pershistid,
-                time: new Date(deposit.time).toISOString(),
-                amount: deposit.difference,
-                balanceAfter: deposit.saldo
+                depositId: deposit.depositId,
+                time: deposit.time,
+                amount: deposit.amount,
+                balanceAfter: deposit.balanceAfter
             }
         });
     } catch (error) {

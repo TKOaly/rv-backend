@@ -103,11 +103,11 @@ describe('routes: products', () => {
             const newUser = await userStore.findByUsername('normal_user');
             const newProduct = await productStore.findByBarcode('8855702006834');
 
-            expect(newUser.moneyBalance).to.equal(oldUser.moneyBalance - oldProduct.sellprice);
+            expect(newUser.moneyBalance).to.equal(oldUser.moneyBalance - oldProduct.sellPrice);
             expect(newUser.moneyBalance).to.equal(res.body.accountBalance);
 
-            expect(newProduct.count).to.equal(oldProduct.count - 1);
-            expect(newProduct.count).to.equal(res.body.productStock);
+            expect(newProduct.stock).to.equal(oldProduct.stock - 1);
+            expect(newProduct.stock).to.equal(res.body.productStock);
         });
 
         it('should create an event into purchase history', async () => {
@@ -130,8 +130,8 @@ describe('routes: products', () => {
 
             const purchaseEvent = newPurchaseHistory[0];
 
-            expect(purchaseEvent.barcode).to.equal('6417901011105');
-            expect(purchaseEvent.saldo).to.equal(res.body.accountBalance);
+            expect(purchaseEvent.product.barcode).to.equal('6417901011105');
+            expect(purchaseEvent.balanceAfter).to.equal(res.body.accountBalance);
         });
 
         it('should create multiple history events on multibuy', async () => {
@@ -167,7 +167,7 @@ describe('routes: products', () => {
 
         it('should error on insufficient funds', async () => {
             const user = await userStore.findByUsername('normal_user');
-            await userStore.updateAccountBalance(user.userId, 0);
+            await userStore.updateUser(user.userId, { moneyBalance: 0 });
 
             const res = await chai
                 .request(server)

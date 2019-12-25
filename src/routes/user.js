@@ -5,6 +5,7 @@ const authMiddleware = require('./authMiddleware');
 const logger = require('../logger');
 const fieldValidator = require('../utils/fieldValidator');
 const validators = require('../utils/validators');
+const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
 
 router.use(authMiddleware());
 
@@ -82,15 +83,10 @@ router.patch('/', async (req, res) => {
             }
         }
 
-        if (username !== undefined) {
-            await userStore.updateUsername(user.userId, username);
-        }
-        if (fullName !== undefined) {
-            await userStore.updateFullName(user.userId, fullName);
-        }
-        if (email !== undefined) {
-            await userStore.updateEmail(user.userId, email);
-        }
+        const updatedUser = await userStore.updateUser(
+            user.userId,
+            deleteUndefinedFields({ username: username, fullName: fullName, email: email })
+        );
 
         logger.info(
             'User %s changed user data from {%s, %s, %s} to {%s, %s, %s}',
@@ -98,16 +94,16 @@ router.patch('/', async (req, res) => {
             user.username,
             user.fullName,
             user.email,
-            username,
-            fullName,
-            email
+            updatedUser.username,
+            updatedUser.fullName,
+            updatedUser.email
         );
         res.status(200).json({
             user: {
-                username: username !== undefined ? username : user.username,
-                fullName: fullName !== undefined ? fullName : user.fullName,
-                email: email !== undefined ? email : user.email,
-                moneyBalance: user.moneyBalance
+                username: updatedUser.username,
+                fullName: updatedUser.fullName,
+                email: updatedUser.email,
+                moneyBalance: updatedUser.moneyBalance
             }
         });
     } catch (error) {
@@ -144,7 +140,7 @@ router.post('/deposit', async (req, res) => {
     const amount = req.body.amount;
 
     try {
-        const deposit = await userStore.recordDeposit(user.userId, amount, user.moneyBalance);
+        const deposit = await userStore.recordDeposit(user.userId, amount);
 
         logger.info('User %s deposited %s cents', user.username, amount);
         res.status(200).json({
@@ -190,7 +186,7 @@ router.post('/changePassword', async (req, res) => {
     const password = req.body.password;
 
     try {
-        await userStore.updatePassword(user.userId, password);
+        await userStore.updateUser(user.userId, { password: password });
 
         logger.info('User %s changed password', user.username);
         res.status(204).end();

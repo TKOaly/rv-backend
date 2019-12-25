@@ -1,227 +1,33 @@
 const knex = require('./knex');
+const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
 
-/**
- * Finds a product by its barcode.
- *
- * @param {string} barcode barcode of the product
- * @returns product and price information if found, null otherwise
- */
-module.exports.findByBarcode = async (barcode) => {
-    return await knex('PRICE')
-        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
-        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
-        .select(
-            'RVITEM.itemid',
-            'RVITEM.descr',
-            'RVITEM.pgrpid',
-            'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
-            'PRICE.priceid',
-            'PRICE.barcode',
-            'PRICE.buyprice',
-            'PRICE.sellprice',
-            'PRICE.count'
-        )
-        .where('PRICE.barcode', barcode)
-        .andWhere('PRICE.endtime', null)
-        .first();
-};
-
-/**
- * Finds a product by its id.
- *
- * @param {*} id id of the product
- * @returns product and price information if found, null otherwise
- */
-module.exports.findById = async (id) => {
-    return await knex('RVITEM')
-        .leftJoin('PRICE', (builder) => {
-            builder.on('PRICE.itemid', '=', 'RVITEM.itemid').andOnNull('PRICE.endtime');
-        })
-        .where('RVITEM.itemid', id)
-        .first();
-};
-
-/**
- * Changes a product's stock and price information. If the product's
- * price changes, a new price will be created and old price will be
- * invalidated. Actions are recorded in product history.
- *
- * @param {*} id product id
- * @param {*} buyprice buy price
- * @param {*} sellprice sell price
- * @param {*} quantity quantity
- * @param {*} userid id of the user doing the change
- */
-module.exports.changeProductStock = async (productid, buyprice, sellprice, quantity, userid) => {
-    await knex.transaction(async (trx) => {
-        const rows = await knex
-            .select('*')
-            .transacting(trx)
-            .from('PRICE')
-            .where('PRICE.itemid', productid)
-            .andWhere('PRICE.endtime', null);
-        const oldPrice = rows[0];
-        let id;
-
-        // update current valid price if only quantity changes
-        if (oldPrice.buyprice == buyprice && oldPrice.sellprice == sellprice) {
-            await knex('PRICE')
-                .transacting(trx)
-                .update('count', quantity)
-                .where('priceid', oldPrice.priceid);
-            const newPriceId = oldPrice.priceid;
-            oldPrice.priceid = null;
-
-            id = [newPriceId];
-        } else {
-            // otherwise invalidate old price and create a new price
-            await knex('PRICE')
-                .transacting(trx)
-                .update({
-                    endtime: new Date(),
-                    count: 0
-                })
-                .where('itemid', productid)
-                .andWhere('endtime', null);
-            id = await knex('PRICE')
-                .transacting(trx)
-                .insert(
-                    {
-                        itemid: productid,
-                        barcode: oldPrice.barcode,
-                        count: quantity,
-                        buyprice,
-                        sellprice,
-                        userid,
-                        starttime: new Date()
-                    },
-                    'priceid'
-                );
-        }
-
-        // record changes in product history
-        const newPriceId = id[0];
-        const actions = [];
-        const timestamp = new Date();
-
-        if (buyprice !== oldPrice.buyprice) {
-            actions.push({
-                time: timestamp,
-                count: quantity,
-                itemid: productid,
-                userid: userid,
-                actionid: 6,
-                priceid1: newPriceId,
-                priceid2: oldPrice.priceid
-            });
-        }
-
-        if (sellprice !== oldPrice.sellprice) {
-            actions.push({
-                time: timestamp,
-                count: quantity,
-                itemid: productid,
-                userid: userid,
-                actionid: 7,
-                priceid1: newPriceId,
-                priceid2: oldPrice.priceid
-            });
-        }
-
-        if (quantity !== oldPrice.count) {
-            actions.push({
-                time: timestamp,
-                count: quantity,
-                itemid: productid,
-                userid: userid,
-                actionid: 8,
-                priceid1: newPriceId,
-                priceid2: oldPrice.priceid
-            });
-        }
-
-        if (actions.length > 0) {
-            await knex('ITEMHISTORY')
-                .transacting(trx)
-                .insert(actions);
-        }
-    });
-};
-
-/**
- * Records a product purchase in the database.
- *
- * @param {integer} productid id of the product that is purchased
- * @param {integer} priceid price id of the product
- * @param {integer} userid id of the user who is purchasing this product
- * @param {integer} count how many products are purchased
- * @param {integer} price price of a single product
- * @param {integer} stockBefore product stock before purchasing
- * @param {integer} balanceBefore user balance before purchasing
- */
-module.exports.recordPurchase = async (productid, priceid, userid, count, price, stockBefore, balanceBefore) => {
-    return await knex.transaction(async (trx) => {
-        const insertedHistory = [];
-
-        const now = new Date();
-        let stock = stockBefore;
-        let balance = balanceBefore;
-
-        /* Storing multibuy into history as multiple individual history events. */
-        for (let i = 0; i < count; i++) {
-            stock--;
-            balance -= price;
-
-            const insertedSaldoRows = await knex('SALDOHISTORY')
-                .transacting(trx)
-                .insert({
-                    userid: userid,
-                    time: now,
-                    saldo: balance,
-                    difference: -price
-                })
-                .returning('*');
-            const insertedItemRows = await knex('ITEMHISTORY')
-                .transacting(trx)
-                .insert({
-                    time: now,
-                    count: stock,
-                    actionid: 5,
-                    itemid: productid,
-                    userid: userid,
-                    priceid1: priceid,
-                    saldhistid: insertedSaldoRows[0].saldhistid
-                })
-                .returning('*');
-
-            /* Storing inserted history rows so they can be returned. */
-            insertedHistory.push({
-                saldoEvent: insertedSaldoRows[0],
-                itemEvent: insertedItemRows[0]
-            });
-        }
-
-        await knex('PRICE')
-            .transacting(trx)
-            .where({ priceid: priceid })
-            .update({ count: stock });
-        await knex('RVPERSON')
-            .transacting(trx)
-            .where({ userid: userid })
-            .update({ saldo: balance });
-
-        return insertedHistory;
-    });
+const rowToProduct = (row) => {
+    if (row !== undefined) {
+        return {
+            barcode: row.barcode,
+            productId: row.itemid,
+            name: row.descr,
+            category: {
+                categoryId: row.pgrpid,
+                description: row.pgrpdescr
+            },
+            weight: row.weight,
+            buyPrice: row.buyprice,
+            sellPrice: row.sellprice,
+            stock: row.count
+        };
+    } else {
+        return undefined;
+    }
 };
 
 /**
  * Returns all products and their stock quantities, if available.
  *
  */
-module.exports.findAll = async () => {
-    return await knex('RVITEM')
-        .leftJoin('PRICE', 'RVITEM.itemid', 'PRICE.itemid')
+module.exports.getProducts = async () => {
+    const data = await knex('PRICE')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
             'RVITEM.itemid',
@@ -235,81 +41,258 @@ module.exports.findAll = async () => {
             'PRICE.count'
         )
         .where('PRICE.endtime', null);
+    return data.map(rowToProduct);
+};
+
+/**
+ * Finds a product by its barcode.
+ */
+module.exports.findByBarcode = async (barcode) => {
+    const row = await knex('PRICE')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+        .select(
+            'RVITEM.itemid',
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
+        )
+        .where('PRICE.barcode', barcode)
+        .andWhere('PRICE.endtime', null)
+        .first();
+    return rowToProduct(row);
+};
+
+/**
+ * Finds a product by its id.
+ */
+module.exports.findById = async (productId) => {
+    const row = await knex('PRICE')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+        .select(
+            'RVITEM.itemid',
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
+        )
+        .where('RVITEM.itemid', productId)
+        .andWhere('PRICE.endtime', null)
+        .first();
+    return rowToProduct(row);
 };
 
 /**
  * Creates a new product if given barcode is not in use.
  *
  */
-module.exports.addProduct = async (product, price, userid) => {
+module.exports.insertProduct = async (productData, userId) => {
     return await knex.transaction(async (trx) => {
-        const itemids = await knex('RVITEM')
-            .transacting(trx)
-            .insert(product)
-            .returning('itemid');
-        price.itemid = itemids[0];
-        const priceids = await knex('PRICE')
-            .transacting(trx)
-            .insert(price)
-            .returning('priceid');
-        await knex('ITEMHISTORY')
+        const insertedItemids = await knex('RVITEM')
             .transacting(trx)
             .insert({
-                time: price.starttime,
-                count: price.count,
-                itemid: price.itemid,
-                userid: userid,
-                actionid: 1,
-                priceid1: priceids[0]
+                pgrpid: productData.categoryId,
+                descr: productData.name,
+                weight: productData.weight
+            })
+            .returning('itemid');
+
+        await knex('PRICE')
+            .transacting(trx)
+            .insert({
+                barcode: productData.barcode,
+                count: productData.stock,
+                buyprice: productData.buyPrice,
+                sellprice: productData.sellPrice,
+                itemid: insertedItemids[0],
+                userid: userId,
+                starttime: new Date(),
+                endtime: null
             });
-        return itemids[0];
+
+        const categoryDescr = await knex('PRODGROUP')
+            .transacting(trx)
+            .select('descr')
+            .where('pgrpid', productData.categoryId)
+            .first();
+
+        return {
+            barcode: productData.barcode,
+            productId: insertedItemids[0],
+            name: productData.name,
+            category: {
+                categoryId: productData.categoryId,
+                description: categoryDescr
+            },
+            weight: productData.weight,
+            buyPrice: productData.buyPrice,
+            sellPrice: productData.sellPrice,
+            stock: productData.stock
+        };
     });
 };
 
 /**
- * Updates a product's information (name, category, weight)
- *
- * @param {Object} product product to update
- * @param {integer} id product id
- * @param {string} name product name
- * @param {integer} group product category id
- * @param {weight} weight product weight
- * @param {integer} userid id of the user updating the product
+ * Updates a product's information
  */
-module.exports.updateProduct = async ({ id, name, group, weight, userid }) => {
-    const oldProduct = await module.exports.findById(id);
-
-    await knex.transaction(async (trx) => {
-        await knex('RVITEM')
-            .transacting(trx)
-            .update({
-                descr: name,
-                pgrpid: group,
-                weight
-            })
-            .where('itemid', id);
-        // record changes in product history
-        const actions = [];
-        const action = {
-            time: new Date(),
-            count: oldProduct.count,
-            itemid: id,
-            userid,
-            priceid1: oldProduct.priceid
-        };
-        if (name !== oldProduct.descr) {
-            actions.push(Object.assign({}, action, { actionid: 2 }));
-        }
-        if (group !== oldProduct.pgrpid) {
-            actions.push(Object.assign({}, action, { actionid: 4 }));
-        }
-        if (weight !== oldProduct.weight) {
-            actions.push(Object.assign({}, action, { actionid: 3 }));
-        }
-        if (actions.length > 0) {
-            await knex('ITEMHISTORY')
+module.exports.updateProduct = async (barcode, productData, userId) => {
+    /* productData may have fields { name, categoryId, weight, buyPrice, sellPrice, stock } */
+    return await knex.transaction(async (trx) => {
+        const rvitemFields = deleteUndefinedFields({
+            pgrpid: productData.categoryId,
+            descr: productData.name,
+            weight: productData.weight
+        });
+        if (Object.keys(rvitemFields) > 0) {
+            const productId = await knex('PRICE')
                 .transacting(trx)
-                .insert(actions);
+                .select('itemid')
+                .where({ barcode: barcode, endtime: null })
+                .first();
+
+            await knex('RVITEM')
+                .transacting(trx)
+                .update(rvitemFields)
+                .where({ itemid: productId });
         }
+
+        const priceFields = deleteUndefinedFields({
+            count: productData.stock,
+            buyprice: productData.buyPrice,
+            sellprice: productData.sellPrice
+        });
+        if (Object.keys(priceFields) > 0) {
+            if (priceFields.sellPrice === undefined) {
+                await knex('PRICE')
+                    .transacting(trx)
+                    .update(priceFields)
+                    .where({ barcode: barcode, endtime: null });
+            } else {
+                /* Sell price changed, a new price row will be created. */
+                const now = new Date();
+
+                const currentPriceRows = await knex('PRICE')
+                    .transacting(trx)
+                    .update({ endtime: now })
+                    .where({ barcode: barcode, endtime: null })
+                    .returning('*');
+
+                await knex('PRICE')
+                    .transacting(trx)
+                    .insert({
+                        barcode: currentPriceRows[0].barcode,
+                        count: currentPriceRows[0].count,
+                        buyprice: currentPriceRows[0].buyprice,
+                        sellprice: currentPriceRows[0].sellprice,
+                        itemid: currentPriceRows[0].itemid,
+                        userid: userId,
+                        starttime: now,
+                        endtime: null,
+
+                        ...priceFields
+                    });
+            }
+        }
+
+        const productRow = await knex('PRICE')
+            .transacting(trx)
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVITEM.itemid',
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.barcode',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count'
+            )
+            .where('PRICE.barcode', barcode)
+            .andWhere('PRICE.endtime', null)
+            .first();
+        return rowToProduct(productRow);
+    });
+};
+
+/**
+ * Records a product purchase in the database.
+ */
+module.exports.recordPurchase = async (barcode, userId, count) => {
+    return await knex.transaction(async (trx) => {
+        const now = new Date();
+
+        const updatedPriceRows = await knex('PRICE')
+            .transacting(trx)
+            .where({ barcode: barcode, endtime: null })
+            .decrement({ count: count })
+            .returning(['priceid', 'itemid', 'sellprice', 'count']);
+
+        const priceId = updatedPriceRows[0].priceid;
+        const productId = updatedPriceRows[0].itemid;
+        const price = updatedPriceRows[0].sellprice;
+        const stockBefore = updatedPriceRows[0].count + count;
+
+        const updatedSaldos = await knex('RVPERSON')
+            .transacting(trx)
+            .where({ userid: userId })
+            .decrement({ saldo: count * price })
+            .returning('saldo');
+
+        const balanceBefore = updatedSaldos[0] + count * price;
+
+        let stock = stockBefore;
+        let balance = balanceBefore;
+        const insertedHistory = [];
+
+        /* Storing multibuy into history as multiple individual history events. */
+        for (let i = 0; i < count; i++) {
+            stock--;
+            balance -= price;
+
+            const insertedSaldhistids = await knex('SALDOHISTORY')
+                .transacting(trx)
+                .insert({
+                    userid: userId,
+                    time: now,
+                    saldo: balance,
+                    difference: -price
+                })
+                .returning('saldhistid');
+            const insertedItemhistids = await knex('ITEMHISTORY')
+                .transacting(trx)
+                .insert({
+                    time: now,
+                    count: stock,
+                    actionid: 5,
+                    itemid: productId,
+                    userid: userId,
+                    priceid1: priceId,
+                    saldhistid: insertedSaldhistids[0]
+                })
+                .returning('itemhistid');
+
+            /* Storing inserted history events so they can be returned. */
+            insertedHistory.push({
+                purchaseId: insertedItemhistids[0],
+                time: now.toISOString(),
+                price: price,
+                balanceAfter: balance,
+                stockAfter: stock
+            });
+        }
+
+        return insertedHistory;
     });
 };

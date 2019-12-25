@@ -7,13 +7,6 @@ const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
 
-const prodFilter = (product) => {
-    delete product.userid;
-    delete product.starttime;
-    delete product.endtime;
-    return product;
-};
-
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/product/:productId(\\d+)', async (req, res) => {
@@ -28,7 +21,7 @@ router.get('/product/:productId(\\d+)', async (req, res) => {
         }
 
         res.status(200).json({
-            product: prodFilter(product)
+            product: product
         });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
@@ -99,21 +92,22 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
             return;
         }
 
-        // Basic product info
-        await productStore.updateProduct({
-            id: productId,
-            name: descr,
-            group: pgrpid,
-            weight: weight,
-            userid: user.userId
-        });
-
-        // sellprice, buyprice, quantity
-        await productStore.changeProductStock(productId, buyprice, sellprice, quantity, user.userId);
+        await productStore.updateProduct(
+            product.barcode,
+            {
+                name: descr,
+                categoryId: pgrpid,
+                weight: weight,
+                buyPrice: buyprice,
+                sellPrice: sellprice,
+                stock: quantity
+            },
+            user.userId
+        );
 
         const newProd = await productStore.findById(productId);
         res.status(200).json({
-            product: prodFilter(newProd)
+            product: newProd
         });
     } catch (error) {
         logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
@@ -126,18 +120,18 @@ router.put('/product/:productId(\\d+)', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const products = await productStore.findAll();
+        const products = await productStore.getProducts();
 
         const prods = products.map((product) => {
             return {
-                product_id: product.itemid,
-                product_name: product.descr,
+                product_id: product.productId,
+                product_name: product.name,
                 product_barcode: product.barcode,
-                product_group: product.pgrpid,
-                buyprice: product.buyprice,
-                sellprice: product.sellprice,
-                product_weight: parseInt(product.weight || 0),
-                quantity: parseInt(product.quantity || 0)
+                product_group: product.category.categoryId,
+                buyprice: product.buyPrice,
+                sellprice: product.sellPrice,
+                product_weight: product.weight,
+                quantity: product.stock
             };
         });
         res.status(200).json({
@@ -199,7 +193,7 @@ router.post('/', async (req, res) => {
                 req.method,
                 req.originalUrl,
                 barcode,
-                product.descr
+                product.name
             );
             res.status(403).json({
                 error_code: 'barcode_taken',
@@ -208,38 +202,30 @@ router.post('/', async (req, res) => {
             return;
         }
 
-        const newProduct = {
-            descr: descr,
-            pgrpid: pgrpid,
-            weight: weight
-        };
-
-        const newPrice = {
-            barcode: barcode,
-            count: count,
-            buyprice: buyprice,
-            sellprice: sellprice,
-            userid: user.userId,
-            starttime: new Date(),
-            endtime: null
-        };
-
-        const newId = await productStore.addProduct(newProduct, newPrice, user.userId);
-        newProduct.itemid = newId;
-        newPrice.itemid = newId;
+        const newProduct = await productStore.insertProduct(
+            {
+                name: descr,
+                categoryId: pgrpid,
+                weight: weight,
+                barcode: barcode,
+                stock: count,
+                buyPrice: buyprice,
+                sellPrice: sellprice
+            },
+            user.userId
+        );
 
         logger.info(
             '%s %s: user %s created new product "%s" with id %s',
             req.method,
             req.originalUrl,
             user.username,
-            newProduct.descr,
-            newProduct.itemid
+            newProduct.name,
+            newProduct.productId
         );
 
         res.status(201).json({
-            product: newProduct,
-            price: newPrice
+            product: newProduct
         });
     } catch (error) {
         logger.error('%s %s: %s', req.method, req.originalUrl, error.stack);
@@ -341,11 +327,9 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         }
 
         // update information
-        await productStore.changeProductStock(
-            product.itemid,
-            buyprice,
-            sellprice,
-            product.count + quantity,
+        await productStore.updateProduct(
+            product.barcode,
+            { buyPrice: buyprice, sellPrice: sellprice, stock: product.stock + quantity },
             user.userId
         );
 
@@ -355,7 +339,7 @@ router.post('/product/:id(\\d+)', async (req, res) => {
             product_id: parseInt(id, 10),
             buyprice: buyprice,
             sellprice: sellprice,
-            quantity: product.count + quantity
+            quantity: product.stock + quantity
         });
     } catch (error) {
         logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);

@@ -10,11 +10,11 @@ router.get('/', async (req, res) => {
     const user = req.user;
 
     try {
-        const categories = await categoryStore.findAllCategories();
+        const categories = await categoryStore.getCategories();
         const mappedCategories = categories.map((category) => {
             return {
-                categoryId: category.pgrpid,
-                description: category.descr
+                categoryId: category.categoryId,
+                description: category.description
             };
         });
 
@@ -50,8 +50,8 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         logger.info('User %s fetched category %s', user.username, categoryId);
         res.status(200).json({
             category: {
-                categoryId: category.pgrpid,
-                description: category.descr
+                categoryId: category.categoryId,
+                description: category.description
             }
         });
     } catch (error) {

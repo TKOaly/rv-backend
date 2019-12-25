@@ -195,7 +195,7 @@ describe('routes: admin products', () => {
             expect(res.body.product_id).to.equal(1750);
             expect(res.body.buyprice).to.equal(300);
             expect(res.body.sellprice).to.equal(350);
-            expect(res.body.quantity).to.equal(product.count + 50);
+            expect(res.body.quantity).to.equal(product.stock + 50);
         });
 
         it('Adding nonexistent product to stock should not work', async () => {

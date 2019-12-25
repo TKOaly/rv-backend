@@ -1,22 +1,52 @@
 const knex = require('./knex');
 
-/**
- * Finds a category by its id.
- *
- * @param {*} id id of the category
- * @returns category information if found, null otherwise
- */
-module.exports.findById = async (pgrpid) => {
-    return await knex('PRODGROUP')
-        .select('PRODGROUP.pgrpid', 'PRODGROUP.descr')
-        .where({ pgrpid: pgrpid })
-        .first();
+const rowToCategory = (row) => {
+    if (row !== undefined) {
+        return {
+            categoryId: row.pgrpid,
+            description: row.descr
+        };
+    } else {
+        return undefined;
+    }
 };
 
 /**
  * Returns all categories.
  *
  */
-module.exports.findAllCategories = async () => {
-    return await knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
+module.exports.getCategories = async () => {
+    const data = await knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
+    return data.map(rowToCategory);
+};
+
+/**
+ * Finds a category by its id.
+ */
+module.exports.findById = async (categoryId) => {
+    const row = await knex('PRODGROUP')
+        .select('PRODGROUP.pgrpid', 'PRODGROUP.descr')
+        .where({ pgrpid: categoryId })
+        .first();
+    return rowToCategory(row);
+};
+
+module.exports.insertCategory = async (description) => {
+    const insertedPgrpids = await knex('PRODGROUP')
+        .insert({ descr: description })
+        .returning('pgrpid');
+    return {
+        categoryId: insertedPgrpids[0],
+        description: description
+    };
+};
+
+module.exports.updateCategory = async (categoryId, description) => {
+    await knex('PRODGROUP')
+        .update({ descr: description })
+        .where({ pgrpid: categoryId });
+    return {
+        categoryId: categoryId,
+        description: description
+    };
 };

@@ -12,19 +12,19 @@ router.get('/', async (req, res) => {
     const user = req.user;
 
     try {
-        const products = await productStore.findAll();
+        const products = await productStore.getProducts();
         const mappedProds = products.map((product) => {
             return {
                 barcode: product.barcode,
-                productId: product.itemid,
-                name: product.descr,
+                productId: product.productId,
+                name: product.name,
                 category: {
-                    categoryId: product.pgrpid,
-                    description: product.pgrpdescr
+                    categoryId: product.category.categoryId,
+                    description: product.category.description
                 },
                 weight: product.weight,
-                sellPrice: product.sellprice,
-                stock: product.count
+                sellPrice: product.sellPrice,
+                stock: product.stock
             };
         });
 
@@ -61,15 +61,15 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
         res.status(200).json({
             product: {
                 barcode: product.barcode,
-                productId: product.itemid,
-                name: product.descr,
+                productId: product.productId,
+                name: product.name,
                 category: {
-                    categoryId: product.pgrpid,
-                    description: product.pgrpdescr
+                    categoryId: product.category.categoryId,
+                    description: product.category.description
                 },
                 weight: product.weight,
-                sellPrice: product.sellprice,
-                stock: product.count
+                sellPrice: product.sellPrice,
+                stock: product.stock
             }
         });
     } catch (error) {
@@ -113,37 +113,30 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
         if (product) {
             /* User can always empty his account completely, but resulting negative saldo should be minimized. This is
              * achieved by allowing only a single product to be bought on credit. */
-            if (product.sellprice <= 0 || user.moneyBalance > product.sellprice * (count - 1)) {
+            if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * (count - 1)) {
                 // record purchase
-                const insertedHistory = await productStore.recordPurchase(
-                    product.itemid,
-                    product.priceid,
-                    user.userId,
-                    count,
-                    product.sellprice,
-                    product.count,
-                    user.moneyBalance
-                );
+                const purchases = await productStore.recordPurchase(barcode, user.userId, count);
 
-                const newBalance = user.moneyBalance - count * product.sellprice;
-                const newStock = product.count - count;
+                const newBalance = purchases[purchases.length - 1].balanceAfter;
+                const newStock = purchases[purchases.length - 1].stockAfter;
 
-                const newPurchases = insertedHistory.map((eventPair) => {
+                const purchasesWithProduct = purchases.map((purchase) => {
                     return {
-                        purchaseId: eventPair.itemEvent.itemhistid,
-                        time: new Date(eventPair.itemEvent.time).toISOString(),
+                        purchaseId: purchase.purchaseId,
+                        time: purchase.time,
                         product: {
                             barcode: product.barcode,
-                            productId: product.itemid,
-                            name: product.descr,
+                            productId: product.productId,
+                            name: product.name,
                             category: {
-                                categoryId: product.pgrpid,
-                                description: product.pgrpdescr
+                                categoryId: product.category.categoryId,
+                                description: product.category.description
                             },
                             weight: product.weight
                         },
-                        price: product.sellprice,
-                        balanceAfter: eventPair.saldoEvent.saldo
+                        price: purchase.price,
+                        balanceAfter: purchase.balanceAfter,
+                        stockAfter: purchase.stockAfter
                     };
                 });
 
@@ -152,7 +145,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 res.status(200).json({
                     accountBalance: newBalance,
                     productStock: newStock,
-                    purchases: newPurchases
+                    purchases: purchasesWithProduct
                 });
             } else {
                 // user doesn't have enough money

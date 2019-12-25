@@ -104,11 +104,11 @@ describe('routes: admin boxes', () => {
 
             expect(response.box_barcode).to.equal(box.box_barcode);
             expect(response.product_barcode).to.equal(box.product_barcode);
-            expect(response.product_name).to.equal(product.descr);
+            expect(response.product_name).to.equal(product.name);
 
             const expectedQty = box.items_per_box * 2;
             expect(response.quantity_added).to.equal(expectedQty);
-            expect(response.total_quantity).to.equal(product.count + expectedQty);
+            expect(response.total_quantity).to.equal(product.stock + expectedQty);
         });
 
         it('PUT /api/v1/admin/boxes/:barcode should create a new box', async () => {
