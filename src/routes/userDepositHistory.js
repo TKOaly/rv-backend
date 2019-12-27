@@ -38,9 +38,10 @@ router.get('/:depositId(\\d+)', async (req, res) => {
     const depositId = req.params.depositId;
 
     try {
-        const deposit = await historyStore.findUserDepositById(user.userId, depositId);
+        const deposit = await historyStore.findDepositById(depositId);
 
-        if (!deposit) {
+        /* The ID may not be used for any deposit or may be used for a deposit of another user. */
+        if (!deposit || deposit.user.userId !== user.userId) {
             logger.error('User %s tried to fetch unknown deposit %s', user.username, depositId);
             res.status(404).json({
                 error_code: 'deposit_not_found',

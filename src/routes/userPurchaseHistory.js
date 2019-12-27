@@ -48,9 +48,10 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
     const purchaseId = req.params.purchaseId;
 
     try {
-        const purchase = await historyStore.findUserPurchaseById(user.userId, purchaseId);
+        const purchase = await historyStore.findPurchaseById(purchaseId);
 
-        if (!purchase) {
+        /* The ID may not be used for any purchase or may be used for a purchase of another user. */
+        if (!purchase || purchase.user.userId !== user.userId) {
             logger.error('User %s tried to fetch unknown purchase %s', user.username, purchaseId);
             res.status(404).json({
                 error_code: 'purchase_not_found',
