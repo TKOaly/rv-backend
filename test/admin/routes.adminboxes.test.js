@@ -117,7 +117,7 @@ describe('routes: admin boxes', () => {
                 product: {
                     product_barcode: '8855702006834',
                     product_name: 'Thai-Cube Sweet and Sour Chicken',
-                    product_group: 1,
+                    product_group: 24,
                     product_weight: 350,
                     product_buyprice: 380,
                     product_sellprice: 380
@@ -151,7 +151,7 @@ describe('routes: admin boxes', () => {
                 product: {
                     product_barcode: '8855702006834',
                     product_name: 'Thai-Cube Sweet and Sour Chicken',
-                    product_group: 1,
+                    product_group: 24,
                     product_weight: 350,
                     product_buyprice: 380,
                     product_sellprice: 380
