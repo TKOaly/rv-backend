@@ -120,20 +120,10 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 const newBalance = purchases[purchases.length - 1].balanceAfter;
                 const newStock = purchases[purchases.length - 1].stockAfter;
 
-                const purchasesWithProduct = purchases.map((purchase) => {
+                const mappedPurchases = purchases.map((purchase) => {
                     return {
                         purchaseId: purchase.purchaseId,
                         time: purchase.time,
-                        product: {
-                            barcode: product.barcode,
-                            productId: product.productId,
-                            name: product.name,
-                            category: {
-                                categoryId: product.category.categoryId,
-                                description: product.category.description
-                            },
-                            weight: product.weight
-                        },
                         price: purchase.price,
                         balanceAfter: purchase.balanceAfter,
                         stockAfter: purchase.stockAfter
@@ -145,7 +135,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                 res.status(200).json({
                     accountBalance: newBalance,
                     productStock: newStock,
-                    purchases: purchasesWithProduct
+                    purchases: mappedPurchases
                 });
             } else {
                 // user doesn't have enough money
