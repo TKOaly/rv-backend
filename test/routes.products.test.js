@@ -127,11 +127,13 @@ describe('routes: products', () => {
             const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 1);
+            expect(res.body.purchases.length).to.equal(1);
 
             const purchaseEvent = newPurchaseHistory[0];
 
             expect(purchaseEvent.product.barcode).to.equal('6417901011105');
             expect(purchaseEvent.balanceAfter).to.equal(res.body.accountBalance);
+            expect(purchaseEvent.stockAfter).to.equal(res.body.productStock);
         });
 
         it('should create multiple history events on multibuy', async () => {
@@ -151,6 +153,7 @@ describe('routes: products', () => {
             const newPurchaseHistory = await historyStore.getUserPurchaseHistory(user.userId);
 
             expect(newPurchaseHistory.length).to.equal(oldPurchaseHistory.length + 3);
+            expect(res.body.purchases.length).to.equal(3);
         });
 
         it('should return 404 on nonexistent product', async () => {

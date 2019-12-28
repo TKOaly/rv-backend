@@ -4,14 +4,17 @@ const rowToPurchase = (row) => {
     return {
         purchaseId: row.itemhistid,
         time: new Date(row.time).toISOString(),
-        price: row.sellprice
+        price: row.sellprice,
+        balanceAfter: row.saldo,
+        stockAfter: row.count
     };
 };
 const rowToDeposit = (row) => {
     return {
         depositId: row.pershistid,
         time: new Date(row.time).toISOString(),
-        amount: row.difference
+        amount: row.difference,
+        balanceAfter: row.saldo
     };
 };
 const rowToProduct = (row) => {
@@ -43,9 +46,11 @@ module.exports.getPurchaseHistory = async () => {
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
         .leftJoin('RVPERSON', 'ITEMHISTORY.userid', 'RVPERSON.userid')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
+        .leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
         .select(
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
+            'ITEMHISTORY.count',
             'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
@@ -57,7 +62,8 @@ module.exports.getPurchaseHistory = async () => {
             'RVPERSON.name',
             'RVPERSON.realname',
             'RVPERSON.univident',
-            'ROLE.role'
+            'ROLE.role',
+            'SALDOHISTORY.saldo'
         )
         /* actionid 5 = buy action */
         .where('ITEMHISTORY.actionid', 5)
@@ -84,6 +90,7 @@ module.exports.getUserPurchaseHistory = async (userId) => {
         .select(
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
+            'ITEMHISTORY.count',
             'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
@@ -104,8 +111,7 @@ module.exports.getUserPurchaseHistory = async (userId) => {
     return data.map((row) => {
         return {
             ...rowToPurchase(row),
-            product: rowToProduct(row),
-            balanceAfter: row.saldo
+            product: rowToProduct(row)
         };
     });
 };
@@ -115,6 +121,7 @@ module.exports.getProductPurchaseHistory = async (barcode) => {
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
         .leftJoin('RVPERSON', 'ITEMHISTORY.userid', 'RVPERSON.userid')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
+        .leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
         .select(
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
@@ -124,7 +131,8 @@ module.exports.getProductPurchaseHistory = async (barcode) => {
             'RVPERSON.name',
             'RVPERSON.realname',
             'RVPERSON.univident',
-            'ROLE.role'
+            'ROLE.role',
+            'SALDOHISTORY.saldo'
         )
         .where('PRICE.barcode', barcode)
         /* actionid 5 = buy action */
@@ -137,8 +145,7 @@ module.exports.getProductPurchaseHistory = async (barcode) => {
     return data.map((row) => {
         return {
             ...rowToPurchase(row),
-            user: rowToUser(row),
-            stockAfter: row.count
+            user: rowToUser(row)
         };
     });
 };
@@ -178,9 +185,7 @@ module.exports.findPurchaseById = async (purchaseId) => {
         return {
             ...rowToPurchase(row),
             product: rowToProduct(row),
-            user: rowToUser(row),
-            stockAfter: row.count,
-            balanceAfter: row.saldo
+            user: rowToUser(row)
         };
     } else {
         return undefined;
@@ -196,6 +201,7 @@ module.exports.getDepositHistory = async () => {
             'PERSONHIST.pershistid',
             'PERSONHIST.time',
             'SALDOHISTORY.difference',
+            'SALDOHISTORY.saldo',
             'RVPERSON.userid',
             'RVPERSON.name',
             'RVPERSON.realname',
@@ -229,12 +235,7 @@ module.exports.getUserDepositHistory = async (userId) => {
             { column: 'PERSONHIST.pershistid', order: 'desc' }
         ]);
 
-    return data.map((row) => {
-        return {
-            ...rowToDeposit(row),
-            balanceAfter: row.saldo
-        };
-    });
+    return data.map(rowToDeposit);
 };
 
 module.exports.findDepositById = async (depositId) => {
@@ -261,8 +262,7 @@ module.exports.findDepositById = async (depositId) => {
     if (row !== undefined) {
         return {
             ...rowToDeposit(row),
-            user: rowToUser(row),
-            balanceAfter: row.saldo
+            user: rowToUser(row)
         };
     } else {
         return undefined;
