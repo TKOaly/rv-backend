@@ -35,7 +35,7 @@ describe('routes: userPurchaseHistory', () => {
             expect(res.body.purchases).to.be.an('array');
             for (const purchase of res.body.purchases) {
                 expect(purchase).to.have.all.keys('purchaseId', 'time', 'product', 'price', 'balanceAfter');
-                expect(purchase.product).to.have.all.keys('barcode', 'productId', 'name', 'category', 'weight');
+                expect(purchase.product).to.have.all.keys('barcode', 'name', 'category', 'weight');
                 expect(purchase.product.category).to.have.all.keys('categoryId', 'description');
             }
         });
@@ -52,7 +52,7 @@ describe('routes: userPurchaseHistory', () => {
 
             expect(res.body).to.have.all.keys('purchase');
             expect(res.body.purchase).to.have.all.keys('purchaseId', 'time', 'product', 'price', 'balanceAfter');
-            expect(res.body.purchase.product).to.have.all.keys('barcode', 'productId', 'name', 'category', 'weight');
+            expect(res.body.purchase.product).to.have.all.keys('barcode', 'name', 'category', 'weight');
             expect(res.body.purchase.product.category).to.have.all.keys('categoryId', 'description');
         });
 

@@ -37,15 +37,7 @@ describe('routes: products', () => {
             expect(res.body).to.have.all.keys('products');
             expect(res.body.products).to.be.an('array');
             for (const product of res.body.products) {
-                expect(product).to.have.all.keys(
-                    'barcode',
-                    'productId',
-                    'name',
-                    'category',
-                    'weight',
-                    'sellPrice',
-                    'stock'
-                );
+                expect(product).to.have.all.keys('barcode', 'name', 'category', 'weight', 'sellPrice', 'stock');
                 expect(product.category).to.have.all.keys('categoryId', 'description');
             }
         });
@@ -61,15 +53,7 @@ describe('routes: products', () => {
             expect(res.status).to.equal(200);
 
             expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'productId',
-                'name',
-                'category',
-                'weight',
-                'sellPrice',
-                'stock'
-            );
+            expect(res.body.product).to.have.all.keys('barcode', 'name', 'category', 'weight', 'sellPrice', 'stock');
             expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
         });
 

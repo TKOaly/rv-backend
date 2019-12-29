@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
         const mappedProds = products.map((product) => {
             return {
                 barcode: product.barcode,
-                productId: product.productId,
                 name: product.name,
                 category: {
                     categoryId: product.category.categoryId,
@@ -61,7 +60,6 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
         res.status(200).json({
             product: {
                 barcode: product.barcode,
-                productId: product.productId,
                 name: product.name,
                 category: {
                     categoryId: product.category.categoryId,

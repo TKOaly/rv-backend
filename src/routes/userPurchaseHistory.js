@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
                 time: purchase.time,
                 product: {
                     barcode: purchase.product.barcode,
-                    productId: purchase.product.productId,
                     name: purchase.product.name,
                     category: {
                         categoryId: purchase.product.category.categoryId,
@@ -67,7 +66,6 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
                 time: purchase.time,
                 product: {
                     barcode: purchase.product.barcode,
-                    productId: purchase.product.productId,
                     name: purchase.product.name,
                     category: {
                         categoryId: purchase.product.category.categoryId,
