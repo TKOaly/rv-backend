@@ -6017,17 +6017,6 @@ module.exports = [
         endtime: null
     },
     {
-        priceid: 548,
-        barcode: '6413300216219',
-        count: 100,
-        buyprice: 88,
-        sellprice: 106,
-        itemid: 1372,
-        userid: 2,
-        starttime: new Date('2018-12-24T00:00:00Z'),
-        endtime: null
-    },
-    {
         priceid: 549,
         barcode: '5449000009500',
         count: 100,
@@ -8938,17 +8927,6 @@ module.exports = [
         buyprice: 247,
         sellprice: 247,
         itemid: 1738,
-        userid: 2,
-        starttime: new Date('2018-12-24T00:00:00Z'),
-        endtime: null
-    },
-    {
-        priceid: 814,
-        barcode: '6411401019067',
-        count: -27,
-        buyprice: 58,
-        sellprice: 58,
-        itemid: 1374,
         userid: 2,
         starttime: new Date('2018-12-24T00:00:00Z'),
         endtime: null
