@@ -1,44 +1,77 @@
 const knex = require('./knex');
-const productStore = require('./productStore');
+const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+
+const rowToBox = (row) => {
+    if (row !== undefined) {
+        return {
+            boxBarcode: row.barcode,
+            itemsPerBox: row.itemcount,
+            product: {
+                barcode: row.itembarcode,
+                name: row.descr,
+                category: {
+                    categoryId: row.pgrpid,
+                    description: row.pgrpdescr
+                },
+                weight: row.weight,
+                buyPrice: row.buyprice,
+                sellPrice: row.sellprice,
+                stock: row.count
+            }
+        };
+    } else {
+        return undefined;
+    }
+};
 
 /**
  * Retrieves all boxes and their associated products.
  */
-module.exports.findAll = async () => {
-    return await knex('RVBOX')
-        .leftJoin('PRICE', (builder) => {
-            builder.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
-        })
-        .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
+module.exports.getBoxes = async () => {
+    const data = await knex('RVBOX')
+        .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
-            'RVBOX.barcode AS box_barcode',
-            'RVBOX.itembarcode AS product_barcode',
-            'RVITEM.descr AS product_name',
-            'RVBOX.itemcount AS items_per_box',
-            'RVITEM.itemid AS product_id'
-        );
+            'RVBOX.barcode',
+            'RVBOX.itemcount',
+            'RVBOX.itembarcode',
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
+        )
+        .where('PRICE.endtime', null);
+    return data.map(rowToBox);
 };
 
 /**
  * Finds a box by its barcode.
- *
- * @param {} barcode barcode of the box
  */
-module.exports.findByBoxBarcode = async (barcode) => {
-    return await knex('RVBOX')
-        .leftJoin('PRICE', (builder) => {
-            builder.on('PRICE.barcode', '=', 'RVBOX.itembarcode').andOnNull('PRICE.endtime');
-        })
-        .leftJoin('RVITEM', 'RVITEM.itemid', 'PRICE.itemid')
-        .where('RVBOX.barcode', barcode)
+module.exports.findByBoxBarcode = async (boxBarcode) => {
+    const row = await knex('RVBOX')
+        .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
-            'RVBOX.barcode AS box_barcode',
-            'RVBOX.itembarcode AS product_barcode',
-            'RVITEM.descr AS product_name',
-            'RVBOX.itemcount AS items_per_box',
-            'RVITEM.itemid AS product_id'
+            'RVBOX.barcode',
+            'RVBOX.itemcount',
+            'RVBOX.itembarcode',
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
         )
+        .where('PRICE.endtime', null)
+        .andWhere('RVBOX.barcode', boxBarcode)
         .first();
+    return rowToBox(row);
 };
 
 /**
@@ -49,57 +82,84 @@ module.exports.findByBoxBarcode = async (barcode) => {
  * @param {*} itemsPerBox number of items in the box
  * @param {*} userid user who created the box
  */
-module.exports.createBox = async (boxBarcode, productBarcode, itemsPerBox, userid) => {
-    const product = await productStore.findByBarcode(productBarcode);
-    if (!product) {
-        throw new Error('product not found');
-    }
-
-    await knex.transaction(async (trx) => {
+module.exports.insertBox = async (boxData) => {
+    return await knex.transaction(async (trx) => {
         await knex('RVBOX')
             .transacting(trx)
             .insert({
-                barcode: boxBarcode,
-                itembarcode: productBarcode,
-                itemcount: itemsPerBox
+                barcode: boxData.boxBarcode,
+                itembarcode: boxData.productBarcode,
+                itemcount: boxData.itemsPerBox
             });
-        await knex('BOXHISTORY')
+
+        const productRow = await knex('PRICE')
             .transacting(trx)
-            .insert({
-                barcode: boxBarcode,
-                itemid: product.productId,
-                time: new Date(),
-                itemcount: itemsPerBox,
-                userid: userid,
-                actionid: 24
-            });
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count'
+            )
+            .where('PRICE.barcode', boxData.productBarcode)
+            .andWhere('PRICE.endtime', null)
+            .first();
+
+        return {
+            boxBarcode: boxData.boxBarcode,
+            itemsPerBox: boxData.itemsPerBox,
+            product: {
+                barcode: boxData.productBarcode,
+                name: productRow.descr,
+                category: {
+                    categoryId: productRow.pgrpid,
+                    description: productRow.pgrpdescr
+                },
+                weight: productRow.weight,
+                buyPrice: productRow.buyprice,
+                sellPrice: productRow.sellprice,
+                stock: productRow.count
+            }
+        };
     });
 };
 
-module.exports.updateBox = async (boxBarcode, productBarcode, itemsPerBox, userid) => {
-    const product = await productStore.findByBarcode(productBarcode);
-    if (!product) {
-        throw new Error('product not found');
-    }
+module.exports.updateBox = async (boxBarcode, boxData) => {
+    return await knex.transaction(async (trx) => {
+        const rvboxFields = deleteUndefinedFields({
+            itembarcode: boxData.productBarcode,
+            itemcount: boxData.itemsPerBox
+        });
 
-    await knex.transaction(async (trx) => {
         await knex('RVBOX')
             .transacting(trx)
-            .update({
-                barcode: boxBarcode,
-                itembarcode: productBarcode,
-                itemcount: itemsPerBox
-            })
-            .where('barcode', boxBarcode);
-        await knex('BOXHISTORY')
+            .update(rvboxFields)
+            .where({ barcode: boxBarcode });
+
+        const boxRow = await knex('RVBOX')
             .transacting(trx)
-            .insert({
-                barcode: boxBarcode,
-                itemid: product.productId,
-                time: new Date(),
-                itemcount: itemsPerBox,
-                userid: userid,
-                actionid: 25
-            });
+            .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVBOX.barcode',
+                'RVBOX.itemcount',
+                'RVBOX.itembarcode',
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count'
+            )
+            .where('PRICE.endtime', null)
+            .andWhere('RVBOX.barcode', boxBarcode)
+            .first();
+        return rowToBox(boxRow);
     });
 };

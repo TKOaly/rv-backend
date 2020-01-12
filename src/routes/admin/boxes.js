@@ -11,7 +11,7 @@ router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/', async (req, res) => {
     try {
-        const boxes = await boxStore.findAll();
+        const boxes = await boxStore.getBoxes();
         res.status(200).json({
             boxes: boxes
         });
@@ -279,7 +279,11 @@ router.put('/:barcode(\\d+)', async (req, res) => {
         product = await productStore.findByBarcode(productData.product_barcode);
 
         if (!box) {
-            await boxStore.createBox(barcode, productData.product_barcode, items_per_box, user.userId);
+            await boxStore.insertBox({
+                boxBarcode: barcode,
+                productBarcode: productData.product_barcode,
+                itemsPerBox: items_per_box
+            });
             boxCreated = true;
 
             logger.info(
@@ -291,7 +295,10 @@ router.put('/:barcode(\\d+)', async (req, res) => {
                 productData.product_barcode
             );
         } else {
-            await boxStore.updateBox(barcode, productData.product_barcode, items_per_box, user.userId);
+            await boxStore.updateBox(barcode, {
+                productBarcode: productData.product_barcode,
+                itemsPerBox: items_per_box
+            });
 
             logger.info('%s %s: updated box %s', req.method, req.originalUrl, barcode);
         }
