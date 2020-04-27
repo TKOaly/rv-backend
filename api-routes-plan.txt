@@ -18,9 +18,9 @@
 
 api/v1/admin/defaultMargin GET => {margin}
 api/v1/admin/defaultMargin PATCH {margin} => {margin}
-api/v1/admin/boxes GET => {boxes: [{boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}...]}
-api/v1/admin/boxes POST {boxBarcode, itemsPerBox, productBarcode} => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
-api/v1/admin/boxes/:boxBarcode GET => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
+* api/v1/admin/boxes GET => {boxes: [{boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}...]}
+* api/v1/admin/boxes POST {boxBarcode, itemsPerBox, productBarcode} => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
+* api/v1/admin/boxes/:boxBarcode GET => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
 api/v1/admin/boxes/:boxBarcode PATCH {itemsPerBox?, productBarcode?} => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
 api/v1/admin/boxes/:boxBarcode DELETE => {deletedBox: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
 api/v1/admin/boxes/:boxBarcode/buyIn POST {boxCount, productBuyPrice, productSellPrice} => {productStock, productBuyPrice, productSellPrice}

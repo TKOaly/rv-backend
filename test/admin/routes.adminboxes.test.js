@@ -27,46 +27,57 @@ describe('routes: admin boxes', () => {
         await knex.migrate.rollback();
     });
 
-    describe('Admin boxes', () => {
-        it('GET /api/v1/admin/boxes should return a list of boxes', async () => {
+    describe('Fetching all boxes', () => {
+        it('should return all boxes', async () => {
             const res = await chai
                 .request(server)
                 .get('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('object');
-            expect(res.body).to.include.keys('boxes');
-            res.body.boxes.every((box) => {
-                expect(box).to.include.keys(
-                    'box_barcode',
-                    'product_barcode',
-                    'product_name',
-                    'items_per_box',
-                    'product_id'
-                );
-            });
-        });
 
-        it('GET /api/v1/admin/boxes/:barcode should return a known box', async () => {
+            expect(res.body).to.have.all.keys('boxes');
+            expect(res.body.boxes).to.be.an('array');
+            for (const box of res.body.boxes) {
+                expect(box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
+                expect(box.product).to.have.all.keys(
+                    'barcode',
+                    'name',
+                    'category',
+                    'weight',
+                    'buyPrice',
+                    'sellPrice',
+                    'stock'
+                );
+                expect(box.product.category).to.have.all.keys('categoryId', 'description');
+            }
+        });
+    });
+
+    describe('Fetching box by barcode', () => {
+        it('should return the box', async () => {
             const res = await chai
                 .request(server)
                 .get('/api/v1/admin/boxes/01766752')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('object');
-            expect(res.body).to.include.keys('box');
-            expect(res.body.box).to.include.keys(
-                'box_barcode',
-                'product_barcode',
-                'product_name',
-                'items_per_box',
-                'product_id'
+
+            expect(res.body).to.have.all.keys('box');
+            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
+            expect(res.body.box.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
             );
+            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
         });
 
-        it('GET /api/v1/admin/boxes/:barcode should return 404 with an unknown box', async () => {
+        it('should return 404 on nonexistent box', async () => {
             const res = await chai
                 .request(server)
                 .get('/api/v1/admin/boxes/00000000')
@@ -74,143 +85,99 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(404);
         });
+    });
 
-        it('POST /api/v1/admin/boxes/:barcode should add boxes of products correctly', async () => {
-            const box = await boxStore.findByBoxBarcode('00101011');
-            const product = await productStore.findById(box.product_id);
-
+    describe('Creating new box', () => {
+        it('should create new box', async () => {
             const res = await chai
                 .request(server)
-                .post('/api/v1/admin/boxes/' + box.box_barcode)
+                .post('/api/v1/admin/boxes')
+                .set('Authorization', 'Bearer ' + token)
                 .send({
-                    boxes: 2,
-                    buyprice: 350,
-                    sellprice: 390
-                })
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('object');
-
-            const response = res.body;
-            expect(response).to.include.keys(
-                'box_barcode',
-                'product_barcode',
-                'product_name',
-                'product_id',
-                'quantity_added',
-                'total_quantity'
-            );
-
-            expect(response.box_barcode).to.equal(box.box_barcode);
-            expect(response.product_barcode).to.equal(box.product_barcode);
-            expect(response.product_name).to.equal(product.name);
-
-            const expectedQty = box.items_per_box * 2;
-            expect(response.quantity_added).to.equal(expectedQty);
-            expect(response.total_quantity).to.equal(product.stock + expectedQty);
-        });
-
-        it('PUT /api/v1/admin/boxes/:barcode should create a new box', async () => {
-            const reqData = {
-                items_per_box: 12,
-                product: {
-                    product_barcode: '8855702006834',
-                    product_name: 'Thai-Cube Sweet and Sour Chicken',
-                    product_group: 24,
-                    product_weight: 350,
-                    product_buyprice: 380,
-                    product_sellprice: 380
-                }
-            };
-
-            const res = await chai
-                .request(server)
-                .put('/api/v1/admin/boxes/01020304')
-                .send(reqData)
-                .set('Authorization', 'Bearer ' + token);
+                    boxBarcode: '12345678',
+                    itemsPerBox: 3,
+                    productBarcode: '6415600540889'
+                });
 
             expect(res.status).to.equal(201);
-            expect(res.body).to.be.an('object');
-            expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
 
-            const box = res.body;
-            expect(box.box_barcode).to.equal('01020304');
-            expect(box.items_per_box).to.equal(reqData.items_per_box);
-            expect(box.product.product_id).to.exist;
-
-            const expectedProduct = Object.assign({}, reqData.product, {
-                product_id: box.product.product_id
-            });
-            expect(box.product).to.deep.equal(expectedProduct);
+            const newBox = await boxStore.findByBoxBarcode('12345678');
+            expect(newBox).to.exist;
+            expect(newBox.boxBarcode).to.equal('12345678');
+            expect(newBox.itemsPerBox).to.equal(3);
+            expect(newBox.product.barcode).to.equal('6415600540889');
         });
 
-        it('PUT /api/v1/admin/boxes/:barcode should update an existing box', async () => {
-            const reqData = {
-                items_per_box: 15,
-                product: {
-                    product_barcode: '8855702006834',
-                    product_name: 'Thai-Cube Sweet and Sour Chicken',
-                    product_group: 24,
-                    product_weight: 350,
-                    product_buyprice: 380,
-                    product_sellprice: 380
-                }
-            };
-
+        it('should return the new box', async () => {
             const res = await chai
                 .request(server)
-                .put('/api/v1/admin/boxes/00101011')
-                .send(reqData)
-                .set('Authorization', 'Bearer ' + token);
+                .post('/api/v1/admin/boxes')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxBarcode: '12345678',
+                    itemsPerBox: 3,
+                    productBarcode: '6415600540889'
+                });
 
-            expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('object');
-            expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
+            expect(res.status).to.equal(201);
 
-            const box = res.body;
-            expect(box.box_barcode).to.equal('00101011');
-            expect(box.items_per_box).to.equal(reqData.items_per_box);
-            expect(box.product.product_id).to.exist;
-
-            const expectedProduct = Object.assign({}, reqData.product, {
-                product_id: box.product.product_id
-            });
-            expect(box.product).to.deep.equal(expectedProduct);
+            expect(res.body).to.have.all.keys('box');
+            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
+            expect(res.body.box.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
         });
 
-        it('PUT /api/v1/admin/boxes/:barcode should create a product if it doesn\'t exist', async () => {
-            const reqData = {
-                items_per_box: 37,
-                product: {
-                    product_barcode: '00112239',
-                    product_name: 'Test product 5000',
-                    product_group: 1,
-                    product_weight: 5000,
-                    product_buyprice: 50,
-                    product_sellprice: 50
-                }
-            };
-
+        it('should error if box barcode is already taken', async () => {
             const res = await chai
                 .request(server)
-                .put('/api/v1/admin/boxes/00101011')
-                .send(reqData)
-                .set('Authorization', 'Bearer ' + token);
+                .post('/api/v1/admin/boxes')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxBarcode: '01880335',
+                    itemsPerBox: 3,
+                    productBarcode: '6415600540889'
+                });
 
-            expect(res.status).to.equal(200);
-            expect(res.body).to.be.an('object');
-            expect(res.body).to.include.all.keys('box_barcode', 'items_per_box', 'product');
+            expect(res.status).to.equal(409);
+            expect(res.body.error_code).to.equal('identifier_taken');
+        });
 
-            const box = res.body;
-            expect(box.box_barcode).to.equal('00101011');
-            expect(box.items_per_box).to.equal(reqData.items_per_box);
-            expect(box.product.product_id).to.exist;
+        it('should error on nonexistent product', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxBarcode: '12345678',
+                    itemsPerBox: 2,
+                    productBarcode: '00000000'
+                });
 
-            const expectedProduct = Object.assign({}, reqData.product, {
-                product_id: box.product.product_id
-            });
-            expect(box.product).to.deep.equal(expectedProduct);
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('invalid_reference');
+        });
+
+        it('should error on invalid parameters', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxBarcode: '',
+                    itemsPerBox: 2,
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
         });
     });
 });

@@ -10,13 +10,35 @@ const validators = require('../../utils/validators');
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/', async (req, res) => {
+    const user = req.user;
+
     try {
         const boxes = await boxStore.getBoxes();
+        const mappedBoxes = boxes.map((box) => {
+            return {
+                boxBarcode: box.boxBarcode,
+                itemsPerBox: box.itemsPerBox,
+                product: {
+                    barcode: box.product.barcode,
+                    name: box.product.name,
+                    category: {
+                        categoryId: box.product.category.categoryId,
+                        description: box.product.category.description
+                    },
+                    weight: box.product.weight,
+                    buyPrice: box.product.buyPrice,
+                    sellPrice: box.product.sellPrice,
+                    stock: box.product.stock
+                }
+            };
+        });
+
+        logger.info('User %s fetched boxes as admin', user.username);
         res.status(200).json({
-            boxes: boxes
+            boxes: mappedBoxes
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -24,13 +46,16 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:barcode(\\d+)', async (req, res) => {
+router.post('/', async (req, res) => {
     const user = req.user;
-    const params = req.params;
 
-    const paramValidators = [validators.numericBarcode('barcode')];
+    const inputValidators = [
+        validators.numericBarcode('boxBarcode'),
+        validators.positiveInteger('itemsPerBox'),
+        validators.numericBarcode('productBarcode')
+    ];
 
-    const errors = fieldValidator.validateObject(params, paramValidators);
+    const errors = fieldValidator.validateObject(req.body, inputValidators);
     if (errors.length > 0) {
         logger.error(
             '%s %s: invalid request by user %s: %s',
@@ -39,285 +64,116 @@ router.get('/:barcode(\\d+)', async (req, res) => {
             user.username,
             errors.join(', ')
         );
-        res.status(404).json({
-            error_code: 'box_not_found',
-            message: 'Box with invalid gtin code does not exist'
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors
         });
         return;
     }
 
-    const barcode = params.barcode;
+    const boxBarcode = req.body.boxBarcode;
+    const itemsPerBox = req.body.itemsPerBox;
+    const productBarcode = req.body.productBarcode;
 
     try {
-        const box = await boxStore.findByBoxBarcode(barcode);
-
-        if (!box) {
-            logger.error('%s %s: box with barcode %s was not found', req.method, req.baseUrl + req.path, barcode);
-            res.status(404).json({
-                error_code: 'box_not_found',
-                message: 'Box not found'
+        /* Checking if box already exists. */
+        const existingBox = await boxStore.findByBoxBarcode(boxBarcode);
+        if (existingBox) {
+            logger.error(
+                'User %s failed to create new box, box barcode %s was already taken',
+                user.username,
+                boxBarcode
+            );
+            res.status(409).json({
+                error_code: 'identifier_taken',
+                message: 'Box barcode already in use.'
             });
             return;
         }
 
-        res.status(200).json({
-            box: box
-        });
-    } catch (error) {
-        logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
-});
-
-router.post('/:barcode(\\d+)', async (req, res) => {
-    const user = req.user;
-    const params = req.params;
-    const body = req.body;
-
-    const paramValidators = [validators.numericBarcode('barcode')];
-    const inputValidators = [
-        validators.nonNegativeInteger('sellprice'),
-        validators.nonNegativeInteger('buyprice'),
-        validators.positiveInteger('boxes')
-    ];
-
-    const paramErrors = fieldValidator.validateObject(params, paramValidators);
-    if (paramErrors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            paramErrors.join(', ')
-        );
-        res.status(404).json({
-            error_code: 'box_not_found',
-            message: 'Box with invalid gtin code does not exist'
-        });
-        return;
-    }
-
-    const fieldErrors = fieldValidator.validateObject(body, inputValidators);
-    if (fieldErrors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            fieldErrors.join(', ')
-        );
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            fieldErrors
-        });
-        return;
-    }
-
-    const barcode = params.barcode;
-    const sellPrice = body.sellprice;
-    const buyPrice = body.buyprice;
-    const boxes = body.boxes;
-
-    try {
-        const box = await boxStore.findByBoxBarcode(barcode);
-        const product = await productStore.findById(box.product_id);
-
-        if (!box) {
-            logger.warning('%s %s: box with barcode %s was not found', req.method, req.baseUrl + req.path, barcode);
-            res.status(404).json({
-                error_code: 'box_not_found',
-                message: 'Box not found'
+        /* Checking if product exists. */
+        const existingProduct = await productStore.findByBarcode(productBarcode);
+        if (!existingProduct) {
+            logger.error('User %s tried to create box of unknown product %s', user.username, productBarcode);
+            res.status(400).json({
+                error_code: 'invalid_reference',
+                message: 'Referenced product not found.'
             });
             return;
         }
 
-        // all good, boxes can be added
-        const stock = product.stock + boxes * box.items_per_box;
-        await productStore.updateProduct(product.barcode, { buyPrice, sellPrice, stock }, user.userId);
-
-        logger.info(
-            '%s %s: user %s added %d boxes (%d pcs) of product %d (box %s, product barcode %s)',
-            req.method,
-            req.baseUrl + req.path,
-            user.username,
-            boxes,
-            box.items_per_box * boxes,
-            box.product_id,
-            box.box_barcode,
-            box.product_barcode
-        );
-
-        res.status(200).json({
-            box_barcode: box.box_barcode,
-            product_barcode: box.product_barcode,
-            product_id: box.product_id,
-            product_name: box.product_name,
-            quantity_added: box.items_per_box * boxes,
-            total_quantity: stock
+        const newBox = await boxStore.insertBox({
+            boxBarcode,
+            productBarcode,
+            itemsPerBox
         });
-    } catch (error) {
-        logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
-});
 
-router.put('/:barcode(\\d+)', async (req, res) => {
-    const user = req.user;
-    const params = req.params;
-    const body = req.body;
-
-    const paramValidators = [validators.numericBarcode('barcode')];
-    const inputValidators = [
-        validators.positiveInteger('items_per_box'),
-        validators.objectWithFields('product', [
-            validators.numericBarcode('product_barcode'),
-            validators.nonEmptyString('product_name'),
-            validators.integer('product_group'),
-            validators.nonNegativeInteger('product_weight'),
-            validators.nonNegativeInteger('product_sellprice'),
-            validators.nonNegativeInteger('product_buyprice')
-        ])
-    ];
-
-    const paramErrors = fieldValidator.validateObject(params, paramValidators);
-    if (paramErrors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            paramErrors.join(', ')
-        );
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Invalid gtin code in request'
-        });
-        return;
-    }
-
-    const fieldErrors = fieldValidator.validateObject(body, inputValidators);
-    if (fieldErrors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            fieldErrors.join(', ')
-        );
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            fieldErrors
-        });
-        return;
-    }
-
-    const barcode = params.barcode;
-    const items_per_box = body.items_per_box;
-    const productData = body.product;
-
-    try {
-        const box = await boxStore.findByBoxBarcode(barcode);
-        let product = await productStore.findByBarcode(productData.product_barcode);
-        let boxCreated = false;
-
-        // create or update box and product
-
-        if (!product) {
-            const newProduct = await productStore.insertProduct(
-                {
-                    name: productData.product_name,
-                    categoryId: productData.product_group,
-                    weight: productData.product_weight,
-                    barcode: productData.product_barcode,
-                    stock: 0,
-                    buyPrice: productData.product_buyprice,
-                    sellPrice: productData.product_sellprice
-                },
-                user.userId
-            );
-
-            logger.info(
-                '%s %s: created product "%s" with id %s and barcode %s',
-                req.method,
-                req.originalUrl,
-                productData.product_name,
-                newProduct.productId,
-                productData.product_barcode
-            );
-        } else {
-            // update product info and price
-            await productStore.updateProduct(
-                product.barcode,
-                {
-                    name: productData.product_name,
-                    categoryId: productData.product_group,
-                    weight: productData.product_weight,
-                    buyPrice: productData.product_buyprice,
-                    sellPrice: productData.product_sellprice,
-                    stock: product.stock
-                },
-                user.userId
-            );
-
-            logger.info(
-                '%s %s: updated product "%s" (barcode %s)',
-                req.method,
-                req.originalUrl,
-                productData.product_name,
-                productData.product_barcode
-            );
-        }
-
-        product = await productStore.findByBarcode(productData.product_barcode);
-
-        if (!box) {
-            await boxStore.insertBox({
-                boxBarcode: barcode,
-                productBarcode: productData.product_barcode,
-                itemsPerBox: items_per_box
-            });
-            boxCreated = true;
-
-            logger.info(
-                '%s %s: created a box with barcode %s for product "%s" (barcode %s)',
-                req.method,
-                req.originalUrl,
-                barcode,
-                productData.product_name,
-                productData.product_barcode
-            );
-        } else {
-            await boxStore.updateBox(barcode, {
-                productBarcode: productData.product_barcode,
-                itemsPerBox: items_per_box
-            });
-
-            logger.info('%s %s: updated box %s', req.method, req.originalUrl, barcode);
-        }
-
-        res.status(boxCreated ? 201 : 200).json({
-            box_barcode: barcode,
-            items_per_box: items_per_box,
-            product: {
-                product_id: product.productId,
-                product_name: product.name,
-                product_group: product.category.categoryId,
-                product_barcode: product.barcode,
-                product_weight: product.weight,
-                product_sellprice: product.sellPrice,
-                product_buyprice: product.buyPrice
+        logger.info('User %s created new box %s of product %s', user.username, boxBarcode, productBarcode);
+        res.status(201).json({
+            box: {
+                boxBarcode: newBox.boxBarcode,
+                itemsPerBox: newBox.itemsPerBox,
+                product: {
+                    barcode: newBox.product.barcode,
+                    name: newBox.product.name,
+                    category: {
+                        categoryId: newBox.product.category.categoryId,
+                        description: newBox.product.category.description
+                    },
+                    weight: newBox.product.weight,
+                    buyPrice: newBox.product.buyPrice,
+                    sellPrice: newBox.product.sellPrice,
+                    stock: newBox.product.stock
+                }
             }
         });
     } catch (error) {
-        logger.error('%s %s: %s', req.method, req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
+        res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
+    }
+});
+
+router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
+    const user = req.user;
+    const boxBarcode = req.params.boxBarcode;
+
+    try {
+        const box = await boxStore.findByBoxBarcode(boxBarcode);
+
+        if (!box) {
+            logger.error('User %s tried to fetch unknown box %s as admin', user.username, boxBarcode);
+            res.status(404).json({
+                error_code: 'box_not_found',
+                message: 'Box does not exist'
+            });
+            return;
+        }
+
+        logger.info('User %s fetched box %s as admin', user.username, boxBarcode);
+        res.status(200).json({
+            box: {
+                boxBarcode: box.boxBarcode,
+                itemsPerBox: box.itemsPerBox,
+                product: {
+                    barcode: box.product.barcode,
+                    name: box.product.name,
+                    category: {
+                        categoryId: box.product.category.categoryId,
+                        description: box.product.category.description
+                    },
+                    weight: box.product.weight,
+                    buyPrice: box.product.buyPrice,
+                    sellPrice: box.product.sellPrice,
+                    stock: box.product.stock
+                }
+            }
+        });
+    } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
