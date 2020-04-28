@@ -180,4 +180,109 @@ describe('routes: admin boxes', () => {
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
+
+    describe('Modifying box data', () => {
+        it('should modify the box', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    itemsPerBox: 6,
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(200);
+
+            const updatedBox = await boxStore.findByBoxBarcode('01880335');
+            expect(updatedBox).to.exist;
+            expect(updatedBox.itemsPerBox).to.equal(6);
+            expect(updatedBox.product.barcode).to.equal('6415600540889');
+        });
+
+        it('should allow modifying only some fields', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(200);
+
+            const updatedBox = await boxStore.findByBoxBarcode('01880335');
+            expect(updatedBox).to.exist;
+            expect(updatedBox.product.barcode).to.equal('6415600540889');
+        });
+
+        it('should return the updated box', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    itemsPerBox: 49,
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('box');
+            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
+            expect(res.body.box.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res.body.box.itemsPerBox).to.equal(49);
+        });
+
+        it('should error on nonexistent box', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/88888888')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    itemsPerBox: 3,
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should error on nonexistent product', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    itemsPerBox: 6,
+                    productBarcode: '55555555'
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('invalid_reference');
+        });
+
+        it('should error on invalid parameters', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    itemsPerBox: -1,
+                    productBarcode: '6415600540889'
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
 });
