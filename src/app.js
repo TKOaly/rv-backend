@@ -20,7 +20,6 @@
     const admin_products = require('./routes/admin/products');
     const user_products = require('./routes/products');
     const user_categories = require('./routes/categories');
-    const admin_global_margin = require('./routes/admin/margin');
     const admin_boxes = require('./routes/admin/boxes');
     const api_reset_route = require('./routes/test_env/api_data_reset');
 
@@ -34,7 +33,6 @@
 
     app.use('/api/v1/admin/authenticate', admin_auth);
     app.use('/api/v1/admin/products', admin_products);
-    app.use('/api/v1/admin/margin', admin_global_margin);
     app.use('/api/v1/admin/boxes', admin_boxes);
     app.use('/api/v1/test/reset_data', api_reset_route);
 
