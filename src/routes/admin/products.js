@@ -6,139 +6,36 @@ const categoryStore = require('../../db/categoryStore');
 const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
+const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefinedFields;
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.get('/product/:productId(\\d+)', async (req, res) => {
-    try {
-        const product = await productStore.findById(req.params.productId);
-        if (!product) {
-            res.status(404).json({
-                error_code: 'product_not_found',
-                message: 'Product not found'
-            });
-            return;
-        }
-
-        res.status(200).json({
-            product: product
-        });
-    } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
-});
-
-// Edit product
-router.put('/product/:productId(\\d+)', async (req, res) => {
-    const user = req.user;
-    const body = req.body;
-
-    const inputValidators = [
-        validators.nonEmptyString('descr'),
-        validators.integer('pgrpid'),
-        validators.nonNegativeInteger('weight'),
-        validators.nonNegativeInteger('quantity'),
-        validators.nonNegativeInteger('buyprice'),
-        validators.nonNegativeInteger('sellprice')
-    ];
-
-    const errors = fieldValidator.validateObject(body, inputValidators);
-    if (errors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            errors.join(', ')
-        );
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            errors
-        });
-        return;
-    }
-
-    const productId = req.params.productId;
-    const descr = body.descr;
-    const pgrpid = body.pgrpid;
-    const weight = body.weight;
-    const quantity = body.quantity;
-    const buyprice = body.buyprice;
-    const sellprice = body.sellprice;
-
-    try {
-        const product = await productStore.findById(productId);
-        // Check that product exists
-        if (!product) {
-            res.status(404).json({
-                error_code: 'product_not_found',
-                message: 'Product not found'
-            });
-            return;
-        }
-
-        // Validate pgrpid
-        const productGroup = await categoryStore.findById(pgrpid);
-        if (!productGroup) {
-            res.status(400).json({
-                error_code: 'bad_request',
-                message: 'Product group does not exist'
-            });
-            return;
-        }
-
-        await productStore.updateProduct(
-            product.barcode,
-            {
-                name: descr,
-                categoryId: pgrpid,
-                weight: weight,
-                buyPrice: buyprice,
-                sellPrice: sellprice,
-                stock: quantity
-            },
-            user.userId
-        );
-
-        const newProd = await productStore.findById(productId);
-        res.status(200).json({
-            product: newProd
-        });
-    } catch (error) {
-        logger.error('Error at ' + req.baseUrl + req.path + ': ' + error.stack);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
-});
-
 router.get('/', async (req, res) => {
+    const user = req.user;
+
     try {
         const products = await productStore.getProducts();
-
-        const prods = products.map((product) => {
+        const mappedProds = products.map((product) => {
             return {
-                product_id: product.productId,
-                product_name: product.name,
-                product_barcode: product.barcode,
-                product_group: product.category.categoryId,
-                buyprice: product.buyPrice,
-                sellprice: product.sellPrice,
-                product_weight: product.weight,
-                quantity: product.stock
+                barcode: product.barcode,
+                name: product.name,
+                category: {
+                    categoryId: product.category.categoryId,
+                    description: product.category.description
+                },
+                weight: product.weight,
+                buyPrice: product.buyPrice,
+                sellPrice: product.sellPrice,
+                stock: product.stock
             };
         });
+
+        logger.info('User %s fetched products as admin', user.username);
         res.status(200).json({
-            products: prods
+            products: mappedProds
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -148,19 +45,18 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const user = req.user;
-    const body = req.body;
 
     const inputValidators = [
         validators.numericBarcode('barcode'),
-        validators.nonEmptyString('descr'),
-        validators.integer('pgrpid'),
+        validators.nonEmptyString('name'),
+        validators.integer('categoryId'),
         validators.nonNegativeInteger('weight'),
-        validators.nonNegativeInteger('count'),
-        validators.nonNegativeInteger('buyprice'),
-        validators.nonNegativeInteger('sellprice')
+        validators.integer('buyPrice'),
+        validators.integer('sellPrice'),
+        validators.integer('stock')
     ];
 
-    const errors = fieldValidator.validateObject(body, inputValidators);
+    const errors = fieldValidator.validateObject(req.body, inputValidators);
     if (errors.length > 0) {
         logger.error(
             '%s %s: invalid request by user %s: %s',
@@ -177,58 +73,71 @@ router.post('/', async (req, res) => {
         return;
     }
 
-    const barcode = body.barcode;
-    const descr = body.descr;
-    const pgrpid = body.pgrpid;
-    const weight = body.weight;
-    const count = body.count;
-    const buyprice = body.buyprice;
-    const sellprice = body.sellprice;
+    const { barcode, name, categoryId, weight, buyPrice, sellPrice, stock } = req.body;
 
     try {
-        const product = await productStore.findByBarcode(barcode);
-        if (product) {
-            logger.error(
-                '%s %s: barcode %s is already assigned to product %s',
-                req.method,
-                req.originalUrl,
-                barcode,
-                product.name
-            );
-            res.status(403).json({
-                error_code: 'barcode_taken',
-                message: 'Barcode is already assigned to a product'
+        /* Checking if product already exists. */
+        const existingProduct = await productStore.findByBarcode(barcode);
+        if (existingProduct) {
+            logger.error('User %s failed to create new product, barcode %s was already taken', user.username, barcode);
+            res.status(409).json({
+                error_code: 'identifier_taken',
+                message: 'Barcode already in use.'
+            });
+            return;
+        }
+
+        /* Checking if category exists. */
+        const existingCategory = await categoryStore.findById(categoryId);
+        if (!existingCategory) {
+            logger.error('User %s tried to create product of unknown category %s', user.username, categoryId);
+            res.status(400).json({
+                error_code: 'invalid_reference',
+                message: 'Referenced category not found.'
             });
             return;
         }
 
         const newProduct = await productStore.insertProduct(
             {
-                name: descr,
-                categoryId: pgrpid,
-                weight: weight,
-                barcode: barcode,
-                stock: count,
-                buyPrice: buyprice,
-                sellPrice: sellprice
+                barcode,
+                name,
+                categoryId,
+                weight,
+                buyPrice,
+                sellPrice,
+                stock
             },
             user.userId
         );
 
         logger.info(
-            '%s %s: user %s created new product "%s" with id %s',
-            req.method,
-            req.originalUrl,
+            'User %s created new product with data {barcode: %s, name: %s, categoryId: %s, weight: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
             user.username,
-            newProduct.name,
-            newProduct.productId
+            barcode,
+            name,
+            categoryId,
+            weight,
+            buyPrice,
+            sellPrice,
+            stock
         );
-
         res.status(201).json({
-            product: newProduct
+            product: {
+                barcode: newProduct.barcode,
+                name: newProduct.name,
+                category: {
+                    categoryId: newProduct.category.categoryId,
+                    description: newProduct.category.description
+                },
+                weight: newProduct.weight,
+                buyPrice: newProduct.buyPrice,
+                sellPrice: newProduct.sellPrice,
+                stock: newProduct.stock
+            }
         });
     } catch (error) {
-        logger.error('%s %s: %s', req.method, req.originalUrl, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -236,45 +145,39 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.get('/:barcode(\\d+)', async (req, res) => {
+router.get('/:barcode(\\d{1,14})', async (req, res) => {
     const user = req.user;
-    const params = req.params;
-
-    const paramValidators = [validators.numericBarcode('barcode')];
-
-    const errors = fieldValidator.validateObject(params, paramValidators);
-    if (errors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            errors.join(', ')
-        );
-        res.status(404).json({
-            error_code: 'product_not_found',
-            message: 'Item with invalid gtin code does not exist'
-        });
-        return;
-    }
-
-    const barcode = params.barcode;
+    const barcode = req.params.barcode;
 
     try {
         const product = await productStore.findByBarcode(barcode);
 
-        if (product) {
-            res.status(200).json({
-                product: product
-            });
-        } else {
+        if (!product) {
+            logger.error('User %s tried to fetch unknown product %s as admin', user.username, barcode);
             res.status(404).json({
                 error_code: 'product_not_found',
-                message: 'item not found on database'
+                message: 'Product does not exist'
             });
+            return;
         }
-    } catch (exception) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, exception.stack);
+
+        logger.info('User %s fetched product %s as admin', user.username, barcode);
+        res.status(200).json({
+            product: {
+                barcode: product.barcode,
+                name: product.name,
+                category: {
+                    categoryId: product.category.categoryId,
+                    description: product.category.description
+                },
+                weight: product.weight,
+                buyPrice: product.buyPrice,
+                sellPrice: product.sellPrice,
+                stock: product.stock
+            }
+        });
+    } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'
@@ -282,17 +185,19 @@ router.get('/:barcode(\\d+)', async (req, res) => {
     }
 });
 
-router.post('/product/:id(\\d+)', async (req, res) => {
+router.patch('/:barcode(\\d{1,14})', async (req, res) => {
     const user = req.user;
-    const body = req.body;
 
     const inputValidators = [
-        validators.positiveInteger('quantity'),
-        validators.nonNegativeInteger('buyprice'),
-        validators.nonNegativeInteger('sellprice')
+        validators.nonEmptyString('name'),
+        validators.integer('categoryId'),
+        validators.nonNegativeInteger('weight'),
+        validators.integer('buyPrice'),
+        validators.integer('sellPrice'),
+        validators.integer('stock')
     ];
 
-    const errors = fieldValidator.validateObject(body, inputValidators);
+    const errors = fieldValidator.validateOptionalFields(req.body, inputValidators);
     if (errors.length > 0) {
         logger.error(
             '%s %s: invalid request by user %s: %s',
@@ -309,40 +214,79 @@ router.post('/product/:id(\\d+)', async (req, res) => {
         return;
     }
 
-    const id = req.params.id;
-    const quantity = body.quantity;
-    const buyprice = body.buyprice;
-    const sellprice = body.sellprice;
+    const barcode = req.params.barcode;
+    const { name, categoryId, weight, buyPrice, sellPrice, stock } = req.body;
 
     try {
-        // check that product exists
-        const product = await productStore.findById(id);
-        if (!product) {
-            logger.error('User tried to do a buy-in for product that does not exist.');
+        /* Checking if product exists. */
+        const existingProduct = await productStore.findByBarcode(barcode);
+        if (!existingProduct) {
+            logger.error('User %s tried to modify data of unknown product %s', user.username, barcode);
             res.status(404).json({
-                error_code: 'product_not_found',
-                message: 'Product not found'
+                error_code: 'not_found',
+                message: 'Product does not exist.'
             });
             return;
         }
 
-        // update information
-        await productStore.updateProduct(
-            product.barcode,
-            { buyPrice: buyprice, sellPrice: sellprice, stock: product.stock + quantity },
+        /* Checking if category exists. */
+        if (categoryId !== undefined) {
+            const existingCategory = await categoryStore.findById(categoryId);
+            if (!existingCategory) {
+                logger.error(
+                    'User %s tried to modify category of product %s to unknown category %s',
+                    user.username,
+                    barcode,
+                    categoryId
+                );
+                res.status(400).json({
+                    error_code: 'invalid_reference',
+                    message: 'Referenced category not found.'
+                });
+                return;
+            }
+        }
+
+        const updatedProduct = await productStore.updateProduct(
+            barcode,
+            deleteUndefinedFields({
+                name,
+                categoryId,
+                weight,
+                buyPrice,
+                sellPrice,
+                stock
+            }),
             user.userId
         );
 
-        // return updated information
-        logger.info('Successful buy-in of ' + quantity + ' pcs of Product #' + parseInt(id, 10));
+        logger.info(
+            'User %s modified product data of product %s to {name: %s, categoryId: %s, weight: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
+            user.username,
+            barcode,
+            updatedProduct.name,
+            updatedProduct.category.categoryId,
+            updatedProduct.weight,
+            updatedProduct.buyPrice,
+            updatedProduct.sellPrice,
+            updatedProduct.stock
+        );
         res.status(200).json({
-            product_id: parseInt(id, 10),
-            buyprice: buyprice,
-            sellprice: sellprice,
-            quantity: product.stock + quantity
+            product: {
+                barcode: updatedProduct.barcode,
+                name: updatedProduct.name,
+                category: {
+                    categoryId: updatedProduct.category.categoryId,
+                    description: updatedProduct.category.description
+                },
+                weight: updatedProduct.weight,
+                buyPrice: updatedProduct.buyPrice,
+                sellPrice: updatedProduct.sellPrice,
+                stock: updatedProduct.stock
+            }
         });
     } catch (error) {
-        logger.error('Error at %s: %s', req.baseUrl + req.path, error.stack);
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
             message: 'Internal error'

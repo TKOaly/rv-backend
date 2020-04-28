@@ -106,11 +106,17 @@ router.post('/', async (req, res) => {
 
         const newBox = await boxStore.insertBox({
             boxBarcode,
-            productBarcode,
-            itemsPerBox
+            itemsPerBox,
+            productBarcode
         });
 
-        logger.info('User %s created new box %s of product %s', user.username, boxBarcode, productBarcode);
+        logger.info(
+            'User %s created new box with data {boxBarcode: %s, itemsPerBox: %s, productBarcode: %s}',
+            user.username,
+            boxBarcode,
+            itemsPerBox,
+            productBarcode
+        );
         res.status(201).json({
             box: {
                 boxBarcode: newBox.boxBarcode,
@@ -247,7 +253,7 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
         );
 
         logger.info(
-            'User %s modified box data of box %s to {%s, %s}',
+            'User %s modified box data of box %s to {itemsPerBox: %s, productBarcode: %s}',
             user.username,
             boxBarcode,
             updatedBox.itemsPerBox,
