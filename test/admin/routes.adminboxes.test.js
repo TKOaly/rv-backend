@@ -7,7 +7,6 @@ const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const boxStore = require('../../src/db/boxStore');
-const productStore = require('../../src/db/productStore');
 
 const token = jwt.sign(
     {

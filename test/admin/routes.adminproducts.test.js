@@ -26,205 +26,275 @@ describe('routes: admin products', () => {
         await knex.migrate.rollback();
     });
 
-    describe('Admin products', () => {
-        it('admins should be able to get product list', async () => {
+    describe('Fetching all products', () => {
+        it('should return all products', async () => {
             const res = await chai
                 .request(server)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
-            expect(res.body.products).to.exist;
-        });
+            expect(res.status).to.equal(200);
 
-        it('admins should not be able to get a product that does not exist', async () => {
+            expect(res.body).to.have.all.keys('products');
+            expect(res.body.products).to.be.an('array');
+            for (const product of res.body.products) {
+                expect(product).to.have.all.keys(
+                    'barcode',
+                    'name',
+                    'category',
+                    'weight',
+                    'buyPrice',
+                    'sellPrice',
+                    'stock'
+                );
+                expect(product.category).to.have.all.keys('categoryId', 'description');
+            }
+        });
+    });
+
+    describe('Fetching product by barcode', () => {
+        it('should return the product', async () => {
             const res = await chai
                 .request(server)
-                .get('/api/v1/admin/products/product/9999')
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('product');
+            expect(res.body.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+        });
+
+        it('should error on nonexistent product', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/products/666')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
         });
+    });
 
-        it('admins should be able to get a product that exists', async () => {
+    describe('Creating new product', () => {
+        it('should create new product', async () => {
             const res = await chai
                 .request(server)
-                .get('/api/v1/admin/products/product/1816')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.body.product).to.exist;
-            /*expect(res.body.product.itemid).to.exist;
-            expect(res.body.product.pgrpid).to.exist;
-            expect(res.body.product.descr).to.exist;
-            expect(res.body.product.weight).to.exist;
-            expect(res.body.product.priceid).to.exist;
-            expect(res.body.product.barcode).to.exist;
-            expect(res.body.product.count).to.exist;
-            expect(res.body.product.buyprice).to.exist;
-            expect(res.body.product.sellprice).to.exist;*/
-        });
-
-        it('admins should be able to edit a product that exists', async () => {
-            const res = await chai
-                .request(server)
-                .put('/api/v1/admin/products/product/1816')
+                .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    descr: 'good product',
-                    pgrpid: 3,
-                    quantity: 450,
-                    buyprice: 120,
-                    sellprice: 200,
-                    weight: 555
+                    barcode: '575757575757',
+                    name: 'Opossumin lihaa',
+                    categoryId: 24,
+                    weight: 500,
+                    buyPrice: 367,
+                    sellPrice: 370,
+                    stock: 1
                 });
 
-            expect(res.body.product).to.exist;
-            /*expect(res.body.product.itemid).to.exist;
-            expect(res.body.product.pgrpid).to.exist;
-            expect(res.body.product.count).to.exist;
-            expect(res.body.product.sellprice).to.exist;
-            expect(res.body.product.buyprice).to.exist;
-            expect(res.body.product.weight).to.exist;
-            expect(res.body.product.pgrpid).to.equal(3);
-            expect(res.body.product.buyprice).to.equal(120);
-            expect(res.body.product.sellprice).to.equal(200);
-            expect(res.body.product.count).to.equal(450);
-            expect(res.body.product.weight).to.equal(555);*/
-        });
-
-        it('Requesting product with existing barcode', async () => {
-            const res = await chai
-                .request(server)
-                .get('/api/v1/admin/products/5029578000972')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200, 'Existing barcode should return product');
-            expect(res.body.product['barcode']).to.equal('5029578000972');
-        });
-
-        it('Requesting product with malformated barcode', async () => {
-            const res = await chai
-                .request(server)
-                .get('/api/v1/admin/products/1337')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(404, 'malformated barcode should return error');
-        });
-
-        it('Requesting product with nonexisting barcode', async () => {
-            const res = await chai
-                .request(server)
-                .get('/api/v1/admin/products/1234567890123')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(404, 'Barcode that doesn\'t exist should return error');
-        });
-
-        it('POST /, returns created product on valid parametres', async () => {
-            const product = {
-                descr: 'body.descr',
-                pgrpid: 21,
-                weight: 500,
-                barcode: '6411501656247',
-                count: 12,
-                buyprice: 50,
-                sellprice: 150
-            };
-
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/products')
-                .send(product)
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.body.product).to.exist;
             expect(res.status).to.equal(201);
+
+            const newProduct = await productStore.findByBarcode('575757575757');
+            expect(newProduct).to.exist;
+            expect(newProduct.barcode).to.equal('575757575757');
+            expect(newProduct.name).to.equal('Opossumin lihaa');
+            expect(newProduct.category.categoryId).to.equal(24);
         });
 
-        it('POST /, returns error on invalid barcode', async () => {
-            const product = {
-                descr: 'body.descr',
-                pgrpid: 21,
-                weight: 500,
-                barcode: 'invalid',
-                count: 12,
-                buyprice: 50,
-                sellprice: 150
-            };
-
+        it('should return the new product', async () => {
             const res = await chai
                 .request(server)
                 .post('/api/v1/admin/products')
-                .send(product)
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(400);
-        });
-
-        it('POST /, returns error on missing parametres', async () => {
-            const product = {
-                weight: 500,
-                barcode: '4560000033333',
-                count: 12,
-                buyprice: 50,
-                sellprice: 150
-            };
-
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/products')
-                .send(product)
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(400);
-        });
-
-        it('Adding products to stock should work', async () => {
-            const product = await productStore.findById(1750);
-
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/products/product/1750')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    buyprice: 300,
-                    sellprice: 350,
-                    quantity: 50
+                    barcode: '575757575757',
+                    name: 'Opossumin lihaa',
+                    categoryId: 24,
+                    weight: 500,
+                    buyPrice: 367,
+                    sellPrice: 370,
+                    stock: 1
+                });
+
+            expect(res.status).to.equal(201);
+
+            expect(res.body).to.have.all.keys('product');
+            expect(res.body.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+        });
+
+        it('should error if barcode is already taken', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    barcode: '5053990123506',
+                    name: 'Opossumin lihaa',
+                    categoryId: 24,
+                    weight: 500,
+                    buyPrice: 367,
+                    sellPrice: 370,
+                    stock: 1
+                });
+
+            expect(res.status).to.equal(409);
+            expect(res.body.error_code).to.equal('identifier_taken');
+        });
+
+        it('should error on nonexistent category', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    barcode: '575757575757',
+                    name: 'Opossumin lihaa',
+                    categoryId: 11111,
+                    weight: 500,
+                    buyPrice: 367,
+                    sellPrice: 370,
+                    stock: 1
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('invalid_reference');
+        });
+
+        it('should error on invalid parameters', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    barcode: '575757575757',
+                    name: 'Opossumin lihaa',
+                    categoryId: 11111,
+                    stock: 1
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+
+    describe('Modifying product data', () => {
+        it('should modify the product', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    name: 'Koalan lihaa',
+                    categoryId: 24,
+                    weight: 500,
+                    buyPrice: 367,
+                    sellPrice: 370,
+                    stock: 1
                 });
 
             expect(res.status).to.equal(200);
-            expect(res.body.product_id).to.equal(1750);
-            expect(res.body.buyprice).to.equal(300);
-            expect(res.body.sellprice).to.equal(350);
-            expect(res.body.quantity).to.equal(product.stock + 50);
+
+            const updatedProduct = await productStore.findByBarcode('5053990123506');
+            expect(updatedProduct).to.exist;
+            expect(updatedProduct.name).to.equal('Koalan lihaa');
+            expect(updatedProduct.category.categoryId).to.equal(24);
         });
 
-        it('Adding nonexistent product to stock should not work', async () => {
+        it('should allow modifying only some fields', async () => {
             const res = await chai
                 .request(server)
-                .post('/api/v1/admin/products/product/123456890')
+                .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    buyprice: 300,
-                    sellprice: 350,
-                    quantity: 50
+                    buyPrice: 5000
+                });
+
+            expect(res.status).to.equal(200);
+
+            const updatedProduct = await productStore.findByBarcode('5053990123506');
+            expect(updatedProduct).to.exist;
+            expect(updatedProduct.buyPrice).to.equal(5000);
+        });
+
+        it('should return the updated product', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    buyPrice: 5000
+                });
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('product');
+            expect(res.body.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res.body.product.buyPrice).to.equal(5000);
+        });
+
+        it('should error on nonexistent product', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/products/88888888')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    buyPrice: 5000
                 });
 
             expect(res.status).to.equal(404);
-            expect(res.body.error_code).to.exist;
-            expect(res.body.message).to.exist;
+            expect(res.body.error_code).to.equal('not_found');
         });
 
-        it('Request with missing fields should be rejected', async () => {
+        it('should error on nonexistent category', async () => {
             const res = await chai
                 .request(server)
-                .post('/api/v1/admin/products/product/1750')
+                .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
-                .send({});
+                .send({
+                    categoryId: 999
+                });
 
             expect(res.status).to.equal(400);
-            expect(res.body.error_code).to.exist;
-            expect(res.body.message).to.exist;
-            expect(res.body.errors).to.exist;
+            expect(res.body.error_code).to.equal('invalid_reference');
+        });
+
+        it('should error on invalid parameters', async () => {
+            const res = await chai
+                .request(server)
+                .patch('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    aaa: 4
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
         });
     });
 });
