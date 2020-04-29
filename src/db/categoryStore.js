@@ -32,11 +32,11 @@ module.exports.findById = async (categoryId) => {
 };
 
 module.exports.insertCategory = async (description) => {
-    const insertedPgrpids = await knex('PRODGROUP')
+    const insertedRows = await knex('PRODGROUP')
         .insert({ descr: description })
-        .returning('pgrpid');
+        .returning(['pgrpid']);
     return {
-        categoryId: insertedPgrpids[0],
+        categoryId: insertedRows[0].pgrpid,
         description: description
     };
 };

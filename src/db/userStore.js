@@ -55,7 +55,7 @@ module.exports.findByEmail = async (email) => {
 module.exports.insertUser = async (userData) => {
     const passwordHash = bcrypt.hashSync(userData.password, 11);
 
-    const insertedUserids = await knex('RVPERSON')
+    const insertedPersonRows = await knex('RVPERSON')
         .insert({
             createdate: new Date(),
             // roleid 2 = USER1
@@ -66,10 +66,10 @@ module.exports.insertUser = async (userData) => {
             saldo: 0,
             realname: userData.fullName
         })
-        .returning('userid');
+        .returning(['userid']);
 
     return {
-        userId: insertedUserids[0],
+        userId: insertedPersonRows[0].userid,
         username: userData.username,
         fullName: userData.fullName,
         email: userData.email,
@@ -91,12 +91,12 @@ module.exports.updateUser = async (userId, userData) => {
             rvpersonFields.pass = bcrypt.hashSync(userData.password, 11);
         }
         if (userData.role !== undefined) {
-            const roleid = await knex('ROLE')
+            const roleRow = await knex('ROLE')
                 .transacting(trx)
                 .select('roleid')
                 .where({ role: userData.role })
                 .first();
-            rvpersonFields.roleid = roleid;
+            rvpersonFields.roleid = roleRow.roleid;
         }
         await knex('RVPERSON')
             .transacting(trx)
@@ -121,37 +121,37 @@ module.exports.recordDeposit = async (userId, amount) => {
     return await knex.transaction(async (trx) => {
         const now = new Date();
 
-        const updatedSaldos = await knex('RVPERSON')
+        const updatedPersonRows = await knex('RVPERSON')
             .transacting(trx)
             .where({ userid: userId })
             .increment({ saldo: amount })
-            .returning('saldo');
+            .returning(['saldo']);
 
-        const insertedSaldhistids = await knex('SALDOHISTORY')
+        const insertedSaldhistRows = await knex('SALDOHISTORY')
             .transacting(trx)
             .insert({
                 userid: userId,
                 time: now,
-                saldo: updatedSaldos[0],
+                saldo: updatedPersonRows[0].saldo,
                 difference: amount
             })
-            .returning('saldhistid');
-        const insertedPershistids = await knex('PERSONHIST')
+            .returning(['saldhistid']);
+        const insertedPershistRows = await knex('PERSONHIST')
             .transacting(trx)
             .insert({
                 time: now,
                 actionid: 17,
                 userid1: userId,
                 userid2: userId,
-                saldhistid: insertedSaldhistids[0]
+                saldhistid: insertedSaldhistRows[0].saldhistid
             })
-            .returning('pershistid');
+            .returning(['pershistid']);
 
         return {
-            depositId: insertedPershistids[0],
+            depositId: insertedPershistRows[0].pershistid,
             time: now.toISOString(),
             amount: amount,
-            balanceAfter: updatedSaldos[0]
+            balanceAfter: updatedPersonRows[0].saldo
         };
     });
 };

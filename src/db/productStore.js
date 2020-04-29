@@ -98,14 +98,14 @@ module.exports.findById = async (productId) => {
  */
 module.exports.insertProduct = async (productData, userId) => {
     return await knex.transaction(async (trx) => {
-        const insertedItemids = await knex('RVITEM')
+        const insertedRows = await knex('RVITEM')
             .transacting(trx)
             .insert({
                 pgrpid: productData.categoryId,
                 descr: productData.name,
                 weight: productData.weight
             })
-            .returning('itemid');
+            .returning(['itemid']);
 
         await knex('PRICE')
             .transacting(trx)
@@ -114,13 +114,13 @@ module.exports.insertProduct = async (productData, userId) => {
                 count: productData.stock,
                 buyprice: productData.buyPrice,
                 sellprice: productData.sellPrice,
-                itemid: insertedItemids[0],
+                itemid: insertedRows[0].itemid,
                 userid: userId,
                 starttime: new Date(),
                 endtime: null
             });
 
-        const categoryDescr = await knex('PRODGROUP')
+        const categoryRow = await knex('PRODGROUP')
             .transacting(trx)
             .select('descr')
             .where('pgrpid', productData.categoryId)
@@ -128,11 +128,11 @@ module.exports.insertProduct = async (productData, userId) => {
 
         return {
             barcode: productData.barcode,
-            productId: insertedItemids[0],
+            productId: insertedRows[0].itemid,
             name: productData.name,
             category: {
                 categoryId: productData.categoryId,
-                description: categoryDescr
+                description: categoryRow.descr
             },
             weight: productData.weight,
             buyPrice: productData.buyPrice,
@@ -153,8 +153,8 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
             descr: productData.name,
             weight: productData.weight
         });
-        if (Object.keys(rvitemFields) > 0) {
-            const productId = await knex('PRICE')
+        if (Object.keys(rvitemFields).length > 0) {
+            const priceRow = await knex('PRICE')
                 .transacting(trx)
                 .select('itemid')
                 .where({ barcode: barcode, endtime: null })
@@ -163,7 +163,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
             await knex('RVITEM')
                 .transacting(trx)
                 .update(rvitemFields)
-                .where({ itemid: productId });
+                .where({ itemid: priceRow.itemid });
         }
 
         const priceFields = deleteUndefinedFields({
@@ -171,7 +171,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
             buyprice: productData.buyPrice,
             sellprice: productData.sellPrice
         });
-        if (Object.keys(priceFields) > 0) {
+        if (Object.keys(priceFields).length > 0) {
             if (priceFields.sellPrice === undefined) {
                 await knex('PRICE')
                     .transacting(trx)
@@ -244,13 +244,13 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
         const price = updatedPriceRows[0].sellprice;
         const stockBefore = updatedPriceRows[0].count + count;
 
-        const updatedSaldos = await knex('RVPERSON')
+        const updatedPersonRows = await knex('RVPERSON')
             .transacting(trx)
             .where({ userid: userId })
             .decrement({ saldo: count * price })
-            .returning('saldo');
+            .returning(['saldo']);
 
-        const balanceBefore = updatedSaldos[0] + count * price;
+        const balanceBefore = updatedPersonRows[0].saldo + count * price;
 
         let stock = stockBefore;
         let balance = balanceBefore;
@@ -261,7 +261,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
             stock--;
             balance -= price;
 
-            const insertedSaldhistids = await knex('SALDOHISTORY')
+            const insertedSaldhistRows = await knex('SALDOHISTORY')
                 .transacting(trx)
                 .insert({
                     userid: userId,
@@ -269,8 +269,8 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
                     saldo: balance,
                     difference: -price
                 })
-                .returning('saldhistid');
-            const insertedItemhistids = await knex('ITEMHISTORY')
+                .returning(['saldhistid']);
+            const insertedItemhistRows = await knex('ITEMHISTORY')
                 .transacting(trx)
                 .insert({
                     time: now,
@@ -279,13 +279,13 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
                     itemid: productId,
                     userid: userId,
                     priceid1: priceId,
-                    saldhistid: insertedSaldhistids[0]
+                    saldhistid: insertedSaldhistRows[0].saldhistid
                 })
-                .returning('itemhistid');
+                .returning(['itemhistid']);
 
             /* Storing inserted history events so they can be returned. */
             insertedHistory.push({
-                purchaseId: insertedItemhistids[0],
+                purchaseId: insertedItemhistRows[0].itemhistid,
                 time: now.toISOString(),
                 price: price,
                 balanceAfter: balance,
