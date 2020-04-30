@@ -13,7 +13,6 @@ const rowToCategory = (row) => {
 
 /**
  * Returns all categories.
- *
  */
 module.exports.getCategories = async () => {
     const data = await knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');

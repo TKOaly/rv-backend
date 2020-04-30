@@ -23,7 +23,6 @@ const rowToProduct = (row) => {
 
 /**
  * Returns all products and their stock quantities, if available.
- *
  */
 module.exports.getProducts = async () => {
     const data = await knex('PRICE')
@@ -94,7 +93,6 @@ module.exports.findById = async (productId) => {
 
 /**
  * Creates a new product if given barcode is not in use.
- *
  */
 module.exports.insertProduct = async (productData, userId) => {
     return await knex.transaction(async (trx) => {

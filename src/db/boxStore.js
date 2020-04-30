@@ -76,11 +76,6 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
 
 /**
  * Creates a new box for a product.
- *
- * @param {*} boxBarcode barcode of the box
- * @param {*} productBarcode barcode of the product in the box
- * @param {*} itemsPerBox number of items in the box
- * @param {*} userid user who created the box
  */
 module.exports.insertBox = async (boxData) => {
     return await knex.transaction(async (trx) => {
