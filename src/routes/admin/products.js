@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
     const inputValidators = [
         validators.numericBarcode('barcode'),
         validators.nonEmptyString('name'),
-        validators.integer('categoryId'),
+        validators.nonNegativeInteger('categoryId'),
         validators.nonNegativeInteger('weight'),
         validators.integer('buyPrice'),
         validators.integer('sellPrice'),
@@ -190,7 +190,7 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
 
     const inputValidators = [
         validators.nonEmptyString('name'),
-        validators.integer('categoryId'),
+        validators.nonNegativeInteger('categoryId'),
         validators.nonNegativeInteger('weight'),
         validators.integer('buyPrice'),
         validators.integer('sellPrice'),

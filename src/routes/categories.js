@@ -33,7 +33,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:categoryId(\\d+)', async (req, res) => {
     const user = req.user;
-    const categoryId = req.params.categoryId;
+    const categoryId = parseInt(req.params.categoryId);
 
     try {
         const category = await categoryStore.findById(categoryId);

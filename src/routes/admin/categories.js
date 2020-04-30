@@ -83,7 +83,7 @@ router.post('/', async (req, res) => {
 
 router.get('/:categoryId(\\d+)', async (req, res) => {
     const user = req.user;
-    const categoryId = req.params.categoryId;
+    const categoryId = parseInt(req.params.categoryId);
 
     try {
         const category = await categoryStore.findById(categoryId);
@@ -135,7 +135,7 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
         return;
     }
 
-    const categoryId = req.params.categoryId;
+    const categoryId = parseInt(req.params.categoryId);
     const description = req.body.description;
 
     try {

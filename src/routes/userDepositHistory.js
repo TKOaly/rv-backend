@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:depositId(\\d+)', async (req, res) => {
     const user = req.user;
-    const depositId = req.params.depositId;
+    const depositId = parseInt(req.params.depositId);
 
     try {
         const deposit = await historyStore.findDepositById(depositId);

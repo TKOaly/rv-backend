@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:purchaseId(\\d+)', async (req, res) => {
     const user = req.user;
-    const purchaseId = req.params.purchaseId;
+    const purchaseId = parseInt(req.params.purchaseId);
 
     try {
         const purchase = await historyStore.findPurchaseById(purchaseId);
