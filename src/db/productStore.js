@@ -185,7 +185,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                     .transacting(trx)
                     .update({ endtime: now })
                     .where({ barcode: barcode, endtime: null })
-                    .returning('*');
+                    .returning(['barcode', 'count', 'buyprice', 'sellprice', 'itemid']);
 
                 await knex('PRICE')
                     .transacting(trx)

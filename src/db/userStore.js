@@ -21,14 +21,30 @@ const rowToUser = (row) => {
 module.exports.getUsers = async () => {
     const data = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-        .select('*');
+        .select(
+            'RVPERSON.userid',
+            'RVPERSON.name',
+            'RVPERSON.realname',
+            'RVPERSON.univident',
+            'RVPERSON.saldo',
+            'ROLE.role',
+            'RVPERSON.pass'
+        );
     return data.map(rowToUser);
 };
 
 module.exports.findById = async (userId) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-        .select('*')
+        .select(
+            'RVPERSON.userid',
+            'RVPERSON.name',
+            'RVPERSON.realname',
+            'RVPERSON.univident',
+            'RVPERSON.saldo',
+            'ROLE.role',
+            'RVPERSON.pass'
+        )
         .where('RVPERSON.userid', userId)
         .first();
     return rowToUser(row);
@@ -37,7 +53,15 @@ module.exports.findById = async (userId) => {
 module.exports.findByUsername = async (username) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-        .select('*')
+        .select(
+            'RVPERSON.userid',
+            'RVPERSON.name',
+            'RVPERSON.realname',
+            'RVPERSON.univident',
+            'RVPERSON.saldo',
+            'ROLE.role',
+            'RVPERSON.pass'
+        )
         .where('RVPERSON.name', username)
         .first();
     return rowToUser(row);
@@ -46,7 +70,15 @@ module.exports.findByUsername = async (username) => {
 module.exports.findByEmail = async (email) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-        .select('*')
+        .select(
+            'RVPERSON.userid',
+            'RVPERSON.name',
+            'RVPERSON.realname',
+            'RVPERSON.univident',
+            'RVPERSON.saldo',
+            'ROLE.role',
+            'RVPERSON.pass'
+        )
         .where('RVPERSON.univident', email)
         .first();
     return rowToUser(row);
@@ -106,7 +138,15 @@ module.exports.updateUser = async (userId, userData) => {
         const userRow = await knex('RVPERSON')
             .transacting(trx)
             .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-            .select('*')
+            .select(
+                'RVPERSON.userid',
+                'RVPERSON.name',
+                'RVPERSON.realname',
+                'RVPERSON.univident',
+                'RVPERSON.saldo',
+                'ROLE.role',
+                'RVPERSON.pass'
+            )
             .where('RVPERSON.userid', userId)
             .first();
         return rowToUser(userRow);
