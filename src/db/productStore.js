@@ -5,7 +5,6 @@ const rowToProduct = (row) => {
     if (row !== undefined) {
         return {
             barcode: row.barcode,
-            productId: row.itemid,
             name: row.descr,
             category: {
                 categoryId: row.pgrpid,
@@ -29,7 +28,6 @@ module.exports.getProducts = async () => {
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
-            'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
@@ -51,7 +49,6 @@ module.exports.findByBarcode = async (barcode) => {
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
-            'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
@@ -62,30 +59,6 @@ module.exports.findByBarcode = async (barcode) => {
             'PRICE.count'
         )
         .where('PRICE.barcode', barcode)
-        .andWhere('PRICE.endtime', null)
-        .first();
-    return rowToProduct(row);
-};
-
-/**
- * Finds a product by its id.
- */
-module.exports.findById = async (productId) => {
-    const row = await knex('PRICE')
-        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
-        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
-        .select(
-            'RVITEM.itemid',
-            'RVITEM.descr',
-            'RVITEM.pgrpid',
-            'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
-            'PRICE.barcode',
-            'PRICE.buyprice',
-            'PRICE.sellprice',
-            'PRICE.count'
-        )
-        .where('RVITEM.itemid', productId)
         .andWhere('PRICE.endtime', null)
         .first();
     return rowToProduct(row);
@@ -126,7 +99,6 @@ module.exports.insertProduct = async (productData, userId) => {
 
         return {
             barcode: productData.barcode,
-            productId: insertedRows[0].itemid,
             name: productData.name,
             category: {
                 categoryId: productData.categoryId,
@@ -207,7 +179,6 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
             .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
             .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
             .select(
-                'RVITEM.itemid',
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',

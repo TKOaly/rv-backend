@@ -20,7 +20,6 @@ const rowToDeposit = (row) => {
 const rowToProduct = (row) => {
     return {
         barcode: row.barcode,
-        productId: row.itemid,
         name: row.descr,
         category: {
             categoryId: row.pgrpid,
@@ -51,7 +50,6 @@ module.exports.getPurchaseHistory = async () => {
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
             'ITEMHISTORY.count',
-            'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
@@ -91,7 +89,6 @@ module.exports.getUserPurchaseHistory = async (userId) => {
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
             'ITEMHISTORY.count',
-            'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
@@ -162,7 +159,6 @@ module.exports.findPurchaseById = async (purchaseId) => {
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
             'ITEMHISTORY.count',
-            'RVITEM.itemid',
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
