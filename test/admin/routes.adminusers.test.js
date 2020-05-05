@@ -1,0 +1,150 @@
+const chai = require('chai');
+const expect = chai.expect;
+const chaiHttp = require('chai-http');
+chai.use(chaiHttp);
+
+const server = require('../../src/app');
+const knex = require('../../src/db/knex');
+const jwt = require('../../src/jwt/token');
+const userStore = require('../../src/db/userStore');
+
+const token = jwt.sign(
+    {
+        userId: 2
+    },
+    process.env.JWT_ADMIN_SECRET
+);
+
+describe('routes: admin users', () => {
+    beforeEach(async () => {
+        await knex.migrate.rollback();
+        await knex.migrate.latest();
+        await knex.seed.run();
+    });
+
+    afterEach(async () => {
+        await knex.migrate.rollback();
+    });
+
+    describe('Fetching all users', () => {
+        it('should return all users', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('users');
+            expect(res.body.users).to.be.an('array');
+            for (const user of res.body.users) {
+                expect(user).to.have.all.keys('userId', 'username', 'fullName', 'email', 'moneyBalance', 'role');
+            }
+        });
+    });
+
+    describe('Fetching user by id', () => {
+        it('should return the user', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users/1')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('user');
+            expect(res.body.user).to.have.all.keys('userId', 'username', 'fullName', 'email', 'moneyBalance', 'role');
+        });
+
+        it('should return user with correctly formatted role', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users/1')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body.user.role).to.equal('USER1');
+        });
+
+        it('should error on nonexistent user', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users/77')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+    });
+
+    describe('Changing user role', () => {
+        it('should change the role', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/users/1/changeRole')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    role: 'ADMIN'
+                });
+
+            expect(res.status).to.equal(200);
+
+            const updatedUser = await userStore.findById(1);
+            expect(updatedUser.role).to.equal('ADMIN');
+        });
+
+        it('should return the new role', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/users/1/changeRole')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    role: 'ADMIN'
+                });
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.exist;
+            expect(res.body).to.have.all.keys('role');
+            expect(res.body.role).to.equal('ADMIN');
+        });
+
+        it('should error on nonexistent user', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/users/99/changeRole')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    role: 'ADMIN'
+                });
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should error on invalid role', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/users/1/changeRole')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    role: 'abc'
+                });
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('invalid_reference');
+        });
+
+        it('should error on invalid parameters', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/users/1/changeRole')
+                .set('Authorization', 'Bearer ' + token)
+                .send({});
+
+            expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+});

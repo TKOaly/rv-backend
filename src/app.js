@@ -22,6 +22,7 @@
     const user_categories = require('./routes/categories');
     const admin_boxes = require('./routes/admin/boxes');
     const admin_categories = require('./routes/admin/categories');
+    const admin_users = require('./routes/admin/users');
     const api_reset_route = require('./routes/test_env/api_data_reset');
 
     app.use('/api/v1/authenticate', auth_route);
@@ -36,6 +37,7 @@
     app.use('/api/v1/admin/products', admin_products);
     app.use('/api/v1/admin/boxes', admin_boxes);
     app.use('/api/v1/admin/categories', admin_categories);
+    app.use('/api/v1/admin/users', admin_users);
     app.use('/api/v1/test/reset_data', api_reset_route);
 
     module.exports = app;
