@@ -20,8 +20,8 @@ api/v1/resetPassword POST {username} =>
 * api/v1/user/depositHistory GET => {deposits: [{depositId, time, amount, balanceAfter}...]}
 * api/v1/user/depositHistory/:depositId GET => {deposit: {depositId, time, amount, balanceAfter}}
 
-api/v1/admin/defaultMargin GET => {margin}
-api/v1/admin/defaultMargin PATCH {margin} => {margin}
+* api/v1/admin/defaultMargin GET => {margin}
+* api/v1/admin/defaultMargin PATCH {margin} => {margin}
 * api/v1/admin/boxes GET => {boxes: [{boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}...]}
 * api/v1/admin/boxes POST {boxBarcode, itemsPerBox, productBarcode} => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
 * api/v1/admin/boxes/:boxBarcode GET => {box: {boxBarcode, itemsPerBox, product: {barcode, name, category: {categoryId, description}, weight, buyPrice, sellPrice, stock}}}
