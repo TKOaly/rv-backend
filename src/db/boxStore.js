@@ -158,3 +158,38 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
         return rowToBox(boxRow);
     });
 };
+
+module.exports.deleteBox = async (boxBarcode) => {
+    return await knex.transaction(async (trx) => {
+        const box = await knex('RVBOX')
+            .transacting(trx)
+            .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVBOX.barcode',
+                'RVBOX.itemcount',
+                'RVBOX.itembarcode',
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count'
+            )
+            .where({ 'RVBOX.barcode': boxBarcode, 'PRICE.endtime': null })
+            .first();
+
+        if (box === undefined) {
+            return undefined;
+        }
+
+        await knex('RVBOX')
+            .transacting(trx)
+            .where({ barcode: boxBarcode })
+            .delete();
+
+        return rowToBox(box);
+    });
+};

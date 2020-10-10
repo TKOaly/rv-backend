@@ -284,4 +284,54 @@ describe('routes: admin boxes', () => {
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
+
+    describe('Deleting a box', () => {
+        it('should delete the box', async () => {
+            let res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+        });
+
+        it('should error on nonexistent box', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/88888888')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should return the deleted box', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('deletedBox');
+            expect(res.body.deletedBox).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
+            expect(res.body.deletedBox.product).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.deletedBox.product.category).to.have.all.keys('categoryId', 'description');
+        });
+    });
 });

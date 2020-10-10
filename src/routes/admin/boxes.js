@@ -10,29 +10,29 @@ const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefined
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
+const mapDatabaseBoxToApiBox = (box) => ({
+    boxBarcode: box.boxBarcode,
+    itemsPerBox: box.itemsPerBox,
+    product: {
+        barcode: box.product.barcode,
+        name: box.product.name,
+        category: {
+            categoryId: box.product.category.categoryId,
+            description: box.product.category.description
+        },
+        weight: box.product.weight,
+        buyPrice: box.product.buyPrice,
+        sellPrice: box.product.sellPrice,
+        stock: box.product.stock
+    }
+});
+
 router.get('/', async (req, res) => {
     const user = req.user;
 
     try {
         const boxes = await boxStore.getBoxes();
-        const mappedBoxes = boxes.map((box) => {
-            return {
-                boxBarcode: box.boxBarcode,
-                itemsPerBox: box.itemsPerBox,
-                product: {
-                    barcode: box.product.barcode,
-                    name: box.product.name,
-                    category: {
-                        categoryId: box.product.category.categoryId,
-                        description: box.product.category.description
-                    },
-                    weight: box.product.weight,
-                    buyPrice: box.product.buyPrice,
-                    sellPrice: box.product.sellPrice,
-                    stock: box.product.stock
-                }
-            };
-        });
+        const mappedBoxes = boxes.map(mapDatabaseBoxToApiBox);
 
         logger.info('User %s fetched boxes as admin', user.username);
         res.status(200).json({
@@ -118,22 +118,7 @@ router.post('/', async (req, res) => {
             productBarcode
         );
         res.status(201).json({
-            box: {
-                boxBarcode: newBox.boxBarcode,
-                itemsPerBox: newBox.itemsPerBox,
-                product: {
-                    barcode: newBox.product.barcode,
-                    name: newBox.product.name,
-                    category: {
-                        categoryId: newBox.product.category.categoryId,
-                        description: newBox.product.category.description
-                    },
-                    weight: newBox.product.weight,
-                    buyPrice: newBox.product.buyPrice,
-                    sellPrice: newBox.product.sellPrice,
-                    stock: newBox.product.stock
-                }
-            }
+            box: mapDatabaseBoxToApiBox(newBox)
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
@@ -162,22 +147,7 @@ router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
 
         logger.info('User %s fetched box %s as admin', user.username, boxBarcode);
         res.status(200).json({
-            box: {
-                boxBarcode: box.boxBarcode,
-                itemsPerBox: box.itemsPerBox,
-                product: {
-                    barcode: box.product.barcode,
-                    name: box.product.name,
-                    category: {
-                        categoryId: box.product.category.categoryId,
-                        description: box.product.category.description
-                    },
-                    weight: box.product.weight,
-                    buyPrice: box.product.buyPrice,
-                    sellPrice: box.product.sellPrice,
-                    stock: box.product.stock
-                }
-            }
+            box: mapDatabaseBoxToApiBox(box)
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
@@ -259,25 +229,36 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
             updatedBox.itemsPerBox,
             updatedBox.product.barcode
         );
+
         res.status(200).json({
-            box: {
-                boxBarcode: updatedBox.boxBarcode,
-                itemsPerBox: updatedBox.itemsPerBox,
-                product: {
-                    barcode: updatedBox.product.barcode,
-                    name: updatedBox.product.name,
-                    category: {
-                        categoryId: updatedBox.product.category.categoryId,
-                        description: updatedBox.product.category.description
-                    },
-                    weight: updatedBox.product.weight,
-                    buyPrice: updatedBox.product.buyPrice,
-                    sellPrice: updatedBox.product.sellPrice,
-                    stock: updatedBox.product.stock
-                }
-            }
+            box: mapDatabaseBoxToApiBox(updatedBox)
         });
     } catch (error) {
+        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
+        res.status(500).json({
+            error_code: 'internal_error',
+            message: 'Internal error'
+        });
+    }
+});
+
+router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
+    try {
+        const boxBarcode = req.params.boxBarcode;
+        const deletedBox = await boxStore.deleteBox(boxBarcode);
+
+        if (deletedBox) {
+            res.status(200).json({
+                deletedBox: mapDatabaseBoxToApiBox(deletedBox)
+            });
+        } else {
+            res.status(404).json({
+                error_code: 'not_found',
+                message: `No box with barcode '${ boxBarcode }' found`
+            });
+        }
+    } catch (error) {
+        console.error(error);
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
