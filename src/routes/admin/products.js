@@ -311,4 +311,54 @@ router.delete('/:barcode(\\d{1,14})', async (req, res) => {
     });
 });
 
+router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
+    const barcode = req.params.barcode;
+
+    const inputValidators = [
+        validators.positiveInteger('count'),
+        validators.nonNegativeInteger('buyPrice'),
+        validators.nonNegativeInteger('sellPrice')
+    ];
+
+    const errors = fieldValidator.validateObject(req.body, inputValidators);
+
+    if (errors.length > 0) {
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Invalid or missing fields in request body',
+            errors
+        });
+
+        return;
+    }
+
+    const { count, buyPrice, sellPrice } = req.body;
+
+    const product = await productStore.findByBarcode(barcode);
+
+    if (product === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `No product with barcode '${ barcode }' found`
+        });
+
+        return;
+    }
+
+    const stock = await productStore.buyIn(barcode, count);
+
+    const update = {
+        sellPrice: product.sellPrice !== sellPrice ? sellPrice : undefined,
+        buyPrice: product.buyPrice !== buyPrice ? buyPrice : undefined
+    };
+
+    const updatedProduct = await productStore.updateProduct(barcode, update, req.user.userId);
+
+    res.status(200).json({
+        stock,
+        buyPrice: updatedProduct.buyPrice,
+        sellPrice: updatedProduct.sellPrice
+    });
+});
+
 module.exports = router;

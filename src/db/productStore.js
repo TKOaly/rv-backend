@@ -314,3 +314,16 @@ module.exports.deleteProduct = async (barcode) => {
         return rowToProduct(row);
     });
 };
+
+module.exports.buyIn = async (barcode, count) => {
+    const row = await knex('PRICE')
+        .where({ barcode })
+        .increment({ count })
+        .returning([ 'count' ]);
+
+    if (row.length === 0) {
+        return undefined;
+    }
+
+    return row[0].count;
+};
