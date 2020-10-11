@@ -193,3 +193,33 @@ module.exports.deleteBox = async (boxBarcode) => {
         return rowToBox(box);
     });
 };
+
+module.exports.buyIn = async (boxBarcode, boxCount) => {
+    return await knex.transaction(async (trx) => {
+        const row = await knex('RVBOX')
+            .transacting(trx)
+            .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .where('RVBOX.barcode', boxBarcode)
+            .first(
+                'RVBOX.itemcount',
+                'PRICE.priceid',
+                'PRICE.count'
+            );
+
+        if (row === undefined) {
+            return undefined;
+        }
+
+        const { count, itemcount, priceid } = row;
+
+        const newCount = count + itemcount * boxCount;
+
+        await knex('PRICE')
+            .transacting(trx)
+            .select({ priceid, endtime: null })
+            .update({ count: newCount });
+
+        return newCount;
+    });
+};

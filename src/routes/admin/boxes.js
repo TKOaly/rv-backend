@@ -267,4 +267,56 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
     }
 });
 
+router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
+    const boxBarcode = req.params.boxBarcode;
+
+    const fieldValidators = [
+        validators.positiveInteger('boxCount'),
+        validators.orNull(validators.nonNegativeInteger('productBuyPrice')),
+        validators.orNull(validators.nonNegativeInteger('productSellPrice'))
+    ];
+
+    const validationErrors = fieldValidator.validateObject(req.body, fieldValidators);
+
+    if (validationErrors.length > 0) {
+        res.status(400).json({
+            error_code: 'bad_request',
+            message: 'Missing or invalid fields in request',
+            errors: validationErrors
+        });
+
+        return;
+    }
+
+    const { productSellPrice, productBuyPrice } = req.body;
+
+    const box = await boxStore.findByBoxBarcode(boxBarcode);
+
+    if (box === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `No box with barcode '${ boxBarcode }' found`
+        });
+
+        return;
+    }
+
+    const { sellprice: oldsellprice, buyprice: oldbuyprice } = box;
+
+    const stock = await boxStore.buyIn(boxBarcode, req.body.boxCount);
+
+    const update = {
+        sellPrice: oldsellprice !== productSellPrice ? productSellPrice : undefined,
+        buyPrice: oldbuyprice !== productBuyPrice ? productBuyPrice : undefined
+    };
+
+    await productStore.updateProduct(box.product.barcode, update, req.user.userId);
+
+    res.status(200).json({
+        productStock: stock,
+        productBuyPrice: req.body.productBuyPrice,
+        productSellPrice: req.body.productSellPrice
+    });
+});
+
 module.exports = router;

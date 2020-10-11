@@ -42,5 +42,10 @@
     app.use('/api/v1/admin/users', admin_users);
     app.use('/api/v1/test/reset_data', api_reset_route);
 
+    app.use((req, res, error, next) => {
+        console.error(error);
+        next();
+    });
+
     module.exports = app;
 })();

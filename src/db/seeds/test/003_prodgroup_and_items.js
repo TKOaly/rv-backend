@@ -9,7 +9,7 @@ exports.seed = async (knex) => {
             coalesce(max(pgrpid), 0)
         ) from "PRODGROUP"
     `);
-    await knex('RVITEM').insert(rvitems.filter((item) => item.itemid >= 1750));
+    await knex('RVITEM').insert(rvitems);
     await knex.raw(`
         select setval(
             pg_get_serial_sequence('"RVITEM"', 'itemid'),

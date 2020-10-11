@@ -334,4 +334,122 @@ describe('routes: admin boxes', () => {
             expect(res.body.deletedBox.product.category).to.have.all.keys('categoryId', 'description');
         });
     });
+
+    describe('Buy-in of boxes', () => {
+        it('should fail on nonexisting boxes', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/88888888/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: 1,
+                    productSellPrice: 1
+                });
+
+            expect(res.status).to.equal(404);
+        });
+
+        it('should fail on invalid request', async () => {
+            const validFields = {
+                boxCount: 1,
+                productBuyPrice: 1,
+                productSellPrice: 1
+            };
+
+            for (const missingField in validFields) {
+                const invalidRequest = { ...validFields };
+                delete invalidRequest[missingField];
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/boxes/01880335/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+            }
+
+            for (const negativeField in validFields) {
+                const invalidRequest = { ...validFields };
+                invalidRequest[negativeField] = -1;
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/boxes/01880335/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
+            }
+        });
+
+        it('should update the number of items', async () => {
+            const initial_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(initial_res.status).to.equal(200);
+
+            const { buyPrice, sellPrice, stock } = initial_res.body.box.product;
+            const itemsPerBox = initial_res.body.box.itemsPerBox;
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/01880335/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: buyPrice,
+                    productSellPrice: sellPrice
+                });
+
+            expect(res.status).to.equal(200);
+            expect(res.body.productStock).to.equal(stock + itemsPerBox);
+
+            const post_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_res.status).to.equal(200);
+            expect(post_res.body.box.product.stock).to.equal(stock + itemsPerBox);
+        });
+
+        it('should update the sell and buy prices of the product', async () => {
+            const initial_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(initial_res.status).to.equal(200);
+
+            const { buyPrice, sellPrice } = initial_res.body.box.product;
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/01880335/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: buyPrice + 1,
+                    productSellPrice: sellPrice + 1
+                });
+
+            expect(res.status).to.equal(200);
+
+            const post_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_res.status).to.equal(200);
+            expect(post_res.body.box.product.sellPrice)
+                .to.equal(sellPrice + 1, 'product\'s sellPrice should have changed');
+            expect(post_res.body.box.product.buyPrice)
+                .to.equal(buyPrice + 1, 'product\'s buyPrice should have changed');
+        });
+    });
 });
+
