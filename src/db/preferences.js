@@ -44,8 +44,19 @@ const floatPreference = {
     deserialize: (str) => parseFloat(str)
 };
 
+const integerPreference = {
+    serialize: (value) => String(value),
+    deserialize: (str) => parseInt(str)
+};
+
 module.exports.GLOBAL_DEFAULT_MARGIN = {
     ... floatPreference,
     key: 'GLOBAL_DEFAULT_MARGIN',
     default: 0.05
+};
+
+module.exports.DEFAULT_PRODUCT_CATEGORY = {
+    ... integerPreference,
+    key: 'DEFAULT_PRODUCT_CATEGORY',
+    default: 0
 };

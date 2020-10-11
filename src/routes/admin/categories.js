@@ -5,6 +5,7 @@ const categoryStore = require('../../db/categoryStore');
 const logger = require('../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
+const { DEFAULT_PRODUCT_CATEGORY, getPreference } = require('../../db/preferences');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -171,6 +172,40 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
             message: 'Internal error'
         });
     }
+});
+
+router.delete('/:categoryId', async (req, res) => {
+    const categoryId = req.params.categoryId;
+
+    const defaultCategory = await getPreference(DEFAULT_PRODUCT_CATEGORY);
+
+    if (categoryId == defaultCategory) {
+        res.status(403).json({
+            error_code: 'bad_request',
+            message: 'Cannot delete the default category'
+        });
+
+        return;
+    }
+
+    const result = await categoryStore.deleteCategory(req.params.categoryId, defaultCategory);
+
+    if (result === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `Category with id '${ req.params.categoryId }' not found`
+        });
+
+        return;
+    }
+
+    res.status(200).json({
+        deletedCategory: {
+            categoryId: result.categoryId,
+            description: result.description
+        },
+        movedProducts: result.movedProducts
+    });
 });
 
 module.exports = router;
