@@ -30,7 +30,7 @@ describe('routes: admin products', () => {
         it('should return all categories', async () => {
             const res = await chai
                 .request(server)
-                .get('/api/v1/admin/products')
+                .get('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);

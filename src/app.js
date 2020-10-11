@@ -26,6 +26,7 @@
     const api_reset_route = require('./routes/test_env/api_data_reset');
     const admin_default_margin = require('./routes/admin/default_margin');
     const purchase_history = require('./routes/admin/purchase_history');
+    const admin_history = require('./routes/admin/history');
 
     app.use('/api/v1/authenticate', auth_route);
     app.use('/api/v1/user/purchaseHistory', user_purchase_history_route);
@@ -42,13 +43,8 @@
     app.use('/api/v1/admin/categories', admin_categories);
     app.use('/api/v1/admin/users', admin_users);
     app.use('/api/v1/admin/purchaseHistory', purchase_history());
+    app.use('/api/v1/admin', admin_history);
     app.use('/api/v1/test/reset_data', api_reset_route);
-
-
-    app.use((req, res, error, next) => {
-        console.error(error);
-        next();
-    });
 
     module.exports = app;
 })();

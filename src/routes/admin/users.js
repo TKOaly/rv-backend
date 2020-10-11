@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const userStore = require('../../db/userStore');
+const historyStore = require('../../db/historyStore');
 const logger = require('../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
@@ -144,6 +145,42 @@ router.use('/:userId(\\d+)/purchaseHistory', (req, res) => {
     const filter = (builder) => builder.where('RVPERSON.userid', userId);
 
     return purchaseHistory(filter)(req, res);
+});
+
+router.get('/:userId(\\d+)/depositHistory', async (req, res) => {
+    const user = await userStore.findById(req.params.userId);
+
+    if (user === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `No user with id '${req.params.userId}' found`
+        });
+
+        return;
+    }
+
+    const history = await historyStore.getUserDepositHistory(req.params.userId);
+
+    res.status(200).json({
+        deposits: history
+    });
+});
+
+router.get('/:userId(\\d+)/depositHistory/:depositId', async (req, res) => {
+    const deposit = await historyStore.findDepositById(req.params.depositId);
+
+    if (deposit === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `No deposit with id '${req.params.depositId}' found`
+        });
+
+        return;
+    }
+
+    res.status(200).json({
+        deposit
+    });
 });
 
 module.exports = router;

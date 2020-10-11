@@ -65,6 +65,7 @@ module.exports = (subquery) => {
                 'PRICE.sellprice',
                 'RVPERSON.userid',
                 'RVPERSON.realname',
+                'RVPERSON.univident',
                 'RVPERSON.name',
                 'ROLE.role'
             );
