@@ -27,6 +27,7 @@
     const admin_default_margin = require('./routes/admin/default_margin');
     const purchase_history = require('./routes/admin/purchase_history');
     const admin_history = require('./routes/admin/history');
+    const admin_preferences = require('./routes/admin/preferences');
 
     app.use('/api/v1/authenticate', auth_route);
     app.use('/api/v1/user/purchaseHistory', user_purchase_history_route);
@@ -44,6 +45,7 @@
     app.use('/api/v1/admin/users', admin_users);
     app.use('/api/v1/admin/purchaseHistory', purchase_history());
     app.use('/api/v1/admin', admin_history);
+    app.use('/api/v1/admin/preferences', admin_preferences);
     app.use('/api/v1/test/reset_data', api_reset_route);
 
     module.exports = app;
