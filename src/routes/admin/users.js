@@ -5,6 +5,7 @@ const userStore = require('../../db/userStore');
 const logger = require('../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
+const purchaseHistory = require('./purchase_history');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -136,6 +137,13 @@ router.post('/:userId(\\d+)/changeRole', async (req, res) => {
             message: 'Internal error'
         });
     }
+});
+
+router.use('/:userId(\\d+)/purchaseHistory', (req, res) => {
+    const userId = req.params.userId;
+    const filter = (builder) => builder.where('RVPERSON.userid', userId);
+
+    return purchaseHistory(filter)(req, res);
 });
 
 module.exports = router;

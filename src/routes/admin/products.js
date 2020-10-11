@@ -7,6 +7,7 @@ const logger = require('./../../logger');
 const fieldValidator = require('../../utils/fieldValidator');
 const validators = require('../../utils/validators');
 const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefinedFields;
+const purchaseHistory = require('./purchase_history');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -359,6 +360,13 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
         buyPrice: updatedProduct.buyPrice,
         sellPrice: updatedProduct.sellPrice
     });
+});
+
+router.use('/:barcode(\\d{1,14})/purchaseHistory', (req, res) => {
+    const barcode = req.params.barcode;
+    const filter = (builder) => builder.where('PRICE.barcode', barcode);
+
+    return purchaseHistory(filter)(req, res);
 });
 
 module.exports = router;
