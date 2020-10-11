@@ -348,12 +348,39 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
 
     const stock = await productStore.buyIn(barcode, count);
 
+    logger.info(
+        'User %s bought in %d items of product \'%s\' (%s)',
+        req.user.username,
+        product.name,
+        product.barcode
+    );
+
     const update = {
         sellPrice: product.sellPrice !== sellPrice ? sellPrice : undefined,
         buyPrice: product.buyPrice !== buyPrice ? buyPrice : undefined
     };
 
     const updatedProduct = await productStore.updateProduct(barcode, update, req.user.userId);
+
+    if (update.sellPrice !== undefined || update.buyPrice !== undefined) {
+        const changes = [];
+
+        if (update.sellPrice !== undefined) {
+            changes.push(`sellPrice from ${product.sellPrice} to ${update.sellPrice}`);
+        }
+
+        if (update.sellPrice !== undefined) {
+            changes.push(`buyPrice from ${product.buyPrice} to ${update.buyPrice}`);
+        }
+
+        logger.info(
+            'User %s changed %s on product \'%s\' (%s)',
+            req.user.username,
+            changes.join(' and '),
+            product.name,
+            product.barcode
+        );
+    }
 
     res.status(200).json({
         stock,

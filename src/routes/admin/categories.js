@@ -177,18 +177,26 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
 router.delete('/:categoryId', async (req, res) => {
     const categoryId = req.params.categoryId;
 
-    const defaultCategory = await getPreference(DEFAULT_PRODUCT_CATEGORY);
+    const defaultCategoryId = await getPreference(DEFAULT_PRODUCT_CATEGORY);
+    const defaultCategory = await categoryStore.findById(defaultCategoryId);
 
-    if (categoryId == defaultCategory) {
+    if (categoryId == defaultCategory.categoryId) {
         res.status(403).json({
             error_code: 'bad_request',
             message: 'Cannot delete the default category'
         });
 
+        logger.info(
+            'User %s tried to delete the default category \'%s\' (%d)',
+            req.user.username,
+            defaultCategory.description,
+            defaultCategory.categoryId
+        );
+
         return;
     }
 
-    const result = await categoryStore.deleteCategory(req.params.categoryId, defaultCategory);
+    const result = await categoryStore.deleteCategory(req.params.categoryId, defaultCategory.categoryId);
 
     if (result === undefined) {
         res.status(404).json({
@@ -196,8 +204,24 @@ router.delete('/:categoryId', async (req, res) => {
             message: `Category with id '${ req.params.categoryId }' not found`
         });
 
+        logger.info(
+            'User %s tried to delete non-exiting category with ID %d',
+            req.user.username,
+            req.params.categoryId
+        );
+
         return;
     }
+
+    logger.info(
+        'User %s deleted category \'%s\' (%d), moving %d products to the default category \'%s\' (%d)',
+        req.user.username,
+        result.description,
+        result.categoryId,
+        result.movedProducts.length,
+        defaultCategory.description,
+        defaultCategory.categoryId
+    );
 
     res.status(200).json({
         deletedCategory: {

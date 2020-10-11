@@ -23,13 +23,14 @@ module.exports.getPreference = async (preference) => {
 module.exports.setPreference = async (preference, value) => {
     const data = await knex('PREFERENCES')
         .where({ key: preference.key })
-        .first();
+        .first('value');
 
     if (preference.validate) {
         const errors = preference.validate(value);
 
         if (errors.length > 0) {
             return {
+                previousValue: undefined,
                 value,
                 errors
             };
@@ -45,16 +46,23 @@ module.exports.setPreference = async (preference, value) => {
     if (data === undefined) {
         await knex('PREFERENCES')
             .insert({ key: preference.key, value: serialized });
+
+        return {
+            errors: [],
+            value,
+            previousValue: undefined
+        };
     } else {
         await knex('PREFERENCES')
             .update({ value: serialized })
             .where({ key: preference.key });
-    }
 
-    return {
-        errors: [],
-        value
-    };
+        return {
+            errors: [],
+            value,
+            previousValue: data.value
+        };
+    }
 };
 
 const floatPreference = {

@@ -251,11 +251,25 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
             res.status(200).json({
                 deletedBox: mapDatabaseBoxToApiBox(deletedBox)
             });
+
+            logger.info(
+                'User %s deleted a box (%s) of product (%s, %s)',
+                req.user.username,
+                boxBarcode,
+                deletedBox.product.name,
+                deletedBox.product.barcode
+            );
         } else {
             res.status(404).json({
                 error_code: 'not_found',
                 message: `No box with barcode '${ boxBarcode }' found`
             });
+
+            logger.info(
+                'User %s tried to delete a non-existent box with barcode \'%s\'',
+                req.user.username,
+                boxBarcode
+            );
         }
     } catch (error) {
         console.error(error);
@@ -305,12 +319,42 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
 
     const stock = await boxStore.buyIn(boxBarcode, req.body.boxCount);
 
+    logger.info(
+        'User %s bought in %d boxes (%s) - total of %d items of product \'%s\' (%s)',
+        req.user.username,
+        req.body.boxCount,
+        boxBarcode,
+        box.itemsPerBox * req.body.boxCount,
+        box.product.name,
+        box.product.barcode
+    );
+
     const update = {
         sellPrice: oldsellprice !== productSellPrice ? productSellPrice : undefined,
         buyPrice: oldbuyprice !== productBuyPrice ? productBuyPrice : undefined
     };
 
     await productStore.updateProduct(box.product.barcode, update, req.user.userId);
+
+    if (update.sellPrice !== undefined || update.buyPrice !== undefined) {
+        const changes = [];
+
+        if (update.sellPrice !== undefined) {
+            changes.push(`sellPrice from ${box.product.sellPrice} to ${update.sellPrice}`);
+        }
+
+        if (update.sellPrice !== undefined) {
+            changes.push(`buyPrice from ${box.product.buyPrice} to ${update.buyPrice}`);
+        }
+
+        logger.info(
+            'User %s changed %s on product \'%s\' (%s)',
+            req.user.username,
+            changes.join(' and '),
+            box.product.name,
+            box.product.barcode
+        );
+    }
 
     res.status(200).json({
         productStock: stock,
