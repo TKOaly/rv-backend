@@ -15,6 +15,13 @@ const token = jwt.sign(
     process.env.JWT_ADMIN_SECRET
 );
 
+const normalUserToken = jwt.sign(
+    {
+        userId: 1
+    },
+    process.env.JWT_SECRET
+);
+
 describe('routes: admin products', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
@@ -295,6 +302,91 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+
+    describe('Deleting a product', () => {
+        it('should fail on nonexisting product', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/88888888')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should return the deleted product', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            expect(res.body).to.have.all.keys('deletedProduct');
+            expect(res.body.deletedProduct).to.have.all.keys(
+                'barcode',
+                'name',
+                'category',
+                'weight',
+                'buyPrice',
+                'sellPrice',
+                'stock'
+            );
+            expect(res.body.deletedProduct.category).to.have.all.keys('categoryId', 'description');
+        });
+
+        it('should cause any requests for that product\'s information to fail', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            const lookup = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(lookup.status).to.equal(404);
+            expect(lookup.body.error_code).to.equal('product_not_found');
+        });
+
+        it('should cause the item to be removed from item listing', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            const listing = await chai
+                .request(server)
+                .get('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(listing.body.products.find((item) => item.barcode === '5053990123506')).to.be.an('undefined');
+        });
+
+        it('should prevent the item from being purchased', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            const purchase = await chai
+                .request(server)
+                .post('/api/v1/products/5053990123506/purchase')
+                .set('Authorization', 'Bearer ' + normalUserToken)
+                .send({
+                    count: 1
+                });
+
+            expect(purchase.status).to.equal(404);
         });
     });
 });

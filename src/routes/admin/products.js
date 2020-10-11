@@ -294,4 +294,21 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
     }
 });
 
+router.delete('/:barcode(\\d{1,14})', async (req, res) => {
+    const product = await productStore.deleteProduct(req.params.barcode);
+
+    if (product === undefined) {
+        res.status(404).json({
+            error_code: 'not_found',
+            message: `No product with barcode '${req.params.barcode}' found`
+        });
+
+        return;
+    }
+
+    res.status(200).json({
+        deletedProduct: product
+    });
+});
+
 module.exports = router;

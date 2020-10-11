@@ -13,7 +13,8 @@ const rowToProduct = (row) => {
             weight: row.weight,
             buyPrice: row.buyprice,
             sellPrice: row.sellprice,
-            stock: row.count
+            stock: row.count,
+            deleted: row.deleted
         };
     } else {
         return undefined;
@@ -23,7 +24,9 @@ const rowToProduct = (row) => {
 /**
  * Returns all products and their stock quantities, if available.
  */
-module.exports.getProducts = async () => {
+module.exports.getProducts = async (includeDeleted = false) => {
+    const deletedCondition = includeDeleted ? {} : { 'RVITEM.deleted': false };
+
     const data = await knex('PRICE')
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
@@ -37,15 +40,16 @@ module.exports.getProducts = async () => {
             'PRICE.sellprice',
             'PRICE.count'
         )
-        .where('PRICE.endtime', null);
+        .where({ 'PRICE.endtime': null, ...deletedCondition });
+
     return data.map(rowToProduct);
 };
 
 /**
  * Finds a product by its barcode.
  */
-module.exports.findByBarcode = async (barcode) => {
-    const row = await knex('PRICE')
+module.exports.findByBarcode = async (barcode, deleted = false) => {
+    let query = knex('PRICE')
         .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
@@ -56,11 +60,18 @@ module.exports.findByBarcode = async (barcode) => {
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
+            'RVITEM.deleted'
         )
         .where('PRICE.barcode', barcode)
-        .andWhere('PRICE.endtime', null)
-        .first();
+        .andWhere('PRICE.endtime', null);
+
+    if (!deleted) {
+        query = query.andWhere('RVITEM.deleted', false);
+    }
+
+    const row = await query.first();
+
     return rowToProduct(row);
 };
 
@@ -202,9 +213,15 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
     return await knex.transaction(async (trx) => {
         const now = new Date();
 
+        const nonDeletedItems = knex('RVITEM')
+            .where('deleted', false)
+            .select('itemid');
+
         const updatedPriceRows = await knex('PRICE')
             .transacting(trx)
-            .where({ barcode: barcode, endtime: null })
+            .where('itemid', 'in', nonDeletedItems)
+            .andWhere('barcode', barcode)
+            .andWhere('endtime', null)
             .decrement({ count: count })
             .returning(['priceid', 'itemid', 'sellprice', 'count']);
 
@@ -263,5 +280,37 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
         }
 
         return insertedHistory;
+    });
+};
+
+module.exports.deleteProduct = async (barcode) => {
+    return await knex.transaction(async (trx) => {
+        const row = await knex('PRICE')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.barcode',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count',
+                'RVITEM.itemid'
+            )
+            .where('PRICE.barcode', barcode)
+            .andWhere('PRICE.endtime', null)
+            .first();
+
+        if (row === undefined) {
+            return undefined;
+        }
+
+        await knex('RVITEM')
+            .select({ itemid: row.itemid })
+            .update({ deleted: true });
+
+        return rowToProduct(row);
     });
 };
