@@ -1,0 +1,1432 @@
+openapi: 3.0.0
+info:
+  version: '1'
+  title: Ruokavälitys API
+  description: API for both, managing the RV system and it's inventory, and browsing and purchasing products.
+
+externalDocs:
+  url: https://github.com/TKOaly/rv-backend
+
+servers:
+  - url: https://rv-backend-dev.herokuapp.com/
+    description: Staging environment
+  - url: https://rv-backend.herokuapp.com/
+    description: Production environment
+
+components:
+  schemas:
+    Role:
+      type: string
+      enum:
+        - ADMIN
+        - USER
+      example: USER
+    Product:
+      type: object
+      required: 
+        - barcode
+        - name
+        - category
+        - weight
+        - buyPrice
+        - sellPrice
+        - stock
+      properties: 
+        barcode: 
+          type: string
+          example: "6430039222212"
+        name: 
+          type: string
+          example: Kombucha bakteerin makuinen bakteerijuoma
+        category: 
+          '$ref': '#/components/schemas/Category'
+        weight: 
+          type: integer
+          example: 370
+        buyPrice: 
+          type: number
+          example: 3.00
+        sellPrice: 
+          type: number
+          example: 3.10
+        stock: 
+          type: integer
+          example: 10
+    Box:
+      type: object
+      required: 
+        - boxBarcode
+        - itemsPerBox
+        - product
+      properties: 
+        boxBarcode:
+          example: "01880335"
+          type: string
+        itemsPerBox: 
+          type: integer
+          example: 18
+        product:
+          '$ref': '#/components/schemas/Product'
+    PurchaseEventBase:
+      type: object
+      required: 
+        - purchaseId
+        - time
+        - price
+      properties: 
+        purchaseId: 
+          type: integer
+          example: 3053
+        time: 
+          type: string
+          example: '2018-12-24T00:00:00.000Z'
+        price: 
+          type: number
+          example: 0.19
+    PurchaseEventProduct:
+      type: object
+      required:
+        - product
+      properties:
+        product:
+          '$ref': '#/components/schemas/Product'
+    PurchaseEventUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          '$ref': '#/components/schemas/User'
+    PurchaseEventBalance:
+      type: object
+      required:
+        - balanceAfter
+      properties:
+        balanceAfter:
+          type: number
+          example: 19.81
+    PurchaseEventStock:
+      type: object
+      required:
+        - stockAfter
+      properties:
+        stockAfter:
+          type: integer
+          example: 11
+    DepositEventBase:
+      type: object
+      required: 
+        - depositId
+        - time
+        - amount
+        - balanceAfter
+      properties: 
+        depositId: 
+          type: integer
+        time: 
+          type: string
+          example: '2018-12-24T00:00:00.000Z'
+        amount: 
+          type: number
+          example: 20.00
+        balanceAfter:
+          type: number
+          example: 25.00
+    DepositEventUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          '$ref': '#/components/schemas/User'
+    User: 
+      type: object
+      required: 
+        - userId
+        - username
+        - fullName
+        - email
+        - moneyBalance
+        - role
+      properties: 
+        userId: 
+          type: integer
+          example: 415
+        username: 
+          type: string
+          example: fuxi2001
+        fullName: 
+          type: string
+          example: Fuxi C. S. McStudent
+        email: 
+          type: string
+          example: fuxi.student@helsinki.fi
+        moneyBalance: 
+          type: number
+          example: 20.00
+        role:
+          '$ref': '#/components/schemas/Role'
+    Category:
+      type: object
+      required: 
+        - categoryId
+        - description
+      properties: 
+        categoryId: 
+          type: integer
+          example: 10
+        description: 
+          type: string
+          example: Drinks, soda with bottle return
+
+paths: 
+  /api/v1/register: 
+    post: 
+      summary: Create a new user
+      responses: 
+        200:
+          description: New user created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                propertis: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+                - fullName
+                - email
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                password: 
+                  type: string
+                  example: hunter2
+                fullName: 
+                  type: string
+                  example: Fuxi C. S. McStudent
+                email: 
+                  type: string
+                  example: fuxi.cs.student@helsinki.fi
+  /api/v1/authenticate: 
+    post: 
+      summary: Authenticate with normal privileges
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                password: 
+                  type: string
+                  example: hunter2
+  /api/v1/admin/authenticate: 
+    post: 
+      summary: Authenticate with admin privileges
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: rvslayer69
+                password: 
+                  type: string
+                  example: y0ur_w4ll3t
+  /api/v1/products: 
+    get: 
+      summary: Get a list of all products
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Product'
+  /api/v1/products/{barcode}: 
+    get: 
+      summary: Get details of a specific product
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema:
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product:
+                    '$ref': '#/components/schemas/Product'
+  /api/v1/products/{barcode}/purchase: 
+    post: 
+      summary: Purchase a prouct
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200:
+          description: Purchase successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accountBalance
+                  - productStock
+                  - purchases
+                properties: 
+                  accountBalance: 
+                    type: integer
+                    example: 19.81
+                  productStock: 
+                    type: string
+                    example: 11
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventBalance'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - count
+              properties: 
+                count: 
+                  type: string
+                  example: 1
+  /api/v1/categories: 
+    get: 
+      summary: Get a list of product categories
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - categories
+                properties: 
+                  categories: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Category'
+  /api/v1/categories/{categoryId}: 
+    get: 
+      summary: Get details of a product category
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: integer
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+  /api/v1/user:
+    get: 
+      summary: Get details of the authenticated user
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user:
+                    '$ref': '#/components/schemas/User'
+    patch: 
+      summary: Update details of the authenticated user
+      responses: 
+        200: 
+          description: User information updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                username: 
+                  type: string
+                  example: 'jäärä2001'
+                fullName: 
+                  type: string
+                  example: 'Jäärä F. S. McConsultant'
+                email: 
+                  type: string
+                  example: 'jaara.fs.constultant@coolcorp.com'
+  /api/v1/user/deposit: 
+    post: 
+      summary: Deposit money to the authenticated user's account
+      responses: 
+        200: 
+          description: Balance added to the account successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accountBalance
+                  - deposit
+                properties: 
+                  accountBalance: 
+                    type: string
+                  deposit: 
+                    allOf:
+                      - '$ref': '#/components/schemas/DepositEventBase'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - amount
+              properties: 
+                amount: 
+                  type: string
+  /api/v1/user/purchaseHistory: 
+    get: 
+      summary: Get list of the authenticated user's past purchases
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventBalance'
+  /api/v1/user/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase made by the authenticated user
+      parameters: 
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase:
+                    allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventBalance'
+  /api/v1/user/depositHistory: 
+    get: 
+      summary: Get list of past deposit events of the authenticated user
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items:
+                      '$ref': '#/components/schemas/DepositEventBase'
+  /api/v1/user/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event created by the authenticated user
+      parameters: 
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    '$ref': '#/components/schemas/DepositEventBase'
+  /api/v1/admin/defaultMargin: 
+    get: 
+      summary: Get the default profit margin
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - margin
+                properties: 
+                  margin: 
+                    type: number
+                    example: 0.05
+    patch: 
+      summary: Update the default profit margin
+      responses: 
+        200: 
+          description: Profit margin updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - margin
+                properties: 
+                  margin: 
+                    type: number
+                    example: 0.05
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - margin
+              properties: 
+                margin: 
+                  type: number
+                  example: 0.05
+  /api/v1/admin/boxes: 
+    get: 
+      summary: Get a list of product boxes
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - boxes
+                properties: 
+                  boxes: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Box'
+    post: 
+      summary: Create a new box of products
+      responses: 
+        200: 
+          description: A new box created successfully
+          content:
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - boxBarcode
+                - itemsPerBox
+                - productBarcode
+              properties: 
+                boxBarcode: 
+                  type: string
+                  example: '01766752'
+                itemsPerBox: 
+                  type: integer
+                  example: 18
+                productBarcode: 
+                  type: string
+                  example: '7314660003114'
+  /api/v1/admin/boxes/{boxBarcode}: 
+    get: 
+      summary: Get the details of a specific product box
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+    patch: 
+      summary: Update the details of a product box
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Box updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                itemsPerBox: 
+                  type: integer
+                  example: 18
+                productBarcode: 
+                  type: string
+                  example: '7314660003114'
+    delete: 
+      summary: Delete a product box
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Box deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedBox
+                properties: 
+                  deletedBox: 
+                    '$ref': '#/components/schemas/Box'
+  /api/v1/admin/boxes/{boxBarcode}/buyIn: 
+    post: 
+      summary: Add products to stock by the boxful
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product stock updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - productStock
+                  - productBuyPrice
+                  - productSellPrice
+                properties: 
+                  productStock: 
+                    type: integer
+                    example: 11
+                  productBuyPrice: 
+                    type: number
+                    example: 2.90
+                  productSellPrice: 
+                    type: number
+                    example: 3.00
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - boxCount
+                - productBuyPrice
+                - productSellPrice
+              properties: 
+                boxCount: 
+                  type: integer
+                  example: 3
+                productBuyPrice: 
+                  type: number
+                  example: 2.90
+                productSellPrice: 
+                  type: number
+                  example: 3.00
+  /api/v1/admin/products: 
+    get: 
+      summary: Get a list of all products
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Product'
+    post: 
+      summary: Create a new product
+      responses: 
+        200: 
+          description: New product created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/Product'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - barcode
+                - name
+                - categoryId
+                - weight
+                - buyPrice
+                - sellPrice
+                - stock
+              properties: 
+                barcode: 
+                  type: string
+                  example: '7314660003114'
+                name: 
+                  type: string
+                  example: Muumilimsa
+                categoryId: 
+                  type: integer
+                  example: 10
+                weight: 
+                  type: number
+                  example: 350
+                buyPrice: 
+                  type: number
+                  example: 2.10
+                sellPrice: 
+                  type: number
+                  example: 2.20
+                stock: 
+                  type: integer
+                  example: 8
+  /api/v1/admin/products/{barcode}: 
+    get: 
+      summary: Get details of a specific product
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/Product'
+    patch: 
+      summary: Update the details of a specific product
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/Product'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              properties: 
+                name: 
+                  type: string
+                  example: Muumilimsa
+                categoryId: 
+                  type: integer
+                  example: 10
+                weight: 
+                  type: number
+                  example: 350
+                buyPrice: 
+                  type: number
+                  example: 2.10
+                sellPrice: 
+                  type: number
+                  example: 2.20
+                stock: 
+                  type: integer
+                  example: 8
+    delete: 
+      summary: Delete a product
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedProduct
+                properties: 
+                  deletedProduct: 
+                    '$ref': '#/components/schemas/Product'
+  /api/v1/admin/products/{barcode}/buyIn: 
+    post: 
+      summary: Add product to stock
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product stock updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - stock
+                  - buyPrice
+                  - sellPrice
+                properties: 
+                  stock: 
+                    type: integer
+                    example: 11
+                  buyPrice: 
+                    type: number
+                    example: 2.10
+                  sellPrice: 
+                    type: number
+                    example: 2.20
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - count
+                - buyPrice
+                - sellPrice
+              properties: 
+                count: 
+                  type: integer
+                  example: 3
+                buyPrice: 
+                  type: number
+                  example: 2.10
+                sellPrice: 
+                  type: number
+                  example: 2.20
+  /api/v1/admin/products/{barcode}/purchaseHistory: 
+    get: 
+      summary: Get a list of product's purchase events
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventUser'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+  /api/v1/admin/products/{barcode}/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get a specific purchase event
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+            example: '7314660003114'
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventUser'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+  /api/v1/admin/categories: 
+    get: 
+      summary: Get a list of product categories
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - categories
+                properties: 
+                  categories: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Category'
+    post: 
+      summary: Create a new product category
+      responses: 
+        200: 
+          description: New product category created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - description
+              properties: 
+                description: 
+                  type: string
+  /api/v1/admin/categories/{categoryId}: 
+    get: 
+      summary: Get the details of a product category
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 10
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+    patch: 
+      summary: Update details of a product category
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Category updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - description
+              properties: 
+                description: 
+                  type: string
+    delete: 
+      summary: Delete a product category
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Category deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedCategory
+                  - movedProducts
+                properties: 
+                  deletedCategory: 
+                    '$ref': '#/components/schemas/Category'
+                  movedProducts: 
+                    type: array
+                    items: 
+                      type: string
+  /api/v1/admin/users: 
+    get: 
+      summary: Get a list of all users
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - users
+                properties: 
+                  users: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/User'
+  /api/v1/admin/users/{userId}: 
+    get: 
+      summary: Get the details of a user
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+  /api/v1/admin/users/{userId}/purchaseHistory: 
+    get: 
+      summary: Get user's purchase history
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items: 
+                      allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventBalance'
+  /api/v1/admin/users/{userId}/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase event
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventBalance'
+  /api/v1/admin/users/{userId}/depositHistory: 
+    get: 
+      summary: Get deposit history of a user
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/DepositEventBase'
+  /api/v1/admin/users/{userId}/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    '$ref': '#/components/schemas/DepositEventBase'
+  /api/v1/admin/users/{userId}/changeRole: 
+    post: 
+      summary: Update the role of a user
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: User's role changed successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - role
+                properties: 
+                  role: 
+                    '$ref': '#/components/schemas/Role'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - role
+              properties: 
+                role: 
+                  '$ref': '#/components/schemas/Role'
+  /api/v1/admin/purchaseHistory: 
+    get: 
+      summary: Get combined purchase histories of all products and users
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items: 
+                      allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventUser'
+  /api/v1/admin/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase event
+      parameters: 
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventUser'
+  /api/v1/admin/depositHistory: 
+    get: 
+      summary: Get the combined deposit history of all users
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items: 
+                      allOf:
+                        - '$ref': '#/components/schemas/DepositEventBase'
+                        - '$ref': '#/components/schemas/DepositEventUser'
+  /api/v1/admin/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event
+      parameters: 
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    allOf:
+                        - '$ref': '#/components/schemas/DepositEventBase'
+                        - '$ref': '#/components/schemas/DepositEventUser'
