@@ -351,7 +351,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(lookup.status).to.equal(404);
-            expect(lookup.body.error_code).to.equal('product_not_found');
+            expect(lookup.body.error_code).to.equal('not_found');
         });
 
         it('should cause the item to be removed from item listing', async () => {
@@ -499,6 +499,37 @@ describe('routes: admin products', () => {
             expect(post_query.status).to.equal(200);
             expect(post_query.body.product.sellPrice).to.equal(initialSellPrice + 1);
             expect(post_query.body.product.buyPrice).to.equal(initialBuyPrice + 1);
+        });
+    });
+
+    describe('Querying product\'s purchase history', () => {
+        it('should return a list of purchases', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506/purchaseHistory')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+            expect(res.body).to.contain.key('purchases');
+            expect(res.body.purchases).to.be.an('array');
+
+            res.body.purchases.forEach((purchase) => {
+                expect(purchase).to.contain.all.keys(
+                    'purchaseId',
+                    'time',
+                    'user',
+                    'price',
+                    'stockAfter',
+                    'balanceAfter'
+                );
+
+                expect(purchase.user).to.contain.all.keys(
+                    'username',
+                    'fullName',
+                    'email',
+                    'role'
+                );
+            });
         });
     });
 });
