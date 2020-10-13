@@ -136,6 +136,6 @@ The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests.
 ### Endpoints
 
 A full list of API endpoints and their documentation can be found at
-[Swagger](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1#/).
+[Swagger](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1.1#/).
 This documentation is created from an OpenAPI description of the API,
 which can be found from the file `openapi.yaml`.
