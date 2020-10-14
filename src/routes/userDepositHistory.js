@@ -44,7 +44,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
         if (!deposit || deposit.user.userId !== user.userId) {
             logger.error('User %s tried to fetch unknown deposit %s', user.username, depositId);
             res.status(404).json({
-                error_code: 'deposit_not_found',
+                error_code: 'not_found',
                 message: 'Deposit event does not exist'
             });
             return;

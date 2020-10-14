@@ -1,11 +1,14 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const userStore = require('../src/db/userStore');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 describe('routes: register', () => {
     beforeEach(async () => {
@@ -29,6 +32,7 @@ describe('routes: register', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('Username should not be empty', async () => {
@@ -44,6 +48,7 @@ describe('routes: register', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('User password should not be empty', async () => {
@@ -59,6 +64,7 @@ describe('routes: register', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -76,6 +82,7 @@ describe('routes: register', () => {
 
             expect(res.status).to.equal(409);
             expect(res.body.error_code).to.equal('identifier_taken');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('Email should be unique', async () => {
@@ -91,6 +98,7 @@ describe('routes: register', () => {
 
             expect(res.status).to.equal(409);
             expect(res.body.error_code).to.equal('identifier_taken');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -107,8 +115,7 @@ describe('routes: register', () => {
                 });
 
             expect(res.status).to.equal(201);
-            expect(res.body).to.have.all.keys('user');
-            expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('Registering should create a new user to the database', async () => {

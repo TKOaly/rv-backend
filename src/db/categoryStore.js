@@ -78,7 +78,7 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
     const row = rows[0];
 
     return {
-        categoryId,
+        categoryId: parseInt(categoryId),
         description: row.descr,
         movedProducts: movedProducts.map((row) => row.barcode)
     };

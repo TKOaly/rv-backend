@@ -62,10 +62,12 @@ router.post('/', async (req, res) => {
         logger.info('Registered new user: %s', username);
         res.status(201).json({
             user: {
+                userId: newUser.userId,
                 username: newUser.username,
                 fullName: newUser.fullName,
                 email: newUser.email,
-                moneyBalance: newUser.moneyBalance
+                moneyBalance: newUser.moneyBalance,
+                role: newUser.role
             }
         });
     } catch (error) {

@@ -1,12 +1,15 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const categoryStore = require('../../src/db/categoryStore');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
@@ -15,7 +18,7 @@ const token = jwt.sign(
     process.env.JWT_ADMIN_SECRET
 );
 
-describe('routes: admin products', () => {
+describe('routes: admin categories', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();
@@ -34,12 +37,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('categories');
-            expect(res.body.categories).to.be.an('array');
-            for (const category of res.body.categories) {
-                expect(category).to.have.all.keys('categoryId', 'description');
-            }
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -51,9 +49,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent category', async () => {
@@ -63,6 +59,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -95,11 +92,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
-
-            expect(res.body.category.description).to.equal('Food waste');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -113,6 +106,7 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -143,10 +137,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
-
+            expect(res).to.satisfyApiSpec;
             expect(res.body.category.description).to.equal('Radioactive waste');
         });
 
@@ -161,6 +152,7 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -174,6 +166,7 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -186,6 +179,7 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should return the deleted category and moved items', async () => {
@@ -195,10 +189,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.contain.all.keys('movedProducts', 'deletedCategory');
-            expect(res.body.movedProducts).to.be.an('array');
-            expect(res.body.deletedCategory).to.contain.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should move items to the default category', async () => {
@@ -241,6 +232,7 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(403);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 });

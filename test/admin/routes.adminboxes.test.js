@@ -1,12 +1,15 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const boxStore = require('../../src/db/boxStore');
+
+chai.use(chaiHttp);
+chai.use(openapiValidator);
 
 const token = jwt.sign(
     {
@@ -34,22 +37,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('boxes');
-            expect(res.body.boxes).to.be.an('array');
-            for (const box of res.body.boxes) {
-                expect(box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-                expect(box.product).to.have.all.keys(
-                    'barcode',
-                    'name',
-                    'category',
-                    'weight',
-                    'buyPrice',
-                    'sellPrice',
-                    'stock'
-                );
-                expect(box.product.category).to.have.all.keys('categoryId', 'description');
-            }
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -61,19 +49,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should return 404 on nonexistent box', async () => {
@@ -83,6 +59,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -119,19 +96,7 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error if box barcode is already taken', async () => {
@@ -147,6 +112,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(409);
             expect(res.body.error_code).to.equal('identifier_taken');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -162,6 +128,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('invalid_reference');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -177,6 +144,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -226,20 +194,7 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
-            expect(res.body.box.itemsPerBox).to.equal(49);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent box', async () => {
@@ -254,6 +209,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -268,6 +224,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('invalid_reference');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -282,6 +239,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -310,6 +268,7 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should return the deleted box', async () => {
@@ -319,19 +278,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('deletedBox');
-            expect(res.body.deletedBox).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.deletedBox.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.deletedBox.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -348,6 +295,7 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should fail on invalid request', async () => {
@@ -368,6 +316,7 @@ describe('routes: admin boxes', () => {
                     .send(invalidRequest);
 
                 expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+                expect(res).to.satisfyApiSpec;
             }
 
             for (const negativeField in validFields) {
@@ -381,6 +330,7 @@ describe('routes: admin boxes', () => {
                     .send(invalidRequest);
 
                 expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
+                expect(res).to.satisfyApiSpec;
             }
         });
 

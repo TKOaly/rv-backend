@@ -33,15 +33,13 @@ describe('routes: admin default margin', () => {
                 .set('Authorization', `Bearer ${ token }`);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('margin');
-            expect(res.body.margin).to.be.a('number');
+            expect(res).to.satisfyApiSpec;
             expect(res.body.margin).to.equal(GLOBAL_DEFAULT_MARGIN.default);
         });
     });
 
     describe('Setting a value', () => {
-        it(`should return the set value`, async () => {
+        it('should return the set value', async () => {
             const set_res = await chai
                 .request(server)
                 .patch('/api/v1/admin/defaultMargin')
@@ -58,9 +56,7 @@ describe('routes: admin default margin', () => {
                 .set('Authorization', `Bearer ${ token }`);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('margin');
-            expect(res.body.margin).to.be.a('number');
+            expect(res).to.satisfyApiSpec;
             expect(res.body.margin).to.equal(0.2);
         });
     });

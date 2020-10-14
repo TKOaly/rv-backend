@@ -50,7 +50,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
         if (!product) {
             logger.error('User %s tried to fetch unknown product %s', user.username, barcode);
             res.status(404).json({
-                error_code: 'product_not_found',
+                error_code: 'not_found',
                 message: 'Product does not exist'
             });
             return;
@@ -152,7 +152,7 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
             // unknown product, no valid price or out of stock
             logger.error('User %s tried to purchase unknown product %s', user.username, barcode);
             res.status(404).json({
-                error_code: 'product_not_found',
+                error_code: 'not_found',
                 message: 'Product not found'
             });
         }

@@ -29,11 +29,11 @@ router.get('/depositHistory/:depositId', async (req, res) => {
 });
 
 router.get('/purchaseHistory', async (req, res) => {
-	const purchases = await historyStore.getPurchaseHistory();
+    const purchases = await historyStore.getPurchaseHistory();
 
-	res.status(200).json({
-		purchases
-	});
+    res.status(200).json({
+        purchases
+    });
 });
 
 router.get('/purchaseHistory/:purchaseId', async (req, res) => {

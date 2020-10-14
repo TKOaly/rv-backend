@@ -1,12 +1,15 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 describe('routes: authentication', () => {
     beforeEach(async () => {
@@ -30,7 +33,7 @@ describe('routes: authentication', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.have.all.keys('accessToken');
+            expect(res).to.satisfyApiSpec;
 
             const token = jwt.verify(res.body.accessToken);
             expect(token.data.userId).to.exist;
@@ -49,6 +52,7 @@ describe('routes: authentication', () => {
                 });
 
             expect(res.status).to.equal(401);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('with nonexistent user, should return a 401 unauthorized response', async () => {
@@ -61,6 +65,7 @@ describe('routes: authentication', () => {
                 });
 
             expect(res.status).to.equal(401);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('invalid request should result in a 400 bad request response', async () => {

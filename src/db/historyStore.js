@@ -9,6 +9,7 @@ const rowToPurchase = (row) => {
         stockAfter: row.count
     };
 };
+
 const rowToDeposit = (row) => {
     return {
         depositId: row.pershistid,
@@ -17,6 +18,7 @@ const rowToDeposit = (row) => {
         balanceAfter: row.saldo
     };
 };
+
 const rowToProduct = (row) => {
     return {
         barcode: row.barcode,
@@ -25,16 +27,21 @@ const rowToProduct = (row) => {
             categoryId: row.pgrpid,
             description: row.pgrpdescr
         },
-        weight: row.weight
+        weight: row.weight,
+        buyPrice: row.buyprice,
+        sellPrice: row.sellprice,
+        stock: row.stock
     };
 };
+
 const rowToUser = (row) => {
     return {
         userId: row.userid,
         username: row.name,
         fullName: row.realname,
         email: row.univident,
-        role: row.role
+        role: row.role,
+        moneyBalance: row.currentsaldo
     };
 };
 
@@ -56,10 +63,13 @@ const createPurchaseHistoryQuery = () =>
             'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.sellprice',
+            'PRICE.buyprice',
+            'PRICE.count as stock',
             'RVPERSON.userid',
             'RVPERSON.name',
             'RVPERSON.realname',
             'RVPERSON.univident',
+            'RVPERSON.saldo as currentsaldo',
             'ROLE.role',
             'SALDOHISTORY.saldo'
         )
@@ -83,6 +93,7 @@ const createDepositHistoryQuery = () =>
             'RVPERSON.name',
             'RVPERSON.realname',
             'RVPERSON.univident',
+            'RVPERSON.saldo as currentsaldo',
             'ROLE.role'
         )
         .where('PERSONHIST.actionid', 17) /* actionid 17 = deposit action */

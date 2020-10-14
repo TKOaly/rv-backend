@@ -1,4 +1,3 @@
-5053990123506
 openapi: 3.0.0
 info:
   version: '1.1'
@@ -36,7 +35,7 @@ components:
       type: string
       enum:
         - ADMIN
-        - USER
+        - USER1
       example: USER
     Product:
       type: object
@@ -45,7 +44,6 @@ components:
         - name
         - category
         - weight
-        - buyPrice
         - sellPrice
         - stock
       properties: 
@@ -60,15 +58,22 @@ components:
         weight: 
           type: integer
           example: 370
-        buyPrice: 
-          type: number
-          example: 3.00
         sellPrice: 
           type: number
           example: 3.10
         stock: 
           type: integer
           example: 10
+    AdminProduct:
+      allOf:
+        - '$ref': '#/components/schemas/Product'
+        - type: object
+          required:
+            - buyPrice
+          properties:
+            buyPrice:
+              type: number
+              example: 3.00
     Box:
       type: object
       required: 
@@ -96,6 +101,7 @@ components:
           example: 3053
         time: 
           type: string
+          format: date-time
           example: '2018-12-24T00:00:00.000Z'
         price: 
           type: number
@@ -142,6 +148,7 @@ components:
           type: integer
         time: 
           type: string
+          format: date-time
           example: '2018-12-24T00:00:00.000Z'
         amount: 
           type: number
@@ -195,6 +202,18 @@ components:
         description: 
           type: string
           example: Drinks, soda with bottle return
+    Preference:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          example: globalDefaultMargin
+        value:
+          description: Can be any JSON value. The type depends on the preference in question.
+          example: 0.05
   responses:
     InvalidCredentialsErrorResponse:
       description: The JWT access token provided with the request is invalid or it is missing.
@@ -260,7 +279,8 @@ components:
               error_code:
                 type: string
                 enum:
-                  - not_found
+                  - bad_request
+                  - invalid_reference
               message:
                 type: string
                 example: Missing or invalid fields in request
@@ -269,13 +289,30 @@ components:
                 items:
                   type: string
                   example: 'boxBarcode should be a numeric 1-14 digit barcode' 
+    IdentifierTakenErrorResponse:
+      description: Creating a new resource failed, because a resource with the given identifier already exists.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - identifier_taken
+              message:
+                type: string
+                example: Barcode already in use.
 
 paths: 
   /api/v1/register: 
     post: 
       summary: Create a new user
       responses: 
-        200:
+        201:
           description: New user created successfully
           content: 
             application/json: 
@@ -288,6 +325,8 @@ paths:
                     '$ref': '#/components/schemas/User'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -461,7 +500,7 @@ paths:
                     type: integer
                     example: 19.81
                   productStock: 
-                    type: string
+                    type: integer
                     example: 11
                   purchases: 
                     type: array
@@ -470,12 +509,29 @@ paths:
                         - '$ref': '#/components/schemas/PurchaseEventBase'
                         - '$ref': '#/components/schemas/PurchaseEventBalance'
                         - '$ref': '#/components/schemas/PurchaseEventStock'
-        401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
-        404:
-          '$ref': '#/components/responses/NotFoundErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        403:
+          description: The account has insufficient funds and the purchase cannot be made.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error_code
+                  - message
+                properties:
+                  error_code:
+                    type: string
+                    enum:
+                      - insufficient_funds
+                  message:
+                    type: string
+                    example: Insufficient funds
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -575,6 +631,8 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -608,7 +666,7 @@ paths:
                   - deposit
                 properties: 
                   accountBalance: 
-                    type: string
+                    type: number
                   deposit: 
                     allOf:
                       - '$ref': '#/components/schemas/DepositEventBase'
@@ -729,6 +787,31 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/user/changePassword:
+    post:
+      summary: Change the account's password
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  example: hunter2
+      responses:
+        204:
+          description: Password changed successfully
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+
   /api/v1/admin/defaultMargin: 
     get: 
       summary: Get the default profit margin
@@ -808,7 +891,7 @@ paths:
       security:
         - adminAccessToken: []
       responses: 
-        200: 
+        201: 
           description: A new box created successfully
           content:
             application/json: 
@@ -823,6 +906,8 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -1015,7 +1100,7 @@ paths:
                   products: 
                     type: array
                     items: 
-                      '$ref': '#/components/schemas/Product'
+                      '$ref': '#/components/schemas/AdminProduct'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
     post: 
@@ -1023,7 +1108,7 @@ paths:
       security:
         - adminAccessToken: []
       responses: 
-        200: 
+        201: 
           description: New product created successfully
           content: 
             application/json: 
@@ -1033,11 +1118,13 @@ paths:
                   - product
                 properties: 
                   product: 
-                    '$ref': '#/components/schemas/Product'
+                    '$ref': '#/components/schemas/AdminProduct'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -1096,7 +1183,7 @@ paths:
                   - product
                 properties: 
                   product: 
-                    '$ref': '#/components/schemas/Product'
+                    '$ref': '#/components/schemas/AdminProduct'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
@@ -1122,7 +1209,7 @@ paths:
                   - product
                 properties: 
                   product: 
-                    '$ref': '#/components/schemas/Product'
+                    '$ref': '#/components/schemas/AdminProduct'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
@@ -1175,7 +1262,7 @@ paths:
                   - deletedProduct
                 properties: 
                   deletedProduct: 
-                    '$ref': '#/components/schemas/Product'
+                    '$ref': '#/components/schemas/AdminProduct'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
@@ -1333,7 +1420,7 @@ paths:
       security:
         - adminAccessToken: []
       responses: 
-        200: 
+        201: 
           description: New product category created successfully
           content: 
             application/json: 
@@ -1802,6 +1889,84 @@ paths:
                     allOf:
                         - '$ref': '#/components/schemas/DepositEventBase'
                         - '$ref': '#/components/schemas/DepositEventUser'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/preferences:
+    get:
+      summary: Get list of preferences and their values
+      security:
+        - adminAccessToken: []
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preferences
+                properties:
+                  preferences:
+                    type: array
+                    items:
+                      '$ref': '#/components/schemas/Preference'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/preferences/{preferenceKey}:
+    get:
+      summary: Get the value of a preference
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: preferenceKey
+          required: true
+          in: path
+          schema:
+            type: string
+            example: globalDefaultMargin
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preference
+                properties:
+                  preference:
+                    '$ref': '#/components/schemas/Preference'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+    patch:
+      summary: Update the value of a preference
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: preferenceKey
+          required: true
+          in: path
+          schema:
+            type: string
+            example: globalDefaultMargin
+      responses:
+        200:
+          description: Preference's value updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preference
+                properties:
+                  preference:
+                    '$ref': '#/components/schemas/Preference'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:

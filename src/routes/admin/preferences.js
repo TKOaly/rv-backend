@@ -59,11 +59,10 @@ router.patch('/:preferenceKey', async (req, res) => {
         return;
     }
 
-    const oldValue = await getPreference(preference);
     const result = await setPreference(preference, req.body.value);
 
     if (result.errors.length > 0) {
-        res.status(403).json({
+        res.status(400).json({
             error_code: 'bad_request',
             message: 'Invalid preference value',
             errors: result.errors

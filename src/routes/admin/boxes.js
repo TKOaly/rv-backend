@@ -139,7 +139,7 @@ router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
         if (!box) {
             logger.error('User %s tried to fetch unknown box %s as admin', user.username, boxBarcode);
             res.status(404).json({
-                error_code: 'box_not_found',
+                error_code: 'not_found',
                 message: 'Box does not exist'
             });
             return;

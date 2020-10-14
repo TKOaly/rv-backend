@@ -1,12 +1,14 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
-const categoryStore = require('../../src/db/categoryStore');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
@@ -35,18 +37,7 @@ describe('routes: admin history', () => {
                     .set('Authorization', 'Bearer ' + token);
 
                 expect(res.status).to.equal(200);
-                expect(res.body).to.contain.key('purchases');
-                expect(res.body.purchases).to.be.an('array');
-
-                res.body.purchases.forEach((purchase) => {
-                    expect(purchase).to.contain.all.keys(
-                        'purchaseId',
-                        'time',
-                        'user',
-                        'price',
-                        'stockAfter'
-                    );
-                });
+                expect(res).to.satisfyApiSpec;
             });
         });
 
@@ -58,15 +49,7 @@ describe('routes: admin history', () => {
                     .set('Authorization', 'Bearer ' + token);
 
                 expect(res.status).to.equal(200);
-                expect(res.body).to.contain.key('purchase');
-                expect(res.body.purchase).to.be.an('object');
-                expect(res.body.purchase).to.contain.all.keys(
-                    'purchaseId',
-                    'time',
-                    'user',
-                    'price',
-                    'stockAfter'
-                );
+                expect(res).to.satisfyApiSpec;
             });
 
             it('should fail with a nonexsisting id', async () => {
@@ -77,6 +60,7 @@ describe('routes: admin history', () => {
 
                 expect(res.status).to.equal(404);
                 expect(res.body.error_code).to.equal('not_found');
+                expect(res).to.satisfyApiSpec;
             });
         });
     });
@@ -90,12 +74,7 @@ describe('routes: admin history', () => {
                     .set('Authorization', 'Bearer ' + token);
 
                 expect(res.status).to.equal(200);
-                expect(res.body).to.contain.key('deposits');
-
-                res.body.deposits.forEach((deposit) => {
-                    expect(deposit).to.contain.all.keys('depositId', 'time', 'user', 'amount');
-                    expect(deposit.user).to.contain.all.keys('userId', 'username', 'email', 'role', 'fullName');
-                });
+                expect(res).to.satisfyApiSpec;
             });
         });
 
@@ -108,6 +87,7 @@ describe('routes: admin history', () => {
 
                 expect(res.status).to.equal(404);
                 expect(res.body.error_code).to.equal('not_found');
+                expect(res).to.satisfyApiSpec;
             });
 
             it('should return a deposit', async () => {
@@ -117,9 +97,7 @@ describe('routes: admin history', () => {
                     .set('Authorization', 'Bearer ' + token);
 
                 expect(res.status).to.equal(200);
-                expect(res.body).to.contain.key('deposit');
-                expect(res.body.deposit).to.contain.all.keys('depositId', 'time', 'user', 'amount');
-                expect(res.body.deposit.user).to.contain.all.keys('userId', 'username', 'email', 'role', 'fullName');
+                expect(res).to.satisfyApiSpec;
             });
         });
     });

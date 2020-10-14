@@ -92,7 +92,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         if (!category) {
             logger.error('User %s tried to fetch unknown category %s as admin', user.username, categoryId);
             res.status(404).json({
-                error_code: 'category_not_found',
+                error_code: 'not_found',
                 message: 'Category does not exist'
             });
             return;

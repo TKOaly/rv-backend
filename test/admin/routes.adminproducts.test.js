@@ -1,12 +1,14 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
+const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const productStore = require('../../src/db/productStore');
+
+chai.use(chaiHttp);
+chai.use(openapiValidator);
 
 const token = jwt.sign(
     {
@@ -41,21 +43,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('products');
-            expect(res.body.products).to.be.an('array');
-            for (const product of res.body.products) {
-                expect(product).to.have.all.keys(
-                    'barcode',
-                    'name',
-                    'category',
-                    'weight',
-                    'buyPrice',
-                    'sellPrice',
-                    'stock'
-                );
-                expect(product.category).to.have.all.keys('categoryId', 'description');
-            }
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -67,18 +55,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -88,6 +65,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -132,18 +110,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error if barcode is already taken', async () => {
@@ -162,6 +129,8 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(409);
+            expect(res).to.satisfyApiSpec;
+
             expect(res.body.error_code).to.equal('identifier_taken');
         });
 
@@ -181,6 +150,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('invalid_reference');
         });
 
@@ -197,6 +167,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
@@ -250,19 +221,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
-            expect(res.body.product.buyPrice).to.equal(5000);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -275,6 +234,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -288,6 +248,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('invalid_reference');
         });
 
@@ -301,6 +262,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
@@ -313,6 +275,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -323,18 +286,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('deletedProduct');
-            expect(res.body.deletedProduct).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.deletedProduct.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should cause any requests for that product\'s information to fail', async () => {
@@ -343,24 +295,21 @@ describe('routes: admin products', () => {
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
-            expect(res.status).to.equal(200);
-
             const lookup = await chai
                 .request(server)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(lookup.status).to.equal(404);
+            expect(lookup).to.satisfyApiSpec;
             expect(lookup.body.error_code).to.equal('not_found');
         });
 
         it('should cause the item to be removed from item listing', async () => {
-            const res = await chai
+            await chai
                 .request(server)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200);
 
             const listing = await chai
                 .request(server)
@@ -371,12 +320,10 @@ describe('routes: admin products', () => {
         });
 
         it('should prevent the item from being purchased', async () => {
-            const res = await chai
+            await chai
                 .request(server)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200);
 
             const purchase = await chai
                 .request(server)
@@ -403,6 +350,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -423,6 +371,7 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
+                expect(res).to.satisfyApiSpec;
                 expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
             }
 
@@ -436,6 +385,7 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
+                expect(res).to.satisfyApiSpec;
                 expect(res.status).to.equal(400, `request should fail when field ${negativeField} has a negative value`);
             }
         });
@@ -449,7 +399,7 @@ describe('routes: admin products', () => {
             expect(pre_query.status).to.equal(200);
             const initial_stock = pre_query.body.product.stock;
 
-            const res = await chai
+            await chai
                 .request(server)
                 .post('/api/v1/admin/products/5053990123506/buyIn')
                 .set('Authorization', 'Bearer ' + token)
@@ -458,8 +408,6 @@ describe('routes: admin products', () => {
                     buyPrice: 1,
                     sellPrice: 1
                 });
-
-            expect(res.status).to.equal(200);
 
             const post_query = await chai
                 .request(server)
@@ -510,26 +458,7 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.contain.key('purchases');
-            expect(res.body.purchases).to.be.an('array');
-
-            res.body.purchases.forEach((purchase) => {
-                expect(purchase).to.contain.all.keys(
-                    'purchaseId',
-                    'time',
-                    'user',
-                    'price',
-                    'stockAfter',
-                    'balanceAfter'
-                );
-
-                expect(purchase.user).to.contain.all.keys(
-                    'username',
-                    'fullName',
-                    'email',
-                    'role'
-                );
-            });
+            expect(res).to.satisfyApiSpec;
         });
     });
 });

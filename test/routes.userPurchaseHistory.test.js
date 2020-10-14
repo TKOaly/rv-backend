@@ -1,11 +1,14 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 const token = jwt.sign({
     userId: 1
@@ -30,14 +33,7 @@ describe('routes: userPurchaseHistory', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('purchases');
-            expect(res.body.purchases).to.be.an('array');
-            for (const purchase of res.body.purchases) {
-                expect(purchase).to.have.all.keys('purchaseId', 'time', 'product', 'price', 'balanceAfter');
-                expect(purchase.product).to.have.all.keys('barcode', 'name', 'category', 'weight');
-                expect(purchase.product.category).to.have.all.keys('categoryId', 'description');
-            }
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -49,11 +45,7 @@ describe('routes: userPurchaseHistory', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('purchase');
-            expect(res.body.purchase).to.have.all.keys('purchaseId', 'time', 'product', 'price', 'balanceAfter');
-            expect(res.body.purchase.product).to.have.all.keys('barcode', 'name', 'category', 'weight');
-            expect(res.body.purchase.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should return 404 on nonexistent purchase event', async () => {
@@ -63,17 +55,7 @@ describe('routes: userPurchaseHistory', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-        });
-
-        it('should have the time as string in ISO 8601 format', async () => {
-            const res = await chai
-                .request(server)
-                .get('/api/v1/user/purchaseHistory/2')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200);
-
-            expect(res.body.purchase.time).to.equal('2018-12-24T00:00:01.000Z');
+            expect(res).to.satisfyApiSpec;
         });
     });
 });

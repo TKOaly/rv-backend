@@ -24,6 +24,7 @@ services:
       - ./src:/usr/src/app/src
       - ./test:/usr/src/app/test
       - ./logs:/usr/src/app/logs
+      - ./openapi.yaml:/usr/src/app/openapi.yaml
   db:
     image: postgres:10-alpine
     ports:

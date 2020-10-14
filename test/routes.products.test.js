@@ -1,14 +1,17 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
+const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
 const productStore = require('../src/db/productStore');
 const historyStore = require('../src/db/historyStore');
+
+chai.use(openapiValidator);
+chai.use(chaiHttp);
 
 const token = jwt.sign({
     userId: 1
@@ -33,13 +36,7 @@ describe('routes: products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('products');
-            expect(res.body.products).to.be.an('array');
-            for (const product of res.body.products) {
-                expect(product).to.have.all.keys('barcode', 'name', 'category', 'weight', 'sellPrice', 'stock');
-                expect(product.category).to.have.all.keys('categoryId', 'description');
-            }
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -51,10 +48,7 @@ describe('routes: products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys('barcode', 'name', 'category', 'weight', 'sellPrice', 'stock');
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should return 404 on nonexistent product', async () => {
@@ -64,6 +58,7 @@ describe('routes: products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -81,8 +76,7 @@ describe('routes: products', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('accountBalance', 'productStock', 'purchases');
+            expect(res).to.satisfyApiSpec;
 
             const newUser = await userStore.findByUsername('normal_user');
             const newProduct = await productStore.findByBarcode('8855702006834');
@@ -150,6 +144,7 @@ describe('routes: products', () => {
                 });
 
             expect(res.status).to.equal(404);
+            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on insufficient funds', async () => {
@@ -164,6 +159,7 @@ describe('routes: products', () => {
                     count: 1
                 });
 
+            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('insufficient_funds');
         });
     });

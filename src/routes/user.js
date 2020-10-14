@@ -15,10 +15,12 @@ router.get('/', async (req, res) => {
     logger.info('User %s fetched user data', user.username);
     res.status(200).json({
         user: {
+            userId: user.userId,
             username: user.username,
             fullName: user.fullName,
             email: user.email,
-            moneyBalance: user.moneyBalance
+            moneyBalance: user.moneyBalance,
+            role: user.role
         }
     });
 });
@@ -100,10 +102,12 @@ router.patch('/', async (req, res) => {
         );
         res.status(200).json({
             user: {
+                userId: updatedUser.userId,
                 username: updatedUser.username,
                 fullName: updatedUser.fullName,
                 email: updatedUser.email,
-                moneyBalance: updatedUser.moneyBalance
+                moneyBalance: updatedUser.moneyBalance,
+                role: updatedUser.role
             }
         });
     } catch (error) {
