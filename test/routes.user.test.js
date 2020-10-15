@@ -1,13 +1,14 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
 const historyStore = require('../src/db/historyStore');
+
+chai.use(chaiHttp);
 
 const token = jwt.sign({
     userId: 1
@@ -32,9 +33,6 @@ describe('routes: user', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('user');
-            expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
         });
     });
 
@@ -51,9 +49,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('user');
-            expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
 
             expect(res.body.user.username).to.equal('abcd');
             expect(res.body.user.fullName).to.equal('abcd efgh');
@@ -128,8 +123,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('accountBalance', 'deposit');
 
             expect(res.body.accountBalance).to.equal(650);
 

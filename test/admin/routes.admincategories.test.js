@@ -1,12 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const categoryStore = require('../../src/db/categoryStore');
+
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
@@ -15,7 +16,7 @@ const token = jwt.sign(
     process.env.JWT_ADMIN_SECRET
 );
 
-describe('routes: admin products', () => {
+describe('routes: admin categories', () => {
     beforeEach(async () => {
         await knex.migrate.rollback();
         await knex.migrate.latest();
@@ -34,12 +35,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('categories');
-            expect(res.body.categories).to.be.an('array');
-            for (const category of res.body.categories) {
-                expect(category).to.have.all.keys('categoryId', 'description');
-            }
         });
     });
 
@@ -51,9 +46,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
         });
 
         it('should error on nonexistent category', async () => {
@@ -95,11 +87,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
-
-            expect(res.body.category.description).to.equal('Food waste');
         });
 
         it('should error on invalid parameters', async () => {
@@ -143,10 +130,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('category');
-            expect(res.body.category).to.have.all.keys('categoryId', 'description');
-
             expect(res.body.category.description).to.equal('Radioactive waste');
         });
 
@@ -173,6 +156,69 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
+            expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+
+    describe('deleting a category', () => {
+        it('should fail with a nonexisting category', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/categories/9999')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should return the deleted category and moved items', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/categories/20')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+        });
+
+        it('should move items to the default category', async () => {
+            const pre_res = await chai
+                .request(server)
+                .get('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(pre_res.status).to.equal(200);
+
+            const initial_items = pre_res.body.products
+                .filter((prod) => prod.category.categoryId === 20)
+                .map((prod) => prod.barcode);
+
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/categories/20')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+            expect(res.body.movedProducts.sort()).to.deep.equal(initial_items.sort());
+
+            const post_res = await chai
+                .request(server)
+                .get('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_res.status).to.equal(200);
+
+            post_res.body.products
+                .filter((prod) => initial_items.indexOf(prod.barcode) !== -1)
+                .forEach((prod) => expect(prod.category.categoryId).to.not.equal(20));
+        });
+
+        it('should fail with the default category', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/categories/0')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(403);
             expect(res.body.error_code).to.equal('bad_request');
         });
     });

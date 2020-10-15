@@ -22,7 +22,9 @@ router.get('/', async (req, res) => {
                         categoryId: purchase.product.category.categoryId,
                         description: purchase.product.category.description
                     },
-                    weight: purchase.product.weight
+                    weight: purchase.product.weight,
+                    sellPrice: purchase.product.sellPrice,
+                    stock: purchase.product.stock
                 },
                 price: purchase.price,
                 balanceAfter: purchase.balanceAfter
@@ -53,7 +55,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
         if (!purchase || purchase.user.userId !== user.userId) {
             logger.error('User %s tried to fetch unknown purchase %s', user.username, purchaseId);
             res.status(404).json({
-                error_code: 'purchase_not_found',
+                error_code: 'not_found',
                 message: 'Purchase event does not exist'
             });
             return;
@@ -71,7 +73,9 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
                         categoryId: purchase.product.category.categoryId,
                         description: purchase.product.category.description
                     },
-                    weight: purchase.product.weight
+                    weight: purchase.product.weight,
+                    sellPrice: purchase.product.sellPrice,
+                    stock: purchase.product.stock
                 },
                 price: purchase.price,
                 balanceAfter: purchase.balanceAfter

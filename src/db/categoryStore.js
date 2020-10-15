@@ -1,4 +1,5 @@
 const knex = require('./knex');
+const { DEFAULT_PRODUCT_CATEGORY, getPreference } = require('./preferences');
 
 const rowToCategory = (row) => {
     if (row !== undefined) {
@@ -47,5 +48,38 @@ module.exports.updateCategory = async (categoryId, description) => {
     return {
         categoryId: categoryId,
         description: description
+    };
+};
+
+module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
+    const movedProductIdRows = await knex('RVITEM')
+        .where('pgrpid', categoryId)
+        .update({
+            pgrpid: moveProductsTo
+        })
+        .returning(['itemid']);
+
+    const movedProductIds = movedProductIdRows.map((row) => row.itemid);
+
+    const movedProducts = await knex('PRICE')
+        .where('itemid', 'in', movedProductIds)
+        .andWhere('endtime', null)
+        .select('barcode');
+
+    const rows = await knex('PRODGROUP')
+        .where({ pgrpid: categoryId })
+        .update({ deleted: true })
+        .returning(['descr']);
+
+    if (rows.length === 0) {
+        return undefined;
+    }
+
+    const row = rows[0];
+
+    return {
+        categoryId: parseInt(categoryId),
+        description: row.descr,
+        movedProducts: movedProducts.map((row) => row.barcode)
     };
 };

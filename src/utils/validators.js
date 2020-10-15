@@ -90,3 +90,8 @@ module.exports.objectWithFields = (fieldname, fieldValidators) => {
         }
     };
 };
+
+module.exports.orNull = ({ field, validator }) => ({
+    field,
+    validator: (value) => value === null ? [] : validator(value)
+});

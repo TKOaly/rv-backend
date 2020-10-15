@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authUtils = require('./authUtils');
+const { authenticateUser } = require('./authUtils');
 
-router.post('/', async (req, res) => {
-    authUtils.authenticateUser(req, res);
-});
+router.post('/', authenticateUser());
 
 module.exports = router;

@@ -1,0 +1,1952 @@
+openapi: 3.0.0
+info:
+  version: '1.1'
+  title: Ruokavälitys API
+  description: API for both, managing the RV system and it's inventory, and browsing and purchasing products.
+
+externalDocs:
+  url: https://github.com/TKOaly/rv-backend
+
+servers:
+  - url: https://rv-backend-dev.herokuapp.com/
+    description: Staging environment
+  - url: https://rv-backend.herokuapp.com/
+    description: Production environment
+
+components:
+  securitySchemes:
+    normalAccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description:
+        A JWT access token used for authenticating with the \"end user facing\" portition of the API.
+        Can be obtained with any valid credentials from route `/api/v1/authenticate`.
+    adminAccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description:
+        A JWT access token used for authenticating with the administrations portition of the API.
+        Can be obtained with administrator credentials from route `/api/v1/admin/authenticate`.
+  
+  schemas:
+    Role:
+      type: string
+      enum:
+        - ADMIN
+        - USER1
+      example: USER
+    Product:
+      type: object
+      required: 
+        - barcode
+        - name
+        - category
+        - weight
+        - sellPrice
+        - stock
+      properties: 
+        barcode: 
+          type: string
+          example: "6430039222212"
+        name: 
+          type: string
+          example: Kombucha bakteerin makuinen bakteerijuoma
+        category: 
+          '$ref': '#/components/schemas/Category'
+        weight: 
+          type: integer
+          example: 370
+        sellPrice: 
+          type: number
+          example: 3.10
+        stock: 
+          type: integer
+          example: 10
+    AdminProduct:
+      allOf:
+        - '$ref': '#/components/schemas/Product'
+        - type: object
+          required:
+            - buyPrice
+          properties:
+            buyPrice:
+              type: number
+              example: 3.00
+    Box:
+      type: object
+      required: 
+        - boxBarcode
+        - itemsPerBox
+        - product
+      properties: 
+        boxBarcode:
+          example: "01880335"
+          type: string
+        itemsPerBox: 
+          type: integer
+          example: 18
+        product:
+          '$ref': '#/components/schemas/Product'
+    PurchaseEventBase:
+      type: object
+      required: 
+        - purchaseId
+        - time
+        - price
+      properties: 
+        purchaseId: 
+          type: integer
+          example: 3053
+        time: 
+          type: string
+          format: date-time
+          example: '2018-12-24T00:00:00.000Z'
+        price: 
+          type: number
+          example: 0.19
+    PurchaseEventProduct:
+      type: object
+      required:
+        - product
+      properties:
+        product:
+          '$ref': '#/components/schemas/Product'
+    PurchaseEventUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          '$ref': '#/components/schemas/User'
+    PurchaseEventBalance:
+      type: object
+      required:
+        - balanceAfter
+      properties:
+        balanceAfter:
+          type: number
+          example: 19.81
+    PurchaseEventStock:
+      type: object
+      required:
+        - stockAfter
+      properties:
+        stockAfter:
+          type: integer
+          example: 11
+    DepositEventBase:
+      type: object
+      required: 
+        - depositId
+        - time
+        - amount
+        - balanceAfter
+      properties: 
+        depositId: 
+          type: integer
+        time: 
+          type: string
+          format: date-time
+          example: '2018-12-24T00:00:00.000Z'
+        amount: 
+          type: number
+          example: 20.00
+        balanceAfter:
+          type: number
+          example: 25.00
+    DepositEventUser:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          '$ref': '#/components/schemas/User'
+    User: 
+      type: object
+      required: 
+        - userId
+        - username
+        - fullName
+        - email
+        - moneyBalance
+        - role
+      properties: 
+        userId: 
+          type: integer
+          example: 415
+        username: 
+          type: string
+          example: fuxi2001
+        fullName: 
+          type: string
+          example: Fuxi C. S. McStudent
+        email: 
+          type: string
+          example: fuxi.student@helsinki.fi
+        moneyBalance: 
+          type: number
+          example: 20.00
+        role:
+          '$ref': '#/components/schemas/Role'
+    Category:
+      type: object
+      required: 
+        - categoryId
+        - description
+      properties: 
+        categoryId: 
+          type: integer
+          example: 10
+        description: 
+          type: string
+          example: Drinks, soda with bottle return
+    Preference:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: string
+          example: globalDefaultMargin
+        value:
+          description: Can be any JSON value. The type depends on the preference in question.
+          example: 0.05
+  responses:
+    InvalidCredentialsErrorResponse:
+      description: The JWT access token provided with the request is invalid or it is missing.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - invalid_credentials
+              message:
+                type: string
+                example: Invalid username or password
+    NotAuthorizedErrorResponse:
+      description: Your user lacks the required privilege level to perform this action.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - not_authorized
+              message:
+                type: string
+                example: Not authorized
+    NotFoundErrorResponse:
+      description: The resource your are requesting does not exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - not_found
+              message:
+                type: string
+                example: No product with barcode \'1312767817\' found
+    BadRequestErrorResponse:
+      description: The request you sent contains invalid values or is missing fields.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - bad_request
+                  - invalid_reference
+              message:
+                type: string
+                example: Missing or invalid fields in request
+              errors:
+                type: array
+                items:
+                  type: string
+                  example: 'boxBarcode should be a numeric 1-14 digit barcode' 
+    IdentifierTakenErrorResponse:
+      description: Creating a new resource failed, because a resource with the given identifier already exists.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - error_code
+              - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - identifier_taken
+              message:
+                type: string
+                example: Barcode already in use.
+
+paths: 
+  /api/v1/register: 
+    post: 
+      summary: Create a new user
+      responses: 
+        201:
+          description: New user created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+                - fullName
+                - email
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                  minLength: 1
+                password: 
+                  type: string
+                  example: hunter2
+                  minLength: 1
+                fullName: 
+                  type: string
+                  example: Fuxi C. S. McStudent
+                  minLength: 1
+                email: 
+                  type: string
+                  example: fuxi.cs.student@helsinki.fi
+                  minLength: 1
+  /api/v1/authenticate: 
+    post: 
+      summary: Authenticate with normal privileges
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                password: 
+                  type: string
+                  example: hunter2
+  /api/v1/admin/authenticate: 
+    post: 
+      summary: Authenticate with admin privileges
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: rvslayer69
+                password: 
+                  type: string
+                  example: y0ur_w4ll3t
+  /api/v1/products: 
+    get: 
+      summary: Get a list of all products
+      security:
+        - normalAccessToken: []
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Product'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/products/{barcode}: 
+    get:
+      summary: Get details of a specific product
+      security:
+        - normalAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema:
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product:
+                    '$ref': '#/components/schemas/Product'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/products/{barcode}/purchase: 
+    post:
+      summary: Purchase a prouct
+      security:
+        - normalAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200:
+          description: Purchase successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accountBalance
+                  - productStock
+                  - purchases
+                properties: 
+                  accountBalance: 
+                    type: integer
+                    example: 19.81
+                  productStock: 
+                    type: integer
+                    example: 11
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventBalance'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        403:
+          description: The account has insufficient funds and the purchase cannot be made.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error_code
+                  - message
+                properties:
+                  error_code:
+                    type: string
+                    enum:
+                      - insufficient_funds
+                  message:
+                    type: string
+                    example: Insufficient funds
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - count
+              properties: 
+                count: 
+                  type: integer
+                  example: 1
+  /api/v1/categories: 
+    get: 
+      summary: Get a list of product categories
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - categories
+                properties: 
+                  categories: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Category'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/categories/{categoryId}: 
+    get: 
+      summary: Get details of a product category
+      security:
+        - normalAccessToken: []
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: integer
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/user:
+    get: 
+      summary: Get details of the authenticated user
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user:
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    patch: 
+      summary: Update details of the authenticated user
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: User information updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              minProperties: 1
+              properties: 
+                username: 
+                  type: string
+                  example: 'jäärä2001'
+                fullName: 
+                  type: string
+                  example: 'Jäärä F. S. McConsultant'
+                email: 
+                  type: string
+                  example: 'jaara.fs.constultant@coolcorp.com'
+  /api/v1/user/deposit: 
+    post: 
+      summary: Deposit money to the authenticated user's account
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Balance added to the account successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accountBalance
+                  - deposit
+                properties: 
+                  accountBalance: 
+                    type: number
+                  deposit: 
+                    allOf:
+                      - '$ref': '#/components/schemas/DepositEventBase'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - amount
+              properties: 
+                amount: 
+                  type: number
+                  minimum: 0
+  /api/v1/user/purchaseHistory: 
+    get: 
+      summary: Get list of the authenticated user's past purchases
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventBalance'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/user/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase made by the authenticated user
+      security:
+        - normalAccessToken: []
+      parameters: 
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase:
+                    allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventBalance'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/user/depositHistory: 
+    get: 
+      summary: Get list of past deposit events of the authenticated user
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items:
+                      '$ref': '#/components/schemas/DepositEventBase'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/user/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event created by the authenticated user
+      security:
+        - normalAccessToken: []
+      parameters: 
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    '$ref': '#/components/schemas/DepositEventBase'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/user/changePassword:
+    post:
+      summary: Change the account's password
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+                  example: hunter2
+      responses:
+        204:
+          description: Password changed successfully
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/boxes: 
+    get: 
+      summary: Get a list of product boxes
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - boxes
+                properties: 
+                  boxes: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Box'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    post: 
+      summary: Create a new box of products
+      security:
+        - adminAccessToken: []
+      responses: 
+        201: 
+          description: A new box created successfully
+          content:
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - boxBarcode
+                - itemsPerBox
+                - productBarcode
+              properties: 
+                boxBarcode: 
+                  type: string
+                  example: '01766752'
+                  minLength: 1
+                  maxLength: 14
+                itemsPerBox: 
+                  type: integer
+                  example: 18
+                  minimum: 0
+                productBarcode: 
+                  type: string
+                  example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
+  /api/v1/admin/boxes/{boxBarcode}: 
+    get: 
+      summary: Get the details of a specific product box
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+    patch: 
+      summary: Update the details of a product box
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Box updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - box
+                properties: 
+                  box: 
+                    '$ref': '#/components/schemas/Box'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              minProperties: 1
+              properties: 
+                itemsPerBox: 
+                  type: integer
+                  example: 18
+                  minimum: 0
+                productBarcode: 
+                  type: string
+                  example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
+    delete: 
+      summary: Delete a product box
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Box deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedBox
+                properties: 
+                  deletedBox: 
+                    '$ref': '#/components/schemas/Box'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/boxes/{boxBarcode}/buyIn: 
+    post: 
+      summary: Add products to stock by the boxful
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: boxBarcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product stock updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - productStock
+                  - productBuyPrice
+                  - productSellPrice
+                properties: 
+                  productStock: 
+                    type: integer
+                    example: 11
+                  productBuyPrice: 
+                    type: number
+                    example: 2.90
+                  productSellPrice: 
+                    type: number
+                    example: 3.00
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - boxCount
+                - productBuyPrice
+                - productSellPrice
+              properties: 
+                boxCount: 
+                  type: integer
+                  example: 3
+                  minimum: 0
+                productBuyPrice: 
+                  type: number
+                  example: 2.90
+                  minimum: 0
+                productSellPrice: 
+                  type: number
+                  example: 3.00
+                  minimum: 0
+  /api/v1/admin/products: 
+    get: 
+      summary: Get a list of all products
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/AdminProduct'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    post: 
+      summary: Create a new product
+      security:
+        - adminAccessToken: []
+      responses: 
+        201: 
+          description: New product created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/AdminProduct'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        409:
+          '$ref': '#/components/responses/IdentifierTakenErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - barcode
+                - name
+                - categoryId
+                - weight
+                - buyPrice
+                - sellPrice
+                - stock
+              properties: 
+                barcode: 
+                  type: string
+                  example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
+                name: 
+                  type: string
+                  example: Muumilimsa
+                  minLength: 1
+                categoryId: 
+                  type: integer
+                  example: 10
+                  minimum: 0
+                weight: 
+                  type: number
+                  example: 350
+                  minimum: 0
+                buyPrice: 
+                  type: integer
+                  example: 210
+                sellPrice: 
+                  type: integer
+                  example: 220
+                stock: 
+                  type: integer
+                  example: 8
+  /api/v1/admin/products/{barcode}: 
+    get: 
+      summary: Get details of a specific product
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/AdminProduct'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+    patch: 
+      summary: Update the details of a specific product
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - product
+                properties: 
+                  product: 
+                    '$ref': '#/components/schemas/AdminProduct'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              minProperties: 1
+              additionalProperties: false
+              properties: 
+                name: 
+                  type: string
+                  example: Muumilimsa
+                  minLength: 1
+                categoryId: 
+                  type: integer
+                  example: 10
+                  minimum: 0
+                weight: 
+                  type: number
+                  example: 350
+                  minimum: 0
+                buyPrice: 
+                  type: integer
+                  example: 210
+                sellPrice: 
+                  type: integer
+                  example: 220
+                stock: 
+                  type: integer
+                  example: 8
+    delete: 
+      summary: Delete a product
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedProduct
+                properties: 
+                  deletedProduct: 
+                    '$ref': '#/components/schemas/AdminProduct'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/products/{barcode}/buyIn: 
+    post: 
+      summary: Add product to stock
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Product stock updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - stock
+                  - buyPrice
+                  - sellPrice
+                properties: 
+                  stock: 
+                    type: integer
+                    example: 11
+                  buyPrice: 
+                    type: number
+                    example: 2.10
+                  sellPrice: 
+                    type: number
+                    example: 2.20
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - count
+                - buyPrice
+                - sellPrice
+              properties: 
+                count: 
+                  type: integer
+                  example: 3
+                  minimum: 1
+                buyPrice: 
+                  type: number
+                  example: 210
+                  minimum: 0
+                sellPrice: 
+                  type: number
+                  example: 220
+                  minimum: 0
+  /api/v1/admin/products/{barcode}/purchaseHistory: 
+    get: 
+      summary: Get a list of product's purchase events
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items:
+                      allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventUser'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/products/{barcode}/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get a specific purchase event
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: barcode
+          required: true
+          in: path
+          schema: 
+            type: string
+            example: '7314660003114'
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                        - '$ref': '#/components/schemas/PurchaseEventBase'
+                        - '$ref': '#/components/schemas/PurchaseEventUser'
+                        - '$ref': '#/components/schemas/PurchaseEventStock'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/categories: 
+    get: 
+      summary: Get a list of product categories
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - categories
+                properties: 
+                  categories: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Category'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    post: 
+      summary: Create a new product category
+      security:
+        - adminAccessToken: []
+      responses: 
+        201: 
+          description: New product category created successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - description
+              properties: 
+                description: 
+                  type: string
+                  minLength: 1
+  /api/v1/admin/categories/{categoryId}: 
+    get: 
+      summary: Get the details of a product category
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 10
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+    patch: 
+      summary: Update details of a product category
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Category updated successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - category
+                properties: 
+                  category: 
+                    '$ref': '#/components/schemas/Category'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - description
+              properties: 
+                description: 
+                  type: string
+                  minLength: 1
+    delete: 
+      summary: Delete a product category
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: categoryId
+          required: true
+          in: path
+          schema: 
+            type: string
+      responses: 
+        200: 
+          description: Category deleted successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deletedCategory
+                  - movedProducts
+                properties: 
+                  deletedCategory: 
+                    '$ref': '#/components/schemas/Category'
+                  movedProducts: 
+                    type: array
+                    items: 
+                      type: string
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        403:
+          description: 'Cannot delete the default product category'
+          content:
+            application/jsson:
+              schema:
+                type: object
+                required:
+                  - error_code
+                  - message
+                properties:
+                  error_code:
+                    type: string
+                    enum:
+                      - bad_request
+                  message:
+                    type: string
+                    example: Cannot delete the default category
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users: 
+    get: 
+      summary: Get a list of all users
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - users
+                properties: 
+                  users: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/users/{userId}: 
+    get: 
+      summary: Get the details of a user
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - user
+                properties: 
+                  user: 
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users/{userId}/purchaseHistory: 
+    get: 
+      summary: Get user's purchase history
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items: 
+                      allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventBalance'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users/{userId}/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase event
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventBalance'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users/{userId}/depositHistory: 
+    get: 
+      summary: Get deposit history of a user
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/DepositEventBase'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users/{userId}/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    '$ref': '#/components/schemas/DepositEventBase'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/users/{userId}/changeRole: 
+    post: 
+      summary: Update the role of a user
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: userId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 324
+      responses: 
+        200: 
+          description: User's role changed successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - role
+                properties: 
+                  role: 
+                    '$ref': '#/components/schemas/Role'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - role
+              properties: 
+                role: 
+                  '$ref': '#/components/schemas/Role'
+  /api/v1/admin/purchaseHistory: 
+    get: 
+      summary: Get combined purchase histories of all products and users
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items: 
+                      allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventUser'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/purchaseHistory/{purchaseId}: 
+    get: 
+      summary: Get details of a specific purchase event
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: purchaseId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchase
+                properties: 
+                  purchase: 
+                    allOf:
+                      - '$ref': '#/components/schemas/PurchaseEventBase'
+                      - '$ref': '#/components/schemas/PurchaseEventProduct'
+                      - '$ref': '#/components/schemas/PurchaseEventUser'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/depositHistory: 
+    get: 
+      summary: Get the combined deposit history of all users
+      security:
+        - adminAccessToken: []
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposits
+                properties: 
+                  deposits: 
+                    type: array
+                    items: 
+                      allOf:
+                        - '$ref': '#/components/schemas/DepositEventBase'
+                        - '$ref': '#/components/schemas/DepositEventUser'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/depositHistory/{depositId}: 
+    get: 
+      summary: Get details of a specific deposit event
+      security:
+        - adminAccessToken: []
+      parameters: 
+        - name: depositId
+          required: true
+          in: path
+          schema: 
+            type: integer
+            example: 3015
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - deposit
+                properties: 
+                  deposit: 
+                    allOf:
+                        - '$ref': '#/components/schemas/DepositEventBase'
+                        - '$ref': '#/components/schemas/DepositEventUser'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/preferences:
+    get:
+      summary: Get list of preferences and their values
+      security:
+        - adminAccessToken: []
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preferences
+                properties:
+                  preferences:
+                    type: array
+                    items:
+                      '$ref': '#/components/schemas/Preference'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+  /api/v1/admin/preferences/{preferenceKey}:
+    get:
+      summary: Get the value of a preference
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: preferenceKey
+          required: true
+          in: path
+          schema:
+            type: string
+            example: globalDefaultMargin
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preference
+                properties:
+                  preference:
+                    '$ref': '#/components/schemas/Preference'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+    patch:
+      summary: Update the value of a preference
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: preferenceKey
+          required: true
+          in: path
+          schema:
+            type: string
+            example: globalDefaultMargin
+      responses:
+        200:
+          description: Preference's value updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - preference
+                properties:
+                  preference:
+                    '$ref': '#/components/schemas/Preference'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'

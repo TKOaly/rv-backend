@@ -1,12 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 const userStore = require('../src/db/userStore');
+
+chai.use(chaiHttp);
 
 describe('routes: authentication', () => {
     beforeEach(async () => {
@@ -30,7 +31,6 @@ describe('routes: authentication', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res.body).to.have.all.keys('accessToken');
 
             const token = jwt.verify(res.body.accessToken);
             expect(token.data.userId).to.exist;
@@ -67,7 +67,9 @@ describe('routes: authentication', () => {
             const res = await chai
                 .request(server)
                 .post('/api/v1/authenticate')
-                .send('garbage');
+                .send({
+                    garbage: 'garbage'
+                });
 
             expect(res.status).to.equal(400);
         });

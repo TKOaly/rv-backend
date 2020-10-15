@@ -71,6 +71,11 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
         .where('PRICE.endtime', null)
         .andWhere('RVBOX.barcode', boxBarcode)
         .first();
+
+    if (row === undefined) {
+        return undefined;
+    }
+
     return rowToBox(row);
 };
 
@@ -156,5 +161,70 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
             .andWhere('RVBOX.barcode', boxBarcode)
             .first();
         return rowToBox(boxRow);
+    });
+};
+
+module.exports.deleteBox = async (boxBarcode) => {
+    return await knex.transaction(async (trx) => {
+        const box = await knex('RVBOX')
+            .transacting(trx)
+            .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVBOX.barcode',
+                'RVBOX.itemcount',
+                'RVBOX.itembarcode',
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count'
+            )
+            .where({ 'RVBOX.barcode': boxBarcode, 'PRICE.endtime': null })
+            .first();
+
+        if (box === undefined) {
+            return undefined;
+        }
+
+        await knex('RVBOX')
+            .transacting(trx)
+            .where({ barcode: boxBarcode })
+            .delete();
+
+        return rowToBox(box);
+    });
+};
+
+module.exports.buyIn = async (boxBarcode, boxCount) => {
+    return await knex.transaction(async (trx) => {
+        const row = await knex('RVBOX')
+            .transacting(trx)
+            .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .where('RVBOX.barcode', boxBarcode)
+            .first(
+                'RVBOX.itemcount',
+                'PRICE.priceid',
+                'PRICE.count'
+            );
+
+        if (row === undefined) {
+            return undefined;
+        }
+
+        const { count, itemcount, priceid } = row;
+
+        const newCount = count + itemcount * boxCount;
+
+        await knex('PRICE')
+            .transacting(trx)
+            .select({ priceid, endtime: null })
+            .update({ count: newCount });
+
+        return newCount;
     });
 };

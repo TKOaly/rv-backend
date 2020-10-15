@@ -25,7 +25,7 @@ const rowToProduct = (row) => {
  */
 module.exports.getProducts = async () => {
     const data = await knex('PRICE')
-        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .rightJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
             'RVITEM.descr',
@@ -37,7 +37,8 @@ module.exports.getProducts = async () => {
             'PRICE.sellprice',
             'PRICE.count'
         )
-        .where('PRICE.endtime', null);
+        .where({ 'PRICE.endtime': null });
+
     return data.map(rowToProduct);
 };
 
@@ -46,7 +47,7 @@ module.exports.getProducts = async () => {
  */
 module.exports.findByBarcode = async (barcode) => {
     const row = await knex('PRICE')
-        .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .rightJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
         .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
         .select(
             'RVITEM.descr',
@@ -61,6 +62,11 @@ module.exports.findByBarcode = async (barcode) => {
         .where('PRICE.barcode', barcode)
         .andWhere('PRICE.endtime', null)
         .first();
+
+    if (row === undefined) {
+        return undefined;
+    }
+
     return rowToProduct(row);
 };
 
@@ -204,7 +210,9 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
 
         const updatedPriceRows = await knex('PRICE')
             .transacting(trx)
-            .where({ barcode: barcode, endtime: null })
+            .innerJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .andWhere('barcode', barcode)
+            .andWhere('endtime', null)
             .decrement({ count: count })
             .returning(['priceid', 'itemid', 'sellprice', 'count']);
 
@@ -264,4 +272,49 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
 
         return insertedHistory;
     });
+};
+
+module.exports.deleteProduct = async (barcode) => {
+    return await knex.transaction(async (trx) => {
+        const row = await knex('PRICE')
+            .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+            .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+            .select(
+                'RVITEM.descr',
+                'RVITEM.pgrpid',
+                'PRODGROUP.descr as pgrpdescr',
+                'RVITEM.weight',
+                'PRICE.barcode',
+                'PRICE.buyprice',
+                'PRICE.sellprice',
+                'PRICE.count',
+                'RVITEM.itemid'
+            )
+            .where('PRICE.barcode', barcode)
+            .andWhere('PRICE.endtime', null)
+            .first();
+
+        if (row === undefined) {
+            return undefined;
+        }
+
+        await knex('RVITEM')
+            .where({ itemid: row.itemid })
+            .update({ deleted: true });
+
+        return rowToProduct(row);
+    });
+};
+
+module.exports.buyIn = async (barcode, count) => {
+    const row = await knex('PRICE')
+        .where({ barcode })
+        .increment({ count })
+        .returning([ 'count' ]);
+
+    if (row.length === 0) {
+        return undefined;
+    }
+
+    return row[0].count;
 };

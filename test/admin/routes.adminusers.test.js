@@ -1,12 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const userStore = require('../../src/db/userStore');
+
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
@@ -34,12 +35,6 @@ describe('routes: admin users', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('users');
-            expect(res.body.users).to.be.an('array');
-            for (const user of res.body.users) {
-                expect(user).to.have.all.keys('userId', 'username', 'fullName', 'email', 'moneyBalance', 'role');
-            }
         });
     });
 
@@ -51,20 +46,6 @@ describe('routes: admin users', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('user');
-            expect(res.body.user).to.have.all.keys('userId', 'username', 'fullName', 'email', 'moneyBalance', 'role');
-        });
-
-        it('should return user with correctly formatted role', async () => {
-            const res = await chai
-                .request(server)
-                .get('/api/v1/admin/users/1')
-                .set('Authorization', 'Bearer ' + token);
-
-            expect(res.status).to.equal(200);
-
-            expect(res.body.user.role).to.equal('USER1');
         });
 
         it('should error on nonexistent user', async () => {
@@ -104,10 +85,6 @@ describe('routes: admin users', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.exist;
-            expect(res.body).to.have.all.keys('role');
-            expect(res.body.role).to.equal('ADMIN');
         });
 
         it('should error on nonexistent user', async () => {
@@ -133,7 +110,6 @@ describe('routes: admin users', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res.body.error_code).to.equal('invalid_reference');
         });
 
         it('should error on invalid parameters', async () => {
@@ -145,6 +121,28 @@ describe('routes: admin users', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+
+    describe('Fetching user\'s deposit history', async () => {
+        it('should return list of deposits', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users/1/depositHistory')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+        });
+    });
+
+    describe('Fetching user\'s purchase history', async () => {
+        it('should return a list of purchases', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/users/1/purchaseHistory')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
         });
     });
 });

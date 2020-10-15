@@ -1,12 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const boxStore = require('../../src/db/boxStore');
+
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
@@ -34,22 +35,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('boxes');
-            expect(res.body.boxes).to.be.an('array');
-            for (const box of res.body.boxes) {
-                expect(box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-                expect(box.product).to.have.all.keys(
-                    'barcode',
-                    'name',
-                    'category',
-                    'weight',
-                    'buyPrice',
-                    'sellPrice',
-                    'stock'
-                );
-                expect(box.product.category).to.have.all.keys('categoryId', 'description');
-            }
         });
     });
 
@@ -61,19 +46,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
         });
 
         it('should return 404 on nonexistent box', async () => {
@@ -119,19 +91,6 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
         });
 
         it('should error if box barcode is already taken', async () => {
@@ -226,20 +185,6 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('box');
-            expect(res.body.box).to.have.all.keys('boxBarcode', 'itemsPerBox', 'product');
-            expect(res.body.box.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.box.product.category).to.have.all.keys('categoryId', 'description');
-            expect(res.body.box.itemsPerBox).to.equal(49);
         });
 
         it('should error on nonexistent box', async () => {
@@ -284,4 +229,159 @@ describe('routes: admin boxes', () => {
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
+
+    describe('Deleting a box', () => {
+        it('should delete the box', async () => {
+            let res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+
+            res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+        });
+
+        it('should error on nonexistent box', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/88888888')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should return the deleted box', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+        });
+    });
+
+    describe('Buy-in of boxes', () => {
+        it('should fail on nonexisting boxes', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/88888888/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: 1,
+                    productSellPrice: 1
+                });
+
+            expect(res.status).to.equal(404);
+        });
+
+        it('should fail on invalid request', async () => {
+            const validFields = {
+                boxCount: 1,
+                productBuyPrice: 1,
+                productSellPrice: 1
+            };
+
+            for (const missingField in validFields) {
+                const invalidRequest = { ...validFields };
+                delete invalidRequest[missingField];
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/boxes/01880335/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+            }
+
+            for (const negativeField in validFields) {
+                const invalidRequest = { ...validFields };
+                invalidRequest[negativeField] = -1;
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/boxes/01880335/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
+            }
+        });
+
+        it('should update the number of items', async () => {
+            const initial_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(initial_res.status).to.equal(200);
+
+            const { buyPrice, sellPrice, stock } = initial_res.body.box.product;
+            const itemsPerBox = initial_res.body.box.itemsPerBox;
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/01880335/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: buyPrice,
+                    productSellPrice: sellPrice
+                });
+
+            expect(res.status).to.equal(200);
+            expect(res.body.productStock).to.equal(stock + itemsPerBox);
+
+            const post_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_res.status).to.equal(200);
+            expect(post_res.body.box.product.stock).to.equal(stock + itemsPerBox);
+        });
+
+        it('should update the sell and buy prices of the product', async () => {
+            const initial_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(initial_res.status).to.equal(200);
+
+            const { buyPrice, sellPrice } = initial_res.body.box.product;
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/boxes/01880335/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    boxCount: 1,
+                    productBuyPrice: buyPrice + 1,
+                    productSellPrice: sellPrice + 1
+                });
+
+            expect(res.status).to.equal(200);
+
+            const post_res = await chai
+                .request(server)
+                .get('/api/v1/admin/boxes/01880335')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_res.status).to.equal(200);
+            expect(post_res.body.box.product.sellPrice)
+                .to.equal(sellPrice + 1, 'product\'s sellPrice should have changed');
+            expect(post_res.body.box.product.buyPrice)
+                .to.equal(buyPrice + 1, 'product\'s buyPrice should have changed');
+        });
+    });
 });
+

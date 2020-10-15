@@ -1,11 +1,12 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
 
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const userStore = require('../src/db/userStore');
+
+chai.use(chaiHttp);
 
 describe('routes: register', () => {
     beforeEach(async () => {
@@ -107,8 +108,6 @@ describe('routes: register', () => {
                 });
 
             expect(res.status).to.equal(201);
-            expect(res.body).to.have.all.keys('user');
-            expect(res.body.user).to.have.all.keys('username', 'fullName', 'email', 'moneyBalance');
         });
 
         it('Registering should create a new user to the database', async () => {

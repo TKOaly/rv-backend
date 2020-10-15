@@ -1,18 +1,25 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-chai.use(chaiHttp);
-
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const productStore = require('../../src/db/productStore');
+
+chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
         userId: 2
     },
     process.env.JWT_ADMIN_SECRET
+);
+
+const normalUserToken = jwt.sign(
+    {
+        userId: 1
+    },
+    process.env.JWT_SECRET
 );
 
 describe('routes: admin products', () => {
@@ -34,21 +41,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('products');
-            expect(res.body.products).to.be.an('array');
-            for (const product of res.body.products) {
-                expect(product).to.have.all.keys(
-                    'barcode',
-                    'name',
-                    'category',
-                    'weight',
-                    'buyPrice',
-                    'sellPrice',
-                    'stock'
-                );
-                expect(product.category).to.have.all.keys('categoryId', 'description');
-            }
         });
     });
 
@@ -60,18 +52,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
         });
 
         it('should error on nonexistent product', async () => {
@@ -125,18 +105,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(201);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
         });
 
         it('should error if barcode is already taken', async () => {
@@ -155,6 +123,7 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(409);
+
             expect(res.body.error_code).to.equal('identifier_taken');
         });
 
@@ -243,19 +212,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(200);
-
-            expect(res.body).to.have.all.keys('product');
-            expect(res.body.product).to.have.all.keys(
-                'barcode',
-                'name',
-                'category',
-                'weight',
-                'buyPrice',
-                'sellPrice',
-                'stock'
-            );
-            expect(res.body.product.category).to.have.all.keys('categoryId', 'description');
-            expect(res.body.product.buyPrice).to.equal(5000);
         });
 
         it('should error on nonexistent product', async () => {
@@ -295,6 +251,194 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
+        });
+    });
+
+    describe('Deleting a product', () => {
+        it('should fail on nonexisting product', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/88888888')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should return the deleted product', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
+        });
+
+        it('should cause any requests for that product\'s information to fail', async () => {
+            const res = await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            const lookup = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(lookup.status).to.equal(404);
+            expect(lookup.body.error_code).to.equal('not_found');
+        });
+
+        it('should cause the item to be removed from item listing', async () => {
+            await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            const listing = await chai
+                .request(server)
+                .get('/api/v1/admin/products')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(listing.body.products.find((item) => item.barcode === '5053990123506')).to.be.an('undefined');
+        });
+
+        it('should prevent the item from being purchased', async () => {
+            await chai
+                .request(server)
+                .delete('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            const purchase = await chai
+                .request(server)
+                .post('/api/v1/products/5053990123506/purchase')
+                .set('Authorization', 'Bearer ' + normalUserToken)
+                .send({
+                    count: 1
+                });
+
+            expect(purchase.status).to.equal(404);
+        });
+    });
+
+    describe('Buy-in of a product', () => {
+        it('should fail on nonexisting products', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/products/88888888/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1,
+                    buyPrice: 1,
+                    sellPrice: 1
+                });
+
+            expect(res.status).to.equal(404);
+            expect(res.body.error_code).to.equal('not_found');
+        });
+
+        it('should fail on invalid request', async () => {
+            const validRequest = {
+                count: 1,
+                buyPrice: 1,
+                sellPrice: 1
+            };
+
+            for (const missingField in validRequest) {
+                const invalidRequest = { ...validRequest };
+                delete invalidRequest[missingField];
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/products/5053990123506/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+            }
+
+            for (const negativeField in validRequest) {
+                const invalidRequest = { ...validRequest };
+                invalidRequest[negativeField] = -1;
+
+                const res = await chai
+                    .request(server)
+                    .post('/api/v1/admin/products/5053990123506/buyIn')
+                    .set('Authorization', 'Bearer ' + token)
+                    .send(invalidRequest);
+
+                expect(res.status).to.equal(400, `request should fail when field ${negativeField} has a negative value`);
+            }
+        });
+
+        it('should change the number of products in stock', async () => {
+            const pre_query = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(pre_query.status).to.equal(200);
+            const initial_stock = pre_query.body.product.stock;
+
+            await chai
+                .request(server)
+                .post('/api/v1/admin/products/5053990123506/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1,
+                    buyPrice: 1,
+                    sellPrice: 1
+                });
+
+            const post_query = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_query.status).to.equal(200);
+            expect(post_query.body.product.stock).to.equal(initial_stock + 1);
+        });
+
+        it('should change the item\'s buyPrice and sellPrice', async () => {
+            const pre_query = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(pre_query.status).to.equal(200);
+            const { buyPrice: initialBuyPrice, sellPrice: initialSellPrice } = pre_query.body.product;
+
+            const res = await chai
+                .request(server)
+                .post('/api/v1/admin/products/5053990123506/buyIn')
+                .set('Authorization', 'Bearer ' + token)
+                .send({
+                    count: 1,
+                    buyPrice: initialBuyPrice + 1,
+                    sellPrice: initialSellPrice + 1
+                });
+
+            expect(res.status).to.equal(200);
+
+            const post_query = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(post_query.status).to.equal(200);
+            expect(post_query.body.product.sellPrice).to.equal(initialSellPrice + 1);
+            expect(post_query.body.product.buyPrice).to.equal(initialBuyPrice + 1);
+        });
+    });
+
+    describe('Querying product\'s purchase history', () => {
+        it('should return a list of purchases', async () => {
+            const res = await chai
+                .request(server)
+                .get('/api/v1/admin/products/5053990123506/purchaseHistory')
+                .set('Authorization', 'Bearer ' + token);
+
+            expect(res.status).to.equal(200);
         });
     });
 });
