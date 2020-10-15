@@ -3,165 +3,122 @@ const router = express.Router();
 const productStore = require('../db/productStore');
 const authMiddleware = require('./authMiddleware');
 const logger = require('./../logger');
-const fieldValidator = require('../utils/fieldValidator');
-const validators = require('../utils/validators');
 
 router.use(authMiddleware());
 
 router.get('/', async (req, res) => {
     const user = req.user;
 
-    try {
-        const products = await productStore.getProducts();
-        const mappedProds = products.map((product) => {
-            return {
-                barcode: product.barcode,
-                name: product.name,
-                category: {
-                    categoryId: product.category.categoryId,
-                    description: product.category.description
-                },
-                weight: product.weight,
-                sellPrice: product.sellPrice,
-                stock: product.stock
-            };
-        });
+    const products = await productStore.getProducts();
+    const mappedProds = products.map((product) => {
+        return {
+            barcode: product.barcode,
+            name: product.name,
+            category: {
+                categoryId: product.category.categoryId,
+                description: product.category.description
+            },
+            weight: product.weight,
+            sellPrice: product.sellPrice,
+            stock: product.stock
+        };
+    });
 
-        logger.info('User %s fetched products', user.username);
-        res.status(200).json({
-            products: mappedProds
-        });
-    } catch (error) {
-        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
+    logger.info('User %s fetched products', user.username);
+
+    res.status(200).json({
+        products: mappedProds
+    });
 });
 
 router.get('/:barcode(\\d{1,14})', async (req, res) => {
     const user = req.user;
     const barcode = req.params.barcode;
 
-    try {
-        const product = await productStore.findByBarcode(barcode);
+    const product = await productStore.findByBarcode(barcode);
 
-        if (!product) {
-            logger.error('User %s tried to fetch unknown product %s', user.username, barcode);
-            res.status(404).json({
-                error_code: 'not_found',
-                message: 'Product does not exist'
-            });
-            return;
-        }
+    if (!product) {
+        logger.error('User %s tried to fetch unknown product %s', user.username, barcode);
 
-        logger.info('User %s fetched product %s', user.username, barcode);
-        res.status(200).json({
-            product: {
-                barcode: product.barcode,
-                name: product.name,
-                category: {
-                    categoryId: product.category.categoryId,
-                    description: product.category.description
-                },
-                weight: product.weight,
-                sellPrice: product.sellPrice,
-                stock: product.stock
-            }
+        res.status(404).json({
+            error_code: 'not_found',
+            message: 'Product does not exist'
         });
-    } catch (error) {
-        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
+
+        return;
     }
+
+    logger.info('User %s fetched product %s', user.username, barcode);
+
+    res.status(200).json({
+        product: {
+            barcode: product.barcode,
+            name: product.name,
+            category: {
+                categoryId: product.category.categoryId,
+                description: product.category.description
+            },
+            weight: product.weight,
+            sellPrice: product.sellPrice,
+            stock: product.stock
+        }
+    });
 });
 
 router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
     const user = req.user;
-
-    const inputValidators = [validators.positiveInteger('count')];
-
-    const errors = fieldValidator.validateObject(req.body, inputValidators);
-    if (errors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            user.username,
-            errors.join(', ')
-        );
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            errors
-        });
-        return;
-    }
-
     const barcode = req.params.barcode;
     const count = req.body.count;
 
-    try {
-        const product = await productStore.findByBarcode(barcode);
+    const product = await productStore.findByBarcode(barcode);
 
-        // product and price found
-        if (product) {
-            /* User can always empty his account completely, but resulting negative saldo should be minimized. This is
-             * achieved by allowing only a single product to be bought on credit. */
-            if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * (count - 1)) {
-                // record purchase
-                const purchases = await productStore.recordPurchase(barcode, user.userId, count);
+    // product and price found
+    if (product) {
+        /* User can always empty his account completely, but resulting negative saldo should be minimized. This is
+         * achieved by allowing only a single product to be bought on credit. */
+        if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * (count - 1)) {
+            // record purchase
+            const purchases = await productStore.recordPurchase(barcode, user.userId, count);
 
-                const newBalance = purchases[purchases.length - 1].balanceAfter;
-                const newStock = purchases[purchases.length - 1].stockAfter;
+            const newBalance = purchases[purchases.length - 1].balanceAfter;
+            const newStock = purchases[purchases.length - 1].stockAfter;
 
-                const mappedPurchases = purchases.map((purchase) => {
-                    return {
-                        purchaseId: purchase.purchaseId,
-                        time: purchase.time,
-                        price: purchase.price,
-                        balanceAfter: purchase.balanceAfter,
-                        stockAfter: purchase.stockAfter
-                    };
-                });
+            const mappedPurchases = purchases.map((purchase) => {
+                return {
+                    purchaseId: purchase.purchaseId,
+                    time: purchase.time,
+                    price: purchase.price,
+                    balanceAfter: purchase.balanceAfter,
+                    stockAfter: purchase.stockAfter
+                };
+            });
 
-                // all done, respond with success
-                logger.info('User %s purchased %s x product %s', user.username, count, barcode);
-                res.status(200).json({
-                    accountBalance: newBalance,
-                    productStock: newStock,
-                    purchases: mappedPurchases
-                });
-            } else {
-                // user doesn't have enough money
-                logger.error(
-                    'User %s tried to purchase %s x product %s but didn\'t have enough money.',
-                    user.username,
-                    count,
-                    barcode
-                );
-                res.status(403).json({
-                    error_code: 'insufficient_funds',
-                    message: 'Insufficient funds'
-                });
-            }
+            // all done, respond with success
+            logger.info('User %s purchased %s x product %s', user.username, count, barcode);
+            res.status(200).json({
+                accountBalance: newBalance,
+                productStock: newStock,
+                purchases: mappedPurchases
+            });
         } else {
-            // unknown product, no valid price or out of stock
-            logger.error('User %s tried to purchase unknown product %s', user.username, barcode);
-            res.status(404).json({
-                error_code: 'not_found',
-                message: 'Product not found'
+            // user doesn't have enough money
+            logger.error(
+                'User %s tried to purchase %s x product %s but didn\'t have enough money.',
+                user.username,
+                count,
+                barcode
+            );
+            res.status(403).json({
+                error_code: 'insufficient_funds',
+                message: 'Insufficient funds'
             });
         }
-    } catch (error) {
-        // other errors
-        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
+    } else {
+        // unknown product, no valid price or out of stock
+        logger.error('User %s tried to purchase unknown product %s', user.username, barcode);
+        res.status(404).json({
+            error_code: 'not_found',
+            message: 'Product not found'
         });
     }
 });

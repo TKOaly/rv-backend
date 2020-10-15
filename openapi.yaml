@@ -342,15 +342,19 @@ paths:
                 username: 
                   type: string
                   example: fuxi2001
+                  minLength: 1
                 password: 
                   type: string
                   example: hunter2
+                  minLength: 1
                 fullName: 
                   type: string
                   example: Fuxi C. S. McStudent
+                  minLength: 1
                 email: 
                   type: string
                   example: fuxi.cs.student@helsinki.fi
+                  minLength: 1
   /api/v1/authenticate: 
     post: 
       summary: Authenticate with normal privileges
@@ -542,7 +546,7 @@ paths:
                 - count
               properties: 
                 count: 
-                  type: string
+                  type: integer
                   example: 1
   /api/v1/categories: 
     get: 
@@ -639,6 +643,7 @@ paths:
           application/json: 
             schema: 
               type: object
+              minProperties: 1
               properties: 
                 username: 
                   type: string
@@ -684,7 +689,8 @@ paths:
                 - amount
               properties: 
                 amount: 
-                  type: string
+                  type: number
+                  minimum: 0
   /api/v1/user/purchaseHistory: 
     get: 
       summary: Get list of the authenticated user's past purchases
@@ -922,12 +928,17 @@ paths:
                 boxBarcode: 
                   type: string
                   example: '01766752'
+                  minLength: 1
+                  maxLength: 14
                 itemsPerBox: 
                   type: integer
                   example: 18
+                  minimum: 0
                 productBarcode: 
                   type: string
                   example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
   /api/v1/admin/boxes/{boxBarcode}: 
     get: 
       summary: Get the details of a specific product box
@@ -989,13 +1000,17 @@ paths:
           application/json: 
             schema: 
               type: object
+              minProperties: 1
               properties: 
                 itemsPerBox: 
                   type: integer
                   example: 18
+                  minimum: 0
                 productBarcode: 
                   type: string
                   example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
     delete: 
       summary: Delete a product box
       security:
@@ -1076,12 +1091,15 @@ paths:
                 boxCount: 
                   type: integer
                   example: 3
+                  minimum: 0
                 productBuyPrice: 
                   type: number
                   example: 2.90
+                  minimum: 0
                 productSellPrice: 
                   type: number
                   example: 3.00
+                  minimum: 0
   /api/v1/admin/products: 
     get: 
       summary: Get a list of all products
@@ -1143,21 +1161,26 @@ paths:
                 barcode: 
                   type: string
                   example: '7314660003114'
+                  minLength: 1
+                  maxLength: 14
                 name: 
                   type: string
                   example: Muumilimsa
+                  minLength: 1
                 categoryId: 
                   type: integer
                   example: 10
+                  minimum: 0
                 weight: 
                   type: number
                   example: 350
+                  minimum: 0
                 buyPrice: 
-                  type: number
-                  example: 2.10
+                  type: integer
+                  example: 210
                 sellPrice: 
-                  type: number
-                  example: 2.20
+                  type: integer
+                  example: 220
                 stock: 
                   type: integer
                   example: 8
@@ -1222,22 +1245,27 @@ paths:
           application/json: 
             schema: 
               type: object
+              minProperties: 1
+              additionalProperties: false
               properties: 
                 name: 
                   type: string
                   example: Muumilimsa
+                  minLength: 1
                 categoryId: 
                   type: integer
                   example: 10
+                  minimum: 0
                 weight: 
                   type: number
                   example: 350
+                  minimum: 0
                 buyPrice: 
-                  type: number
-                  example: 2.10
+                  type: integer
+                  example: 210
                 sellPrice: 
-                  type: number
-                  example: 2.20
+                  type: integer
+                  example: 220
                 stock: 
                   type: integer
                   example: 8
@@ -1319,12 +1347,15 @@ paths:
                 count: 
                   type: integer
                   example: 3
+                  minimum: 1
                 buyPrice: 
                   type: number
-                  example: 2.10
+                  example: 210
+                  minimum: 0
                 sellPrice: 
                   type: number
-                  example: 2.20
+                  example: 220
+                  minimum: 0
   /api/v1/admin/products/{barcode}/purchaseHistory: 
     get: 
       summary: Get a list of product's purchase events
@@ -1446,6 +1477,7 @@ paths:
               properties: 
                 description: 
                   type: string
+                  minLength: 1
   /api/v1/admin/categories/{categoryId}: 
     get: 
       summary: Get the details of a product category
@@ -1513,6 +1545,7 @@ paths:
               properties: 
                 description: 
                   type: string
+                  minLength: 1
     delete: 
       summary: Delete a product category
       security:

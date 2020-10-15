@@ -1,8 +1,6 @@
 const token = require('../jwt/token');
 const userStore = require('../db/userStore');
 const logger = require('./../logger');
-const fieldValidator = require('../utils/fieldValidator');
-const validators = require('../utils/validators');
 
 /* null means no role requirements. */
 const verifyRole = (requiredRole, userRole) => {
@@ -11,32 +9,14 @@ const verifyRole = (requiredRole, userRole) => {
 
 module.exports.verifyRole = verifyRole;
 
-module.exports.authenticateUser = async (req, res, requiredRole = null, tokenSecret = process.env.JWT_SECRET) => {
-    const body = req.body;
+module.exports.authenticateUser =
+    (requiredRole = null, tokenSecret = process.env.JWT_SECRET) => async (req, res) => {
+        const body = req.body;
+        const username = body.username;
+        const password = body.password;
 
-    const inputValidators = [
-        validators.nonEmptyString('username'),
-        /* Empty passwords are allowed at login for legacy reasons. There are existing users in the database with empty
-         * passwords. */
-        validators.string('password')
-    ];
-
-    const errors = fieldValidator.validateObject(body, inputValidators);
-    if (errors.length > 0) {
-        logger.error('%s %s: invalid request: %s', req.method, req.originalUrl, errors.join(', '));
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            errors
-        });
-        return;
-    }
-
-    const username = body.username;
-    const password = body.password;
-
-    try {
         const user = await userStore.findByUsername(username);
+
         if (user) {
             if (await userStore.verifyPassword(password, user.passwordHash)) {
                 if (verifyRole(requiredRole, user.role)) {
@@ -65,11 +45,4 @@ module.exports.authenticateUser = async (req, res, requiredRole = null, tokenSec
                 message: 'Invalid username or password'
             });
         }
-    } catch (error) {
-        logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
-        res.status(500).json({
-            error_code: 'internal_error',
-            message: 'Internal error'
-        });
-    }
-};
+    };

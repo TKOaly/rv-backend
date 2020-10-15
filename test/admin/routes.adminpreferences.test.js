@@ -2,13 +2,11 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 
 chai.use(chaiHttp);
-chai.use(openapiValidator);
 
 const token = jwt.sign(
     {
@@ -36,7 +34,6 @@ describe('routes: admin preferences', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -49,7 +46,6 @@ describe('routes: admin preferences', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should return a default value for an undefined preference', async () => {
@@ -109,7 +105,6 @@ describe('routes: admin preferences', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
         });
     });
 });

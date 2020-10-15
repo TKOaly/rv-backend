@@ -1,14 +1,12 @@
 const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
-const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const productStore = require('../../src/db/productStore');
 
 chai.use(chaiHttp);
-chai.use(openapiValidator);
 
 const token = jwt.sign(
     {
@@ -43,7 +41,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -55,7 +52,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -65,7 +61,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -110,7 +105,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(201);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error if barcode is already taken', async () => {
@@ -129,7 +123,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(409);
-            expect(res).to.satisfyApiSpec;
 
             expect(res.body.error_code).to.equal('identifier_taken');
         });
@@ -150,7 +143,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('invalid_reference');
         });
 
@@ -167,7 +159,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
@@ -221,7 +212,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -234,7 +224,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -248,7 +237,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('invalid_reference');
         });
 
@@ -262,7 +250,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('bad_request');
         });
     });
@@ -275,7 +262,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -286,7 +272,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should cause any requests for that product\'s information to fail', async () => {
@@ -301,7 +286,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(lookup.status).to.equal(404);
-            expect(lookup).to.satisfyApiSpec;
             expect(lookup.body.error_code).to.equal('not_found');
         });
 
@@ -350,7 +334,6 @@ describe('routes: admin products', () => {
                 });
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.error_code).to.equal('not_found');
         });
 
@@ -371,7 +354,6 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res).to.satisfyApiSpec;
                 expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
             }
 
@@ -385,7 +367,6 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res).to.satisfyApiSpec;
                 expect(res.status).to.equal(400, `request should fail when field ${negativeField} has a negative value`);
             }
         });
@@ -458,7 +439,6 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 });

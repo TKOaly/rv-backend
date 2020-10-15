@@ -2,12 +2,10 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
 
-chai.use(openapiValidator);
 chai.use(chaiHttp);
 
 const token = jwt.sign({
@@ -33,7 +31,6 @@ describe('routes: categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -45,7 +42,6 @@ describe('routes: categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should return 404 on nonexistent category', async () => {
@@ -55,7 +51,6 @@ describe('routes: categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
         });
     });
 });

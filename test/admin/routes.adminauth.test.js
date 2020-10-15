@@ -2,13 +2,11 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const userStore = require('../../src/db/userStore');
 
-chai.use(openapiValidator);
 chai.use(chaiHttp);
 
 describe('routes: admin authentication', () => {
@@ -33,7 +31,6 @@ describe('routes: admin authentication', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
 
             const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
             expect(decoded.data.userId).to.exist;
@@ -65,7 +62,6 @@ describe('routes: admin authentication', () => {
                 });
 
             expect(res.status).to.equal(403);
-            expect(res).to.satisfyApiSpec;
         });
     });
 });

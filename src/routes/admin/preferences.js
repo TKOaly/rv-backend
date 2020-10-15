@@ -86,8 +86,10 @@ router.patch('/:preferenceKey', async (req, res) => {
     );
 
     res.status(200).json({
-        key: req.params.preferenceKey,
-        value: result.value
+        preference: {
+            key: req.params.preferenceKey,
+            value: result.value
+        }
     });
 });
 

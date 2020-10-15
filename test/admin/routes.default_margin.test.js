@@ -33,7 +33,6 @@ describe('routes: admin default margin', () => {
                 .set('Authorization', `Bearer ${ token }`);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.margin).to.equal(GLOBAL_DEFAULT_MARGIN.default);
         });
     });
@@ -56,7 +55,6 @@ describe('routes: admin default margin', () => {
                 .set('Authorization', `Bearer ${ token }`);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.margin).to.equal(0.2);
         });
     });

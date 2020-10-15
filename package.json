@@ -20,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-openapi-validator": "^4.2.1",
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.1",
@@ -29,10 +30,8 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "chai-openapi-response-validator": "^0.10.0",
     "eslint": "^6.8.0",
     "husky": "^3.0.9",
-    "jest-openapi": "^0.10.0",
     "lint-staged": "^9.4.2",
     "mocha": "^7.1.2",
     "nodemon": "^2.0.3",

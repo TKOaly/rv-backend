@@ -2,14 +2,12 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const boxStore = require('../../src/db/boxStore');
 
 chai.use(chaiHttp);
-chai.use(openapiValidator);
 
 const token = jwt.sign(
     {
@@ -37,7 +35,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -49,7 +46,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should return 404 on nonexistent box', async () => {
@@ -59,7 +55,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -96,7 +91,6 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(201);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error if box barcode is already taken', async () => {
@@ -112,7 +106,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(409);
             expect(res.body.error_code).to.equal('identifier_taken');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -128,7 +121,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('invalid_reference');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -144,7 +136,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -194,7 +185,6 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent box', async () => {
@@ -209,7 +199,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent product', async () => {
@@ -224,7 +213,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('invalid_reference');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -239,7 +227,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -268,7 +255,6 @@ describe('routes: admin boxes', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should return the deleted box', async () => {
@@ -278,7 +264,6 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -295,7 +280,6 @@ describe('routes: admin boxes', () => {
                 });
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should fail on invalid request', async () => {
@@ -316,7 +300,6 @@ describe('routes: admin boxes', () => {
                     .send(invalidRequest);
 
                 expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
-                expect(res).to.satisfyApiSpec;
             }
 
             for (const negativeField in validFields) {
@@ -330,7 +313,6 @@ describe('routes: admin boxes', () => {
                     .send(invalidRequest);
 
                 expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
-                expect(res).to.satisfyApiSpec;
             }
         });
 

@@ -2,13 +2,11 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('../openapiValidator');
 const server = require('../../src/app');
 const knex = require('../../src/db/knex');
 const jwt = require('../../src/jwt/token');
 const categoryStore = require('../../src/db/categoryStore');
 
-chai.use(openapiValidator);
 chai.use(chaiHttp);
 
 const token = jwt.sign(
@@ -37,7 +35,6 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -49,7 +46,6 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on nonexistent category', async () => {
@@ -59,7 +55,6 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(404);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -92,7 +87,6 @@ describe('routes: admin categories', () => {
                 });
 
             expect(res.status).to.equal(201);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -106,7 +100,6 @@ describe('routes: admin categories', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -137,7 +130,6 @@ describe('routes: admin categories', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
             expect(res.body.category.description).to.equal('Radioactive waste');
         });
 
@@ -152,7 +144,6 @@ describe('routes: admin categories', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error on invalid parameters', async () => {
@@ -166,7 +157,6 @@ describe('routes: admin categories', () => {
 
             expect(res.status).to.equal(400);
             expect(res.body.error_code).to.equal('bad_request');
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -179,7 +169,6 @@ describe('routes: admin categories', () => {
 
             expect(res.status).to.equal(404);
             expect(res.body.error_code).to.equal('not_found');
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should return the deleted category and moved items', async () => {
@@ -189,7 +178,6 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should move items to the default category', async () => {
@@ -232,7 +220,6 @@ describe('routes: admin categories', () => {
 
             expect(res.status).to.equal(403);
             expect(res.body.error_code).to.equal('bad_request');
-            expect(res).to.satisfyApiSpec;
         });
     });
 });

@@ -2,7 +2,6 @@ const chai = require('chai');
 const expect = chai.expect;
 const chaiHttp = require('chai-http');
 
-const openapiValidator = require('./openapiValidator');
 const server = require('../src/app');
 const knex = require('../src/db/knex');
 const jwt = require('../src/jwt/token');
@@ -10,7 +9,6 @@ const userStore = require('../src/db/userStore');
 const historyStore = require('../src/db/historyStore');
 
 chai.use(chaiHttp);
-chai.use(openapiValidator);
 
 const token = jwt.sign({
     userId: 1
@@ -35,7 +33,6 @@ describe('routes: user', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -52,7 +49,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
 
             expect(res.body.user.username).to.equal('abcd');
             expect(res.body.user.fullName).to.equal('abcd efgh');
@@ -91,7 +87,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(409);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should deny changing email to one already taken', async () => {
@@ -104,7 +99,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(409);
-            expect(res).to.satisfyApiSpec;
         });
 
         it('should error if no fields are specified', async () => {
@@ -115,7 +109,6 @@ describe('routes: user', () => {
                 .send({});
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -130,7 +123,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(200);
-            expect(res).to.satisfyApiSpec;
 
             expect(res.body.accountBalance).to.equal(650);
 
@@ -173,7 +165,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(400);
-            expect(res).to.satisfyApiSpec;
         });
     });
 
@@ -188,7 +179,6 @@ describe('routes: user', () => {
                 });
 
             expect(res.status).to.equal(204);
-            expect(res).to.satisfyApiSpec;
 
             const user = await userStore.findById(1);
             const passwordMatches = await userStore.verifyPassword('abcdefg', user.passwordHash);

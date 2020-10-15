@@ -4,8 +4,6 @@ const authMiddleware = require('../authMiddleware');
 const userStore = require('../../db/userStore');
 const historyStore = require('../../db/historyStore');
 const logger = require('../../logger');
-const fieldValidator = require('../../utils/fieldValidator');
-const validators = require('../../utils/validators');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -17,7 +15,7 @@ router.param('userId', async (req, res, next) => {
             error_code: 'not_found',
             message: `No user with id '${req.params.userId}' found`
         });
-        
+
         logger.error('User %s tried to access unknown user %s as admin', req.user.username, req.params.userId);
 
         return;
@@ -72,46 +70,7 @@ router.get('/:userId(\\d+)', async (req, res) => {
 });
 
 router.post('/:userId(\\d+)/changeRole', async (req, res) => {
-
-    const inputValidators = [validators.nonEmptyString('role')];
-
-    const errors = fieldValidator.validateObject(req.body, inputValidators);
-
-    if (errors.length > 0) {
-        logger.error(
-            '%s %s: invalid request by user %s: %s',
-            req.method,
-            req.originalUrl,
-            req.user.username,
-            errors.join(', ')
-        );
-
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Missing or invalid fields in request',
-            errors
-        });
-
-        return;
-    }
-
     const role = req.body.role;
-
-    if (!['USER1', 'ADMIN'].includes(role)) {
-        logger.error(
-            'User %s tried to change role of user %s to unknown role %s',
-            req.user.username,
-            req.routeUser.userId,
-            role
-        );
-
-        res.status(400).json({
-            error_code: 'invalid_reference',
-            message: 'Referenced role not found'
-        });
-
-        return;
-    }
 
     const updatedUser = await userStore.updateUser(req.routeUser.userId, { role });
 
@@ -126,7 +85,7 @@ router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
     const purchases = await historyStore.getUserPurchaseHistory(req.routeUser.userId);
 
     res.status(200).json({
-        purchases,
+        purchases
     });
 });
 
