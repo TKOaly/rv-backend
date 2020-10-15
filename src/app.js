@@ -58,8 +58,6 @@
     app.use('/api/v1/test/reset_data', api_reset_route);
 
     app.use((error, req, res, next) => {
-        console.log(error);
-
         if (error.status === 400) {
             res.status(400).json({
                 error_code: 'bad_request',

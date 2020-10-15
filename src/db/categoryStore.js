@@ -68,7 +68,7 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
 
     const rows = await knex('PRODGROUP')
         .where({ pgrpid: categoryId })
-        .delete()
+        .update({ deleted: true })
         .returning(['descr']);
 
     if (rows.length === 0) {
