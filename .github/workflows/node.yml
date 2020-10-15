@@ -15,6 +15,11 @@ jobs:
           POSTGRES_USER: rv
           POSTGRES_PASSWORD: unsecure
           POSTGRES_DB: rv_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v2
@@ -22,11 +27,15 @@ jobs:
       - run: npm ci
       - run: npm test
         env:
+          NODE_ENV: development
+          PORT: 8080
           DB_HOST: postgres
           DB_USERNAME: rv
           DB_PASSWORD: unsecure
           DB_NAME: rv
           DB_PORT: 5432
+          JWT_SECRET: unsecure
+          JWT_ADMIN_SECRET: unsecure
       - uses: codecov/codecov-action@v1
       - uses: docker/login-action@v1
         with:
