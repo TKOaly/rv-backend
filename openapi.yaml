@@ -817,60 +817,6 @@ paths:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
-
-  /api/v1/admin/defaultMargin: 
-    get: 
-      summary: Get the default profit margin
-      security:
-        - adminAccessToken: []
-      responses: 
-        200: 
-          description: Request fulfilled successfully
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                required: 
-                  - margin
-                properties: 
-                  margin: 
-                    type: number
-                    example: 0.05
-        401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
-    patch: 
-      summary: Update the default profit margin
-      security:
-        - adminAccessToken: []
-      responses: 
-        200: 
-          description: Profit margin updated successfully
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                required: 
-                  - margin
-                properties: 
-                  margin: 
-                    type: number
-                    example: 0.05
-        401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
-        400:
-          '$ref': '#/components/responses/BadRequestErrorResponse'
-      requestBody: 
-        required: true
-        content: 
-          application/json: 
-            schema: 
-              type: object
-              required: 
-                - margin
-              properties: 
-                margin: 
-                  type: number
-                  example: 0.05
   /api/v1/admin/boxes: 
     get: 
       summary: Get a list of product boxes
