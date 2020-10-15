@@ -21,6 +21,12 @@ jobs:
       - uses: actions/setup-node@v1
       - run: npm ci
       - run: npm test
+        env:
+          DB_HOST: postgres
+          DB_USERNAME: rv
+          DB_PASSWORD: unsecure
+          DB_NAME: rv
+          DB_PORT: 5432
       - uses: codecov/codecov-action@v1
       - uses: docker/login-action@v1
         with:
