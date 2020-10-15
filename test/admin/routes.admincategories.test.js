@@ -198,7 +198,7 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body.movedProducts).to.deep.equal(initial_items);
+            expect(res.body.movedProducts.sort()).to.deep.equal(initial_items.sort());
 
             const post_res = await chai
                 .request(server)

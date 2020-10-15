@@ -71,6 +71,11 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
         .where('PRICE.endtime', null)
         .andWhere('RVBOX.barcode', boxBarcode)
         .first();
+
+    if (row === undefined) {
+        return undefined;
+    }
+
     return rowToBox(row);
 };
 
