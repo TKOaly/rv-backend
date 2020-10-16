@@ -7,7 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
 
     services:
       postgres:
@@ -16,6 +15,7 @@ jobs:
           POSTGRES_USER: rv
           POSTGRES_PASSWORD: unsecure
           POSTGRES_DB: rv_test
+        ports: [ 5432 ]
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -30,7 +30,7 @@ jobs:
         env:
           NODE_ENV: development
           PORT: 8080
-          DB_HOST: postgres
+          DB_HOST: localhost
           DB_USERNAME: rv
           DB_PASSWORD: unsecure
           DB_NAME: rv
