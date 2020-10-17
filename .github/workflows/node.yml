@@ -53,10 +53,10 @@ jobs:
         with:
           context: .
           push: true
-          tags: docker.pkg.github.com/tkoaly/rv-backend/rv-backend:latest-dev
+          tags: tkoaly/rv-backend/rv-backend:latest-dev
       - uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master'
         with:
           context: .
           push: true
-          tags: docker.pkg.github.com/tkoaly/rv-backend/rv-backend:latest
+          tags: tkoaly/rv-backend/rv-backend:latest
