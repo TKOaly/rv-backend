@@ -26,10 +26,14 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-      - run: npm ci
-      - run: npm test
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Execute test suites
+        run: npm test
         env:
           NODE_ENV: development
           PORT: 8080
@@ -40,33 +44,39 @@ jobs:
           DB_PORT: 5432
           JWT_SECRET: unsecure
           JWT_ADMIN_SECRET: unsecure
-      - uses: codecov/codecov-action@v1
-      - uses: docker/setup-buildx-action@v1
-      - uses: docker/login-action@v1
+      - name: Generate the code coverage report
+        uses: codecov/codecov-action@v1
+      - name: Enable experimental docker build features
+        uses: docker/setup-buildx-action@v1
+      - name: Login into Github Docker Reigstry
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.CR_PAT }}
-      - uses: docker/build-push-action@v2
+      - name: Build and push with tag :latest-dev
+        uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/develop'
         with:
           context: .
           push: true
           tags: ghcr.io/tkoaly/rv-backend/rv-backend:latest-dev
-      - uses: docker/build-push-action@v2
+      - name: Build and push with label :latest
+        uses: docker/build-push-action@v2
         if: github.ref == 'refs/heads/master'
         with:
           context: .
           push: true
           tags: ghcr.io/tkoaly/rv-backend/rv-backend:latest
-      - id: tag_name
+      - name: Extract the release tag name from commit reference
+        id: tag_name
         run: echo "::set-output tag_name=${GITHUB_REF//refs\/tags\/}" >> $GITHUB_ENV
-      - uses: docker/build-push-action@v2
+      - name: Push image with labels :latest-release and with the release version as the label
+        uses: docker/build-push-action@v2
         if: github.event_name == 'release'
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/tkoaly/rv-backend/rv-backend:latest
             ghcr.io/tkoaly/rv-backend/rv-backend:latest-release
             ghcr.io/tkoaly/rv-backend/rv-backend:${{ steps.tag_name.outputs.tag_name }}
