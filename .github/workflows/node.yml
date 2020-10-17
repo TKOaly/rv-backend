@@ -59,3 +59,14 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/tkoaly/rv-backend/rv-backend:latest
+      - id: tag_name
+        run: echo "::set-output tag_name=${GITHUB_REF//refs\/tags\/}" >> $GITHUB_ENV
+      - uses: docker/build-push-action@v2
+        if: github.event_name == 'release'
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/tkoaly/rv-backend/rv-backend:latest
+            ghcr.io/tkoaly/rv-backend/rv-backend:latest-release
+            ghcr.io/tkoaly/rv-backend/rv-backend:${{ steps.tag_name.outputs.tag_name }}
