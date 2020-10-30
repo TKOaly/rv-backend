@@ -13,6 +13,12 @@ servers:
   - url: https://rv-backend.herokuapp.com/
     description: Production environment
 
+tags:
+  - name: normal
+    x-codegen-class: NormalApi
+  - name: admin
+    x-codegen-class: AdminApi
+
 components:
   securitySchemes:
     normalAccessToken:
@@ -50,20 +56,25 @@ components:
         barcode: 
           type: string
           example: "6430039222212"
+          description: Barcode on the product packaging. Used to uniquely identify the product.
         name: 
           type: string
           example: Kombucha bakteerin makuinen bakteerijuoma
+          description: Human readable and user facing name of the product.
         category: 
           '$ref': '#/components/schemas/Category'
         weight: 
           type: integer
           example: 370
+          description: Weight of the product in grams.
         sellPrice: 
           type: number
           example: 3.10
+          description: Price (in cents) at which the product is on sale.  
         stock: 
           type: integer
           example: 10
+          description: Number of items in stock.
     AdminProduct:
       allOf:
         - '$ref': '#/components/schemas/Product'
@@ -74,6 +85,7 @@ components:
             buyPrice:
               type: number
               example: 3.00
+              description: Price (in cents) at which the product was bought in.
     Box:
       type: object
       required: 
@@ -84,9 +96,13 @@ components:
         boxBarcode:
           example: "01880335"
           type: string
+          description: |
+            Barcode printed on the box, which contains multiple items of a product.
+            Used to uniquely identify the box.
         itemsPerBox: 
           type: integer
           example: 18
+          description: Number of items contained in one box.
         product:
           '$ref': '#/components/schemas/Product'
     PurchaseEventBase:
@@ -99,13 +115,16 @@ components:
         purchaseId: 
           type: integer
           example: 3053
+          description: Opaque unique identifier of the purchase event.
         time: 
           type: string
           format: date-time
           example: '2018-12-24T00:00:00.000Z'
+          description: Timestamp of the event in ISO-8601 format.
         price: 
           type: number
           example: 0.19
+          description: Price (in cents) of the product bought.
     PurchaseEventProduct:
       type: object
       required:
@@ -128,6 +147,7 @@ components:
         balanceAfter:
           type: number
           example: 19.81
+          description: Balance of the user's account (in cents) after the purchase transaction.
     PurchaseEventStock:
       type: object
       required:
@@ -136,6 +156,7 @@ components:
         stockAfter:
           type: integer
           example: 11
+          description: Number of the bought product left in stock after the purchase transaction.
     DepositEventBase:
       type: object
       required: 
@@ -146,16 +167,20 @@ components:
       properties: 
         depositId: 
           type: integer
+          description: Opaque unique identifier of the deposit event.
         time: 
           type: string
           format: date-time
           example: '2018-12-24T00:00:00.000Z'
+          description: Timestamp of the event in ISO-8601 format.
         amount: 
           type: number
           example: 20.00
+          description: Amount deposited to the user's account in cents.
         balanceAfter:
           type: number
           example: 25.00
+          description: Balance of the user's account after the deposit.
     DepositEventUser:
       type: object
       required:
@@ -176,18 +201,23 @@ components:
         userId: 
           type: integer
           example: 415
+          description: Opaque unique identifier of the user.
         username: 
           type: string
           example: fuxi2001
+          description: Username which is used in authentication.
         fullName: 
           type: string
           example: Fuxi C. S. McStudent
+          description: Real full name of the user.
         email: 
           type: string
           example: fuxi.student@helsinki.fi
+          description: E-mail address at which the user can be reached.
         moneyBalance: 
           type: number
           example: 20.00
+          description: Balance of the user's account in cents.
         role:
           '$ref': '#/components/schemas/Role'
     Category:
@@ -199,9 +229,11 @@ components:
         categoryId: 
           type: integer
           example: 10
+          description: Opaque unique identifier of the category.
         description: 
           type: string
           example: Drinks, soda with bottle return
+          description: Human readable and user facing description of the product category.
     Preference:
       type: object
       required:
@@ -211,8 +243,11 @@ components:
         key:
           type: string
           example: globalDefaultMargin
+          description: Identifier of the preference.
         value:
-          description: Can be any JSON value. The type depends on the preference in question.
+          description: |
+            Value of the preference, which can be any JSON value.
+            The type depends on the preference in question.
           example: 0.05
   responses:
     InvalidCredentialsErrorResponse:
@@ -311,6 +346,9 @@ paths:
   /api/v1/register: 
     post: 
       summary: Create a new user
+      operationId: register
+      tags:
+        - normal
       responses: 
         201:
           description: New user created successfully
@@ -358,6 +396,9 @@ paths:
   /api/v1/authenticate: 
     post: 
       summary: Authenticate with normal privileges
+      operationId: authenticate
+      tags:
+        - normal
       responses: 
         200:
           description: Authentication successfull
@@ -394,6 +435,9 @@ paths:
   /api/v1/admin/authenticate: 
     post: 
       summary: Authenticate with admin privileges
+      operationId: authenticate
+      tags:
+        - admin
       responses: 
         200:
           description: Authentication successfull
@@ -432,6 +476,9 @@ paths:
   /api/v1/products: 
     get: 
       summary: Get a list of all products
+      operationId: getProducts
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -453,10 +500,14 @@ paths:
   /api/v1/products/{barcode}: 
     get:
       summary: Get details of a specific product
+      operationId: getProduct
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -480,10 +531,14 @@ paths:
   /api/v1/products/{barcode}/purchase: 
     post:
       summary: Purchase a prouct
+      operationId: purchase
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -551,6 +606,9 @@ paths:
   /api/v1/categories: 
     get: 
       summary: Get a list of product categories
+      operationId: getCategories
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -572,10 +630,14 @@ paths:
   /api/v1/categories/{categoryId}: 
     get: 
       summary: Get details of a product category
+      operationId: getCategory
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       parameters: 
         - name: categoryId
+          description: Unique identifier of the product category.
           required: true
           in: path
           schema: 
@@ -599,6 +661,9 @@ paths:
   /api/v1/user:
     get: 
       summary: Get details of the authenticated user
+      operationId: getSessionUser
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -617,6 +682,9 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
     patch: 
       summary: Update details of the authenticated user
+      operationId: updateSessionUser
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -657,6 +725,9 @@ paths:
   /api/v1/user/deposit: 
     post: 
       summary: Deposit money to the authenticated user's account
+      operationId: deposit
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -694,6 +765,9 @@ paths:
   /api/v1/user/purchaseHistory: 
     get: 
       summary: Get list of the authenticated user's past purchases
+      operationId: getPurchaseHistory
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -718,10 +792,14 @@ paths:
   /api/v1/user/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase made by the authenticated user
+      operationId: getPurchaseEvent
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       parameters: 
         - name: purchaseId
+          description: Unique identifier of the purchase event.
           required: true
           in: path
           schema: 
@@ -748,6 +826,9 @@ paths:
   /api/v1/user/depositHistory: 
     get: 
       summary: Get list of past deposit events of the authenticated user
+      operationId: getDepositHistory
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       responses: 
@@ -769,10 +850,14 @@ paths:
   /api/v1/user/depositHistory/{depositId}: 
     get: 
       summary: Get details of a specific deposit event created by the authenticated user
+      operationId: getDepositEvent
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       parameters: 
         - name: depositId
+          description: Unique identifier of the deposit event.
           required: true
           in: path
           schema: 
@@ -796,6 +881,9 @@ paths:
   /api/v1/user/changePassword:
     post:
       summary: Change the account's password
+      operationId: changePassword
+      tags:
+        - normal
       security:
         - normalAccessToken: []
       requestBody:
@@ -820,6 +908,9 @@ paths:
   /api/v1/admin/boxes: 
     get: 
       summary: Get a list of product boxes
+      operationId: getBoxes
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -840,6 +931,9 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
     post: 
       summary: Create a new box of products
+      operationId: createBox
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -888,10 +982,14 @@ paths:
   /api/v1/admin/boxes/{boxBarcode}: 
     get: 
       summary: Get the details of a specific product box
+      operationId: getBox
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: boxBarcode
+          description: Uniquely identifying barcode of the box.
           required: true
           in: path
           schema: 
@@ -914,10 +1012,14 @@ paths:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
       summary: Update the details of a product box
+      operationId: updateBox
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: boxBarcode
+          description: Uniquely identifying barcode of the box.
           required: true
           in: path
           schema: 
@@ -959,10 +1061,14 @@ paths:
                   maxLength: 14
     delete: 
       summary: Delete a product box
+      operationId: deleteBox
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: boxBarcode
+          description: Uniquely identifying barcode of the box.
           required: true
           in: path
           schema: 
@@ -988,10 +1094,14 @@ paths:
   /api/v1/admin/boxes/{boxBarcode}/buyIn: 
     post: 
       summary: Add products to stock by the boxful
+      operationId: buyInBox
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: boxBarcode
+          description: Uniquely identifying barcode of the box.
           required: true
           in: path
           schema: 
@@ -1049,6 +1159,9 @@ paths:
   /api/v1/admin/products: 
     get: 
       summary: Get a list of all products
+      operationId: getProducts
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1069,6 +1182,9 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
     post: 
       summary: Create a new product
+      operationId: createProduct
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1133,10 +1249,14 @@ paths:
   /api/v1/admin/products/{barcode}: 
     get: 
       summary: Get details of a specific product
+      operationId: getProduct
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -1159,10 +1279,14 @@ paths:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
       summary: Update the details of a specific product
+      operationId: updateProduct
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -1217,10 +1341,14 @@ paths:
                   example: 8
     delete: 
       summary: Delete a product
+      operationId: deleteProduct
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -1244,10 +1372,14 @@ paths:
   /api/v1/admin/products/{barcode}/buyIn: 
     post: 
       summary: Add product to stock
+      operationId: buyInProduct
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -1305,10 +1437,14 @@ paths:
   /api/v1/admin/products/{barcode}/purchaseHistory: 
     get: 
       summary: Get a list of product's purchase events
+      operationId: getProductPurchaseHistory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
@@ -1337,16 +1473,21 @@ paths:
   /api/v1/admin/products/{barcode}/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get a specific purchase event
+      operationId: getProductPurchaseEvent
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: barcode
+          description: Uniquely identifying barcode of the product.
           required: true
           in: path
           schema: 
             type: string
             example: '7314660003114'
         - name: purchaseId
+          description: Unique identifier of the purchase event.
           required: true
           in: path
           schema: 
@@ -1374,6 +1515,9 @@ paths:
   /api/v1/admin/categories: 
     get: 
       summary: Get a list of product categories
+      operationId: getCategories
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1394,6 +1538,9 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
     post: 
       summary: Create a new product category
+      operationId: createCategory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1427,10 +1574,14 @@ paths:
   /api/v1/admin/categories/{categoryId}: 
     get: 
       summary: Get the details of a product category
+      operationId: getCategory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: categoryId
+          description: Unique identifier of the product category.
           required: true
           in: path
           schema: 
@@ -1454,10 +1605,14 @@ paths:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
       summary: Update details of a product category
+      operationId: updateCategory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: categoryId
+          description: Unique identifier of the product category.
           required: true
           in: path
           schema: 
@@ -1494,10 +1649,14 @@ paths:
                   minLength: 1
     delete: 
       summary: Delete a product category
+      operationId: deleteCategory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: categoryId
+          description: Unique identifier of the product category.
           required: true
           in: path
           schema: 
@@ -1543,6 +1702,9 @@ paths:
   /api/v1/admin/users: 
     get: 
       summary: Get a list of all users
+      operationId: getUsers
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1564,10 +1726,14 @@ paths:
   /api/v1/admin/users/{userId}: 
     get: 
       summary: Get the details of a user
+      operationId: getUser
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
@@ -1592,10 +1758,14 @@ paths:
   /api/v1/admin/users/{userId}/purchaseHistory: 
     get: 
       summary: Get user's purchase history
+      operationId: getUserPurchaseHistory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
@@ -1625,16 +1795,21 @@ paths:
   /api/v1/admin/users/{userId}/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase event
+      operationId: getUserPurchaseHistoryEvent
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
             type: integer
             example: 324
         - name: purchaseId
+          description: Unique identifier of the purchase event.
           required: true
           in: path
           schema: 
@@ -1662,10 +1837,14 @@ paths:
   /api/v1/admin/users/{userId}/depositHistory: 
     get: 
       summary: Get deposit history of a user
+      operationId: getUserDepositHistory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
@@ -1692,16 +1871,21 @@ paths:
   /api/v1/admin/users/{userId}/depositHistory/{depositId}: 
     get: 
       summary: Get details of a specific deposit event
+      operationId: getUserDepositHistoryEvent
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
             type: integer
             example: 324
         - name: depositId
+          description: Unique identifier of the deposit event.
           required: true
           in: path
           schema: 
@@ -1726,10 +1910,14 @@ paths:
   /api/v1/admin/users/{userId}/changeRole: 
     post: 
       summary: Update the role of a user
+      operationId: changeUserRole
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: userId
+          description: Unique identifier of the user.
           required: true
           in: path
           schema: 
@@ -1767,6 +1955,9 @@ paths:
   /api/v1/admin/purchaseHistory: 
     get: 
       summary: Get combined purchase histories of all products and users
+      operationId: getPurchaseHistory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1791,10 +1982,14 @@ paths:
   /api/v1/admin/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase event
+      operationId: getPurchaseEvent
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: purchaseId
+          description: Unique identifier of the purchase event.
           required: true
           in: path
           schema: 
@@ -1822,6 +2017,9 @@ paths:
   /api/v1/admin/depositHistory: 
     get: 
       summary: Get the combined deposit history of all users
+      operationId: getDepositHistory
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses: 
@@ -1845,10 +2043,14 @@ paths:
   /api/v1/admin/depositHistory/{depositId}: 
     get: 
       summary: Get details of a specific deposit event
+      operationId: getDepositEvent
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters: 
         - name: depositId
+          description: Unique identifier of the deposit event.
           required: true
           in: path
           schema: 
@@ -1875,6 +2077,9 @@ paths:
   /api/v1/admin/preferences:
     get:
       summary: Get list of preferences and their values
+      operationId: getPreferences
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       responses:
@@ -1896,10 +2101,14 @@ paths:
   /api/v1/admin/preferences/{preferenceKey}:
     get:
       summary: Get the value of a preference
+      operationId: getPreference
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters:
         - name: preferenceKey
+          description: Key of the queried preference.
           required: true
           in: path
           schema:
@@ -1923,10 +2132,14 @@ paths:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch:
       summary: Update the value of a preference
+      operationId: updatePreference
+      tags:
+        - admin
       security:
         - adminAccessToken: []
       parameters:
         - name: preferenceKey
+          description: Key of the preference to update.
           required: true
           in: path
           schema:
