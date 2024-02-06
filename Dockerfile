@@ -1,4 +1,4 @@
-FROM node:gallium-slim
+FROM node:hydrogen-slim
 
 WORKDIR /usr/src/app
 
