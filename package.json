@@ -24,7 +24,7 @@
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.15",
-    "pg": "^7.12.1",
+    "pg": "^8.11.3",
     "winston": "^3.11.0"
   },
   "devDependencies": {
