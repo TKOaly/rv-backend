@@ -1,4 +1,4 @@
-FROM node:fermium-slim
+FROM node:gallium-slim
 
 WORKDIR /usr/src/app
 
