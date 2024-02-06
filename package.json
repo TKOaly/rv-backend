@@ -23,7 +23,7 @@
     "express-openapi-validator": "^4.13.8",
     "helmet": "^6.2.0",
     "jsonwebtoken": "^9.0.2",
-    "knex": "^1.0.7",
+    "knex": "^2.5.1",
     "pg": "^8.11.3",
     "winston": "^3.11.0"
   },
@@ -32,10 +32,10 @@
     "chai-http": "^4.4.0",
     "eslint": "^8.56.0",
     "husky": "^8.0.3",
-    "lint-staged": "^9.5.0",
-    "mocha": "^9.2.2",
+    "lint-staged": "^12.5.0",
+    "mocha": "^10.2.0",
     "nodemon": "^3.0.3",
-    "nyc": "^14.1.1",
+    "nyc": "^15.1.0",
     "prettier": "^3.2.5",
     "prettier-eslint": "^15.0.1"
   },
