@@ -1,4 +1,4 @@
-FROM node:erbium-slim
+FROM node:fermium-slim
 
 WORKDIR /usr/src/app
 
