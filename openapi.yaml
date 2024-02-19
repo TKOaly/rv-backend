@@ -68,8 +68,8 @@ components:
           example: 370
           description: Weight of the product in grams.
         sellPrice: 
-          type: number
-          example: 3.10
+          type: integer
+          example: 310
           description: Price (in cents) at which the product is on sale.  
         stock: 
           type: integer
@@ -83,8 +83,8 @@ components:
             - buyPrice
           properties:
             buyPrice:
-              type: number
-              example: 3.00
+              type: integer
+              example: 300
               description: Price (in cents) at which the product was bought in.
     Box:
       type: object
@@ -122,8 +122,8 @@ components:
           example: '2018-12-24T00:00:00.000Z'
           description: Timestamp of the event in ISO-8601 format.
         price: 
-          type: number
-          example: 0.19
+          type: integer
+          example: 19
           description: Price (in cents) of the product bought.
     PurchaseEventProduct:
       type: object
@@ -145,8 +145,8 @@ components:
         - balanceAfter
       properties:
         balanceAfter:
-          type: number
-          example: 19.81
+          type: integer
+          example: 1981
           description: Balance of the user's account (in cents) after the purchase transaction.
     PurchaseEventStock:
       type: object
@@ -174,12 +174,12 @@ components:
           example: '2018-12-24T00:00:00.000Z'
           description: Timestamp of the event in ISO-8601 format.
         amount: 
-          type: number
-          example: 20.00
+          type: integer
+          example: 2000
           description: Amount deposited to the user's account in cents.
         balanceAfter:
-          type: number
-          example: 25.00
+          type: integer
+          example: 2500
           description: Balance of the user's account after the deposit.
     DepositEventUser:
       type: object
@@ -215,8 +215,8 @@ components:
           example: fuxi.student@helsinki.fi
           description: E-mail address at which the user can be reached.
         moneyBalance: 
-          type: number
-          example: 20.00
+          type: integer
+          example: 2000
           description: Balance of the user's account in cents.
         role:
           '$ref': '#/components/schemas/Role'
@@ -742,7 +742,7 @@ paths:
                   - deposit
                 properties: 
                   accountBalance: 
-                    type: number
+                    type: integer
                   deposit: 
                     allOf:
                       - '$ref': '#/components/schemas/DepositEventBase'
@@ -760,7 +760,7 @@ paths:
                 - amount
               properties: 
                 amount: 
-                  type: number
+                  type: integer
                   minimum: 0
   /api/v1/user/purchaseHistory: 
     get: 
@@ -1122,11 +1122,11 @@ paths:
                     type: integer
                     example: 11
                   productBuyPrice: 
-                    type: number
-                    example: 2.90
+                    type: integer
+                    example: 290
                   productSellPrice: 
-                    type: number
-                    example: 3.00
+                    type: integer
+                    example: 300
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
@@ -1149,12 +1149,12 @@ paths:
                   example: 3
                   minimum: 0
                 productBuyPrice: 
-                  type: number
-                  example: 2.90
+                  type: integer
+                  example: 290
                   minimum: 0
                 productSellPrice: 
-                  type: number
-                  example: 3.00
+                  type: integer
+                  example: 300
                   minimum: 0
   /api/v1/admin/products: 
     get: 
@@ -1234,7 +1234,7 @@ paths:
                   example: 10
                   minimum: 0
                 weight: 
-                  type: number
+                  type: integer
                   example: 350
                   minimum: 0
                 buyPrice: 
@@ -1327,7 +1327,7 @@ paths:
                   example: 10
                   minimum: 0
                 weight: 
-                  type: number
+                  type: integer
                   example: 350
                   minimum: 0
                 buyPrice: 
@@ -1400,11 +1400,11 @@ paths:
                     type: integer
                     example: 11
                   buyPrice: 
-                    type: number
-                    example: 2.10
+                    type: integer
+                    example: 210
                   sellPrice: 
-                    type: number
-                    example: 2.20
+                    type: integer
+                    example: 220
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
@@ -1427,11 +1427,11 @@ paths:
                   example: 3
                   minimum: 1
                 buyPrice: 
-                  type: number
+                  type: integer
                   example: 210
                   minimum: 0
                 sellPrice: 
-                  type: number
+                  type: integer
                   example: 220
                   minimum: 0
   /api/v1/admin/products/{barcode}/purchaseHistory: 
