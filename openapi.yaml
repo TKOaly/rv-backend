@@ -473,6 +473,42 @@ paths:
                 password: 
                   type: string
                   example: y0ur_w4ll3t
+  /api/v1/products/search: 
+    post: 
+      summary: Search for products
+      operationId: searchProducts
+      tags:
+        - normal
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - query
+              properties: 
+                query: 
+                  type: string
+                  example: muumilimsa
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Product'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
   /api/v1/products: 
     get: 
       summary: Get a list of all products
