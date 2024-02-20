@@ -23,7 +23,7 @@
     "express-openapi-validator": "^4.2.1",
     "helmet": "^3.21.2",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.1",
+    "knex": "^2.5.1",
     "pg": "^7.12.1",
     "winston": "^3.2.1"
   },
