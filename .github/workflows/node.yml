@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ develop, master ]
+    branches: [ develop, master, '*' ]
   pull_request:
     branches: [ develop, master ]
   release:
@@ -29,7 +29,9 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
       - name: Install NPM dependencies
         run: npm ci
       - name: Execute test suites
