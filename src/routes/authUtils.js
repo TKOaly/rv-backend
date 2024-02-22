@@ -14,11 +14,15 @@ module.exports.authenticateUser =
         const body = req.body;
         const username = body.username;
         const password = body.password;
+        const rfid = body.rfid;
 
-        const user = await userStore.findByUsername(username);
-
+        const user = (username ? await userStore.findByUsername(username) : await userStore.findByRfid(rfid));
+        logger.info(username)
+        logger.info(password)
+        logger.info(rfid)
         if (user) {
-            if (await userStore.verifyPassword(password, user.passwordHash)) {
+            logger.info(password);
+            if ((password != undefined && await userStore.verifyPassword(password, user.passwordHash)) || (rfid != undefined && await userStore.verifyRfid(rfid, user.rfidHash))) {
                 if (verifyRole(requiredRole, user.role)) {
                     logger.info('User %s logged in as role %s', user.username, requiredRole);
                     res.status(200).json({

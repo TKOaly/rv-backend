@@ -105,6 +105,17 @@ router.post('/deposit', async (req, res) => {
     });
 });
 
+router.post('/changeRfid', async (req, res) => {
+    const user = req.user;
+    const rfid = req.body.rfid;
+
+	await userStore.updateUser(user.userId, { rfid: rfid });
+
+	logger.info(rfid);
+    logger.info('User %s changed rfid', user.username);
+    res.status(204).end();
+});
+
 router.post('/changePassword', async (req, res) => {
     const user = req.user;
     const password = req.body.password;
