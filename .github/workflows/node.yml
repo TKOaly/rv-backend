@@ -35,7 +35,7 @@ jobs:
       - name: Execute test suites
         run: npm test
         env:
-          NODE_ENV: development
+          NODE_ENV: test
           PORT: 8080
           DB_HOST: postgres
           DB_USERNAME: rv
