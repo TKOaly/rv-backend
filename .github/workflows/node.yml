@@ -18,7 +18,7 @@ jobs:
         env:
           POSTGRES_USER: rv
           POSTGRES_PASSWORD: unsecure
-          POSTGRES_DB: rv_test
+          POSTGRES_DB: rv
         ports:
           - 5432:5432
         options: >-
