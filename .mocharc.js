@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-require("./test/mocha.env.js");
+require('./test/mocha.env.js');
 
 module.exports = {
-  recursive: true,
-  timeout: 10000,
+    recursive: true,
+    timeout: 10000
 };
