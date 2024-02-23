@@ -14,7 +14,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:10-alpine
         env:
           POSTGRES_USER: rv
           POSTGRES_PASSWORD: unsecure
@@ -37,10 +37,10 @@ jobs:
         env:
           NODE_ENV: development
           PORT: 8080
-          DB_HOST: localhost
+          DB_HOST: postgres
           DB_USERNAME: rv
           DB_PASSWORD: unsecure
-          DB_NAME: rv
+          DB_NAME: rv_test
           DB_PORT: 5432
           JWT_SECRET: unsecure
           JWT_ADMIN_SECRET: unsecure
