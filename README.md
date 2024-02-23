@@ -1,63 +1,117 @@
-# rv-backend
+![RV](https://raw.githubusercontent.com/TKOaly/rv-management-frontend/main/public/rv-icon.png)
+# Ruokavälitys-backend
+![build](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml/badge.svg?branch=develop)
+[![codecov](https://codecov.io/gh/TKOaly/rv-backend/branch/develop/graph/badge.svg)](https://app.codecov.io/gh/TKOaly/rv-backend)
 
-[![Build Status](https://travis-ci.org/ohtu2018-rv/rv-backend.svg?branch=develop)](https://travis-ci.org/ohtu2018-rv/rv-backend) [![codecov](https://codecov.io/gh/ohtu2018-rv/rv-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/ohtu2018-rv/rv-backend)
+Backend for new TKO-äly Ruokavälitys (Snack kiosk)
 
-RV backend
+#### Serves the following frontends:
 
-[Staging](https://rv-backend-dev.herokuapp.com)
+- [rv-tui-frontend](https://github.com/TKOaly/rv-tui-frontend) (React based TUI interface)
+- [rv-management-frontend](https://github.com/TKOaly/rv-management-frontend) (NextJS based web interface)
+- [rv-app-frontend](https://github.com/TKOaly/rv-app-frontend) (Old touch supported web interface)
+- [rv-old-management-frontend](https://github.com/TKOaly/rv-old-management-frontend) (Deprecated)
 
-[Production](https://rv-backend.herokuapp.com)
+## Table Of Contents
 
-## New updated starting instructions May 2019
+- [Prerequisites](#prerequisites)
+- [Docker Setup](#docker-setup)
+- [Local Setup](#local-setup-without-docker)
+- [Configuration](#configuration)
+- [API](#api)
 
-These apply if you only want to run the backend without the frontend. To run it together with frontend, check the frontend repository for instructions.
+## Prerequisites
 
-### On the first time
 
-- install node.js
-- install npm
-- install docker
-- add your user to the docker group
-- install docker-compose
-- install vs code
-- install plugins to vs code
-- clone backend from github
-- run npm install
-- run docker-compose up
-- run npm run db-migrate in the backend container
-- run npm run db-seed in the backend container
+<sub>Expand sections for more info</sub>
+<details>
+<summary>Install node & npm</summary>
 
-### Testing the backend
+  - easiest with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
+  - see [nvm docs](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) to have your shell switch automatically to the version specified in .nvmrc
+  - frontend and backend repos  may use different node versions
 
-- run npm test
+</details>
+<details>
+<summary>Install Docker</summary>
+  
+  - add your user to the docker group 
+    - may require a restart
+  - Install docker-compose
 
-## Old instructions below
+</details>
+<details open>
+<summary> Install IDE plugins  </summary>
 
-## Local development
+  - Recommended
+    - ESLint
+    - Prettier
+  - Useful
+    - an OpenAPI spec viewer
+    - [REST client](docs/REST_CLIENT.md)
 
-To run the backend locally, you can either use [Docker](https://wwww.docker.com) or run it without Docker.
+</details>
+</br>
 
-### With Docker
+Intallation instructions apply for running the project backend. To run the frontends check the respective frontend repositories [listed above](#serves-the-following-frontends) for instructions.
 
-For Docker, the repo contains a `Dockerfile` for building a Docker image of the backend server and a [Docker Compose](https://docs.docker.com/compose) file for running both the backend server and a [PostgreSQL](https://www.postgresql.org) database inside Docker.
+## Docker Setup 
 
-To set up a local environment, run the following commands:
+### installation
 
-1. `docker-compose up -d --build` to build the back-end and start the service stack. Note the name of the server container, as you will need it for later steps.
-2. To create database schema, run `docker exec -it <backend container name or id> npm run db-migrate`.
-3. To seed database with data for development, run `docker exec -it <backend container name or id> npm run db-seed`.
+```bash
+git clone git@github.com:TKOaly/rv-backend.git
+cd rv-backend
+npm install
+cp .env.example .env
+npm run start-container
+npm run recreate-container-db
+```
 
-By default, the server will listen on port 8080. You can use a custom [.env](.env) file to override the environment variables set by the docker-compose file. See [Configuration](#configuration) for an explanation of these variables.
+By default, the server will listen on port 8080. See [Configuration](#configuration) for more.
 
-To shut down the local environment, run `docker-compose down`. This will stop any containers created by docker-compose. The database image uses a persistent volume so database data will persist across service restarts and shutdowns.
+To rebuild the environment and reset the database run `npm run recreate-container`
 
-Running `restart_docker.sh` restarts the service stack.
+To shutdown the enviroment run `docker-compose down`. The database image uses a persistent volume so data will persist across service restarts.
 
-### Without Docker
+<details>
+<summary>
+Detailed container setup process <sup>[expand]</sup>
+</summary>
 
-To run the backend without Docker, install [Node.js](https://nodejs.org) and [PostgreSQL](https://www.postgresql.org). Then, create a database and a user in PostgreSQL for the backend to use.
+##### Build backend and start container
+```bash
+docker-compose up -d --build
+```
+##### Rollback existing database (optional)
+```bash
+docker exec -it rv-backend-rv-backend-1 npm run db-rollback
+```
+##### Create database schema
+```bash
+docker exec -it rv-backend-rv-backend-1 npm run db-migrate
+```
+##### Add insert seed data to database 
+```bash
+docker exec -it rv-backend-rv-backend-1 npm run db-seed
+```
+</details>
 
-Then, to run the backend server:
+### Testing
+
+```bash
+npm run start-container
+npm run test-container
+```
+
+
+## Local Setup without Docker
+
+### Prerequisites
+
+Install [PostgreSQL](https://www.postgresql.org) and create a database and a user for the backend to use.
+
+### Installations
 
 1. Run `npm install` to install packages needed by the backend server.
 2. Set environment variables:
@@ -70,62 +124,16 @@ Then, to run the backend server:
 5. Run `npm run db-seed` to seed the database with initial data.
 6. Finally, run `npm start-nodemon` to start the server. [Nodemon](https://github.com/remy/nodemon) will listen for changes in code and restart the server if necessary.
 
-## Deployment
-
-Generally speaking, the backend will run anywhere Docker runs or if it's run without Docker, anywhere Node.js and PostgreSQL is available.
-
-Currently, deployment to staging and production environments in Heroku is done via Travis. Deployment to staging involves resetting and reseeding the database.
-
-Production deployments will not automatically execute database schema changes. If a new version includes any changes to the database schema, upgrading the database needs to be coordinated with the deployment of the new server code.
-
 ## Configuration
 
-Environment variables:
+You can use a custom [.env](.env) file to override the environment variables set by the docker-compose file.
 
-| Variable     | Description                                                                                                                                                                        |
-| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| DATABASE_URL | Address of database, e.g. `postgres://user:password@database_url:port/database`                                                                                                    |
-| JWT_SECRET   | Secret key for signing JWT tokens. **Do not** use default values in production! The security of authentication will depend on this key being kept secret, so treat it accordingly. |
-| PORT         | Port used by the backend server                                                                                                                                                    |
-| NODE_ENV     | Environment for Node, can be one of `development`, `test` or `production`.                                                                                                         |
-
-## Testing practices
-
-When developing, create tests for created endpoints and when felt useful. Use Mocha to write tests and mocking.
-
-## Using REST client with VSCode
-
-### Admin routes
-
-1. Install REST client for VSCode
-2. Use `admin_auth.rest` to get your JWT
-3. Add the following to your VSCode config, replacing TOKEN:
-
-```json
-"rest-client.environmentVariables": {
-        "$shared": {
-            "rv_backend_admin_token": "TOKEN"
-        }
-    }
-```
-
-4. You can now use REST client to make requests to the management 'back end.
-
-### Normal routes
-
-1. Install REST client for VSCode
-2. Use `user_auth.rest` to get your JWT
-3. Add the following to your VSCode config, replacing TOKEN:
-
-```json
-"rest-client.environmentVariables": {
-        "$shared": {
-            "rv_backend_user_token": "TOKEN"
-        }
-    }
-```
-
-4. You can now use REST client to make requests to the back end.
+| Environment Variable | Description |
+| -------------------- | ----------- |
+| POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB | Postgres database configuration |
+| JWT_SECRET, JWT_ADMIN_SECRET | Secret keys for signing JWT tokens. **Do not** use default values in production! The security of authentication will depend on this key being kept secret, so treat it accordingly. |
+| PORT         | Port the backend is served at |
+| NODE_ENV     | Environment for Node, can be one of `development`, `test` or `production`. |
 
 ## API
 
@@ -138,4 +146,4 @@ The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests.
 A full list of API endpoints and their documentation can be found at
 [Swagger](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1.1#/).
 This documentation is created from an OpenAPI description of the API,
-which can be found from the file `openapi.yaml`.
+which can be found from the file `openapi.yaml`. The OpenApi spec is also used for request validation with middleware
