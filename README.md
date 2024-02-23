@@ -1,6 +1,6 @@
 ![RV](https://raw.githubusercontent.com/TKOaly/rv-management-frontend/main/public/rv-icon.png)
 # Ruokavälitys-backend
-![build](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml/badge.svg?branch=develop)
+[![.github/workflows/node.yml](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml/badge.svg?branch=develop)](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml)
 [![codecov](https://codecov.io/gh/TKOaly/rv-backend/branch/develop/graph/badge.svg)](https://app.codecov.io/gh/TKOaly/rv-backend)
 
 Backend for new TKO-äly Ruokavälitys (Snack kiosk)
