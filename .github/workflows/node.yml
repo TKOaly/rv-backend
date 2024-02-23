@@ -1,48 +1,48 @@
 name: Build
 
 on:
-  pull_request:
-  workflow_dispatch:
-  release:
-    types: [ published ]
+    pull_request:
+    workflow_dispatch:
+    release:
+        types: [published]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    container: node:hydrogen-slim
+        container: node:hydrogen-slim
 
-    services:
-      postgres:
-        image: postgres:10-alpine
-        env:
-          POSTGRES_USER: rv
-          POSTGRES_PASSWORD: unsecure
-          POSTGRES_DB: rv_test
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        services:
+            postgres:
+                image: postgres
+                env:
+                    POSTGRES_USER: rv
+                    POSTGRES_PASSWORD: unsecure
+                    POSTGRES_DB: rv_test
+                ports:
+                    - 5432:5432
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
 
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-      - name: Install NPM dependencies
-        run: npm ci
-      - name: Execute test suites
-        run: npm test
-        env:
-          NODE_ENV: test
-          PORT: 8080
-          DB_HOST: postgres
-          DB_USERNAME: rv
-          DB_PASSWORD: unsecure
-          DB_NAME: rv
-          DB_PORT: 5432
-          JWT_SECRET: unsecure
-          JWT_ADMIN_SECRET: unsecure
-      - name: Generate the code coverage report
-        uses: codecov/codecov-action@v4
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v4
+            - name: Install NPM dependencies
+              run: npm ci
+            - name: Execute test suites
+              run: npm test
+              env:
+                  NODE_ENV: test
+                  PORT: 8080
+                  DB_HOST: postgres
+                  DB_USERNAME: rv
+                  DB_PASSWORD: unsecure
+                  DB_NAME: rv
+                  DB_PORT: 5432
+                  JWT_SECRET: unsecure
+                  JWT_ADMIN_SECRET: unsecure
+            - name: Generate the code coverage report
+              uses: codecov/codecov-action@v4

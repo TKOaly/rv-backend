@@ -1683,7 +1683,7 @@ paths:
         403:
           description: 'Cannot delete the default product category'
           content:
-            application/jsson:
+            application/json:
               schema:
                 type: object
                 required:

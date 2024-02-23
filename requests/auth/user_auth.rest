@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/v1/authenticate HTTP/1.1
+content-type: application/json
+
+{
+    "username": "normal_user",
+    "password": "hunter2"
+}
