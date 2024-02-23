@@ -40,7 +40,7 @@ jobs:
           DB_HOST: postgres
           DB_USERNAME: rv
           DB_PASSWORD: unsecure
-          DB_NAME: rv_test
+          DB_NAME: rv
           DB_PORT: 5432
           JWT_SECRET: unsecure
           JWT_ADMIN_SECRET: unsecure
