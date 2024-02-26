@@ -13,31 +13,35 @@
     "lint-js": "eslint src/**/*.js",
     "fix-js": "eslint --fix src/**/*.js",
     "start-container": "docker-compose build && docker-compose up -d db && docker-compose up -d rv-backend",
-    "stop-container": "docker-compose down"
+    "stop-container": "docker-compose down",
+    "restart-container": "npm run stop-container && npm run start-container",
+    "recreate-container-db": "docker exec -it rv-backend-rv-backend-1 npm run db-rollback && docker exec -it rv-backend-rv-backend-1 npm run db-migrate && docker exec -it rv-backend-rv-backend-1 npm run db-seed",
+    "recreate-container": "npm run restart-container && npm run recreate-container-db",
+    "test-container": "docker exec -it rv-backend-rv-backend-1 npm test"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "express-openapi-validator": "^4.2.1",
-    "helmet": "^3.21.2",
-    "jsonwebtoken": "^8.5.1",
-    "knex": "^2.5.1",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "express-openapi-validator": "^4.13.8",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
     "pg": "^8.11.3",
-    "winston": "^3.2.1"
+    "winston": "^3.11.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "eslint": "^6.8.0",
-    "husky": "^3.0.9",
-    "lint-staged": "^9.4.2",
-    "mocha": "^7.1.2",
-    "nodemon": "^2.0.3",
-    "nyc": "^14.1.1",
-    "prettier": "^1.19.1",
-    "prettier-eslint": "^9.0.1"
+    "chai": "^4.4.1",
+    "chai-http": "^4.4.0",
+    "eslint": "^8.56.0",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.3",
+    "nyc": "^15.1.0",
+    "prettier": "^3.2.5",
+    "prettier-eslint": "^16.3.0"
   },
   "lint-staged": {
     "src/**/*.js": [
