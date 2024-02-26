@@ -429,6 +429,7 @@ paths:
                 username: 
                   type: string
                   example: fuxi2001
+                  minLength: 1
                 password: 
                   type: string
                   example: hunter2
@@ -470,6 +471,7 @@ paths:
                 username: 
                   type: string
                   example: rvslayer69
+                  minLength: 1
                 password: 
                   type: string
                   example: y0ur_w4ll3t
