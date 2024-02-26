@@ -68,8 +68,8 @@ components:
           example: 370
           description: Weight of the product in grams.
         sellPrice: 
-          type: number
-          example: 3.10
+          type: integer
+          example: 310
           description: Price (in cents) at which the product is on sale.  
         stock: 
           type: integer
@@ -83,8 +83,8 @@ components:
             - buyPrice
           properties:
             buyPrice:
-              type: number
-              example: 3.00
+              type: integer
+              example: 300
               description: Price (in cents) at which the product was bought in.
     Box:
       type: object
@@ -122,8 +122,8 @@ components:
           example: '2018-12-24T00:00:00.000Z'
           description: Timestamp of the event in ISO-8601 format.
         price: 
-          type: number
-          example: 0.19
+          type: integer
+          example: 19
           description: Price (in cents) of the product bought.
     PurchaseEventProduct:
       type: object
@@ -145,8 +145,8 @@ components:
         - balanceAfter
       properties:
         balanceAfter:
-          type: number
-          example: 19.81
+          type: integer
+          example: 1981
           description: Balance of the user's account (in cents) after the purchase transaction.
     PurchaseEventStock:
       type: object
@@ -174,13 +174,13 @@ components:
           example: '2018-12-24T00:00:00.000Z'
           description: Timestamp of the event in ISO-8601 format.
         amount: 
-          type: number
-          example: 20.00
+          type: integer
+          example: 2000
           description: Amount deposited to the user's account in cents.
         balanceAfter:
-          type: number
-          example: 25.00
-          description: Balance of the user's account after the deposit.
+          type: integer
+          example: 2500
+          description: Balance of the user's account after the deposit in cents.
     DepositEventUser:
       type: object
       required:
@@ -215,8 +215,8 @@ components:
           example: fuxi.student@helsinki.fi
           description: E-mail address at which the user can be reached.
         moneyBalance: 
-          type: number
-          example: 20.00
+          type: integer
+          example: 2000
           description: Balance of the user's account in cents.
         role:
           '$ref': '#/components/schemas/Role'
@@ -429,6 +429,7 @@ paths:
                 username: 
                   type: string
                   example: fuxi2001
+                  minLength: 1
                 password: 
                   type: string
                   example: hunter2
@@ -470,6 +471,7 @@ paths:
                 username: 
                   type: string
                   example: rvslayer69
+                  minLength: 1
                 password: 
                   type: string
                   example: y0ur_w4ll3t
@@ -603,6 +605,7 @@ paths:
                 count: 
                   type: integer
                   example: 1
+                  minimum: 1
   /api/v1/categories: 
     get: 
       summary: Get a list of product categories
@@ -716,12 +719,15 @@ paths:
                 username: 
                   type: string
                   example: 'jäärä2001'
+                  minLength: 1
                 fullName: 
                   type: string
                   example: 'Jäärä F. S. McConsultant'
+                  minLength: 1
                 email: 
                   type: string
                   example: 'jaara.fs.constultant@coolcorp.com'
+                  minLength: 1
   /api/v1/user/deposit: 
     post: 
       summary: Deposit money to the authenticated user's account
@@ -742,7 +748,7 @@ paths:
                   - deposit
                 properties: 
                   accountBalance: 
-                    type: number
+                    type: integer
                   deposit: 
                     allOf:
                       - '$ref': '#/components/schemas/DepositEventBase'
@@ -760,8 +766,8 @@ paths:
                 - amount
               properties: 
                 amount: 
-                  type: number
-                  minimum: 0
+                  type: integer
+                  minimum: 1
   /api/v1/user/purchaseHistory: 
     get: 
       summary: Get list of the authenticated user's past purchases
@@ -898,6 +904,7 @@ paths:
                 password:
                   type: string
                   example: hunter2
+                  minLength: 1
       responses:
         204:
           description: Password changed successfully
@@ -973,7 +980,7 @@ paths:
                 itemsPerBox: 
                   type: integer
                   example: 18
-                  minimum: 0
+                  minimum: 1
                 productBarcode: 
                   type: string
                   example: '7314660003114'
@@ -1053,7 +1060,7 @@ paths:
                 itemsPerBox: 
                   type: integer
                   example: 18
-                  minimum: 0
+                  minimum: 1
                 productBarcode: 
                   type: string
                   example: '7314660003114'
@@ -1122,11 +1129,11 @@ paths:
                     type: integer
                     example: 11
                   productBuyPrice: 
-                    type: number
-                    example: 2.90
+                    type: integer
+                    example: 290
                   productSellPrice: 
-                    type: number
-                    example: 3.00
+                    type: integer
+                    example: 300
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
@@ -1147,14 +1154,14 @@ paths:
                 boxCount: 
                   type: integer
                   example: 3
-                  minimum: 0
+                  minimum: 1
                 productBuyPrice: 
-                  type: number
-                  example: 2.90
+                  type: integer
+                  example: 290
                   minimum: 0
                 productSellPrice: 
-                  type: number
-                  example: 3.00
+                  type: integer
+                  example: 300
                   minimum: 0
   /api/v1/admin/products: 
     get: 
@@ -1234,7 +1241,7 @@ paths:
                   example: 10
                   minimum: 0
                 weight: 
-                  type: number
+                  type: integer
                   example: 350
                   minimum: 0
                 buyPrice: 
@@ -1327,7 +1334,7 @@ paths:
                   example: 10
                   minimum: 0
                 weight: 
-                  type: number
+                  type: integer
                   example: 350
                   minimum: 0
                 buyPrice: 
@@ -1400,11 +1407,11 @@ paths:
                     type: integer
                     example: 11
                   buyPrice: 
-                    type: number
-                    example: 2.10
+                    type: integer
+                    example: 210
                   sellPrice: 
-                    type: number
-                    example: 2.20
+                    type: integer
+                    example: 220
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
@@ -1427,11 +1434,11 @@ paths:
                   example: 3
                   minimum: 1
                 buyPrice: 
-                  type: number
+                  type: integer
                   example: 210
                   minimum: 0
                 sellPrice: 
-                  type: number
+                  type: integer
                   example: 220
                   minimum: 0
   /api/v1/admin/products/{barcode}/purchaseHistory: 
@@ -1683,7 +1690,7 @@ paths:
         403:
           description: 'Cannot delete the default product category'
           content:
-            application/jsson:
+            application/json:
               schema:
                 type: object
                 required:
