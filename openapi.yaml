@@ -180,7 +180,7 @@ components:
         balanceAfter:
           type: integer
           example: 2500
-          description: Balance of the user's account after the deposit.
+          description: Balance of the user's account after the deposit in cents.
     DepositEventUser:
       type: object
       required:
