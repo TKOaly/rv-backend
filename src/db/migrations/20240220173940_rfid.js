@@ -4,7 +4,7 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        throw new Error('not implemented');
+		await knex.raw('ALTER TABLE "RVPERSON" DROP COLUMN "rfid"');
     } else {
         throw new Error('dont drop stuff in production');
     }
