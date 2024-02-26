@@ -764,6 +764,42 @@ paths:
                   type: string
                   example: 'jaara.fs.constultant@coolcorp.com'
                   minLength: 1
+  /api/v1/user/user_exists: 
+    post: 
+      summary: Check if an user with the given username exists
+      operationId: user_exists
+      tags:
+        - normal
+      security:
+        - normalAccessToken: []
+      responses: 
+        200: 
+          description: Check success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - exists
+                properties: 
+                  exists: 
+                    type: boolean
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+              properties: 
+                username: 
+                  type: string
+                  example: asd123
   /api/v1/user/deposit: 
     post: 
       summary: Deposit money to the authenticated user's account

@@ -6,21 +6,21 @@
     const cors = require('cors');
     const helmet = require('helmet');
     const app = express();
-    //const OpenApiValidator = require('express-openapi-validator');
+    const OpenApiValidator = require('express-openapi-validator');
 
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
     app.use(cors());
     app.use(helmet());
 
-    //app.use(
-    //    OpenApiValidator.middleware({
-    //        apiSpec: path.resolve(__dirname, '../openapi.yaml'),
-    //        validateRequests: true,
-    //        validateResponses: process.env.NODE_ENV !== 'production',
-    //        ignorePaths: /^\/api\/[^/]+\/test\/.*/
-    //    })
-    //);
+    app.use(
+        OpenApiValidator.middleware({
+            apiSpec: path.resolve(__dirname, '../openapi.yaml'),
+            validateRequests: true,
+            validateResponses: process.env.NODE_ENV !== 'production',
+            ignorePaths: /^\/api\/[^/]+\/test\/.*/
+        })
+    );
 
     const auth_route = require('./routes/auth');
     const user_route = require('./routes/user');
