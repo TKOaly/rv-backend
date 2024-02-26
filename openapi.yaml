@@ -393,6 +393,42 @@ paths:
                   type: string
                   example: fuxi.cs.student@helsinki.fi
                   minLength: 1
+  /api/v1/authenticate/rfid: 
+    post: 
+      summary: Authenticate with normal privileges
+      operationId: authenticate
+      tags:
+        - normal
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - rfid
+              properties: 
+                rfid: 
+                  type: string
+                  example: 8a4f2f0a
+                  minLength: 1
   /api/v1/authenticate: 
     post: 
       summary: Authenticate with normal privileges
@@ -422,6 +458,9 @@ paths:
           application/json: 
             schema: 
               type: object
+              required:
+                - username
+                - password
               properties: 
                 username: 
                   type: string
@@ -430,9 +469,6 @@ paths:
                 password: 
                   type: string
                   example: hunter2
-                rfid:
-                  type: string
-                  example: 1a3b3c7d
   /api/v1/admin/authenticate: 
     post: 
       summary: Authenticate with admin privileges
@@ -770,8 +806,6 @@ paths:
       operationId: user_exists
       tags:
         - normal
-      security:
-        - normalAccessToken: []
       responses: 
         200: 
           description: Check success.
@@ -973,7 +1007,7 @@ paths:
               required:
                 - rfid
               properties:
-                password:
+                rfid:
                   type: string
                   example: a1b3c3d7
       responses:

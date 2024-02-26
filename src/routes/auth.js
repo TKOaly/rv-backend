@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateUser } = require('./authUtils');
+const { authenticateUser, authenticateUserRfid } = require('./authUtils');
 
 router.post('/', authenticateUser());
+router.post('/rfid', authenticateUserRfid());
 
 module.exports = router;

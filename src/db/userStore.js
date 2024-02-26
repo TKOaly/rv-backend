@@ -2,6 +2,7 @@ const knex = require('./knex');
 const bcrypt = require('bcrypt');
 const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
 const RFID_SALT = "$2b$15$yvDy89XRQiv1e4M6Vn2m5e"
+module.exports.RFID_SALT = RFID_SALT
 
 const rowToUser = (row) => {
     if (row !== undefined) {

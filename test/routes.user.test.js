@@ -25,6 +25,39 @@ describe('routes: user', () => {
         await knex.migrate.rollback();
     });
 
+	describe('Checking user existence', () => {
+		it('should return true if user exists', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    username: 'admin_user'
+                });
+            expect(res.status).to.equal(200);
+			expect(res.body.exists).to.equal(true);
+		});
+		it('should return false if user does not exist', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    username: 'admin_user2'
+                });
+            expect(res.status).to.equal(200);
+			expect(res.body.exists).to.equal(false);
+
+		});
+        it('invalid request should result in a 400 bad request response', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    garbage: 'garbage'
+                });
+            expect(res.status).to.equal(400);
+        });
+	});
+
     describe('Fetching user info', () => {
         it('should return user info', async () => {
             const res = await chai

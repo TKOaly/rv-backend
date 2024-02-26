@@ -26,6 +26,27 @@ describe('routes: products', () => {
         await knex.migrate.rollback();
     });
 
+    describe('Searching products', () => {
+        it('should return matching product if found', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/search')
+                .set('Authorization', 'Bearer ' + token)
+				.send({query: "koff III"})
+            expect(res.status).to.equal(200);
+			expect(res.body.products.length).to.equal(1);
+        });
+        it('should return no matching product if not found', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/products/search')
+                .set('Authorization', 'Bearer ' + token)
+				.send({query: "motivaatio"})
+            expect(res.status).to.equal(200);
+			expect(res.body.products.length).to.equal(0);
+        });
+    });
+
     describe('Fetching all products', () => {
         it('should return all products', async () => {
             const res = await chai

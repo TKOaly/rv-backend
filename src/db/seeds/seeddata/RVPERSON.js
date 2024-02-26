@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const user_store = require('../../userStore.js')
 
 module.exports = [
     {
@@ -19,6 +20,7 @@ module.exports = [
         univident: 'admin@example.com',
         pass: bcrypt.hashSync('admin123', 11),
         saldo: 500,
-        realname: 'BOFH'
+        realname: 'BOFH',
+		rfid: bcrypt.hashSync('1234', user_store.RFID_SALT)
     }
 ];
