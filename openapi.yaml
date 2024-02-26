@@ -429,6 +429,7 @@ paths:
                 username: 
                   type: string
                   example: fuxi2001
+                  minLength: 1
                 password: 
                   type: string
                   example: hunter2
@@ -470,6 +471,7 @@ paths:
                 username: 
                   type: string
                   example: rvslayer69
+                  minLength: 1
                 password: 
                   type: string
                   example: y0ur_w4ll3t
@@ -603,6 +605,7 @@ paths:
                 count: 
                   type: integer
                   example: 1
+                  minimum: 1
   /api/v1/categories: 
     get: 
       summary: Get a list of product categories
@@ -716,12 +719,15 @@ paths:
                 username: 
                   type: string
                   example: 'jäärä2001'
+                  minLength: 1
                 fullName: 
                   type: string
                   example: 'Jäärä F. S. McConsultant'
+                  minLength: 1
                 email: 
                   type: string
                   example: 'jaara.fs.constultant@coolcorp.com'
+                  minLength: 1
   /api/v1/user/deposit: 
     post: 
       summary: Deposit money to the authenticated user's account
@@ -761,7 +767,7 @@ paths:
               properties: 
                 amount: 
                   type: integer
-                  minimum: 0
+                  minimum: 1
   /api/v1/user/purchaseHistory: 
     get: 
       summary: Get list of the authenticated user's past purchases
@@ -898,6 +904,7 @@ paths:
                 password:
                   type: string
                   example: hunter2
+                  minLength: 1
       responses:
         204:
           description: Password changed successfully
@@ -973,7 +980,7 @@ paths:
                 itemsPerBox: 
                   type: integer
                   example: 18
-                  minimum: 0
+                  minimum: 1
                 productBarcode: 
                   type: string
                   example: '7314660003114'
@@ -1053,7 +1060,7 @@ paths:
                 itemsPerBox: 
                   type: integer
                   example: 18
-                  minimum: 0
+                  minimum: 1
                 productBarcode: 
                   type: string
                   example: '7314660003114'
@@ -1147,7 +1154,7 @@ paths:
                 boxCount: 
                   type: integer
                   example: 3
-                  minimum: 0
+                  minimum: 1
                 productBuyPrice: 
                   type: integer
                   example: 290
