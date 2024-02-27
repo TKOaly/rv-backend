@@ -1,8 +1,8 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
 const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
-const RFID_SALT = "$2b$15$yvDy89XRQiv1e4M6Vn2m5e"
-module.exports.RFID_SALT = RFID_SALT
+const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
+module.exports.RFID_SALT = RFID_SALT;
 
 const rowToUser = (row) => {
     if (row !== undefined) {
@@ -57,7 +57,7 @@ module.exports.findById = async (userId) => {
 
 module.exports.findByRfid = async (rfid) => {
     // TODO rfid should be changed to use sha256 for compatibility with old rv
-    rfid_hash = bcrypt.hashSync(rfid, RFID_SALT);
+    const rfid_hash = bcrypt.hashSync(rfid, RFID_SALT);
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(

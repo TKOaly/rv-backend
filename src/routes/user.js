@@ -9,9 +9,9 @@ router.post('/user_exists', async (req, res) => {
     const username = req.body.username;
     const user = await userStore.findByUsername(username);
     if(user) {
-    	res.status(200).json({"exists": true});
+        res.status(200).json({'exists': true});
     } else {
-    	res.status(200).json({"exists": false});
+        res.status(200).json({'exists': false});
     }
 });
 
@@ -119,9 +119,9 @@ router.post('/changeRfid', async (req, res) => {
     const user = req.user;
     const rfid = req.body.rfid;
 
-	await userStore.updateUser(user.userId, { rfid: rfid });
+    await userStore.updateUser(user.userId, { rfid: rfid });
 
-	logger.info(rfid);
+    logger.info(rfid);
     logger.info('User %s changed rfid', user.username);
     res.status(204).end();
 });
