@@ -73,7 +73,7 @@
             error_code: 'internal_error',
             message: 'Internal server error'
         });
-		next(error);
+        next(error);
     });
 
     module.exports = app;
