@@ -21,6 +21,28 @@ const rowToProduct = (row) => {
 };
 
 /**
+ * Return all products with match in barcode or description
+ */
+module.exports.searchProducts = async (query) => {
+    const data = await knex('PRICE')
+        .rightJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+        .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
+        .select(
+            'RVITEM.descr',
+            'RVITEM.pgrpid',
+            'PRODGROUP.descr as pgrpdescr',
+            'RVITEM.weight',
+            'PRICE.barcode',
+            'PRICE.buyprice',
+            'PRICE.sellprice',
+            'PRICE.count'
+        )
+        .whereILike('RVITEM.descr', `%${query}%`)
+        .orWhereILike('PRICE.barcode', `%${query}%`);
+    return data.map(rowToProduct);
+};
+
+/**
  * Returns all products and their stock quantities, if available.
  */
 module.exports.getProducts = async () => {

@@ -393,6 +393,42 @@ paths:
                   type: string
                   example: fuxi.cs.student@helsinki.fi
                   minLength: 1
+  /api/v1/authenticate/rfid: 
+    post: 
+      summary: Authenticate with normal privileges
+      operationId: authenticate
+      tags:
+        - normal
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - rfid
+              properties: 
+                rfid: 
+                  type: string
+                  example: 8a4f2f0a
+                  minLength: 1
   /api/v1/authenticate: 
     post: 
       summary: Authenticate with normal privileges
@@ -422,7 +458,7 @@ paths:
           application/json: 
             schema: 
               type: object
-              required: 
+              required:
                 - username
                 - password
               properties: 
@@ -475,6 +511,42 @@ paths:
                 password: 
                   type: string
                   example: y0ur_w4ll3t
+  /api/v1/products/search: 
+    post: 
+      summary: Search for products
+      operationId: searchProducts
+      tags:
+        - normal
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - query
+              properties: 
+                query: 
+                  type: string
+                  example: muumilimsa
+      responses: 
+        200:
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - products
+                properties: 
+                  products: 
+                    type: array
+                    items: 
+                      '$ref': '#/components/schemas/Product'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
   /api/v1/products: 
     get: 
       summary: Get a list of all products
@@ -728,6 +800,40 @@ paths:
                   type: string
                   example: 'jaara.fs.constultant@coolcorp.com'
                   minLength: 1
+  /api/v1/user/user_exists: 
+    post: 
+      summary: Check if an user with the given username exists
+      operationId: user_exists
+      tags:
+        - normal
+      responses: 
+        200: 
+          description: Check success.
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - exists
+                properties: 
+                  exists: 
+                    type: boolean
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required: 
+                - username
+              properties: 
+                username: 
+                  type: string
+                  example: asd123
   /api/v1/user/deposit: 
     post: 
       summary: Deposit money to the authenticated user's account
@@ -884,6 +990,33 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/user/changeRfid:
+    post:
+      summary: Change the account's rfid
+      operationId: changeRfid
+      tags:
+        - normal
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rfid
+              properties:
+                rfid:
+                  type: string
+                  example: a1b3c3d7
+      responses:
+        204:
+          description: Rfid changed successfully
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
   /api/v1/user/changePassword:
     post:
       summary: Change the account's password

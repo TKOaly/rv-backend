@@ -1,6 +1,8 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
 const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
+module.exports.RFID_SALT = RFID_SALT;
 
 const rowToUser = (row) => {
     if (row !== undefined) {
@@ -11,7 +13,8 @@ const rowToUser = (row) => {
             email: row.univident,
             moneyBalance: row.saldo,
             role: row.role,
-            passwordHash: row.pass
+            passwordHash: row.pass,
+            rfidHash: row.rfid
         };
     } else {
         return undefined;
@@ -28,7 +31,8 @@ module.exports.getUsers = async () => {
             'RVPERSON.univident',
             'RVPERSON.saldo',
             'ROLE.role',
-            'RVPERSON.pass'
+            'RVPERSON.pass',
+            'RVPERSON.rfid'
         );
     return data.map(rowToUser);
 };
@@ -43,13 +47,33 @@ module.exports.findById = async (userId) => {
             'RVPERSON.univident',
             'RVPERSON.saldo',
             'ROLE.role',
-            'RVPERSON.pass'
+            'RVPERSON.pass',
+            'RVPERSON.rfid'
         )
         .where('RVPERSON.userid', userId)
         .first();
     return rowToUser(row);
 };
 
+module.exports.findByRfid = async (rfid) => {
+    // TODO rfid should be changed to use sha256 for compatibility with old rv
+    const rfid_hash = bcrypt.hashSync(rfid, RFID_SALT);
+    const row = await knex('RVPERSON')
+        .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
+        .select(
+            'RVPERSON.userid',
+            'RVPERSON.name',
+            'RVPERSON.realname',
+            'RVPERSON.univident',
+            'RVPERSON.saldo',
+            'ROLE.role',
+            'RVPERSON.pass',
+            'RVPERSON.rfid'
+        )
+        .where('RVPERSON.rfid', rfid_hash)
+        .first();
+    return rowToUser(row);
+};
 module.exports.findByUsername = async (username) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
@@ -60,7 +84,8 @@ module.exports.findByUsername = async (username) => {
             'RVPERSON.univident',
             'RVPERSON.saldo',
             'ROLE.role',
-            'RVPERSON.pass'
+            'RVPERSON.pass',
+            'RVPERSON.rfid'
         )
         .where('RVPERSON.name', username)
         .first();
@@ -77,7 +102,9 @@ module.exports.findByEmail = async (email) => {
             'RVPERSON.univident',
             'RVPERSON.saldo',
             'ROLE.role',
-            'RVPERSON.pass'
+            'RVPERSON.pass',
+            'RVPERSON.rfid'
+
         )
         .where('RVPERSON.univident', email)
         .first();
@@ -122,6 +149,9 @@ module.exports.updateUser = async (userId, userData) => {
         if (userData.password !== undefined) {
             rvpersonFields.pass = bcrypt.hashSync(userData.password, 11);
         }
+        if (userData.rfid !== undefined) {
+            rvpersonFields.rfid = bcrypt.hashSync(userData.rfid, RFID_SALT);
+        }
         if (userData.role !== undefined) {
             const roleRow = await knex('ROLE')
                 .transacting(trx)
@@ -155,6 +185,10 @@ module.exports.updateUser = async (userId, userData) => {
 
 module.exports.verifyPassword = async (password, passwordHash) => {
     return await bcrypt.compare(password, passwordHash);
+};
+
+module.exports.verifyRfid = async (rfid, rfidHash) => {
+    return await bcrypt.compare(rfid, rfidHash);
 };
 
 module.exports.recordDeposit = async (userId, amount) => {

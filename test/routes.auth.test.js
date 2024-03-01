@@ -19,6 +19,45 @@ describe('routes: authentication', () => {
     afterEach(async () => {
         await knex.migrate.rollback();
     });
+    describe('User RFID authentication', () => {
+        it('with valid credentials, should respond with an authentication token', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/authenticate/rfid')
+                .send({
+                    rfid: '1234'
+                });
+
+            expect(res.status).to.equal(200);
+
+            const token = jwt.verify(res.body.accessToken);
+            expect(token.data.userId).to.exist;
+
+            const user = await userStore.findByUsername('admin_user');
+            expect(token.data.userId).to.equal(user.userId);
+        });
+
+        it('with invalid rfid, should return a 401 unauthorized response', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/authenticate/rfid')
+                .send({
+                    rfid: '12345'
+                });
+            expect(res.status).to.equal(401);
+        });
+
+        it('invalid request should result in a 400 bad request response', async () => {
+            const res = await chai
+                .request(server)
+                .post('/api/v1/authenticate/rfid')
+                .send({
+                    garbage: 'garbage'
+                });
+
+            expect(res.status).to.equal(400);
+        });
+    });
 
     describe('User authentication', () => {
         it('with valid credentials, should respond with an authentication token', async () => {

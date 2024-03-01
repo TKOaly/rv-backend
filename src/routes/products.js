@@ -65,6 +65,14 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
     });
 });
 
+router.post('/search', async (req, res) => {
+    const user = req.user;
+    const query = req.body.query;
+    const result = await productStore.searchProducts(query);
+    logger.info('User %s searched for products with query: %s', user.username, query);
+    res.status(200).json({products: result});
+});
+
 router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
     const user = req.user;
     const barcode = req.params.barcode;
