@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
                 categoryId: product.category.categoryId,
                 description: product.category.description
             },
-            weight: product.weight,
             sellPrice: product.sellPrice,
             stock: product.stock
         };
@@ -58,7 +57,6 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
                 categoryId: product.category.categoryId,
                 description: product.category.description
             },
-            weight: product.weight,
             sellPrice: product.sellPrice,
             stock: product.stock
         }

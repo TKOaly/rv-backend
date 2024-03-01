@@ -22,7 +22,6 @@ router.get('/', async (req, res) => {
                         categoryId: purchase.product.category.categoryId,
                         description: purchase.product.category.description
                     },
-                    weight: purchase.product.weight,
                     sellPrice: purchase.product.sellPrice,
                     stock: purchase.product.stock
                 },
@@ -73,7 +72,6 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
                         categoryId: purchase.product.category.categoryId,
                         description: purchase.product.category.description
                     },
-                    weight: purchase.product.weight,
                     sellPrice: purchase.product.sellPrice,
                     stock: purchase.product.stock
                 },

@@ -10,7 +10,6 @@ const rowToProduct = (row) => {
                 categoryId: row.pgrpid,
                 description: row.pgrpdescr
             },
-            weight: row.weight,
             buyPrice: row.buyprice,
             sellPrice: row.sellprice,
             stock: row.count
@@ -31,7 +30,6 @@ module.exports.searchProducts = async (query) => {
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
@@ -53,7 +51,6 @@ module.exports.getProducts = async () => {
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
@@ -75,7 +72,6 @@ module.exports.findByBarcode = async (barcode) => {
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
@@ -101,8 +97,7 @@ module.exports.insertProduct = async (productData, userId) => {
             .transacting(trx)
             .insert({
                 pgrpid: productData.categoryId,
-                descr: productData.name,
-                weight: productData.weight
+                descr: productData.name
             })
             .returning(['itemid']);
 
@@ -132,7 +127,6 @@ module.exports.insertProduct = async (productData, userId) => {
                 categoryId: productData.categoryId,
                 description: categoryRow.descr
             },
-            weight: productData.weight,
             buyPrice: productData.buyPrice,
             sellPrice: productData.sellPrice,
             stock: productData.stock
@@ -144,12 +138,11 @@ module.exports.insertProduct = async (productData, userId) => {
  * Updates a product's information
  */
 module.exports.updateProduct = async (barcode, productData, userId) => {
-    /* productData may have fields { name, categoryId, weight, buyPrice, sellPrice, stock } */
+    /* productData may have fields { name, categoryId, buyPrice, sellPrice, stock } */
     return await knex.transaction(async (trx) => {
         const rvitemFields = deleteUndefinedFields({
             pgrpid: productData.categoryId,
-            descr: productData.name,
-            weight: productData.weight
+            descr: productData.name
         });
         if (Object.keys(rvitemFields).length > 0) {
             const priceRow = await knex('PRICE')
@@ -210,7 +203,6 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',
-                'RVITEM.weight',
                 'PRICE.barcode',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
@@ -305,7 +297,6 @@ module.exports.deleteProduct = async (barcode) => {
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',
-                'RVITEM.weight',
                 'PRICE.barcode',
                 'PRICE.buyprice',
                 'PRICE.sellprice',

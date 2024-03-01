@@ -45,7 +45,6 @@ router.get('/', async (req, res) => {
                     categoryId: product.category.categoryId,
                     description: product.category.description
                 },
-                weight: product.weight,
                 buyPrice: product.buyPrice,
                 sellPrice: product.sellPrice,
                 stock: product.stock
@@ -67,7 +66,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const user = req.user;
-    const { barcode, name, categoryId, weight, buyPrice, sellPrice, stock } = req.body;
+    const { barcode, name, categoryId, buyPrice, sellPrice, stock } = req.body;
 
     /* Checking if product already exists. */
     const existingProduct = await productStore.findByBarcode(barcode);
@@ -96,7 +95,6 @@ router.post('/', async (req, res) => {
             barcode,
             name,
             categoryId,
-            weight,
             buyPrice,
             sellPrice,
             stock
@@ -105,12 +103,11 @@ router.post('/', async (req, res) => {
     );
 
     logger.info(
-        'User %s created new product with data {barcode: %s, name: %s, categoryId: %s, weight: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
+        'User %s created new product with data {barcode: %s, name: %s, categoryId: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
         user.username,
         barcode,
         name,
         categoryId,
-        weight,
         buyPrice,
         sellPrice,
         stock
@@ -123,7 +120,6 @@ router.post('/', async (req, res) => {
                 categoryId: newProduct.category.categoryId,
                 description: newProduct.category.description
             },
-            weight: newProduct.weight,
             buyPrice: newProduct.buyPrice,
             sellPrice: newProduct.sellPrice,
             stock: newProduct.stock
@@ -145,7 +141,6 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
                 categoryId: req.product.category.categoryId,
                 description: req.product.category.description
             },
-            weight: req.product.weight,
             buyPrice: req.product.buyPrice,
             sellPrice: req.product.sellPrice,
             stock: req.product.stock
@@ -156,7 +151,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
 router.patch('/:barcode(\\d{1,14})', async (req, res) => {
     const user = req.user;
     const barcode = req.params.barcode;
-    const { name, categoryId, weight, buyPrice, sellPrice, stock } = req.body;
+    const { name, categoryId, buyPrice, sellPrice, stock } = req.body;
 
     /* Checking if category exists. */
     if (categoryId !== undefined) {
@@ -181,7 +176,6 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
         deleteUndefinedFields({
             name,
             categoryId,
-            weight,
             buyPrice,
             sellPrice,
             stock
@@ -191,12 +185,11 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
 
     logger.info(
         'User %s modified product data of product %s to ' +
-            '{name: %s, categoryId: %s, weight: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
+            '{name: %s, categoryId: %s, buyPrice: %s, sellPrice: %s, stock: %s}',
         user.username,
         barcode,
         updatedProduct.name,
         updatedProduct.category.categoryId,
-        updatedProduct.weight,
         updatedProduct.buyPrice,
         updatedProduct.sellPrice,
         updatedProduct.stock
@@ -210,7 +203,6 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
                 categoryId: updatedProduct.category.categoryId,
                 description: updatedProduct.category.description
             },
-            weight: updatedProduct.weight,
             buyPrice: updatedProduct.buyPrice,
             sellPrice: updatedProduct.sellPrice,
             stock: updatedProduct.stock
