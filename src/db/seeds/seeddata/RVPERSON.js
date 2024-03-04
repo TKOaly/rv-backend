@@ -22,5 +22,15 @@ module.exports = [
         saldo: 500,
         realname: 'BOFH',
         rfid: bcrypt.hashSync('1234', user_store.RFID_SALT)
+    },
+    {
+        userid: 3,
+        createdate: new Date('2024-02-20T00:00:00Z'),
+        roleid: 3,
+        name: 'user_2',
+        univident: 'user2@example.com',
+        pass: bcrypt.hashSync('role2', 11),
+        saldo: -500,
+        realname: 'User Two'
     }
 ];
