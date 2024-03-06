@@ -9,7 +9,7 @@ module.exports.numericBarcode = (fieldname) => {
             } else {
                 return [fieldname + ' should be a numeric 1-14 digit barcode'];
             }
-        }
+        },
     };
 };
 
@@ -22,7 +22,7 @@ module.exports.string = (fieldname) => {
             } else {
                 return [fieldname + ' should be a string'];
             }
-        }
+        },
     };
 };
 
@@ -35,7 +35,7 @@ module.exports.nonEmptyString = (fieldname) => {
             } else {
                 return [fieldname + ' should be a non-empty string'];
             }
-        }
+        },
     };
 };
 
@@ -48,7 +48,7 @@ module.exports.integer = (fieldname) => {
             } else {
                 return [fieldname + ' should be an integer'];
             }
-        }
+        },
     };
 };
 
@@ -61,7 +61,7 @@ module.exports.positiveInteger = (fieldname) => {
             } else {
                 return [fieldname + ' should be a positive integer'];
             }
-        }
+        },
     };
 };
 
@@ -74,7 +74,7 @@ module.exports.nonNegativeInteger = (fieldname) => {
             } else {
                 return [fieldname + ' should be a non-negative integer'];
             }
-        }
+        },
     };
 };
 
@@ -87,11 +87,11 @@ module.exports.objectWithFields = (fieldname, fieldValidators) => {
             } else {
                 return [fieldname + ' should be an object'];
             }
-        }
+        },
     };
 };
 
 module.exports.orNull = ({ field, validator }) => ({
     field,
-    validator: (value) => value === null ? [] : validator(value)
+    validator: (value) => (value === null ? [] : validator(value)),
 });

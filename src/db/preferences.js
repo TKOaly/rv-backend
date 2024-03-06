@@ -1,9 +1,7 @@
 const knex = require('./knex');
 
 module.exports.getPreference = async (preference) => {
-    const data = await knex('PREFERENCES')
-        .where({ key: preference.key })
-        .first('value');
+    const data = await knex('PREFERENCES').where({ key: preference.key }).first('value');
 
     if (data === undefined) {
         if (preference.default !== undefined) {
@@ -21,9 +19,7 @@ module.exports.getPreference = async (preference) => {
 };
 
 module.exports.setPreference = async (preference, value) => {
-    const data = await knex('PREFERENCES')
-        .where({ key: preference.key })
-        .first('value');
+    const data = await knex('PREFERENCES').where({ key: preference.key }).first('value');
 
     if (preference.validate) {
         const errors = preference.validate(value);
@@ -32,7 +28,7 @@ module.exports.setPreference = async (preference, value) => {
             return {
                 previousValue: undefined,
                 value,
-                errors
+                errors,
             };
         }
     }
@@ -44,23 +40,20 @@ module.exports.setPreference = async (preference, value) => {
     }
 
     if (data === undefined) {
-        await knex('PREFERENCES')
-            .insert({ key: preference.key, value: serialized });
+        await knex('PREFERENCES').insert({ key: preference.key, value: serialized });
 
         return {
             errors: [],
             value,
-            previousValue: undefined
+            previousValue: undefined,
         };
     } else {
-        await knex('PREFERENCES')
-            .update({ value: serialized })
-            .where({ key: preference.key });
+        await knex('PREFERENCES').update({ value: serialized }).where({ key: preference.key });
 
         return {
             errors: [],
             value,
-            previousValue: data.value
+            previousValue: data.value,
         };
     }
 };
@@ -68,34 +61,36 @@ module.exports.setPreference = async (preference, value) => {
 const floatPreference = {
     serialize: (value) => String(value),
     deserialize: (str) => parseFloat(str),
-    validate: (value) => typeof value === 'number' ? [] : ['value should be a number']
+    validate: (value) => (typeof value === 'number' ? [] : ['value should be a number']),
 };
 
 const integerPreference = {
     serialize: (value) => String(value),
     deserialize: (str) => parseInt(str),
     validate: (value) =>
-        typeof value !== 'number' ? ['value should be a number'] :
-            !Number.isInteger(value) ? ['value should be an integer'] : []
+        typeof value !== 'number'
+            ? ['value should be a number']
+            : !Number.isInteger(value)
+              ? ['value should be an integer']
+              : [],
 };
 
 module.exports.preferences = {
     GLOBAL_DEFAULT_MARGIN: {
-        ... floatPreference,
+        ...floatPreference,
         key: 'globalDefaultMargin',
-        default: 0.05
+        default: 0.05,
     },
 
     DEFAULT_PRODUCT_CATEGORY: {
-        ... integerPreference,
+        ...integerPreference,
         key: 'defaultProductCategory',
-        default: 0
-    }
+        default: 0,
+    },
 };
 
 Object.assign(module.exports, module.exports.preferences);
 
 module.exports.getPreferenceByKey = (key) => {
-    return Object.values(module.exports.preferences)
-        .find((pref) => pref.key === key);
+    return Object.values(module.exports.preferences).find((pref) => pref.key === key);
 };

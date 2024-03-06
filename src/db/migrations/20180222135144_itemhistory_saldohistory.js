@@ -1,10 +1,7 @@
 exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('ITEMHISTORY'))) {
         await knex.schema.createTable('ITEMHISTORY', (table) => {
-            table
-                .increments('itemhistid')
-                .primary()
-                .comment('Item history ID');
+            table.increments('itemhistid').primary().comment('Item history ID');
             table
                 .dateTime('time')
                 .notNullable()
@@ -52,15 +49,8 @@ exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('SALDOHISTORY'))) {
         await knex.schema.createTable('SALDOHISTORY', (table) => {
             table.increments('saldhistid').primary();
-            table
-                .integer('userid')
-                .notNullable()
-                .references('userid')
-                .inTable('RVPERSON');
-            table
-                .dateTime('time')
-                .notNullable()
-                .index();
+            table.integer('userid').notNullable().references('userid').inTable('RVPERSON');
+            table.dateTime('time').notNullable().index();
             table.integer('saldo').index();
             table.integer('difference').notNullable();
         });

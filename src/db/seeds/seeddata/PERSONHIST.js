@@ -6,7 +6,7 @@ module.exports = [
         actionid: 17,
         userid1: 1,
         userid2: 1,
-        saldhistid: 3
+        saldhistid: 3,
     },
     {
         pershistid: 2,
@@ -15,7 +15,7 @@ module.exports = [
         actionid: 17,
         userid1: 1,
         userid2: 1,
-        saldhistid: 5
+        saldhistid: 5,
     },
     {
         pershistid: 3,
@@ -24,6 +24,6 @@ module.exports = [
         actionid: 17,
         userid1: 1,
         userid2: 1,
-        saldhistid: 8
-    }
+        saldhistid: 8,
+    },
 ];

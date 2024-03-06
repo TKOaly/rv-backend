@@ -1,14 +1,8 @@
 exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('ACTION'))) {
         await knex.schema.createTable('ACTION', (table) => {
-            table
-                .increments('actionid')
-                .primary()
-                .comment('Action ID');
-            table
-                .string('action', 64)
-                .notNullable()
-                .comment('Description of action');
+            table.increments('actionid').primary().comment('Action ID');
+            table.string('action', 64).notNullable().comment('Description of action');
         });
     }
 };

@@ -1,23 +1,14 @@
 exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('PRODGROUP'))) {
         await knex.schema.createTable('PRODGROUP', (table) => {
-            table
-                .increments('pgrpid')
-                .primary()
-                .comment('Product group ID');
-            table
-                .string('descr', 64)
-                .notNullable()
-                .comment('Product group description');
+            table.increments('pgrpid').primary().comment('Product group ID');
+            table.string('descr', 64).notNullable().comment('Product group description');
         });
     }
 
     if (!(await knex.schema.hasTable('RVITEM'))) {
         await knex.schema.createTable('RVITEM', (table) => {
-            table
-                .increments('itemid')
-                .primary()
-                .comment('Item ID (unique)');
+            table.increments('itemid').primary().comment('Item ID (unique)');
             table
                 .integer('pgrpid')
                 .unsigned()
@@ -25,15 +16,8 @@ exports.up = async (knex) => {
                 .comment('Reference to product group of this item')
                 .references('pgrpid')
                 .inTable('PRODGROUP');
-            table
-                .string('descr', 64)
-                .notNullable()
-                .comment('Textual product description (name)');
-            table
-                .integer('weight')
-                .unsigned()
-                .notNullable()
-                .comment('Product weight');
+            table.string('descr', 64).notNullable().comment('Textual product description (name)');
+            table.integer('weight').unsigned().notNullable().comment('Product weight');
         });
     }
 };

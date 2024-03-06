@@ -15,14 +15,10 @@ router.param('barcode', async (req, res, next) => {
     if (product === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No product with barcode '${ req.params.barcode }' found`
+            message: `No product with barcode '${req.params.barcode}' found`,
         });
 
-        logger.error(
-            'User %s tried to access unknown product %s as admin',
-            req.user.username,
-            req.params.barcode
-        );
+        logger.error('User %s tried to access unknown product %s as admin', req.user.username, req.params.barcode);
 
         return;
     }
@@ -43,24 +39,24 @@ router.get('/', async (req, res) => {
                 name: product.name,
                 category: {
                     categoryId: product.category.categoryId,
-                    description: product.category.description
+                    description: product.category.description,
                 },
                 weight: product.weight,
                 buyPrice: product.buyPrice,
                 sellPrice: product.sellPrice,
-                stock: product.stock
+                stock: product.stock,
             };
         });
 
         logger.info('User %s fetched products as admin', user.username);
         res.status(200).json({
-            products: mappedProds
+            products: mappedProds,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -75,7 +71,7 @@ router.post('/', async (req, res) => {
         logger.error('User %s failed to create new product, barcode %s was already taken', user.username, barcode);
         res.status(409).json({
             error_code: 'identifier_taken',
-            message: 'Barcode already in use.'
+            message: 'Barcode already in use.',
         });
         return;
     }
@@ -86,7 +82,7 @@ router.post('/', async (req, res) => {
         logger.error('User %s tried to create product of unknown category %s', user.username, categoryId);
         res.status(400).json({
             error_code: 'invalid_reference',
-            message: 'Referenced category not found.'
+            message: 'Referenced category not found.',
         });
         return;
     }
@@ -99,9 +95,9 @@ router.post('/', async (req, res) => {
             weight,
             buyPrice,
             sellPrice,
-            stock
+            stock,
         },
-        user.userId
+        user.userId,
     );
 
     logger.info(
@@ -113,7 +109,7 @@ router.post('/', async (req, res) => {
         weight,
         buyPrice,
         sellPrice,
-        stock
+        stock,
     );
     res.status(201).json({
         product: {
@@ -121,13 +117,13 @@ router.post('/', async (req, res) => {
             name: newProduct.name,
             category: {
                 categoryId: newProduct.category.categoryId,
-                description: newProduct.category.description
+                description: newProduct.category.description,
             },
             weight: newProduct.weight,
             buyPrice: newProduct.buyPrice,
             sellPrice: newProduct.sellPrice,
-            stock: newProduct.stock
-        }
+            stock: newProduct.stock,
+        },
     });
 });
 
@@ -143,13 +139,13 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
             name: req.product.name,
             category: {
                 categoryId: req.product.category.categoryId,
-                description: req.product.category.description
+                description: req.product.category.description,
             },
             weight: req.product.weight,
             buyPrice: req.product.buyPrice,
             sellPrice: req.product.sellPrice,
-            stock: req.product.stock
-        }
+            stock: req.product.stock,
+        },
     });
 });
 
@@ -166,11 +162,11 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
                 'User %s tried to modify category of product %s to unknown category %s',
                 user.username,
                 barcode,
-                categoryId
+                categoryId,
             );
             res.status(400).json({
                 error_code: 'invalid_reference',
-                message: 'Referenced category not found.'
+                message: 'Referenced category not found.',
             });
             return;
         }
@@ -184,9 +180,9 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
             weight,
             buyPrice,
             sellPrice,
-            stock
+            stock,
         }),
-        user.userId
+        user.userId,
     );
 
     logger.info(
@@ -199,7 +195,7 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
         updatedProduct.weight,
         updatedProduct.buyPrice,
         updatedProduct.sellPrice,
-        updatedProduct.stock
+        updatedProduct.stock,
     );
 
     res.status(200).json({
@@ -208,13 +204,13 @@ router.patch('/:barcode(\\d{1,14})', async (req, res) => {
             name: updatedProduct.name,
             category: {
                 categoryId: updatedProduct.category.categoryId,
-                description: updatedProduct.category.description
+                description: updatedProduct.category.description,
             },
             weight: updatedProduct.weight,
             buyPrice: updatedProduct.buyPrice,
             sellPrice: updatedProduct.sellPrice,
-            stock: updatedProduct.stock
-        }
+            stock: updatedProduct.stock,
+        },
     });
 });
 
@@ -224,14 +220,14 @@ router.delete('/:barcode(\\d{1,14})', async (req, res) => {
     if (product === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No product with barcode '${req.params.barcode}' found`
+            message: `No product with barcode '${req.params.barcode}' found`,
         });
 
         return;
     }
 
     res.status(200).json({
-        deletedProduct: product
+        deletedProduct: product,
     });
 });
 
@@ -242,15 +238,15 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
     const stock = await productStore.buyIn(barcode, count);
 
     logger.info(
-        'User %s bought in %d items of product \'%s\' (%s)',
+        "User %s bought in %d items of product '%s' (%s)",
         req.user.username,
         req.product.name,
-        req.product.barcode
+        req.product.barcode,
     );
 
     const update = {
         sellPrice: req.product.sellPrice !== sellPrice ? sellPrice : undefined,
-        buyPrice: req.product.buyPrice !== buyPrice ? buyPrice : undefined
+        buyPrice: req.product.buyPrice !== buyPrice ? buyPrice : undefined,
     };
 
     const updatedProduct = await productStore.updateProduct(barcode, update, req.user.userId);
@@ -267,18 +263,18 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
         }
 
         logger.info(
-            'User %s changed %s on product \'%s\' (%s)',
+            "User %s changed %s on product '%s' (%s)",
             req.user.username,
             changes.join(' and '),
             req.product.name,
-            req.product.barcode
+            req.product.barcode,
         );
     }
 
     res.status(200).json({
         stock,
         buyPrice: updatedProduct.buyPrice,
-        sellPrice: updatedProduct.sellPrice
+        sellPrice: updatedProduct.sellPrice,
     });
 });
 
@@ -286,15 +282,13 @@ router.get('/:barcode(\\d{1,14})/purchaseHistory', async (req, res) => {
     const barcode = req.params.barcode;
     const purchases = await historyStore.getProductPurchaseHistory(barcode);
 
-    res
-        .status(200)
-        .json({
-            purchases: purchases.map((purchase) => {
-                delete purchase.balanceAfter;
-                delete purchase.product;
-                return purchase;
-            })
-        });
+    res.status(200).json({
+        purchases: purchases.map((purchase) => {
+            delete purchase.balanceAfter;
+            delete purchase.product;
+            return purchase;
+        }),
+    });
 });
 
 module.exports = router;

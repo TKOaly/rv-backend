@@ -14,7 +14,7 @@ const rowToUser = (row) => {
             moneyBalance: row.saldo,
             role: row.role,
             passwordHash: row.pass,
-            rfidHash: row.rfid
+            rfidHash: row.rfid,
         };
     } else {
         return undefined;
@@ -32,7 +32,7 @@ module.exports.getUsers = async () => {
             'RVPERSON.saldo',
             'ROLE.role',
             'RVPERSON.pass',
-            'RVPERSON.rfid'
+            'RVPERSON.rfid',
         );
     return data.map(rowToUser);
 };
@@ -48,7 +48,7 @@ module.exports.findById = async (userId) => {
             'RVPERSON.saldo',
             'ROLE.role',
             'RVPERSON.pass',
-            'RVPERSON.rfid'
+            'RVPERSON.rfid',
         )
         .where('RVPERSON.userid', userId)
         .first();
@@ -68,7 +68,7 @@ module.exports.findByRfid = async (rfid) => {
             'RVPERSON.saldo',
             'ROLE.role',
             'RVPERSON.pass',
-            'RVPERSON.rfid'
+            'RVPERSON.rfid',
         )
         .where('RVPERSON.rfid', rfid_hash)
         .first();
@@ -85,7 +85,7 @@ module.exports.findByUsername = async (username) => {
             'RVPERSON.saldo',
             'ROLE.role',
             'RVPERSON.pass',
-            'RVPERSON.rfid'
+            'RVPERSON.rfid',
         )
         .where('RVPERSON.name', username)
         .first();
@@ -103,8 +103,7 @@ module.exports.findByEmail = async (email) => {
             'RVPERSON.saldo',
             'ROLE.role',
             'RVPERSON.pass',
-            'RVPERSON.rfid'
-
+            'RVPERSON.rfid',
         )
         .where('RVPERSON.univident', email)
         .first();
@@ -123,7 +122,7 @@ module.exports.insertUser = async (userData) => {
             univident: userData.email,
             pass: passwordHash,
             saldo: 0,
-            realname: userData.fullName
+            realname: userData.fullName,
         })
         .returning(['userid']);
 
@@ -134,7 +133,7 @@ module.exports.insertUser = async (userData) => {
         email: userData.email,
         moneyBalance: 0,
         role: 'USER1',
-        passwordHash: passwordHash
+        passwordHash: passwordHash,
     };
 };
 
@@ -144,7 +143,7 @@ module.exports.updateUser = async (userId, userData) => {
             name: userData.username,
             realname: userData.fullName,
             univident: userData.email,
-            saldo: userData.moneyBalance
+            saldo: userData.moneyBalance,
         });
         if (userData.password !== undefined) {
             rvpersonFields.pass = bcrypt.hashSync(userData.password, 11);
@@ -153,17 +152,10 @@ module.exports.updateUser = async (userId, userData) => {
             rvpersonFields.rfid = bcrypt.hashSync(userData.rfid, RFID_SALT);
         }
         if (userData.role !== undefined) {
-            const roleRow = await knex('ROLE')
-                .transacting(trx)
-                .select('roleid')
-                .where({ role: userData.role })
-                .first();
+            const roleRow = await knex('ROLE').transacting(trx).select('roleid').where({ role: userData.role }).first();
             rvpersonFields.roleid = roleRow.roleid;
         }
-        await knex('RVPERSON')
-            .transacting(trx)
-            .update(rvpersonFields)
-            .where({ userid: userId });
+        await knex('RVPERSON').transacting(trx).update(rvpersonFields).where({ userid: userId });
 
         const userRow = await knex('RVPERSON')
             .transacting(trx)
@@ -175,7 +167,7 @@ module.exports.updateUser = async (userId, userData) => {
                 'RVPERSON.univident',
                 'RVPERSON.saldo',
                 'ROLE.role',
-                'RVPERSON.pass'
+                'RVPERSON.pass',
             )
             .where('RVPERSON.userid', userId)
             .first();
@@ -207,7 +199,7 @@ module.exports.recordDeposit = async (userId, amount) => {
                 userid: userId,
                 time: now,
                 saldo: updatedPersonRows[0].saldo,
-                difference: amount
+                difference: amount,
             })
             .returning(['saldhistid']);
         const insertedPershistRows = await knex('PERSONHIST')
@@ -217,7 +209,7 @@ module.exports.recordDeposit = async (userId, amount) => {
                 actionid: 17,
                 userid1: userId,
                 userid2: userId,
-                saldhistid: insertedSaldhistRows[0].saldhistid
+                saldhistid: insertedSaldhistRows[0].saldhistid,
             })
             .returning(['pershistid']);
 
@@ -225,7 +217,7 @@ module.exports.recordDeposit = async (userId, amount) => {
             depositId: insertedPershistRows[0].pershistid,
             time: now.toISOString(),
             amount: amount,
-            balanceAfter: updatedPersonRows[0].saldo
+            balanceAfter: updatedPersonRows[0].saldo,
         };
     });
 };

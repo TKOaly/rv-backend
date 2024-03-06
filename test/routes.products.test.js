@@ -12,7 +12,7 @@ const historyStore = require('../src/db/historyStore');
 chai.use(chaiHttp);
 
 const token = jwt.sign({
-    userId: 1
+    userId: 1,
 });
 
 describe('routes: products', () => {
@@ -32,7 +32,7 @@ describe('routes: products', () => {
                 .request(server)
                 .post('/api/v1/products/search')
                 .set('Authorization', 'Bearer ' + token)
-                .send({query: 'koff III'});
+                .send({ query: 'koff III' });
             expect(res.status).to.equal(200);
             expect(res.body.products.length).to.equal(1);
         });
@@ -41,7 +41,7 @@ describe('routes: products', () => {
                 .request(server)
                 .post('/api/v1/products/search')
                 .set('Authorization', 'Bearer ' + token)
-                .send({query: 'motivaatio'});
+                .send({ query: 'motivaatio' });
             expect(res.status).to.equal(200);
             expect(res.body.products.length).to.equal(0);
         });
@@ -88,7 +88,7 @@ describe('routes: products', () => {
                 .post('/api/v1/products/8855702006834/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    count: 1
+                    count: 1,
                 });
 
             expect(res.status).to.equal(200);
@@ -112,7 +112,7 @@ describe('routes: products', () => {
                 .post('/api/v1/products/6417901011105/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    count: 1
+                    count: 1,
                 });
 
             expect(res.status).to.equal(200);
@@ -138,7 +138,7 @@ describe('routes: products', () => {
                 .post('/api/v1/products/6417901011105/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    count: 3
+                    count: 3,
                 });
 
             expect(res.status).to.equal(200);
@@ -155,7 +155,7 @@ describe('routes: products', () => {
                 .post('/api/v1/products/1234567890123/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    count: 1
+                    count: 1,
                 });
 
             expect(res.status).to.equal(404);
@@ -170,7 +170,7 @@ describe('routes: products', () => {
                 .post('/api/v1/products/8855702006834/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    count: 1
+                    count: 1,
                 });
 
             expect(res.body.error_code).to.equal('insufficient_funds');

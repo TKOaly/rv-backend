@@ -22,13 +22,10 @@ describe('routes: admin authentication', () => {
 
     describe('Admin authentication', () => {
         it('logging in with admin role should work', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/authenticate')
-                .send({
-                    username: 'admin_user',
-                    password: 'admin123'
-                });
+            const res = await chai.request(server).post('/api/v1/admin/authenticate').send({
+                username: 'admin_user',
+                password: 'admin123',
+            });
 
             expect(res.status).to.equal(200);
 
@@ -40,26 +37,20 @@ describe('routes: admin authentication', () => {
         });
 
         it('admin tokens should not be signed with the same key as user tokens', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/authenticate')
-                .send({
-                    username: 'admin_user',
-                    password: 'admin123'
-                });
+            const res = await chai.request(server).post('/api/v1/admin/authenticate').send({
+                username: 'admin_user',
+                password: 'admin123',
+            });
 
             const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
             expect(decoded).to.equal(null);
         });
 
         it('only admins should be able to authenticate', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/admin/authenticate')
-                .send({
-                    username: 'normal_user',
-                    password: 'hunter2'
-                });
+            const res = await chai.request(server).post('/api/v1/admin/authenticate').send({
+                username: 'normal_user',
+                password: 'hunter2',
+            });
 
             expect(res.status).to.equal(403);
         });

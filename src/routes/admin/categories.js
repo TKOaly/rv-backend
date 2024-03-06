@@ -15,19 +15,19 @@ router.get('/', async (req, res) => {
         const mappedCategories = categories.map((category) => {
             return {
                 categoryId: category.categoryId,
-                description: category.description
+                description: category.description,
             };
         });
 
         logger.info('User %s fetched categories as admin', user.username);
         res.status(200).json({
-            categories: mappedCategories
+            categories: mappedCategories,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -42,13 +42,13 @@ router.post('/', async (req, res) => {
         'User %s created new category with data {categoryId: %s, description: %s}',
         user.username,
         newCategory.categoryId,
-        newCategory.description
+        newCategory.description,
     );
     res.status(201).json({
         category: {
             categoryId: newCategory.categoryId,
-            description: newCategory.description
-        }
+            description: newCategory.description,
+        },
     });
 });
 
@@ -62,7 +62,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         logger.error('User %s tried to fetch unknown category %s as admin', user.username, categoryId);
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Category does not exist'
+            message: 'Category does not exist',
         });
         return;
     }
@@ -71,8 +71,8 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
     res.status(200).json({
         category: {
             categoryId: category.categoryId,
-            description: category.description
-        }
+            description: category.description,
+        },
     });
 });
 
@@ -87,7 +87,7 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
         logger.error('User %s tried to modify data of unknown category %s', user.username, categoryId);
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Category does not exist.'
+            message: 'Category does not exist.',
         });
         return;
     }
@@ -98,13 +98,13 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
         'User %s modified category data of category %s to {description: %s}',
         user.username,
         updatedCategory.categoryId,
-        updatedCategory.description
+        updatedCategory.description,
     );
     res.status(200).json({
         category: {
             categoryId: updatedCategory.categoryId,
-            description: updatedCategory.description
-        }
+            description: updatedCategory.description,
+        },
     });
 });
 
@@ -117,14 +117,14 @@ router.delete('/:categoryId', async (req, res) => {
     if (categoryId == defaultCategory.categoryId) {
         res.status(403).json({
             error_code: 'bad_request',
-            message: 'Cannot delete the default category'
+            message: 'Cannot delete the default category',
         });
 
         logger.info(
-            'User %s tried to delete the default category \'%s\' (%d)',
+            "User %s tried to delete the default category '%s' (%d)",
             req.user.username,
             defaultCategory.description,
-            defaultCategory.categoryId
+            defaultCategory.categoryId,
         );
 
         return;
@@ -135,34 +135,34 @@ router.delete('/:categoryId', async (req, res) => {
     if (result === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `Category with id '${ req.params.categoryId }' not found`
+            message: `Category with id '${req.params.categoryId}' not found`,
         });
 
         logger.info(
             'User %s tried to delete non-exiting category with ID %d',
             req.user.username,
-            req.params.categoryId
+            req.params.categoryId,
         );
 
         return;
     }
 
     logger.info(
-        'User %s deleted category \'%s\' (%d), moving %d products to the default category \'%s\' (%d)',
+        "User %s deleted category '%s' (%d), moving %d products to the default category '%s' (%d)",
         req.user.username,
         result.description,
         result.categoryId,
         result.movedProducts.length,
         defaultCategory.description,
-        defaultCategory.categoryId
+        defaultCategory.categoryId,
     );
 
     res.status(200).json({
         deletedCategory: {
             categoryId: result.categoryId,
-            description: result.description
+            description: result.description,
         },
-        movedProducts: result.movedProducts
+        movedProducts: result.movedProducts,
     });
 });
 

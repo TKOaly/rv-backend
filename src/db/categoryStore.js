@@ -5,7 +5,7 @@ const rowToCategory = (row) => {
     if (row !== undefined) {
         return {
             categoryId: row.pgrpid,
-            description: row.descr
+            description: row.descr,
         };
     } else {
         return undefined;
@@ -32,22 +32,18 @@ module.exports.findById = async (categoryId) => {
 };
 
 module.exports.insertCategory = async (description) => {
-    const insertedRows = await knex('PRODGROUP')
-        .insert({ descr: description })
-        .returning(['pgrpid']);
+    const insertedRows = await knex('PRODGROUP').insert({ descr: description }).returning(['pgrpid']);
     return {
         categoryId: insertedRows[0].pgrpid,
-        description: description
+        description: description,
     };
 };
 
 module.exports.updateCategory = async (categoryId, description) => {
-    await knex('PRODGROUP')
-        .update({ descr: description })
-        .where({ pgrpid: categoryId });
+    await knex('PRODGROUP').update({ descr: description }).where({ pgrpid: categoryId });
     return {
         categoryId: categoryId,
-        description: description
+        description: description,
     };
 };
 
@@ -55,7 +51,7 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
     const movedProductIdRows = await knex('RVITEM')
         .where('pgrpid', categoryId)
         .update({
-            pgrpid: moveProductsTo
+            pgrpid: moveProductsTo,
         })
         .returning(['itemid']);
 
@@ -66,10 +62,7 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
         .andWhere('endtime', null)
         .select('barcode');
 
-    const rows = await knex('PRODGROUP')
-        .where({ pgrpid: categoryId })
-        .update({ deleted: true })
-        .returning(['descr']);
+    const rows = await knex('PRODGROUP').where({ pgrpid: categoryId }).update({ deleted: true }).returning(['descr']);
 
     if (rows.length === 0) {
         return undefined;
@@ -80,6 +73,6 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
     return {
         categoryId: parseInt(categoryId),
         description: row.descr,
-        movedProducts: movedProducts.map((row) => row.barcode)
+        movedProducts: movedProducts.map((row) => row.barcode),
     };
 };

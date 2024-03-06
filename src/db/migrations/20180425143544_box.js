@@ -6,28 +6,15 @@ exports.up = async (knex) => {
                 .notNullable()
                 .primary()
                 .comment('Box barcode. This is considered unique and there is no other ID');
-            table
-                .string('itembarcode', 64)
-                .notNullable()
-                .index()
-                .comment('Barcode of items contained in this box');
-            table
-                .integer('itemcount')
-                .nullable()
-                .comment('Count of items in this box');
+            table.string('itembarcode', 64).notNullable().index().comment('Barcode of items contained in this box');
+            table.integer('itemcount').nullable().comment('Count of items in this box');
         });
     }
 
     if (!(await knex.schema.hasTable('BOXHISTORY'))) {
         await knex.schema.createTable('BOXHISTORY', (table) => {
-            table
-                .increments('boxhistory_id')
-                .primary()
-                .comment('Box history ID');
-            table
-                .dateTime('time')
-                .notNullable()
-                .comment('When box properties changed');
+            table.increments('boxhistory_id').primary().comment('Box history ID');
+            table.dateTime('time').notNullable().comment('When box properties changed');
             table
                 .string('barcode')
                 .notNullable()

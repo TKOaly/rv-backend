@@ -31,7 +31,7 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
                             'User %s successfully authenticated for %s %s',
                             user.username,
                             req.method,
-                            req.originalUrl
+                            req.originalUrl,
                         );
                         req.user = user;
                         next();
@@ -39,7 +39,7 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
                         logger.error('User %s is not authorized for %s %s', user.username, req.method, req.originalUrl);
                         res.status(403).json({
                             error_code: 'not_authorized',
-                            message: 'Not authorized'
+                            message: 'Not authorized',
                         });
                     }
                 } else {
@@ -47,14 +47,14 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
                     logger.error('Invalid authorization token (token contains nonexistent user or no roles)');
                     res.status(401).json({
                         error_code: 'invalid_token',
-                        message: 'Invalid authorization token'
+                        message: 'Invalid authorization token',
                     });
                 }
             } catch (error) {
                 logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
                 res.status(500).json({
                     error_code: 'internal_error',
-                    message: 'Internal error'
+                    message: 'Internal error',
                 });
             }
         } else {
@@ -62,7 +62,7 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
             logger.error('Invalid authorization token (no username in token)');
             res.status(401).json({
                 error_code: 'invalid_token',
-                message: 'Invalid authorization token'
+                message: 'Invalid authorization token',
             });
         }
     };

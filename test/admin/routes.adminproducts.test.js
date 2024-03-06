@@ -10,16 +10,16 @@ chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
-        userId: 2
+        userId: 2,
     },
-    process.env.JWT_ADMIN_SECRET
+    process.env.JWT_ADMIN_SECRET,
 );
 
 const normalUserToken = jwt.sign(
     {
-        userId: 1
+        userId: 1,
     },
-    process.env.JWT_SECRET
+    process.env.JWT_SECRET,
 );
 
 describe('routes: admin products', () => {
@@ -77,7 +77,7 @@ describe('routes: admin products', () => {
                     weight: 500,
                     buyPrice: 367,
                     sellPrice: 370,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(201);
@@ -101,7 +101,7 @@ describe('routes: admin products', () => {
                     weight: 500,
                     buyPrice: 367,
                     sellPrice: 370,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(201);
@@ -119,7 +119,7 @@ describe('routes: admin products', () => {
                     weight: 500,
                     buyPrice: 367,
                     sellPrice: 370,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(409);
@@ -139,7 +139,7 @@ describe('routes: admin products', () => {
                     weight: 500,
                     buyPrice: 367,
                     sellPrice: 370,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(400);
@@ -155,7 +155,7 @@ describe('routes: admin products', () => {
                     barcode: '575757575757',
                     name: 'Opossumin lihaa',
                     categoryId: 11111,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(400);
@@ -175,7 +175,7 @@ describe('routes: admin products', () => {
                     weight: 500,
                     buyPrice: 367,
                     sellPrice: 370,
-                    stock: 1
+                    stock: 1,
                 });
 
             expect(res.status).to.equal(200);
@@ -192,7 +192,7 @@ describe('routes: admin products', () => {
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    buyPrice: 5000
+                    buyPrice: 5000,
                 });
 
             expect(res.status).to.equal(200);
@@ -208,7 +208,7 @@ describe('routes: admin products', () => {
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    buyPrice: 5000
+                    buyPrice: 5000,
                 });
 
             expect(res.status).to.equal(200);
@@ -220,7 +220,7 @@ describe('routes: admin products', () => {
                 .patch('/api/v1/admin/products/88888888')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    buyPrice: 5000
+                    buyPrice: 5000,
                 });
 
             expect(res.status).to.equal(404);
@@ -233,7 +233,7 @@ describe('routes: admin products', () => {
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    categoryId: 999
+                    categoryId: 999,
                 });
 
             expect(res.status).to.equal(400);
@@ -246,7 +246,7 @@ describe('routes: admin products', () => {
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    aaa: 4
+                    aaa: 4,
                 });
 
             expect(res.status).to.equal(400);
@@ -274,7 +274,7 @@ describe('routes: admin products', () => {
             expect(res.status).to.equal(200);
         });
 
-        it('should cause any requests for that product\'s information to fail', async () => {
+        it("should cause any requests for that product's information to fail", async () => {
             const res = await chai
                 .request(server)
                 .delete('/api/v1/admin/products/5053990123506')
@@ -314,7 +314,7 @@ describe('routes: admin products', () => {
                 .post('/api/v1/products/5053990123506/purchase')
                 .set('Authorization', 'Bearer ' + normalUserToken)
                 .send({
-                    count: 1
+                    count: 1,
                 });
 
             expect(purchase.status).to.equal(404);
@@ -330,7 +330,7 @@ describe('routes: admin products', () => {
                 .send({
                     count: 1,
                     buyPrice: 1,
-                    sellPrice: 1
+                    sellPrice: 1,
                 });
 
             expect(res.status).to.equal(404);
@@ -341,7 +341,7 @@ describe('routes: admin products', () => {
             const validRequest = {
                 count: 1,
                 buyPrice: 1,
-                sellPrice: 1
+                sellPrice: 1,
             };
 
             for (const missingField in validRequest) {
@@ -367,7 +367,10 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${negativeField} has a negative value`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${negativeField} has a negative value`,
+                );
             }
         });
 
@@ -387,7 +390,7 @@ describe('routes: admin products', () => {
                 .send({
                     count: 1,
                     buyPrice: 1,
-                    sellPrice: 1
+                    sellPrice: 1,
                 });
 
             const post_query = await chai
@@ -399,7 +402,7 @@ describe('routes: admin products', () => {
             expect(post_query.body.product.stock).to.equal(initial_stock + 1);
         });
 
-        it('should change the item\'s buyPrice and sellPrice', async () => {
+        it("should change the item's buyPrice and sellPrice", async () => {
             const pre_query = await chai
                 .request(server)
                 .get('/api/v1/admin/products/5053990123506')
@@ -415,7 +418,7 @@ describe('routes: admin products', () => {
                 .send({
                     count: 1,
                     buyPrice: initialBuyPrice + 1,
-                    sellPrice: initialSellPrice + 1
+                    sellPrice: initialSellPrice + 1,
                 });
 
             expect(res.status).to.equal(200);
@@ -431,7 +434,7 @@ describe('routes: admin products', () => {
         });
     });
 
-    describe('Querying product\'s purchase history', () => {
+    describe("Querying product's purchase history", () => {
         it('should return a list of purchases', async () => {
             const res = await chai
                 .request(server)

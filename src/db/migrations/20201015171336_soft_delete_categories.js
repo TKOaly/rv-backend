@@ -1,4 +1,3 @@
-
 exports.up = async (knex) => {
     await knex.raw('ALTER TABLE "PRODGROUP" RENAME TO "PRODGROUP_ALL"');
 

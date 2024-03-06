@@ -3,7 +3,7 @@ const logger = require('./../logger');
 
 module.exports.sign = (payload, tokenSecret = process.env.JWT_SECRET) => {
     return jwt.sign({ exp: Math.floor(Date.now() / 1000) + 86400, data: payload }, tokenSecret, {
-        algorithm: 'HS256'
+        algorithm: 'HS256',
     });
 };
 

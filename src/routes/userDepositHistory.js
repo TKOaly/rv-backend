@@ -16,19 +16,19 @@ router.get('/', async (req, res) => {
                 depositId: deposit.depositId,
                 time: deposit.time,
                 amount: deposit.amount,
-                balanceAfter: deposit.balanceAfter
+                balanceAfter: deposit.balanceAfter,
             };
         });
 
         logger.info('User %s fetched deposit history', user.username);
         res.status(200).json({
-            deposits: mappedDeposits
+            deposits: mappedDeposits,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -45,7 +45,7 @@ router.get('/:depositId(\\d+)', async (req, res) => {
             logger.error('User %s tried to fetch unknown deposit %s', user.username, depositId);
             res.status(404).json({
                 error_code: 'not_found',
-                message: 'Deposit event does not exist'
+                message: 'Deposit event does not exist',
             });
             return;
         }
@@ -56,14 +56,14 @@ router.get('/:depositId(\\d+)', async (req, res) => {
                 depositId: deposit.depositId,
                 time: deposit.time,
                 amount: deposit.amount,
-                balanceAfter: deposit.balanceAfter
-            }
+                balanceAfter: deposit.balanceAfter,
+            },
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });

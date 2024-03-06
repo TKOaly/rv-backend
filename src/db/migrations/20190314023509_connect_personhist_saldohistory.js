@@ -1,10 +1,6 @@
 exports.up = async (knex) => {
-    const itemhistory = await knex('ITEMHISTORY')
-        .select('saldhistid')
-        .where('actionid', 5);
-    const saldohistory = await knex('SALDOHISTORY')
-        .select('saldhistid', 'time', 'userid')
-        .orderBy(['time', 'userid']);
+    const itemhistory = await knex('ITEMHISTORY').select('saldhistid').where('actionid', 5);
+    const saldohistory = await knex('SALDOHISTORY').select('saldhistid', 'time', 'userid').orderBy(['time', 'userid']);
     const personhist = await knex('PERSONHIST')
         .select('pershistid', 'time', 'userid1')
         .where('actionid', 17)
@@ -60,11 +56,7 @@ exports.up = async (knex) => {
     }
 
     await knex.schema.table('PERSONHIST', (table) => {
-        table
-            .integer('saldhistid')
-            .references('saldhistid')
-            .inTable('SALDOHISTORY')
-            .defaultTo(null);
+        table.integer('saldhistid').references('saldhistid').inTable('SALDOHISTORY').defaultTo(null);
     });
 
     /* This might take a long time, optimizations needed. */

@@ -11,7 +11,7 @@ const historyStore = require('../src/db/historyStore');
 chai.use(chaiHttp);
 
 const token = jwt.sign({
-    userId: 1
+    userId: 1,
 });
 
 describe('routes: user', () => {
@@ -27,33 +27,23 @@ describe('routes: user', () => {
 
     describe('Checking user existence', () => {
         it('should return true if user exists', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/user/user_exists')
-                .send({
-                    username: 'admin_user'
-                });
+            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
+                username: 'admin_user',
+            });
             expect(res.status).to.equal(200);
             expect(res.body.exists).to.equal(true);
         });
         it('should return false if user does not exist', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/user/user_exists')
-                .send({
-                    username: 'admin_user2'
-                });
+            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
+                username: 'admin_user2',
+            });
             expect(res.status).to.equal(200);
             expect(res.body.exists).to.equal(false);
-
         });
         it('invalid request should result in a 400 bad request response', async () => {
-            const res = await chai
-                .request(server)
-                .post('/api/v1/user/user_exists')
-                .send({
-                    garbage: 'garbage'
-                });
+            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
+                garbage: 'garbage',
+            });
             expect(res.status).to.equal(400);
         });
     });
@@ -78,7 +68,7 @@ describe('routes: user', () => {
                 .send({
                     username: 'abcd',
                     fullName: 'abcd efgh',
-                    email: 'abc@def.ghi'
+                    email: 'abc@def.ghi',
                 });
 
             expect(res.status).to.equal(200);
@@ -100,7 +90,7 @@ describe('routes: user', () => {
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    email: 'abc@def.ghi'
+                    email: 'abc@def.ghi',
                 });
 
             expect(res.status).to.equal(200);
@@ -116,7 +106,7 @@ describe('routes: user', () => {
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    username: 'admin_user'
+                    username: 'admin_user',
                 });
 
             expect(res.status).to.equal(409);
@@ -128,7 +118,7 @@ describe('routes: user', () => {
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    email: 'admin@example.com'
+                    email: 'admin@example.com',
                 });
 
             expect(res.status).to.equal(409);
@@ -152,7 +142,7 @@ describe('routes: user', () => {
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    amount: 150
+                    amount: 150,
                 });
 
             expect(res.status).to.equal(200);
@@ -173,7 +163,7 @@ describe('routes: user', () => {
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    amount: 2371
+                    amount: 2371,
                 });
 
             expect(res.status).to.equal(200);
@@ -194,7 +184,7 @@ describe('routes: user', () => {
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    amount: -200
+                    amount: -200,
                 });
 
             expect(res.status).to.equal(400);
@@ -208,7 +198,7 @@ describe('routes: user', () => {
                 .post('/api/v1/user/changePassword')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    password: 'abcdefg'
+                    password: 'abcdefg',
                 });
 
             expect(res.status).to.equal(204);

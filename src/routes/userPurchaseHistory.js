@@ -20,26 +20,26 @@ router.get('/', async (req, res) => {
                     name: purchase.product.name,
                     category: {
                         categoryId: purchase.product.category.categoryId,
-                        description: purchase.product.category.description
+                        description: purchase.product.category.description,
                     },
                     weight: purchase.product.weight,
                     sellPrice: purchase.product.sellPrice,
-                    stock: purchase.product.stock
+                    stock: purchase.product.stock,
                 },
                 price: purchase.price,
-                balanceAfter: purchase.balanceAfter
+                balanceAfter: purchase.balanceAfter,
             };
         });
 
         logger.info('User %s fetched purchase history', user.username);
         res.status(200).json({
-            purchases: mappedPurchases
+            purchases: mappedPurchases,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -56,7 +56,7 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
             logger.error('User %s tried to fetch unknown purchase %s', user.username, purchaseId);
             res.status(404).json({
                 error_code: 'not_found',
-                message: 'Purchase event does not exist'
+                message: 'Purchase event does not exist',
             });
             return;
         }
@@ -71,21 +71,21 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
                     name: purchase.product.name,
                     category: {
                         categoryId: purchase.product.category.categoryId,
-                        description: purchase.product.category.description
+                        description: purchase.product.category.description,
                     },
                     weight: purchase.product.weight,
                     sellPrice: purchase.product.sellPrice,
-                    stock: purchase.product.stock
+                    stock: purchase.product.stock,
                 },
                 price: purchase.price,
-                balanceAfter: purchase.balanceAfter
-            }
+                balanceAfter: purchase.balanceAfter,
+            },
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });

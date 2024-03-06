@@ -81,18 +81,12 @@ exports.up = async (knex) => {
     }
 
     await knex.schema.table('ITEMHISTORY', (table) => {
-        table
-            .integer('saldhistid')
-            .references('saldhistid')
-            .inTable('SALDOHISTORY')
-            .defaultTo(null);
+        table.integer('saldhistid').references('saldhistid').inTable('SALDOHISTORY').defaultTo(null);
     });
 
     /* This might take really long time, optimizations needed. */
     for (const itemEvent of itemhistory) {
-        await knex('ITEMHISTORY')
-            .update('saldhistid', itemEvent.saldhistid)
-            .where('itemhistid', itemEvent.itemhistid);
+        await knex('ITEMHISTORY').update('saldhistid', itemEvent.saldhistid).where('itemhistid', itemEvent.itemhistid);
     }
 };
 

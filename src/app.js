@@ -18,8 +18,8 @@
             apiSpec: path.resolve(__dirname, '../openapi.yaml'),
             validateRequests: true,
             validateResponses: process.env.NODE_ENV !== 'production',
-            ignorePaths: /^\/api\/[^/]+\/test\/.*/
-        })
+            ignorePaths: /^\/api\/[^/]+\/test\/.*/,
+        }),
     );
 
     const auth_route = require('./routes/auth');
@@ -63,7 +63,7 @@
             res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Invalid or missing fields in request',
-                errors: error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`)
+                errors: error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`),
             });
 
             return;
@@ -71,7 +71,7 @@
 
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal server error'
+            message: 'Internal server error',
         });
         next(error);
     });

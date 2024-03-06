@@ -11,13 +11,13 @@ const rowToBox = (row) => {
                 name: row.descr,
                 category: {
                     categoryId: row.pgrpid,
-                    description: row.pgrpdescr
+                    description: row.pgrpdescr,
                 },
                 weight: row.weight,
                 buyPrice: row.buyprice,
                 sellPrice: row.sellprice,
-                stock: row.count
-            }
+                stock: row.count,
+            },
         };
     } else {
         return undefined;
@@ -42,7 +42,7 @@ module.exports.getBoxes = async () => {
             'RVITEM.weight',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where('PRICE.endtime', null);
     return data.map(rowToBox);
@@ -66,7 +66,7 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
             'RVITEM.weight',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where('PRICE.endtime', null)
         .andWhere('RVBOX.barcode', boxBarcode)
@@ -84,13 +84,11 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
  */
 module.exports.insertBox = async (boxData) => {
     return await knex.transaction(async (trx) => {
-        await knex('RVBOX')
-            .transacting(trx)
-            .insert({
-                barcode: boxData.boxBarcode,
-                itembarcode: boxData.productBarcode,
-                itemcount: boxData.itemsPerBox
-            });
+        await knex('RVBOX').transacting(trx).insert({
+            barcode: boxData.boxBarcode,
+            itembarcode: boxData.productBarcode,
+            itemcount: boxData.itemsPerBox,
+        });
 
         const productRow = await knex('PRICE')
             .transacting(trx)
@@ -103,7 +101,7 @@ module.exports.insertBox = async (boxData) => {
                 'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where('PRICE.barcode', boxData.productBarcode)
             .andWhere('PRICE.endtime', null)
@@ -117,13 +115,13 @@ module.exports.insertBox = async (boxData) => {
                 name: productRow.descr,
                 category: {
                     categoryId: productRow.pgrpid,
-                    description: productRow.pgrpdescr
+                    description: productRow.pgrpdescr,
                 },
                 weight: productRow.weight,
                 buyPrice: productRow.buyprice,
                 sellPrice: productRow.sellprice,
-                stock: productRow.count
-            }
+                stock: productRow.count,
+            },
         };
     });
 };
@@ -132,13 +130,10 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
     return await knex.transaction(async (trx) => {
         const rvboxFields = deleteUndefinedFields({
             itembarcode: boxData.productBarcode,
-            itemcount: boxData.itemsPerBox
+            itemcount: boxData.itemsPerBox,
         });
 
-        await knex('RVBOX')
-            .transacting(trx)
-            .update(rvboxFields)
-            .where({ barcode: boxBarcode });
+        await knex('RVBOX').transacting(trx).update(rvboxFields).where({ barcode: boxBarcode });
 
         const boxRow = await knex('RVBOX')
             .transacting(trx)
@@ -155,7 +150,7 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
                 'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where('PRICE.endtime', null)
             .andWhere('RVBOX.barcode', boxBarcode)
@@ -181,7 +176,7 @@ module.exports.deleteBox = async (boxBarcode) => {
                 'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where({ 'RVBOX.barcode': boxBarcode, 'PRICE.endtime': null })
             .first();
@@ -190,10 +185,7 @@ module.exports.deleteBox = async (boxBarcode) => {
             return undefined;
         }
 
-        await knex('RVBOX')
-            .transacting(trx)
-            .where({ barcode: boxBarcode })
-            .delete();
+        await knex('RVBOX').transacting(trx).where({ barcode: boxBarcode }).delete();
 
         return rowToBox(box);
     });
@@ -206,11 +198,7 @@ module.exports.buyIn = async (boxBarcode, boxCount) => {
             .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
             .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
             .where('RVBOX.barcode', boxBarcode)
-            .first(
-                'RVBOX.itemcount',
-                'PRICE.priceid',
-                'PRICE.count'
-            );
+            .first('RVBOX.itemcount', 'PRICE.priceid', 'PRICE.count');
 
         if (row === undefined) {
             return undefined;
@@ -220,10 +208,7 @@ module.exports.buyIn = async (boxBarcode, boxCount) => {
 
         const newCount = count + itemcount * boxCount;
 
-        await knex('PRICE')
-            .transacting(trx)
-            .select({ priceid, endtime: null })
-            .update({ count: newCount });
+        await knex('PRICE').transacting(trx).select({ priceid, endtime: null }).update({ count: newCount });
 
         return newCount;
     });
