@@ -32,5 +32,15 @@ module.exports = [
         pass: bcrypt.hashSync('role2', 11),
         saldo: -500,
         realname: 'User Two'
+    },
+    {
+        userid: 4,
+        createdate: new Date('2022-02-20T00:00:00Z'),
+        roleid: 7,
+        name: 'user_inactive',
+        univident: 'inactive@example.com',
+        pass: bcrypt.hashSync('inactive', 11),
+        saldo: -1100,
+        realname: 'Inactive User'
     }
 ];
