@@ -175,7 +175,8 @@ module.exports.updateUser = async (userId, userData) => {
                 'RVPERSON.univident',
                 'RVPERSON.saldo',
                 'ROLE.role',
-                'RVPERSON.pass'
+                'RVPERSON.pass',
+                'RVPERSON.rfid'
             )
             .where('RVPERSON.userid', userId)
             .first();
