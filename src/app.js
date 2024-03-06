@@ -7,6 +7,7 @@
     const helmet = require('helmet');
     const app = express();
     const OpenApiValidator = require('express-openapi-validator');
+    const logger = require('./logger');
 
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
@@ -18,8 +19,8 @@
             apiSpec: path.resolve(__dirname, '../openapi.yaml'),
             validateRequests: true,
             validateResponses: process.env.NODE_ENV !== 'production',
-            ignorePaths: /^\/api\/[^/]+\/test\/.*/
-        })
+            ignorePaths: /^\/api\/[^/]+\/test\/.*/,
+        }),
     );
 
     const auth_route = require('./routes/auth');
@@ -58,12 +59,20 @@
     app.use('/api/v1/test/reset_data', api_reset_route);
 
     app.use((error, req, res, next) => {
-        console.log(error);
+        logger.error(
+            'Invalid or missing fields in request: %s',
+            error.errors.map(
+                ({ path, message }) => `Field ${path.substring(6)} ${message}`,
+            ),
+        );
         if (error.status === 400) {
             res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Invalid or missing fields in request',
-                errors: error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`)
+                errors: error.errors.map(
+                    ({ path, message }) =>
+                        `Field ${path.substring(6)} ${message}`,
+                ),
             });
 
             return;
@@ -71,7 +80,7 @@
 
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal server error'
+            message: 'Internal server error',
         });
         next(error);
     });

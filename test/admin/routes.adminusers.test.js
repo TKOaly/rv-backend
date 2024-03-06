@@ -11,9 +11,9 @@ chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
-        userId: 2
+        userId: 2,
     },
-    process.env.JWT_ADMIN_SECRET
+    process.env.JWT_ADMIN_SECRET,
 );
 
 describe('routes: admin users', () => {
@@ -66,7 +66,7 @@ describe('routes: admin users', () => {
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    role: 'ADMIN'
+                    role: 'ADMIN',
                 });
 
             expect(res.status).to.equal(200);
@@ -81,7 +81,7 @@ describe('routes: admin users', () => {
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    role: 'ADMIN'
+                    role: 'ADMIN',
                 });
 
             expect(res.status).to.equal(200);
@@ -93,7 +93,7 @@ describe('routes: admin users', () => {
                 .post('/api/v1/admin/users/99/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    role: 'ADMIN'
+                    role: 'ADMIN',
                 });
 
             expect(res.status).to.equal(404);
@@ -106,7 +106,7 @@ describe('routes: admin users', () => {
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    role: 'abc'
+                    role: 'abc',
                 });
 
             expect(res.status).to.equal(400);
@@ -124,7 +124,7 @@ describe('routes: admin users', () => {
         });
     });
 
-    describe('Fetching user\'s deposit history', async () => {
+    describe("Fetching user's deposit history", async () => {
         it('should return list of deposits', async () => {
             const res = await chai
                 .request(server)
@@ -135,7 +135,7 @@ describe('routes: admin users', () => {
         });
     });
 
-    describe('Fetching user\'s purchase history', async () => {
+    describe("Fetching user's purchase history", async () => {
         it('should return a list of purchases', async () => {
             const res = await chai
                 .request(server)

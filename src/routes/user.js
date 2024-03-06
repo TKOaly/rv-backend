@@ -3,15 +3,16 @@ const router = express.Router();
 const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 const logger = require('../logger');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 router.post('/user_exists', async (req, res) => {
     const username = req.body.username;
     const user = await userStore.findByUsername(username);
-    if(user) {
-        res.status(200).json({'exists': true});
+    if (user) {
+        res.status(200).json({ exists: true });
     } else {
-        res.status(200).json({'exists': false});
+        res.status(200).json({ exists: false });
     }
 });
 
@@ -28,8 +29,8 @@ router.get('/', async (req, res) => {
             fullName: user.fullName,
             email: user.email,
             moneyBalance: user.moneyBalance,
-            role: user.role
-        }
+            role: user.role,
+        },
     });
 });
 
@@ -44,10 +45,14 @@ router.patch('/', async (req, res) => {
     if (username !== undefined) {
         const userByUsername = await userStore.findByUsername(username);
         if (userByUsername) {
-            logger.error('User %s tried to change username to %s but it was taken', user.username, username);
+            logger.error(
+                'User %s tried to change username to %s but it was taken',
+                user.username,
+                username,
+            );
             res.status(409).json({
                 error_code: 'identifier_taken',
-                message: 'Username already in use.'
+                message: 'Username already in use.',
             });
             return;
         }
@@ -59,11 +64,11 @@ router.patch('/', async (req, res) => {
                 'User %s tried to change email from %s to %s but it was taken',
                 user.username,
                 user.email,
-                email
+                email,
             );
             res.status(409).json({
                 error_code: 'identifier_taken',
-                message: 'Email address already in use.'
+                message: 'Email address already in use.',
             });
             return;
         }
@@ -71,7 +76,11 @@ router.patch('/', async (req, res) => {
 
     const updatedUser = await userStore.updateUser(
         user.userId,
-        deleteUndefinedFields({ username: username, fullName: fullName, email: email })
+        deleteUndefinedFields({
+            username: username,
+            fullName: fullName,
+            email: email,
+        }),
     );
 
     logger.info(
@@ -82,7 +91,7 @@ router.patch('/', async (req, res) => {
         user.email,
         updatedUser.username,
         updatedUser.fullName,
-        updatedUser.email
+        updatedUser.email,
     );
 
     res.status(200).json({
@@ -92,8 +101,8 @@ router.patch('/', async (req, res) => {
             fullName: updatedUser.fullName,
             email: updatedUser.email,
             moneyBalance: updatedUser.moneyBalance,
-            role: updatedUser.role
-        }
+            role: updatedUser.role,
+        },
     });
 });
 
@@ -110,8 +119,8 @@ router.post('/deposit', async (req, res) => {
             depositId: deposit.depositId,
             time: deposit.time,
             amount: deposit.amount,
-            balanceAfter: deposit.balanceAfter
-        }
+            balanceAfter: deposit.balanceAfter,
+        },
     });
 });
 

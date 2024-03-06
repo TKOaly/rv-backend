@@ -27,12 +27,15 @@ describe('routes: admin authentication', () => {
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
-                    password: 'admin123'
+                    password: 'admin123',
                 });
 
             expect(res.status).to.equal(200);
 
-            const decoded = jwt.verify(res.body.accessToken, process.env.JWT_ADMIN_SECRET);
+            const decoded = jwt.verify(
+                res.body.accessToken,
+                process.env.JWT_ADMIN_SECRET,
+            );
             expect(decoded.data.userId).to.exist;
 
             const user = await userStore.findByUsername('admin_user');
@@ -45,10 +48,13 @@ describe('routes: admin authentication', () => {
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
-                    password: 'admin123'
+                    password: 'admin123',
                 });
 
-            const decoded = jwt.verify(res.body.accessToken, process.env.JWT_SECRET);
+            const decoded = jwt.verify(
+                res.body.accessToken,
+                process.env.JWT_SECRET,
+            );
             expect(decoded).to.equal(null);
         });
 
@@ -58,7 +64,7 @@ describe('routes: admin authentication', () => {
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'normal_user',
-                    password: 'hunter2'
+                    password: 'hunter2',
                 });
 
             expect(res.status).to.equal(403);
