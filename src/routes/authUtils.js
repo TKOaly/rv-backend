@@ -45,10 +45,7 @@ module.exports.authenticateUser =
         const password = body.password;
 
         const user = await userStore.findByUsername(username);
-        logger.info(username);
-        logger.info(password);
         if (user) {
-            logger.info(password);
             if (password != undefined && (await userStore.verifyPassword(password, user.passwordHash))) {
                 if (verifyRole(requiredRole, user.role)) {
                     logger.info('User %s logged in as role %s', user.username, requiredRole);
