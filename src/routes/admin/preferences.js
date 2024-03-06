@@ -1,7 +1,12 @@
 const express = require('express');
 const logger = require('../../logger');
 const authMiddleware = require('../authMiddleware');
-const { preferences, getPreference, setPreference, getPreferenceByKey } = require('../../db/preferences');
+const {
+    preferences,
+    getPreference,
+    setPreference,
+    getPreferenceByKey,
+} = require('../../db/preferences');
 
 const router = express.Router();
 
@@ -51,7 +56,11 @@ router.patch('/:preferenceKey', async (req, res) => {
             message: `No preference with key '${req.params.preferenceKey}' exists`,
         });
 
-        logger.info("User %s tried to set non-existent preference '%s'", req.user.username, req.params.preferenceKey);
+        logger.info(
+            "User %s tried to set non-existent preference '%s'",
+            req.user.username,
+            req.params.preferenceKey,
+        );
 
         return;
     }

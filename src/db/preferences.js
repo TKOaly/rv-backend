@@ -1,7 +1,9 @@
 const knex = require('./knex');
 
 module.exports.getPreference = async (preference) => {
-    const data = await knex('PREFERENCES').where({ key: preference.key }).first('value');
+    const data = await knex('PREFERENCES')
+        .where({ key: preference.key })
+        .first('value');
 
     if (data === undefined) {
         if (preference.default !== undefined) {
@@ -19,7 +21,9 @@ module.exports.getPreference = async (preference) => {
 };
 
 module.exports.setPreference = async (preference, value) => {
-    const data = await knex('PREFERENCES').where({ key: preference.key }).first('value');
+    const data = await knex('PREFERENCES')
+        .where({ key: preference.key })
+        .first('value');
 
     if (preference.validate) {
         const errors = preference.validate(value);
@@ -40,7 +44,10 @@ module.exports.setPreference = async (preference, value) => {
     }
 
     if (data === undefined) {
-        await knex('PREFERENCES').insert({ key: preference.key, value: serialized });
+        await knex('PREFERENCES').insert({
+            key: preference.key,
+            value: serialized,
+        });
 
         return {
             errors: [],
@@ -48,7 +55,9 @@ module.exports.setPreference = async (preference, value) => {
             previousValue: undefined,
         };
     } else {
-        await knex('PREFERENCES').update({ value: serialized }).where({ key: preference.key });
+        await knex('PREFERENCES')
+            .update({ value: serialized })
+            .where({ key: preference.key });
 
         return {
             errors: [],
@@ -61,7 +70,8 @@ module.exports.setPreference = async (preference, value) => {
 const floatPreference = {
     serialize: (value) => String(value),
     deserialize: (str) => parseFloat(str),
-    validate: (value) => (typeof value === 'number' ? [] : ['value should be a number']),
+    validate: (value) =>
+        typeof value === 'number' ? [] : ['value should be a number'],
 };
 
 const integerPreference = {
@@ -92,5 +102,7 @@ module.exports.preferences = {
 Object.assign(module.exports, module.exports.preferences);
 
 module.exports.getPreferenceByKey = (key) => {
-    return Object.values(module.exports.preferences).find((pref) => pref.key === key);
+    return Object.values(module.exports.preferences).find(
+        (pref) => pref.key === key,
+    );
 };

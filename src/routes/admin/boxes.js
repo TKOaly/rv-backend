@@ -4,7 +4,8 @@ const authMiddleware = require('../authMiddleware');
 const boxStore = require('../../db/boxStore');
 const productStore = require('../../db/productStore');
 const logger = require('./../../logger');
-const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../../utils/objectUtils').deleteUndefinedFields;
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -54,7 +55,11 @@ router.post('/', async (req, res) => {
     /* Checking if box already exists. */
     const existingBox = await boxStore.findByBoxBarcode(boxBarcode);
     if (existingBox) {
-        logger.error('User %s failed to create new box, box barcode %s was already taken', user.username, boxBarcode);
+        logger.error(
+            'User %s failed to create new box, box barcode %s was already taken',
+            user.username,
+            boxBarcode,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
             message: 'Box barcode already in use.',
@@ -65,7 +70,11 @@ router.post('/', async (req, res) => {
     /* Checking if product exists. */
     const existingProduct = await productStore.findByBarcode(productBarcode);
     if (!existingProduct) {
-        logger.error('User %s tried to create box of unknown product %s', user.username, productBarcode);
+        logger.error(
+            'User %s tried to create box of unknown product %s',
+            user.username,
+            productBarcode,
+        );
         res.status(400).json({
             error_code: 'invalid_reference',
             message: 'Referenced product not found.',
@@ -98,7 +107,11 @@ router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
     const box = await boxStore.findByBoxBarcode(boxBarcode);
 
     if (!box) {
-        logger.error('User %s tried to fetch unknown box %s as admin', user.username, boxBarcode);
+        logger.error(
+            'User %s tried to fetch unknown box %s as admin',
+            user.username,
+            boxBarcode,
+        );
         res.status(404).json({
             error_code: 'not_found',
             message: 'Box does not exist',
@@ -121,7 +134,11 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
     /* Checking if box exists. */
     const existingBox = await boxStore.findByBoxBarcode(boxBarcode);
     if (!existingBox) {
-        logger.error('User %s tried to modify data of unknown box %s', user.username, boxBarcode);
+        logger.error(
+            'User %s tried to modify data of unknown box %s',
+            user.username,
+            boxBarcode,
+        );
         res.status(404).json({
             error_code: 'not_found',
             message: 'Box does not exist.',
@@ -131,7 +148,8 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
 
     /* Checking if product exists. */
     if (productBarcode !== undefined) {
-        const existingProduct = await productStore.findByBarcode(productBarcode);
+        const existingProduct =
+            await productStore.findByBarcode(productBarcode);
         if (!existingProduct) {
             logger.error(
                 'User %s tried to modify product of box %s to unknown product %s',
@@ -190,7 +208,11 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
             message: `No box with barcode '${boxBarcode}' found`,
         });
 
-        logger.info("User %s tried to delete a non-existent box with barcode '%s'", req.user.username, boxBarcode);
+        logger.info(
+            "User %s tried to delete a non-existent box with barcode '%s'",
+            req.user.username,
+            boxBarcode,
+        );
     }
 });
 
@@ -224,21 +246,30 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
     );
 
     const update = {
-        sellPrice: oldsellprice !== productSellPrice ? productSellPrice : undefined,
+        sellPrice:
+            oldsellprice !== productSellPrice ? productSellPrice : undefined,
         buyPrice: oldbuyprice !== productBuyPrice ? productBuyPrice : undefined,
     };
 
-    await productStore.updateProduct(box.product.barcode, update, req.user.userId);
+    await productStore.updateProduct(
+        box.product.barcode,
+        update,
+        req.user.userId,
+    );
 
     if (update.sellPrice !== undefined || update.buyPrice !== undefined) {
         const changes = [];
 
         if (update.sellPrice !== undefined) {
-            changes.push(`sellPrice from ${box.product.sellPrice} to ${update.sellPrice}`);
+            changes.push(
+                `sellPrice from ${box.product.sellPrice} to ${update.sellPrice}`,
+            );
         }
 
         if (update.sellPrice !== undefined) {
-            changes.push(`buyPrice from ${box.product.buyPrice} to ${update.buyPrice}`);
+            changes.push(
+                `buyPrice from ${box.product.buyPrice} to ${update.buyPrice}`,
+            );
         }
 
         logger.info(

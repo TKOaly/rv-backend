@@ -61,13 +61,18 @@
     app.use((error, req, res, next) => {
         logger.error(
             'Invalid or missing fields in request: %s',
-            error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`),
+            error.errors.map(
+                ({ path, message }) => `Field ${path.substring(6)} ${message}`,
+            ),
         );
         if (error.status === 400) {
             res.status(400).json({
                 error_code: 'bad_request',
                 message: 'Invalid or missing fields in request',
-                errors: error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`),
+                errors: error.errors.map(
+                    ({ path, message }) =>
+                        `Field ${path.substring(6)} ${message}`,
+                ),
             });
 
             return;

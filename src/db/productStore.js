@@ -1,5 +1,6 @@
 const knex = require('./knex');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 const rowToProduct = (row) => {
     if (row !== undefined) {
@@ -156,7 +157,10 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                 .where({ barcode: barcode, endtime: null })
                 .first();
 
-            await knex('RVITEM').transacting(trx).update(rvitemFields).where({ itemid: priceRow.itemid });
+            await knex('RVITEM')
+                .transacting(trx)
+                .update(rvitemFields)
+                .where({ itemid: priceRow.itemid });
         }
 
         const priceFields = deleteUndefinedFields({
@@ -166,7 +170,10 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
         });
         if (Object.keys(priceFields).length > 0) {
             if (priceFields.sellPrice === undefined) {
-                await knex('PRICE').transacting(trx).update(priceFields).where({ barcode: barcode, endtime: null });
+                await knex('PRICE')
+                    .transacting(trx)
+                    .update(priceFields)
+                    .where({ barcode: barcode, endtime: null });
             } else {
                 /* Sell price changed, a new price row will be created. */
                 const now = new Date();
@@ -175,7 +182,13 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                     .transacting(trx)
                     .update({ endtime: now })
                     .where({ barcode: barcode, endtime: null })
-                    .returning(['barcode', 'count', 'buyprice', 'sellprice', 'itemid']);
+                    .returning([
+                        'barcode',
+                        'count',
+                        'buyprice',
+                        'sellprice',
+                        'itemid',
+                    ]);
 
                 await knex('PRICE')
                     .transacting(trx)
@@ -313,14 +326,20 @@ module.exports.deleteProduct = async (barcode) => {
             return undefined;
         }
 
-        await knex('RVITEM').transacting(trx).where({ itemid: row.itemid }).update({ deleted: true });
+        await knex('RVITEM')
+            .transacting(trx)
+            .where({ itemid: row.itemid })
+            .update({ deleted: true });
 
         return rowToProduct(row);
     });
 };
 
 module.exports.buyIn = async (barcode, count) => {
-    const row = await knex('PRICE').where({ barcode }).increment({ count }).returning(['count']);
+    const row = await knex('PRICE')
+        .where({ barcode })
+        .increment({ count })
+        .returning(['count']);
 
     if (row.length === 0) {
         return undefined;

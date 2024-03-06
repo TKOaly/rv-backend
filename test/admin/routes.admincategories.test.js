@@ -198,7 +198,9 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body.movedProducts.sort()).to.deep.equal(initial_items.sort());
+            expect(res.body.movedProducts.sort()).to.deep.equal(
+                initial_items.sort(),
+            );
 
             const post_res = await chai
                 .request(server)
@@ -209,7 +211,9 @@ describe('routes: admin categories', () => {
 
             post_res.body.products
                 .filter((prod) => initial_items.indexOf(prod.barcode) !== -1)
-                .forEach((prod) => expect(prod.category.categoryId).to.not.equal(20));
+                .forEach((prod) =>
+                    expect(prod.category.categoryId).to.not.equal(20),
+                );
         });
 
         it('should fail with the default category', async () => {

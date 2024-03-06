@@ -52,7 +52,11 @@ const createPurchaseHistoryQuery = () =>
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
         .leftJoin('RVPERSON', 'ITEMHISTORY.userid', 'RVPERSON.userid')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-        .leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
+        .leftJoin(
+            'SALDOHISTORY',
+            'ITEMHISTORY.saldhistid',
+            'SALDOHISTORY.saldhistid',
+        )
         .select(
             'ITEMHISTORY.itemhistid',
             'ITEMHISTORY.time',
@@ -81,7 +85,11 @@ const createPurchaseHistoryQuery = () =>
 
 const createDepositHistoryQuery = () =>
     knex('PERSONHIST')
-        .leftJoin('SALDOHISTORY', 'PERSONHIST.saldhistid', 'SALDOHISTORY.saldhistid')
+        .leftJoin(
+            'SALDOHISTORY',
+            'PERSONHIST.saldhistid',
+            'SALDOHISTORY.saldhistid',
+        )
         .leftJoin('RVPERSON', 'PERSONHIST.userid1', 'RVPERSON.userid')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(
@@ -115,7 +123,10 @@ module.exports.getPurchaseHistory = async () => {
 };
 
 module.exports.getUserPurchaseHistory = async (userId) => {
-    const data = await createPurchaseHistoryQuery().andWhere('ITEMHISTORY.userid', userId);
+    const data = await createPurchaseHistoryQuery().andWhere(
+        'ITEMHISTORY.userid',
+        userId,
+    );
 
     return data.map((row) => {
         return {
@@ -126,7 +137,10 @@ module.exports.getUserPurchaseHistory = async (userId) => {
 };
 
 module.exports.getProductPurchaseHistory = async (barcode) => {
-    const data = await createPurchaseHistoryQuery().andWhere('PRICE.barcode', barcode);
+    const data = await createPurchaseHistoryQuery().andWhere(
+        'PRICE.barcode',
+        barcode,
+    );
 
     return data.map((row) => {
         return {
@@ -137,7 +151,9 @@ module.exports.getProductPurchaseHistory = async (barcode) => {
 };
 
 module.exports.findPurchaseById = async (purchaseId) => {
-    const row = await createPurchaseHistoryQuery().andWhere('ITEMHISTORY.itemhistid', purchaseId).first();
+    const row = await createPurchaseHistoryQuery()
+        .andWhere('ITEMHISTORY.itemhistid', purchaseId)
+        .first();
 
     if (row !== undefined) {
         return {
@@ -162,13 +178,18 @@ module.exports.getDepositHistory = async () => {
 };
 
 module.exports.getUserDepositHistory = async (userId) => {
-    const data = await createDepositHistoryQuery().andWhere('PERSONHIST.userid1', userId);
+    const data = await createDepositHistoryQuery().andWhere(
+        'PERSONHIST.userid1',
+        userId,
+    );
 
     return data.map(rowToDeposit);
 };
 
 module.exports.findDepositById = async (depositId) => {
-    const row = await createDepositHistoryQuery().andWhere('PERSONHIST.pershistid', depositId).first();
+    const row = await createDepositHistoryQuery()
+        .andWhere('PERSONHIST.pershistid', depositId)
+        .first();
 
     if (row !== undefined) {
         return {

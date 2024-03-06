@@ -13,7 +13,10 @@ router.post('/', async (req, res) => {
     // Check if user, email exists
     const userByUsername = await userStore.findByUsername(username);
     if (userByUsername) {
-        logger.error('Failed to register new user, username %s was already taken', username);
+        logger.error(
+            'Failed to register new user, username %s was already taken',
+            username,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
             message: 'Username already in use.',
@@ -22,7 +25,10 @@ router.post('/', async (req, res) => {
     }
     const userByEmail = await userStore.findByEmail(email);
     if (userByEmail) {
-        logger.error('Failed to register new user, email %s was already taken', email);
+        logger.error(
+            'Failed to register new user, email %s was already taken',
+            email,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
             message: 'Email address already in use.',

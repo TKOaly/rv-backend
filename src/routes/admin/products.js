@@ -4,7 +4,8 @@ const authMiddleware = require('../authMiddleware');
 const productStore = require('../../db/productStore');
 const categoryStore = require('../../db/categoryStore');
 const logger = require('./../../logger');
-const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../../utils/objectUtils').deleteUndefinedFields;
 const historyStore = require('../../db/historyStore');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
@@ -18,7 +19,11 @@ router.param('barcode', async (req, res, next) => {
             message: `No product with barcode '${req.params.barcode}' found`,
         });
 
-        logger.error('User %s tried to access unknown product %s as admin', req.user.username, req.params.barcode);
+        logger.error(
+            'User %s tried to access unknown product %s as admin',
+            req.user.username,
+            req.params.barcode,
+        );
 
         return;
     }
@@ -63,12 +68,17 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     const user = req.user;
-    const { barcode, name, categoryId, weight, buyPrice, sellPrice, stock } = req.body;
+    const { barcode, name, categoryId, weight, buyPrice, sellPrice, stock } =
+        req.body;
 
     /* Checking if product already exists. */
     const existingProduct = await productStore.findByBarcode(barcode);
     if (existingProduct) {
-        logger.error('User %s failed to create new product, barcode %s was already taken', user.username, barcode);
+        logger.error(
+            'User %s failed to create new product, barcode %s was already taken',
+            user.username,
+            barcode,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
             message: 'Barcode already in use.',
@@ -79,7 +89,11 @@ router.post('/', async (req, res) => {
     /* Checking if category exists. */
     const existingCategory = await categoryStore.findById(categoryId);
     if (!existingCategory) {
-        logger.error('User %s tried to create product of unknown category %s', user.username, categoryId);
+        logger.error(
+            'User %s tried to create product of unknown category %s',
+            user.username,
+            categoryId,
+        );
         res.status(400).json({
             error_code: 'invalid_reference',
             message: 'Referenced category not found.',
@@ -249,17 +263,25 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
         buyPrice: req.product.buyPrice !== buyPrice ? buyPrice : undefined,
     };
 
-    const updatedProduct = await productStore.updateProduct(barcode, update, req.user.userId);
+    const updatedProduct = await productStore.updateProduct(
+        barcode,
+        update,
+        req.user.userId,
+    );
 
     if (update.sellPrice !== undefined || update.buyPrice !== undefined) {
         const changes = [];
 
         if (update.sellPrice !== undefined) {
-            changes.push(`sellPrice from ${req.product.sellPrice} to ${update.sellPrice}`);
+            changes.push(
+                `sellPrice from ${req.product.sellPrice} to ${update.sellPrice}`,
+            );
         }
 
         if (update.sellPrice !== undefined) {
-            changes.push(`buyPrice from ${req.product.buyPrice} to ${update.buyPrice}`);
+            changes.push(
+                `buyPrice from ${req.product.buyPrice} to ${update.buyPrice}`,
+            );
         }
 
         logger.info(

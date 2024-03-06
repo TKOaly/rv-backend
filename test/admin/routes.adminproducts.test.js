@@ -180,7 +180,8 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(200);
 
-            const updatedProduct = await productStore.findByBarcode('5053990123506');
+            const updatedProduct =
+                await productStore.findByBarcode('5053990123506');
             expect(updatedProduct).to.exist;
             expect(updatedProduct.name).to.equal('Koalan lihaa');
             expect(updatedProduct.category.categoryId).to.equal(24);
@@ -197,7 +198,8 @@ describe('routes: admin products', () => {
 
             expect(res.status).to.equal(200);
 
-            const updatedProduct = await productStore.findByBarcode('5053990123506');
+            const updatedProduct =
+                await productStore.findByBarcode('5053990123506');
             expect(updatedProduct).to.exist;
             expect(updatedProduct.buyPrice).to.equal(5000);
         });
@@ -300,7 +302,11 @@ describe('routes: admin products', () => {
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
-            expect(listing.body.products.find((item) => item.barcode === '5053990123506')).to.be.an('undefined');
+            expect(
+                listing.body.products.find(
+                    (item) => item.barcode === '5053990123506',
+                ),
+            ).to.be.an('undefined');
         });
 
         it('should prevent the item from being purchased', async () => {
@@ -354,7 +360,10 @@ describe('routes: admin products', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${missingField} is not defined`,
+                );
             }
 
             for (const negativeField in validRequest) {
@@ -409,7 +418,8 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(pre_query.status).to.equal(200);
-            const { buyPrice: initialBuyPrice, sellPrice: initialSellPrice } = pre_query.body.product;
+            const { buyPrice: initialBuyPrice, sellPrice: initialSellPrice } =
+                pre_query.body.product;
 
             const res = await chai
                 .request(server)
@@ -429,8 +439,12 @@ describe('routes: admin products', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(post_query.status).to.equal(200);
-            expect(post_query.body.product.sellPrice).to.equal(initialSellPrice + 1);
-            expect(post_query.body.product.buyPrice).to.equal(initialBuyPrice + 1);
+            expect(post_query.body.product.sellPrice).to.equal(
+                initialSellPrice + 1,
+            );
+            expect(post_query.body.product.buyPrice).to.equal(
+                initialBuyPrice + 1,
+            );
         });
     });
 

@@ -3,7 +3,10 @@ const userStore = require('../db/userStore');
 const verifyRole = require('./authUtils').verifyRole;
 const logger = require('./../logger');
 
-const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRET) => {
+const authMiddleware = (
+    requiredRole = null,
+    tokenSecret = process.env.JWT_SECRET,
+) => {
     return async (req, res, next) => {
         const authHeader = req.get('Authorization');
         let userId = null;
@@ -36,7 +39,12 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
                         req.user = user;
                         next();
                     } else {
-                        logger.error('User %s is not authorized for %s %s', user.username, req.method, req.originalUrl);
+                        logger.error(
+                            'User %s is not authorized for %s %s',
+                            user.username,
+                            req.method,
+                            req.originalUrl,
+                        );
                         res.status(403).json({
                             error_code: 'not_authorized',
                             message: 'Not authorized',
@@ -44,14 +52,21 @@ const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRE
                     }
                 } else {
                     // token contains nonexistent user or no roles
-                    logger.error('Invalid authorization token (token contains nonexistent user or no roles)');
+                    logger.error(
+                        'Invalid authorization token (token contains nonexistent user or no roles)',
+                    );
                     res.status(401).json({
                         error_code: 'invalid_token',
                         message: 'Invalid authorization token',
                     });
                 }
             } catch (error) {
-                logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
+                logger.error(
+                    'Error at %s %s: %s',
+                    req.method,
+                    req.originalUrl,
+                    error,
+                );
                 res.status(500).json({
                     error_code: 'internal_error',
                     message: 'Internal error',

@@ -1,6 +1,7 @@
 const knex = require('./knex');
 const bcrypt = require('bcrypt');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
 module.exports.RFID_SALT = RFID_SALT;
 
@@ -152,10 +153,17 @@ module.exports.updateUser = async (userId, userData) => {
             rvpersonFields.rfid = bcrypt.hashSync(userData.rfid, RFID_SALT);
         }
         if (userData.role !== undefined) {
-            const roleRow = await knex('ROLE').transacting(trx).select('roleid').where({ role: userData.role }).first();
+            const roleRow = await knex('ROLE')
+                .transacting(trx)
+                .select('roleid')
+                .where({ role: userData.role })
+                .first();
             rvpersonFields.roleid = roleRow.roleid;
         }
-        await knex('RVPERSON').transacting(trx).update(rvpersonFields).where({ userid: userId });
+        await knex('RVPERSON')
+            .transacting(trx)
+            .update(rvpersonFields)
+            .where({ userid: userId });
 
         const userRow = await knex('RVPERSON')
             .transacting(trx)

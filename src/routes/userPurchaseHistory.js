@@ -10,7 +10,9 @@ router.get('/', async (req, res) => {
     const user = req.user;
 
     try {
-        const purchases = await historyStore.getUserPurchaseHistory(user.userId);
+        const purchases = await historyStore.getUserPurchaseHistory(
+            user.userId,
+        );
         const mappedPurchases = purchases.map((purchase) => {
             return {
                 purchaseId: purchase.purchaseId,
@@ -53,7 +55,11 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
 
         /* The ID may not be used for any purchase or may be used for a purchase of another user. */
         if (!purchase || purchase.user.userId !== user.userId) {
-            logger.error('User %s tried to fetch unknown purchase %s', user.username, purchaseId);
+            logger.error(
+                'User %s tried to fetch unknown purchase %s',
+                user.username,
+                purchaseId,
+            );
             res.status(404).json({
                 error_code: 'not_found',
                 message: 'Purchase event does not exist',

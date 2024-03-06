@@ -1,7 +1,12 @@
 exports.up = async (knex) => {
     const itemhistory = await knex('ITEMHISTORY')
         .leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
-        .select('ITEMHISTORY.itemhistid', 'ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice')
+        .select(
+            'ITEMHISTORY.itemhistid',
+            'ITEMHISTORY.time',
+            'ITEMHISTORY.userid',
+            'PRICE.sellprice',
+        )
         .where('ITEMHISTORY.actionid', 5)
         .orderBy(['ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice']);
     const saldohistory = await knex('SALDOHISTORY')
@@ -76,17 +81,24 @@ exports.up = async (knex) => {
          * deposit with the same time, userid and saldo difference, so the saldo events are only iterated so far as the
          * item event array length. */
         for (let i = 0; i < multibuyItemEvents.length; i++) {
-            multibuyItemEvents[i].saldhistid = multibuySaldoEvents[i].saldhistid;
+            multibuyItemEvents[i].saldhistid =
+                multibuySaldoEvents[i].saldhistid;
         }
     }
 
     await knex.schema.table('ITEMHISTORY', (table) => {
-        table.integer('saldhistid').references('saldhistid').inTable('SALDOHISTORY').defaultTo(null);
+        table
+            .integer('saldhistid')
+            .references('saldhistid')
+            .inTable('SALDOHISTORY')
+            .defaultTo(null);
     });
 
     /* This might take really long time, optimizations needed. */
     for (const itemEvent of itemhistory) {
-        await knex('ITEMHISTORY').update('saldhistid', itemEvent.saldhistid).where('itemhistid', itemEvent.itemhistid);
+        await knex('ITEMHISTORY')
+            .update('saldhistid', itemEvent.saldhistid)
+            .where('itemhistid', itemEvent.itemhistid);
     }
 };
 

@@ -6,7 +6,9 @@ exports.up = async (knex) => {
                 .dateTime('time')
                 .notNullable()
                 .index()
-                .comment('When item properties changed (buy-transactions NOT recorded here)');
+                .comment(
+                    'When item properties changed (buy-transactions NOT recorded here)',
+                );
             table.integer('count').defaultTo(null);
             table
                 .integer('actionid')
@@ -33,7 +35,9 @@ exports.up = async (knex) => {
                 .integer('priceid1')
                 .notNullable()
                 .unsigned()
-                .comment('Reference to currently related price or priceid that is obsoleted')
+                .comment(
+                    'Reference to currently related price or priceid that is obsoleted',
+                )
                 .references('priceid')
                 .inTable('PRICE');
             table
@@ -49,7 +53,11 @@ exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('SALDOHISTORY'))) {
         await knex.schema.createTable('SALDOHISTORY', (table) => {
             table.increments('saldhistid').primary();
-            table.integer('userid').notNullable().references('userid').inTable('RVPERSON');
+            table
+                .integer('userid')
+                .notNullable()
+                .references('userid')
+                .inTable('RVPERSON');
             table.dateTime('time').notNullable().index();
             table.integer('saldo').index();
             table.integer('difference').notNullable();
@@ -59,7 +67,9 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        await knex.schema.dropTableIfExists('ITEMHISTORY').dropTableIfExists('SALDOHISTORY');
+        await knex.schema
+            .dropTableIfExists('ITEMHISTORY')
+            .dropTableIfExists('SALDOHISTORY');
     } else {
         throw new Error('dont drop stuff in production');
     }

@@ -2,16 +2,27 @@ exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('PRICE'))) {
         await knex.schema.createTable('PRICE', (table) => {
             table.increments('priceid').primary().comment('Price ID');
-            table.string('barcode').notNullable().index().comment('Barcode associated with some item and its price');
-            table.integer('count').notNullable().comment('How many items of this price we have on stock');
+            table
+                .string('barcode')
+                .notNullable()
+                .index()
+                .comment('Barcode associated with some item and its price');
+            table
+                .integer('count')
+                .notNullable()
+                .comment('How many items of this price we have on stock');
             table
                 .integer('buyprice')
                 .notNullable()
-                .comment('Buy price, possible negative, cents (or other indivisible units of money)');
+                .comment(
+                    'Buy price, possible negative, cents (or other indivisible units of money)',
+                );
             table
                 .integer('sellprice')
                 .notNullable()
-                .comment('Sell price, possibly negative, cents (or other indivisible units of money)');
+                .comment(
+                    'Sell price, possibly negative, cents (or other indivisible units of money)',
+                );
             table
                 .integer('itemid')
                 .unsigned()

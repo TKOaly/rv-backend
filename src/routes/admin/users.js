@@ -16,7 +16,11 @@ router.param('userId', async (req, res, next) => {
             message: `No user with id '${req.params.userId}' found`,
         });
 
-        logger.error('User %s tried to access unknown user %s as admin', req.user.username, req.params.userId);
+        logger.error(
+            'User %s tried to access unknown user %s as admin',
+            req.user.username,
+            req.params.userId,
+        );
 
         return;
     }
@@ -55,7 +59,11 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:userId(\\d+)', async (req, res) => {
-    logger.info('User %s fetched user %s as admin', req.user.username, req.routeUser.userId);
+    logger.info(
+        'User %s fetched user %s as admin',
+        req.user.username,
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
         user: {
@@ -72,9 +80,16 @@ router.get('/:userId(\\d+)', async (req, res) => {
 router.post('/:userId(\\d+)/changeRole', async (req, res) => {
     const role = req.body.role;
 
-    const updatedUser = await userStore.updateUser(req.routeUser.userId, { role });
+    const updatedUser = await userStore.updateUser(req.routeUser.userId, {
+        role,
+    });
 
-    logger.info('User %s changed role of user %s to role %s', req.user.username, req.routeUser.userId, role);
+    logger.info(
+        'User %s changed role of user %s to role %s',
+        req.user.username,
+        req.routeUser.userId,
+        role,
+    );
 
     res.status(200).json({
         role: updatedUser.role,
@@ -82,7 +97,9 @@ router.post('/:userId(\\d+)/changeRole', async (req, res) => {
 });
 
 router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
-    const purchases = await historyStore.getUserPurchaseHistory(req.routeUser.userId);
+    const purchases = await historyStore.getUserPurchaseHistory(
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
         purchases,
@@ -90,7 +107,9 @@ router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
 });
 
 router.get('/:userId(\\d+)/depositHistory', async (req, res) => {
-    const history = await historyStore.getUserDepositHistory(req.routeUser.userId);
+    const history = await historyStore.getUserDepositHistory(
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
         deposits: history,

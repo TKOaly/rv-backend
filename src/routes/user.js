@@ -3,7 +3,8 @@ const router = express.Router();
 const userStore = require('../db/userStore');
 const authMiddleware = require('./authMiddleware');
 const logger = require('../logger');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 router.post('/user_exists', async (req, res) => {
     const username = req.body.username;
@@ -44,7 +45,11 @@ router.patch('/', async (req, res) => {
     if (username !== undefined) {
         const userByUsername = await userStore.findByUsername(username);
         if (userByUsername) {
-            logger.error('User %s tried to change username to %s but it was taken', user.username, username);
+            logger.error(
+                'User %s tried to change username to %s but it was taken',
+                user.username,
+                username,
+            );
             res.status(409).json({
                 error_code: 'identifier_taken',
                 message: 'Username already in use.',
@@ -71,7 +76,11 @@ router.patch('/', async (req, res) => {
 
     const updatedUser = await userStore.updateUser(
         user.userId,
-        deleteUndefinedFields({ username: username, fullName: fullName, email: email }),
+        deleteUndefinedFields({
+            username: username,
+            fullName: fullName,
+            email: email,
+        }),
     );
 
     logger.info(

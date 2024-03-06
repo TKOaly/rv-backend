@@ -56,7 +56,11 @@ module.exports.positiveInteger = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
-            if (typeof value === 'number' && Number.isInteger(value) && value > 0) {
+            if (
+                typeof value === 'number' &&
+                Number.isInteger(value) &&
+                value > 0
+            ) {
                 return [];
             } else {
                 return [fieldname + ' should be a positive integer'];
@@ -69,7 +73,11 @@ module.exports.nonNegativeInteger = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
-            if (typeof value === 'number' && Number.isInteger(value) && value >= 0) {
+            if (
+                typeof value === 'number' &&
+                Number.isInteger(value) &&
+                value >= 0
+            ) {
                 return [];
             } else {
                 return [fieldname + ' should be a non-negative integer'];
@@ -83,7 +91,9 @@ module.exports.objectWithFields = (fieldname, fieldValidators) => {
         field: fieldname,
         validator: (value) => {
             if (typeof value === 'object' && value !== null) {
-                return fieldValidator.validateObject(value, fieldValidators).map((err) => fieldname + ' ' + err);
+                return fieldValidator
+                    .validateObject(value, fieldValidators)
+                    .map((err) => fieldname + ' ' + err);
             } else {
                 return [fieldname + ' should be an object'];
             }

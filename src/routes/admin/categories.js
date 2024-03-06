@@ -3,7 +3,10 @@ const router = express.Router();
 const authMiddleware = require('../authMiddleware');
 const categoryStore = require('../../db/categoryStore');
 const logger = require('../../logger');
-const { DEFAULT_PRODUCT_CATEGORY, getPreference } = require('../../db/preferences');
+const {
+    DEFAULT_PRODUCT_CATEGORY,
+    getPreference,
+} = require('../../db/preferences');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -59,7 +62,11 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
     const category = await categoryStore.findById(categoryId);
 
     if (!category) {
-        logger.error('User %s tried to fetch unknown category %s as admin', user.username, categoryId);
+        logger.error(
+            'User %s tried to fetch unknown category %s as admin',
+            user.username,
+            categoryId,
+        );
         res.status(404).json({
             error_code: 'not_found',
             message: 'Category does not exist',
@@ -67,7 +74,11 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         return;
     }
 
-    logger.info('User %s fetched category %s as admin', user.username, categoryId);
+    logger.info(
+        'User %s fetched category %s as admin',
+        user.username,
+        categoryId,
+    );
     res.status(200).json({
         category: {
             categoryId: category.categoryId,
@@ -84,7 +95,11 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
     /* Checking if category exists. */
     const existingCategory = await categoryStore.findById(categoryId);
     if (!existingCategory) {
-        logger.error('User %s tried to modify data of unknown category %s', user.username, categoryId);
+        logger.error(
+            'User %s tried to modify data of unknown category %s',
+            user.username,
+            categoryId,
+        );
         res.status(404).json({
             error_code: 'not_found',
             message: 'Category does not exist.',
@@ -92,7 +107,10 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
         return;
     }
 
-    const updatedCategory = await categoryStore.updateCategory(categoryId, description);
+    const updatedCategory = await categoryStore.updateCategory(
+        categoryId,
+        description,
+    );
 
     logger.info(
         'User %s modified category data of category %s to {description: %s}',
@@ -130,7 +148,10 @@ router.delete('/:categoryId', async (req, res) => {
         return;
     }
 
-    const result = await categoryStore.deleteCategory(req.params.categoryId, defaultCategory.categoryId);
+    const result = await categoryStore.deleteCategory(
+        req.params.categoryId,
+        defaultCategory.categoryId,
+    );
 
     if (result === undefined) {
         res.status(404).json({

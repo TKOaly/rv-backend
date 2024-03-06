@@ -1,5 +1,6 @@
 const knex = require('./knex');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 const rowToBox = (row) => {
     if (row !== undefined) {
@@ -133,7 +134,10 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
             itemcount: boxData.itemsPerBox,
         });
 
-        await knex('RVBOX').transacting(trx).update(rvboxFields).where({ barcode: boxBarcode });
+        await knex('RVBOX')
+            .transacting(trx)
+            .update(rvboxFields)
+            .where({ barcode: boxBarcode });
 
         const boxRow = await knex('RVBOX')
             .transacting(trx)
@@ -185,7 +189,10 @@ module.exports.deleteBox = async (boxBarcode) => {
             return undefined;
         }
 
-        await knex('RVBOX').transacting(trx).where({ barcode: boxBarcode }).delete();
+        await knex('RVBOX')
+            .transacting(trx)
+            .where({ barcode: boxBarcode })
+            .delete();
 
         return rowToBox(box);
     });
@@ -208,7 +215,10 @@ module.exports.buyIn = async (boxBarcode, boxCount) => {
 
         const newCount = count + itemcount * boxCount;
 
-        await knex('PRICE').transacting(trx).select({ priceid, endtime: null }).update({ count: newCount });
+        await knex('PRICE')
+            .transacting(trx)
+            .select({ priceid, endtime: null })
+            .update({ count: newCount });
 
         return newCount;
     });

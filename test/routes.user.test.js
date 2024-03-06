@@ -27,23 +27,32 @@ describe('routes: user', () => {
 
     describe('Checking user existence', () => {
         it('should return true if user exists', async () => {
-            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
-                username: 'admin_user',
-            });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    username: 'admin_user',
+                });
             expect(res.status).to.equal(200);
             expect(res.body.exists).to.equal(true);
         });
         it('should return false if user does not exist', async () => {
-            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
-                username: 'admin_user2',
-            });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    username: 'admin_user2',
+                });
             expect(res.status).to.equal(200);
             expect(res.body.exists).to.equal(false);
         });
         it('invalid request should result in a 400 bad request response', async () => {
-            const res = await chai.request(server).post('/api/v1/user/user_exists').send({
-                garbage: 'garbage',
-            });
+            const res = await chai
+                .request(server)
+                .post('/api/v1/user/user_exists')
+                .send({
+                    garbage: 'garbage',
+                });
             expect(res.status).to.equal(400);
         });
     });
@@ -156,7 +165,9 @@ describe('routes: user', () => {
 
         it('should create an event into deposit history', async () => {
             const user = await userStore.findByUsername('normal_user');
-            const oldDepositHistory = await historyStore.getUserDepositHistory(user.userId);
+            const oldDepositHistory = await historyStore.getUserDepositHistory(
+                user.userId,
+            );
 
             const res = await chai
                 .request(server)
@@ -168,9 +179,13 @@ describe('routes: user', () => {
 
             expect(res.status).to.equal(200);
 
-            const newDepositHistory = await historyStore.getUserDepositHistory(user.userId);
+            const newDepositHistory = await historyStore.getUserDepositHistory(
+                user.userId,
+            );
 
-            expect(newDepositHistory.length).to.equal(oldDepositHistory.length + 1);
+            expect(newDepositHistory.length).to.equal(
+                oldDepositHistory.length + 1,
+            );
 
             const depositEvent = newDepositHistory[0];
 
@@ -204,7 +219,10 @@ describe('routes: user', () => {
             expect(res.status).to.equal(204);
 
             const user = await userStore.findById(1);
-            const passwordMatches = await userStore.verifyPassword('abcdefg', user.passwordHash);
+            const passwordMatches = await userStore.verifyPassword(
+                'abcdefg',
+                user.passwordHash,
+            );
 
             expect(passwordMatches).to.be.true;
         });

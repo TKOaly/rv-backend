@@ -299,7 +299,10 @@ describe('routes: admin boxes', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${missingField} is not defined`,
+                );
             }
 
             for (const negativeField in validFields) {
@@ -312,7 +315,10 @@ describe('routes: admin boxes', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${negativeField} is negative`,
+                );
             }
         });
 
@@ -346,7 +352,9 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(post_res.status).to.equal(200);
-            expect(post_res.body.box.product.stock).to.equal(stock + itemsPerBox);
+            expect(post_res.body.box.product.stock).to.equal(
+                stock + itemsPerBox,
+            );
         });
 
         it('should update the sell and buy prices of the product', async () => {
@@ -381,7 +389,10 @@ describe('routes: admin boxes', () => {
                 sellPrice + 1,
                 "product's sellPrice should have changed",
             );
-            expect(post_res.body.box.product.buyPrice).to.equal(buyPrice + 1, "product's buyPrice should have changed");
+            expect(post_res.body.box.product.buyPrice).to.equal(
+                buyPrice + 1,
+                "product's buyPrice should have changed",
+            );
         });
     });
 });

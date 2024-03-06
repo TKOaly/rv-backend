@@ -13,7 +13,11 @@ exports.up = async (knex) => {
         await knex.schema.createTable('RVPERSON', (table) => {
             table.increments('userid').primary();
             table.dateTime('createdate').notNullable();
-            table.integer('roleid').notNullable().references('roleid').inTable('ROLE');
+            table
+                .integer('roleid')
+                .notNullable()
+                .references('roleid')
+                .inTable('ROLE');
             table.string('name', 64).notNullable().index();
             table.string('univident', 128).notNullable();
             table.string('pass', 100).notNullable();
@@ -27,7 +31,9 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        await knex.schema.dropTableIfExists('RVPERSON').dropTableIfExists('ROLE');
+        await knex.schema
+            .dropTableIfExists('RVPERSON')
+            .dropTableIfExists('ROLE');
     } else {
         throw new Error('dont drop stuff in production');
     }
