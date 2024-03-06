@@ -42,6 +42,8 @@ components:
       enum:
         - ADMIN
         - USER1
+        - USER2
+        - INACTIVE
       example: USER
     Product:
       type: object
