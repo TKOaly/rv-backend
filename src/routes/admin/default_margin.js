@@ -1,6 +1,10 @@
 const express = require('express');
 const authMiddleware = require('../authMiddleware');
-const { GLOBAL_DEFAULT_MARGIN, getPreference, setPreference } = require('../../db/preferences');
+const {
+    GLOBAL_DEFAULT_MARGIN,
+    getPreference,
+    setPreference,
+} = require('../../db/preferences');
 
 const router = express.Router();
 

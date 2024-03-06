@@ -16,18 +16,18 @@ router.get('/', async (req, res) => {
             name: product.name,
             category: {
                 categoryId: product.category.categoryId,
-                description: product.category.description
+                description: product.category.description,
             },
             weight: product.weight,
             sellPrice: product.sellPrice,
-            stock: product.stock
+            stock: product.stock,
         };
     });
 
     logger.info('User %s fetched products', user.username);
 
     res.status(200).json({
-        products: mappedProds
+        products: mappedProds,
     });
 });
 
@@ -38,11 +38,15 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
     const product = await productStore.findByBarcode(barcode);
 
     if (!product) {
-        logger.error('User %s tried to fetch unknown product %s', user.username, barcode);
+        logger.error(
+            'User %s tried to fetch unknown product %s',
+            user.username,
+            barcode,
+        );
 
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Product does not exist'
+            message: 'Product does not exist',
         });
 
         return;
@@ -56,12 +60,12 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
             name: product.name,
             category: {
                 categoryId: product.category.categoryId,
-                description: product.category.description
+                description: product.category.description,
             },
             weight: product.weight,
             sellPrice: product.sellPrice,
-            stock: product.stock
-        }
+            stock: product.stock,
+        },
     });
 });
 
@@ -69,8 +73,12 @@ router.post('/search', async (req, res) => {
     const user = req.user;
     const query = req.body.query;
     const result = await productStore.searchProducts(query);
-    logger.info('User %s searched for products with query: %s', user.username, query);
-    res.status(200).json({products: result});
+    logger.info(
+        'User %s searched for products with query: %s',
+        user.username,
+        query,
+    );
+    res.status(200).json({ products: result });
 });
 
 router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
@@ -84,9 +92,16 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
     if (product) {
         /* User can always empty his account completely, but resulting negative saldo should be minimized. This is
          * achieved by allowing only a single product to be bought on credit. */
-        if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * (count - 1)) {
+        if (
+            product.sellPrice <= 0 ||
+            user.moneyBalance > product.sellPrice * (count - 1)
+        ) {
             // record purchase
-            const purchases = await productStore.recordPurchase(barcode, user.userId, count);
+            const purchases = await productStore.recordPurchase(
+                barcode,
+                user.userId,
+                count,
+            );
 
             const newBalance = purchases[purchases.length - 1].balanceAfter;
             const newStock = purchases[purchases.length - 1].stockAfter;
@@ -97,36 +112,45 @@ router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
                     time: purchase.time,
                     price: purchase.price,
                     balanceAfter: purchase.balanceAfter,
-                    stockAfter: purchase.stockAfter
+                    stockAfter: purchase.stockAfter,
                 };
             });
 
             // all done, respond with success
-            logger.info('User %s purchased %s x product %s', user.username, count, barcode);
+            logger.info(
+                'User %s purchased %s x product %s',
+                user.username,
+                count,
+                barcode,
+            );
             res.status(200).json({
                 accountBalance: newBalance,
                 productStock: newStock,
-                purchases: mappedPurchases
+                purchases: mappedPurchases,
             });
         } else {
             // user doesn't have enough money
             logger.error(
-                'User %s tried to purchase %s x product %s but didn\'t have enough money.',
+                "User %s tried to purchase %s x product %s but didn't have enough money.",
                 user.username,
                 count,
-                barcode
+                barcode,
             );
             res.status(403).json({
                 error_code: 'insufficient_funds',
-                message: 'Insufficient funds'
+                message: 'Insufficient funds',
             });
         }
     } else {
         // unknown product, no valid price or out of stock
-        logger.error('User %s tried to purchase unknown product %s', user.username, barcode);
+        logger.error(
+            'User %s tried to purchase unknown product %s',
+            user.username,
+            barcode,
+        );
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Product not found'
+            message: 'Product not found',
         });
     }
 });

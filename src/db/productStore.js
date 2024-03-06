@@ -1,5 +1,6 @@
 const knex = require('./knex');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 const rowToProduct = (row) => {
     if (row !== undefined) {
@@ -8,12 +9,12 @@ const rowToProduct = (row) => {
             name: row.descr,
             category: {
                 categoryId: row.pgrpid,
-                description: row.pgrpdescr
+                description: row.pgrpdescr,
             },
             weight: row.weight,
             buyPrice: row.buyprice,
             sellPrice: row.sellprice,
-            stock: row.count
+            stock: row.count,
         };
     } else {
         return undefined;
@@ -35,7 +36,7 @@ module.exports.searchProducts = async (query) => {
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .whereILike('RVITEM.descr', `%${query}%`)
         .orWhereILike('PRICE.barcode', `%${query}%`);
@@ -57,7 +58,7 @@ module.exports.getProducts = async () => {
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where({ 'PRICE.endtime': null });
 
@@ -79,7 +80,7 @@ module.exports.findByBarcode = async (barcode) => {
             'PRICE.barcode',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where('PRICE.barcode', barcode)
         .andWhere('PRICE.endtime', null)
@@ -102,22 +103,20 @@ module.exports.insertProduct = async (productData, userId) => {
             .insert({
                 pgrpid: productData.categoryId,
                 descr: productData.name,
-                weight: productData.weight
+                weight: productData.weight,
             })
             .returning(['itemid']);
 
-        await knex('PRICE')
-            .transacting(trx)
-            .insert({
-                barcode: productData.barcode,
-                count: productData.stock,
-                buyprice: productData.buyPrice,
-                sellprice: productData.sellPrice,
-                itemid: insertedRows[0].itemid,
-                userid: userId,
-                starttime: new Date(),
-                endtime: null
-            });
+        await knex('PRICE').transacting(trx).insert({
+            barcode: productData.barcode,
+            count: productData.stock,
+            buyprice: productData.buyPrice,
+            sellprice: productData.sellPrice,
+            itemid: insertedRows[0].itemid,
+            userid: userId,
+            starttime: new Date(),
+            endtime: null,
+        });
 
         const categoryRow = await knex('PRODGROUP')
             .transacting(trx)
@@ -130,12 +129,12 @@ module.exports.insertProduct = async (productData, userId) => {
             name: productData.name,
             category: {
                 categoryId: productData.categoryId,
-                description: categoryRow.descr
+                description: categoryRow.descr,
             },
             weight: productData.weight,
             buyPrice: productData.buyPrice,
             sellPrice: productData.sellPrice,
-            stock: productData.stock
+            stock: productData.stock,
         };
     });
 };
@@ -149,7 +148,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
         const rvitemFields = deleteUndefinedFields({
             pgrpid: productData.categoryId,
             descr: productData.name,
-            weight: productData.weight
+            weight: productData.weight,
         });
         if (Object.keys(rvitemFields).length > 0) {
             const priceRow = await knex('PRICE')
@@ -167,7 +166,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
         const priceFields = deleteUndefinedFields({
             count: productData.stock,
             buyprice: productData.buyPrice,
-            sellprice: productData.sellPrice
+            sellprice: productData.sellPrice,
         });
         if (Object.keys(priceFields).length > 0) {
             if (priceFields.sellPrice === undefined) {
@@ -183,7 +182,13 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                     .transacting(trx)
                     .update({ endtime: now })
                     .where({ barcode: barcode, endtime: null })
-                    .returning(['barcode', 'count', 'buyprice', 'sellprice', 'itemid']);
+                    .returning([
+                        'barcode',
+                        'count',
+                        'buyprice',
+                        'sellprice',
+                        'itemid',
+                    ]);
 
                 await knex('PRICE')
                     .transacting(trx)
@@ -197,7 +202,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                         starttime: now,
                         endtime: null,
 
-                        ...priceFields
+                        ...priceFields,
                     });
             }
         }
@@ -214,7 +219,7 @@ module.exports.updateProduct = async (barcode, productData, userId) => {
                 'PRICE.barcode',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where('PRICE.barcode', barcode)
             .andWhere('PRICE.endtime', null)
@@ -266,7 +271,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
                     userid: userId,
                     time: now,
                     saldo: balance,
-                    difference: -price
+                    difference: -price,
                 })
                 .returning(['saldhistid']);
             const insertedItemhistRows = await knex('ITEMHISTORY')
@@ -278,7 +283,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
                     itemid: productId,
                     userid: userId,
                     priceid1: priceId,
-                    saldhistid: insertedSaldhistRows[0].saldhistid
+                    saldhistid: insertedSaldhistRows[0].saldhistid,
                 })
                 .returning(['itemhistid']);
 
@@ -288,7 +293,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
                 time: now.toISOString(),
                 price: price,
                 balanceAfter: balance,
-                stockAfter: stock
+                stockAfter: stock,
             });
         }
 
@@ -299,6 +304,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
 module.exports.deleteProduct = async (barcode) => {
     return await knex.transaction(async (trx) => {
         const row = await knex('PRICE')
+            .transacting(trx)
             .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
             .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
             .select(
@@ -310,7 +316,7 @@ module.exports.deleteProduct = async (barcode) => {
                 'PRICE.buyprice',
                 'PRICE.sellprice',
                 'PRICE.count',
-                'RVITEM.itemid'
+                'RVITEM.itemid',
             )
             .where('PRICE.barcode', barcode)
             .andWhere('PRICE.endtime', null)
@@ -321,6 +327,7 @@ module.exports.deleteProduct = async (barcode) => {
         }
 
         await knex('RVITEM')
+            .transacting(trx)
             .where({ itemid: row.itemid })
             .update({ deleted: true });
 
@@ -332,7 +339,7 @@ module.exports.buyIn = async (barcode, count) => {
     const row = await knex('PRICE')
         .where({ barcode })
         .increment({ count })
-        .returning([ 'count' ]);
+        .returning(['count']);
 
     if (row.length === 0) {
         return undefined;
