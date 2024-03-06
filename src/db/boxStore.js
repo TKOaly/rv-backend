@@ -13,7 +13,6 @@ const rowToBox = (row) => {
                     categoryId: row.pgrpid,
                     description: row.pgrpdescr
                 },
-                weight: row.weight,
                 buyPrice: row.buyprice,
                 sellPrice: row.sellprice,
                 stock: row.count
@@ -39,7 +38,6 @@ module.exports.getBoxes = async () => {
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.buyprice',
             'PRICE.sellprice',
             'PRICE.count'
@@ -63,7 +61,6 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.buyprice',
             'PRICE.sellprice',
             'PRICE.count'
@@ -100,7 +97,6 @@ module.exports.insertBox = async (boxData) => {
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',
-                'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
                 'PRICE.count'
@@ -119,7 +115,6 @@ module.exports.insertBox = async (boxData) => {
                     categoryId: productRow.pgrpid,
                     description: productRow.pgrpdescr
                 },
-                weight: productRow.weight,
                 buyPrice: productRow.buyprice,
                 sellPrice: productRow.sellprice,
                 stock: productRow.count
@@ -152,7 +147,6 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',
-                'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
                 'PRICE.count'
@@ -178,7 +172,6 @@ module.exports.deleteBox = async (boxBarcode) => {
                 'RVITEM.descr',
                 'RVITEM.pgrpid',
                 'PRODGROUP.descr as pgrpdescr',
-                'RVITEM.weight',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
                 'PRICE.count'

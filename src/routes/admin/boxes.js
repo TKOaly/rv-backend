@@ -18,7 +18,6 @@ const mapDatabaseBoxToApiBox = (box) => ({
             categoryId: box.product.category.categoryId,
             description: box.product.category.description
         },
-        weight: box.product.weight,
         buyPrice: box.product.buyPrice,
         sellPrice: box.product.sellPrice,
         stock: box.product.stock

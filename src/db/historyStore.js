@@ -27,7 +27,6 @@ const rowToProduct = (row) => {
             categoryId: row.pgrpid,
             description: row.pgrpdescr
         },
-        weight: row.weight,
         buyPrice: row.buyprice,
         sellPrice: row.sellprice,
         stock: row.stock
@@ -60,7 +59,6 @@ const createPurchaseHistoryQuery = () =>
             'RVITEM.descr',
             'RVITEM.pgrpid',
             'PRODGROUP.descr as pgrpdescr',
-            'RVITEM.weight',
             'PRICE.barcode',
             'PRICE.sellprice',
             'PRICE.buyprice',
