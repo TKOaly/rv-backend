@@ -291,6 +291,7 @@ module.exports.recordPurchase = async (barcode, userId, count) => {
 module.exports.deleteProduct = async (barcode) => {
     return await knex.transaction(async (trx) => {
         const row = await knex('PRICE')
+            .transacting(trx)
             .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
             .leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
             .select(
@@ -312,7 +313,7 @@ module.exports.deleteProduct = async (barcode) => {
             return undefined;
         }
 
-        await knex('RVITEM').where({ itemid: row.itemid }).update({ deleted: true });
+        await knex('RVITEM').transacting(trx).where({ itemid: row.itemid }).update({ deleted: true });
 
         return rowToProduct(row);
     });

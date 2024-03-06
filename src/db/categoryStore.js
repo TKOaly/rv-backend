@@ -1,5 +1,4 @@
 const knex = require('./knex');
-const { DEFAULT_PRODUCT_CATEGORY, getPreference } = require('./preferences');
 
 const rowToCategory = (row) => {
     if (row !== undefined) {

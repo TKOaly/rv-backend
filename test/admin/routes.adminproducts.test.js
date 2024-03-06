@@ -275,7 +275,7 @@ describe('routes: admin products', () => {
         });
 
         it("should cause any requests for that product's information to fail", async () => {
-            const res = await chai
+            await chai
                 .request(server)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
