@@ -130,7 +130,6 @@ router.post('/changeRfid', async (req, res) => {
 
     await userStore.updateUser(user.userId, { rfid: rfid });
 
-    logger.info(rfid);
     logger.info('User %s changed rfid', user.username);
     res.status(204).end();
 });

@@ -9,6 +9,7 @@ const logger = require('./logger');
     const helmet = require('helmet');
     const app = express();
     const OpenApiValidator = require('express-openapi-validator');
+    const logger = require('./logger');
 
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
