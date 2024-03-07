@@ -56,8 +56,6 @@ module.exports.authenticateUser =
         const password = body.password;
 
         const user = await userStore.findByUsername(username);
-        logger.info(username);
-        logger.info(password);
         if (user) {
             if (
                 password != undefined &&

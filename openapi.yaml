@@ -42,6 +42,8 @@ components:
       enum:
         - ADMIN
         - USER1
+        - USER2
+        - INACTIVE
       example: USER
     Product:
       type: object
@@ -49,7 +51,6 @@ components:
         - barcode
         - name
         - category
-        - weight
         - sellPrice
         - stock
       properties: 
@@ -63,10 +64,6 @@ components:
           description: Human readable and user facing name of the product.
         category: 
           '$ref': '#/components/schemas/Category'
-        weight: 
-          type: integer
-          example: 370
-          description: Weight of the product in grams.
         sellPrice: 
           type: integer
           example: 310
@@ -1355,7 +1352,6 @@ paths:
                 - barcode
                 - name
                 - categoryId
-                - weight
                 - buyPrice
                 - sellPrice
                 - stock
@@ -1372,10 +1368,6 @@ paths:
                 categoryId: 
                   type: integer
                   example: 10
-                  minimum: 0
-                weight: 
-                  type: integer
-                  example: 350
                   minimum: 0
                 buyPrice: 
                   type: integer
@@ -1465,10 +1457,6 @@ paths:
                 categoryId: 
                   type: integer
                   example: 10
-                  minimum: 0
-                weight: 
-                  type: integer
-                  example: 350
                   minimum: 0
                 buyPrice: 
                   type: integer
