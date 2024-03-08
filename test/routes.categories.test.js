@@ -9,7 +9,7 @@ const jwt = require('../src/jwt/token');
 chai.use(chaiHttp);
 
 const token = jwt.sign({
-    userId: 1
+    userId: 1,
 });
 
 describe('routes: categories', () => {

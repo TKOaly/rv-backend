@@ -4,7 +4,8 @@ const authMiddleware = require('../authMiddleware');
 const boxStore = require('../../db/boxStore');
 const productStore = require('../../db/productStore');
 const logger = require('./../../logger');
-const deleteUndefinedFields = require('../../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../../utils/objectUtils').deleteUndefinedFields;
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -16,12 +17,12 @@ const mapDatabaseBoxToApiBox = (box) => ({
         name: box.product.name,
         category: {
             categoryId: box.product.category.categoryId,
-            description: box.product.category.description
+            description: box.product.category.description,
         },
         buyPrice: box.product.buyPrice,
         sellPrice: box.product.sellPrice,
-        stock: box.product.stock
-    }
+        stock: box.product.stock,
+    },
 });
 
 router.get('/', async (req, res) => {
@@ -33,13 +34,13 @@ router.get('/', async (req, res) => {
 
         logger.info('User %s fetched boxes as admin', user.username);
         res.status(200).json({
-            boxes: mappedBoxes
+            boxes: mappedBoxes,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -56,11 +57,11 @@ router.post('/', async (req, res) => {
         logger.error(
             'User %s failed to create new box, box barcode %s was already taken',
             user.username,
-            boxBarcode
+            boxBarcode,
         );
         res.status(409).json({
             error_code: 'identifier_taken',
-            message: 'Box barcode already in use.'
+            message: 'Box barcode already in use.',
         });
         return;
     }
@@ -68,10 +69,14 @@ router.post('/', async (req, res) => {
     /* Checking if product exists. */
     const existingProduct = await productStore.findByBarcode(productBarcode);
     if (!existingProduct) {
-        logger.error('User %s tried to create box of unknown product %s', user.username, productBarcode);
+        logger.error(
+            'User %s tried to create box of unknown product %s',
+            user.username,
+            productBarcode,
+        );
         res.status(400).json({
             error_code: 'invalid_reference',
-            message: 'Referenced product not found.'
+            message: 'Referenced product not found.',
         });
         return;
     }
@@ -79,7 +84,7 @@ router.post('/', async (req, res) => {
     const newBox = await boxStore.insertBox({
         boxBarcode,
         itemsPerBox,
-        productBarcode
+        productBarcode,
     });
 
     logger.info(
@@ -87,10 +92,10 @@ router.post('/', async (req, res) => {
         user.username,
         boxBarcode,
         itemsPerBox,
-        productBarcode
+        productBarcode,
     );
     res.status(201).json({
-        box: mapDatabaseBoxToApiBox(newBox)
+        box: mapDatabaseBoxToApiBox(newBox),
     });
 });
 
@@ -101,17 +106,21 @@ router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
     const box = await boxStore.findByBoxBarcode(boxBarcode);
 
     if (!box) {
-        logger.error('User %s tried to fetch unknown box %s as admin', user.username, boxBarcode);
+        logger.error(
+            'User %s tried to fetch unknown box %s as admin',
+            user.username,
+            boxBarcode,
+        );
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Box does not exist'
+            message: 'Box does not exist',
         });
         return;
     }
 
     logger.info('User %s fetched box %s as admin', user.username, boxBarcode);
     res.status(200).json({
-        box: mapDatabaseBoxToApiBox(box)
+        box: mapDatabaseBoxToApiBox(box),
     });
 });
 
@@ -124,27 +133,32 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
     /* Checking if box exists. */
     const existingBox = await boxStore.findByBoxBarcode(boxBarcode);
     if (!existingBox) {
-        logger.error('User %s tried to modify data of unknown box %s', user.username, boxBarcode);
+        logger.error(
+            'User %s tried to modify data of unknown box %s',
+            user.username,
+            boxBarcode,
+        );
         res.status(404).json({
             error_code: 'not_found',
-            message: 'Box does not exist.'
+            message: 'Box does not exist.',
         });
         return;
     }
 
     /* Checking if product exists. */
     if (productBarcode !== undefined) {
-        const existingProduct = await productStore.findByBarcode(productBarcode);
+        const existingProduct =
+            await productStore.findByBarcode(productBarcode);
         if (!existingProduct) {
             logger.error(
                 'User %s tried to modify product of box %s to unknown product %s',
                 user.username,
                 boxBarcode,
-                productBarcode
+                productBarcode,
             );
             res.status(400).json({
                 error_code: 'invalid_reference',
-                message: 'Referenced product not found.'
+                message: 'Referenced product not found.',
             });
             return;
         }
@@ -154,8 +168,8 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
         boxBarcode,
         deleteUndefinedFields({
             itemsPerBox,
-            productBarcode
-        })
+            productBarcode,
+        }),
     );
 
     logger.info(
@@ -163,11 +177,11 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
         user.username,
         boxBarcode,
         updatedBox.itemsPerBox,
-        updatedBox.product.barcode
+        updatedBox.product.barcode,
     );
 
     res.status(200).json({
-        box: mapDatabaseBoxToApiBox(updatedBox)
+        box: mapDatabaseBoxToApiBox(updatedBox),
     });
 });
 
@@ -177,7 +191,7 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
 
     if (deletedBox) {
         res.status(200).json({
-            deletedBox: mapDatabaseBoxToApiBox(deletedBox)
+            deletedBox: mapDatabaseBoxToApiBox(deletedBox),
         });
 
         logger.info(
@@ -185,18 +199,18 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
             req.user.username,
             boxBarcode,
             deletedBox.product.name,
-            deletedBox.product.barcode
+            deletedBox.product.barcode,
         );
     } else {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No box with barcode '${ boxBarcode }' found`
+            message: `No box with barcode '${boxBarcode}' found`,
         });
 
         logger.info(
-            'User %s tried to delete a non-existent box with barcode \'%s\'',
+            "User %s tried to delete a non-existent box with barcode '%s'",
             req.user.username,
-            boxBarcode
+            boxBarcode,
         );
     }
 });
@@ -210,7 +224,7 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
     if (box === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No box with barcode '${ boxBarcode }' found`
+            message: `No box with barcode '${boxBarcode}' found`,
         });
 
         return;
@@ -221,46 +235,55 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
     const stock = await boxStore.buyIn(boxBarcode, req.body.boxCount);
 
     logger.info(
-        'User %s bought in %d boxes (%s) - total of %d items of product \'%s\' (%s)',
+        "User %s bought in %d boxes (%s) - total of %d items of product '%s' (%s)",
         req.user.username,
         req.body.boxCount,
         boxBarcode,
         box.itemsPerBox * req.body.boxCount,
         box.product.name,
-        box.product.barcode
+        box.product.barcode,
     );
 
     const update = {
-        sellPrice: oldsellprice !== productSellPrice ? productSellPrice : undefined,
-        buyPrice: oldbuyprice !== productBuyPrice ? productBuyPrice : undefined
+        sellPrice:
+            oldsellprice !== productSellPrice ? productSellPrice : undefined,
+        buyPrice: oldbuyprice !== productBuyPrice ? productBuyPrice : undefined,
     };
 
-    await productStore.updateProduct(box.product.barcode, update, req.user.userId);
+    await productStore.updateProduct(
+        box.product.barcode,
+        update,
+        req.user.userId,
+    );
 
     if (update.sellPrice !== undefined || update.buyPrice !== undefined) {
         const changes = [];
 
         if (update.sellPrice !== undefined) {
-            changes.push(`sellPrice from ${box.product.sellPrice} to ${update.sellPrice}`);
+            changes.push(
+                `sellPrice from ${box.product.sellPrice} to ${update.sellPrice}`,
+            );
         }
 
         if (update.sellPrice !== undefined) {
-            changes.push(`buyPrice from ${box.product.buyPrice} to ${update.buyPrice}`);
+            changes.push(
+                `buyPrice from ${box.product.buyPrice} to ${update.buyPrice}`,
+            );
         }
 
         logger.info(
-            'User %s changed %s on product \'%s\' (%s)',
+            "User %s changed %s on product '%s' (%s)",
             req.user.username,
             changes.join(' and '),
             box.product.name,
-            box.product.barcode
+            box.product.barcode,
         );
     }
 
     res.status(200).json({
         productStock: stock,
         productBuyPrice: req.body.productBuyPrice,
-        productSellPrice: req.body.productSellPrice
+        productSellPrice: req.body.productSellPrice,
     });
 });
 

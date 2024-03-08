@@ -47,6 +47,6 @@ jobs:
                   JWT_SECRET: unsecure
                   JWT_ADMIN_SECRET: unsecure
             - name: Check formatting with eslint
-              run: npm run lint-js
+              run: npm run lint
             - name: Generate the code coverage report
               uses: codecov/codecov-action@v3

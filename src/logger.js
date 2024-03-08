@@ -11,15 +11,15 @@ const logger = createLogger({
             filename: 'logs/errors.log',
             level: 'error',
             format: combine(timestamp(), splat(), logFormat),
-            json: false
+            json: false,
         }),
         new transports.File({
             filename: 'logs/combined.log',
             level: 'info',
             format: combine(timestamp(), splat(), logFormat),
-            json: false
-        })
-    ]
+            json: false,
+        }),
+    ],
 });
 
 if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
@@ -27,8 +27,8 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
         new transports.Console({
             format: format.combine(splat(), format.simple()),
             colorize: true,
-            timestamp: true
-        })
+            timestamp: true,
+        }),
     );
 }
 

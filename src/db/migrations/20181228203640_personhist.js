@@ -2,10 +2,7 @@ exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('PERSONHIST'))) {
         await knex.schema.createTable('PERSONHIST', (table) => {
             table.increments('pershistid').primary();
-            table
-                .dateTime('time')
-                .notNullable()
-                .index();
+            table.dateTime('time').notNullable().index();
             table.string('ipaddress').defaultTo(null);
             table
                 .integer('actionid')

@@ -1,4 +1,3 @@
-
 exports.up = async (knex) => {
     await knex.raw('ALTER TABLE "PRODGROUP" RENAME TO "PRODGROUP_ALL"');
 
@@ -6,7 +5,9 @@ exports.up = async (knex) => {
         table.boolean('deleted').notNull().defaultTo(false);
     });
 
-    await knex.raw('CREATE VIEW "PRODGROUP" AS SELECT * FROM "PRODGROUP_ALL" WHERE deleted IS FALSE');
+    await knex.raw(
+        'CREATE VIEW "PRODGROUP" AS SELECT * FROM "PRODGROUP_ALL" WHERE deleted IS FALSE',
+    );
 };
 
 exports.down = async (knex) => {
