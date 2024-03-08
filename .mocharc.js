@@ -4,5 +4,5 @@ require('./test/mocha.env.js');
 
 module.exports = {
     recursive: true,
-    timeout: 10000
+    timeout: 10000,
 };

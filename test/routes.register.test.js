@@ -40,7 +40,7 @@ describe('routes: register', () => {
                     username: '',
                     password: 'test',
                     fullName: 'm.erkki',
-                    email: 'erkki@testi.com'
+                    email: 'erkki@testi.com',
                 });
 
             expect(res.status).to.equal(400);
@@ -55,7 +55,7 @@ describe('routes: register', () => {
                     username: 'test',
                     password: '',
                     fullName: 'm.erkki',
-                    email: 'erkki@testi.com'
+                    email: 'erkki@testi.com',
                 });
 
             expect(res.status).to.equal(400);
@@ -72,7 +72,7 @@ describe('routes: register', () => {
                     username: 'normal_user',
                     password: 'test',
                     fullName: 'm.erkki',
-                    email: 'erkki@testi.com'
+                    email: 'erkki@testi.com',
                 });
 
             expect(res.status).to.equal(409);
@@ -87,7 +87,7 @@ describe('routes: register', () => {
                     username: 'test',
                     password: 'test',
                     fullName: 'm.erkki',
-                    email: 'user@example.com'
+                    email: 'user@example.com',
                 });
 
             expect(res.status).to.equal(409);
@@ -104,7 +104,7 @@ describe('routes: register', () => {
                     username: 'test',
                     password: 'test',
                     fullName: 'm.erkki',
-                    email: 'erkki@test.com'
+                    email: 'erkki@test.com',
                 });
 
             expect(res.status).to.equal(201);
@@ -118,7 +118,7 @@ describe('routes: register', () => {
                     username: 'abc',
                     password: 'def',
                     fullName: 'No Body',
-                    email: 'person@email.com'
+                    email: 'person@email.com',
                 });
 
             expect(res.status).to.equal(201);

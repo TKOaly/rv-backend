@@ -25,7 +25,7 @@ describe('routes: authentication', () => {
                 .request(server)
                 .post('/api/v1/authenticate/rfid')
                 .send({
-                    rfid: '1234'
+                    rfid: '1234',
                 });
 
             expect(res.status).to.equal(200);
@@ -42,7 +42,7 @@ describe('routes: authentication', () => {
                 .request(server)
                 .post('/api/v1/authenticate/rfid')
                 .send({
-                    rfid: '12345'
+                    rfid: '12345',
                 });
             expect(res.status).to.equal(401);
         });
@@ -52,7 +52,7 @@ describe('routes: authentication', () => {
                 .request(server)
                 .post('/api/v1/authenticate/rfid')
                 .send({
-                    garbage: 'garbage'
+                    garbage: 'garbage',
                 });
 
             expect(res.status).to.equal(400);
@@ -66,7 +66,7 @@ describe('routes: authentication', () => {
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
-                    password: 'hunter2'
+                    password: 'hunter2',
                 });
 
             expect(res.status).to.equal(200);
@@ -84,7 +84,7 @@ describe('routes: authentication', () => {
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
-                    password: 'incorrect'
+                    password: 'incorrect',
                 });
 
             expect(res.status).to.equal(401);
@@ -96,7 +96,7 @@ describe('routes: authentication', () => {
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'nobody',
-                    password: 'something'
+                    password: 'something',
                 });
 
             expect(res.status).to.equal(401);
@@ -107,7 +107,7 @@ describe('routes: authentication', () => {
                 .request(server)
                 .post('/api/v1/authenticate')
                 .send({
-                    garbage: 'garbage'
+                    garbage: 'garbage',
                 });
 
             expect(res.status).to.equal(400);

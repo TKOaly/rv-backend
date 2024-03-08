@@ -10,7 +10,9 @@ exports.up = async (knex) => {
             table
                 .string('value')
                 .notNullable()
-                .comment('Value of the preference, serialized to text. Format depends on the preference.');
+                .comment(
+                    'Value of the preference, serialized to text. Format depends on the preference.',
+                );
         });
     }
 };
@@ -19,6 +21,6 @@ exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         await knex.schema.dropTableIfExists('PREFERENCES');
     } else {
-        throw new Error('don\'t drop stuff in production');
+        throw new Error("don't drop stuff in production");
     }
 };

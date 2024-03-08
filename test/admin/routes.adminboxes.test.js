@@ -11,9 +11,9 @@ chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
-        userId: 2
+        userId: 2,
     },
-    process.env.JWT_ADMIN_SECRET
+    process.env.JWT_ADMIN_SECRET,
 );
 
 describe('routes: admin boxes', () => {
@@ -67,7 +67,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxBarcode: '12345678',
                     itemsPerBox: 3,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(201);
@@ -87,7 +87,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxBarcode: '12345678',
                     itemsPerBox: 3,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(201);
@@ -101,7 +101,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxBarcode: '01880335',
                     itemsPerBox: 3,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(409);
@@ -116,7 +116,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxBarcode: '12345678',
                     itemsPerBox: 2,
-                    productBarcode: '00000000'
+                    productBarcode: '00000000',
                 });
 
             expect(res.status).to.equal(400);
@@ -131,7 +131,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxBarcode: '',
                     itemsPerBox: 2,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(400);
@@ -147,7 +147,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     itemsPerBox: 6,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(200);
@@ -164,7 +164,7 @@ describe('routes: admin boxes', () => {
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(200);
@@ -181,7 +181,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     itemsPerBox: 49,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(200);
@@ -194,7 +194,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     itemsPerBox: 3,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(404);
@@ -208,7 +208,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     itemsPerBox: 6,
-                    productBarcode: '55555555'
+                    productBarcode: '55555555',
                 });
 
             expect(res.status).to.equal(400);
@@ -222,7 +222,7 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token)
                 .send({
                     itemsPerBox: -1,
-                    productBarcode: '6415600540889'
+                    productBarcode: '6415600540889',
                 });
 
             expect(res.status).to.equal(400);
@@ -276,7 +276,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxCount: 1,
                     productBuyPrice: 1,
-                    productSellPrice: 1
+                    productSellPrice: 1,
                 });
 
             expect(res.status).to.equal(404);
@@ -286,7 +286,7 @@ describe('routes: admin boxes', () => {
             const validFields = {
                 boxCount: 1,
                 productBuyPrice: 1,
-                productSellPrice: 1
+                productSellPrice: 1,
             };
 
             for (const missingField in validFields) {
@@ -299,7 +299,10 @@ describe('routes: admin boxes', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${missingField} is not defined`,
+                );
             }
 
             for (const negativeField in validFields) {
@@ -312,7 +315,10 @@ describe('routes: admin boxes', () => {
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
 
-                expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
+                expect(res.status).to.equal(
+                    400,
+                    `request should fail when field ${negativeField} is negative`,
+                );
             }
         });
 
@@ -334,7 +340,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxCount: 1,
                     productBuyPrice: buyPrice,
-                    productSellPrice: sellPrice
+                    productSellPrice: sellPrice,
                 });
 
             expect(res.status).to.equal(200);
@@ -346,7 +352,9 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(post_res.status).to.equal(200);
-            expect(post_res.body.box.product.stock).to.equal(stock + itemsPerBox);
+            expect(post_res.body.box.product.stock).to.equal(
+                stock + itemsPerBox,
+            );
         });
 
         it('should update the sell and buy prices of the product', async () => {
@@ -366,7 +374,7 @@ describe('routes: admin boxes', () => {
                 .send({
                     boxCount: 1,
                     productBuyPrice: buyPrice + 1,
-                    productSellPrice: sellPrice + 1
+                    productSellPrice: sellPrice + 1,
                 });
 
             expect(res.status).to.equal(200);
@@ -377,11 +385,14 @@ describe('routes: admin boxes', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(post_res.status).to.equal(200);
-            expect(post_res.body.box.product.sellPrice)
-                .to.equal(sellPrice + 1, 'product\'s sellPrice should have changed');
-            expect(post_res.body.box.product.buyPrice)
-                .to.equal(buyPrice + 1, 'product\'s buyPrice should have changed');
+            expect(post_res.body.box.product.sellPrice).to.equal(
+                sellPrice + 1,
+                "product's sellPrice should have changed",
+            );
+            expect(post_res.body.box.product.buyPrice).to.equal(
+                buyPrice + 1,
+                "product's buyPrice should have changed",
+            );
         });
     });
 });
-
