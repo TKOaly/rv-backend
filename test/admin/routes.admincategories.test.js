@@ -11,9 +11,9 @@ chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
-        userId: 2
+        userId: 2,
     },
-    process.env.JWT_ADMIN_SECRET
+    process.env.JWT_ADMIN_SECRET,
 );
 
 describe('routes: admin categories', () => {
@@ -65,7 +65,7 @@ describe('routes: admin categories', () => {
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 'Food waste'
+                    description: 'Food waste',
                 });
 
             expect(res.status).to.equal(201);
@@ -83,7 +83,7 @@ describe('routes: admin categories', () => {
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 'Food waste'
+                    description: 'Food waste',
                 });
 
             expect(res.status).to.equal(201);
@@ -95,7 +95,7 @@ describe('routes: admin categories', () => {
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    abcd: 1
+                    abcd: 1,
                 });
 
             expect(res.status).to.equal(400);
@@ -110,7 +110,7 @@ describe('routes: admin categories', () => {
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 'Radioactive waste'
+                    description: 'Radioactive waste',
                 });
 
             expect(res.status).to.equal(200);
@@ -126,7 +126,7 @@ describe('routes: admin categories', () => {
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 'Radioactive waste'
+                    description: 'Radioactive waste',
                 });
 
             expect(res.status).to.equal(200);
@@ -139,7 +139,7 @@ describe('routes: admin categories', () => {
                 .patch('/api/v1/admin/categories/88888888')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 'Radioactive waste'
+                    description: 'Radioactive waste',
                 });
 
             expect(res.status).to.equal(404);
@@ -152,7 +152,7 @@ describe('routes: admin categories', () => {
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    description: 5
+                    description: 5,
                 });
 
             expect(res.status).to.equal(400);
@@ -198,7 +198,9 @@ describe('routes: admin categories', () => {
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
-            expect(res.body.movedProducts.sort()).to.deep.equal(initial_items.sort());
+            expect(res.body.movedProducts.sort()).to.deep.equal(
+                initial_items.sort(),
+            );
 
             const post_res = await chai
                 .request(server)
@@ -209,7 +211,9 @@ describe('routes: admin categories', () => {
 
             post_res.body.products
                 .filter((prod) => initial_items.indexOf(prod.barcode) !== -1)
-                .forEach((prod) => expect(prod.category.categoryId).to.not.equal(20));
+                .forEach((prod) =>
+                    expect(prod.category.categoryId).to.not.equal(20),
+                );
         });
 
         it('should fail with the default category', async () => {

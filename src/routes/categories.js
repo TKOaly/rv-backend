@@ -14,19 +14,19 @@ router.get('/', async (req, res) => {
         const mappedCategories = categories.map((category) => {
             return {
                 categoryId: category.categoryId,
-                description: category.description
+                description: category.description,
             };
         });
 
         logger.info('User %s fetched categories', user.username);
         res.status(200).json({
-            categories: mappedCategories
+            categories: mappedCategories,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
@@ -39,10 +39,14 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         const category = await categoryStore.findById(categoryId);
 
         if (!category) {
-            logger.error('User %s tried to fetch unknown category %s', user.username, categoryId);
+            logger.error(
+                'User %s tried to fetch unknown category %s',
+                user.username,
+                categoryId,
+            );
             res.status(404).json({
                 error_code: 'not_found',
-                message: 'Category does not exist'
+                message: 'Category does not exist',
             });
             return;
         }
@@ -51,14 +55,14 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
         res.status(200).json({
             category: {
                 categoryId: category.categoryId,
-                description: category.description
-            }
+                description: category.description,
+            },
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });

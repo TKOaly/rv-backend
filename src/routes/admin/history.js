@@ -7,7 +7,7 @@ router.get('/depositHistory', async (req, res) => {
     const history = await historyStore.getDepositHistory(req.params.userId);
 
     res.status(200).json({
-        deposits: history
+        deposits: history,
     });
 });
 
@@ -17,14 +17,14 @@ router.get('/depositHistory/:depositId', async (req, res) => {
     if (deposit === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No deposit with id '${req.params.depositId}' found`
+            message: `No deposit with id '${req.params.depositId}' found`,
         });
 
         return;
     }
 
     res.status(200).json({
-        deposit
+        deposit,
     });
 });
 
@@ -32,7 +32,7 @@ router.get('/purchaseHistory', async (req, res) => {
     const purchases = await historyStore.getPurchaseHistory();
 
     res.status(200).json({
-        purchases
+        purchases,
     });
 });
 
@@ -42,14 +42,14 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
     if (purchase === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No purchase event with ID '${req.params.purchaseId}' found`
+            message: `No purchase event with ID '${req.params.purchaseId}' found`,
         });
 
         return;
     }
 
     res.status(200).json({
-        purchase
+        purchase,
     });
 });
 

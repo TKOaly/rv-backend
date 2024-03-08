@@ -6,14 +6,14 @@ module.exports = {
             user: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME + '_dev',
-            port: process.env.DB_PORT
+            port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations'
+            directory: __dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/development'
-        }
+            directory: __dirname + '/src/db/seeds/development',
+        },
     },
 
     test: {
@@ -23,14 +23,14 @@ module.exports = {
             user: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME + '_test',
-            port: process.env.DB_PORT
+            port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations'
+            directory: __dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/test'
-        }
+            directory: __dirname + '/src/db/seeds/test',
+        },
     },
 
     production: {
@@ -40,13 +40,13 @@ module.exports = {
             user: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            port: process.env.DB_PORT
+            port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations'
+            directory: __dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/production'
-        }
-    }
+            directory: __dirname + '/src/db/seeds/production',
+        },
+    },
 };

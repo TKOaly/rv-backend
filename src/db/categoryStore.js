@@ -1,11 +1,10 @@
 const knex = require('./knex');
-const { DEFAULT_PRODUCT_CATEGORY, getPreference } = require('./preferences');
 
 const rowToCategory = (row) => {
     if (row !== undefined) {
         return {
             categoryId: row.pgrpid,
-            description: row.descr
+            description: row.descr,
         };
     } else {
         return undefined;
@@ -16,7 +15,10 @@ const rowToCategory = (row) => {
  * Returns all categories.
  */
 module.exports.getCategories = async () => {
-    const data = await knex('PRODGROUP').select('PRODGROUP.pgrpid', 'PRODGROUP.descr');
+    const data = await knex('PRODGROUP').select(
+        'PRODGROUP.pgrpid',
+        'PRODGROUP.descr',
+    );
     return data.map(rowToCategory);
 };
 
@@ -37,7 +39,7 @@ module.exports.insertCategory = async (description) => {
         .returning(['pgrpid']);
     return {
         categoryId: insertedRows[0].pgrpid,
-        description: description
+        description: description,
     };
 };
 
@@ -47,7 +49,7 @@ module.exports.updateCategory = async (categoryId, description) => {
         .where({ pgrpid: categoryId });
     return {
         categoryId: categoryId,
-        description: description
+        description: description,
     };
 };
 
@@ -55,7 +57,7 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
     const movedProductIdRows = await knex('RVITEM')
         .where('pgrpid', categoryId)
         .update({
-            pgrpid: moveProductsTo
+            pgrpid: moveProductsTo,
         })
         .returning(['itemid']);
 
@@ -80,6 +82,6 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
     return {
         categoryId: parseInt(categoryId),
         description: row.descr,
-        movedProducts: movedProducts.map((row) => row.barcode)
+        movedProducts: movedProducts.map((row) => row.barcode),
     };
 };

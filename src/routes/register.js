@@ -13,19 +13,25 @@ router.post('/', async (req, res) => {
     // Check if user, email exists
     const userByUsername = await userStore.findByUsername(username);
     if (userByUsername) {
-        logger.error('Failed to register new user, username %s was already taken', username);
+        logger.error(
+            'Failed to register new user, username %s was already taken',
+            username,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
-            message: 'Username already in use.'
+            message: 'Username already in use.',
         });
         return;
     }
     const userByEmail = await userStore.findByEmail(email);
     if (userByEmail) {
-        logger.error('Failed to register new user, email %s was already taken', email);
+        logger.error(
+            'Failed to register new user, email %s was already taken',
+            email,
+        );
         res.status(409).json({
             error_code: 'identifier_taken',
-            message: 'Email address already in use.'
+            message: 'Email address already in use.',
         });
         return;
     }
@@ -35,7 +41,7 @@ router.post('/', async (req, res) => {
         username,
         password,
         fullName,
-        email
+        email,
     });
 
     logger.info('Registered new user: %s', username);
@@ -46,8 +52,8 @@ router.post('/', async (req, res) => {
             fullName: newUser.fullName,
             email: newUser.email,
             moneyBalance: newUser.moneyBalance,
-            role: newUser.role
-        }
+            role: newUser.role,
+        },
     });
 });
 

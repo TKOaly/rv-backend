@@ -1,5 +1,6 @@
 const knex = require('./knex');
-const deleteUndefinedFields = require('../utils/objectUtils').deleteUndefinedFields;
+const deleteUndefinedFields =
+    require('../utils/objectUtils').deleteUndefinedFields;
 
 const rowToBox = (row) => {
     if (row !== undefined) {
@@ -11,12 +12,12 @@ const rowToBox = (row) => {
                 name: row.descr,
                 category: {
                     categoryId: row.pgrpid,
-                    description: row.pgrpdescr
+                    description: row.pgrpdescr,
                 },
                 buyPrice: row.buyprice,
                 sellPrice: row.sellprice,
-                stock: row.count
-            }
+                stock: row.count,
+            },
         };
     } else {
         return undefined;
@@ -40,7 +41,7 @@ module.exports.getBoxes = async () => {
             'PRODGROUP.descr as pgrpdescr',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where('PRICE.endtime', null);
     return data.map(rowToBox);
@@ -63,7 +64,7 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
             'PRODGROUP.descr as pgrpdescr',
             'PRICE.buyprice',
             'PRICE.sellprice',
-            'PRICE.count'
+            'PRICE.count',
         )
         .where('PRICE.endtime', null)
         .andWhere('RVBOX.barcode', boxBarcode)
@@ -81,13 +82,11 @@ module.exports.findByBoxBarcode = async (boxBarcode) => {
  */
 module.exports.insertBox = async (boxData) => {
     return await knex.transaction(async (trx) => {
-        await knex('RVBOX')
-            .transacting(trx)
-            .insert({
-                barcode: boxData.boxBarcode,
-                itembarcode: boxData.productBarcode,
-                itemcount: boxData.itemsPerBox
-            });
+        await knex('RVBOX').transacting(trx).insert({
+            barcode: boxData.boxBarcode,
+            itembarcode: boxData.productBarcode,
+            itemcount: boxData.itemsPerBox,
+        });
 
         const productRow = await knex('PRICE')
             .transacting(trx)
@@ -99,7 +98,7 @@ module.exports.insertBox = async (boxData) => {
                 'PRODGROUP.descr as pgrpdescr',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where('PRICE.barcode', boxData.productBarcode)
             .andWhere('PRICE.endtime', null)
@@ -113,12 +112,12 @@ module.exports.insertBox = async (boxData) => {
                 name: productRow.descr,
                 category: {
                     categoryId: productRow.pgrpid,
-                    description: productRow.pgrpdescr
+                    description: productRow.pgrpdescr,
                 },
                 buyPrice: productRow.buyprice,
                 sellPrice: productRow.sellprice,
-                stock: productRow.count
-            }
+                stock: productRow.count,
+            },
         };
     });
 };
@@ -127,7 +126,7 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
     return await knex.transaction(async (trx) => {
         const rvboxFields = deleteUndefinedFields({
             itembarcode: boxData.productBarcode,
-            itemcount: boxData.itemsPerBox
+            itemcount: boxData.itemsPerBox,
         });
 
         await knex('RVBOX')
@@ -149,7 +148,7 @@ module.exports.updateBox = async (boxBarcode, boxData) => {
                 'PRODGROUP.descr as pgrpdescr',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where('PRICE.endtime', null)
             .andWhere('RVBOX.barcode', boxBarcode)
@@ -174,7 +173,7 @@ module.exports.deleteBox = async (boxBarcode) => {
                 'PRODGROUP.descr as pgrpdescr',
                 'PRICE.buyprice',
                 'PRICE.sellprice',
-                'PRICE.count'
+                'PRICE.count',
             )
             .where({ 'RVBOX.barcode': boxBarcode, 'PRICE.endtime': null })
             .first();
@@ -199,11 +198,7 @@ module.exports.buyIn = async (boxBarcode, boxCount) => {
             .leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
             .leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
             .where('RVBOX.barcode', boxBarcode)
-            .first(
-                'RVBOX.itemcount',
-                'PRICE.priceid',
-                'PRICE.count'
-            );
+            .first('RVBOX.itemcount', 'PRICE.priceid', 'PRICE.count');
 
         if (row === undefined) {
             return undefined;

@@ -8,7 +8,7 @@ module.exports = [
         actionid: 5,
         priceid1: 822,
         priceid2: null,
-        saldhistid: 1
+        saldhistid: 1,
     },
     {
         itemhistid: 2,
@@ -19,7 +19,7 @@ module.exports = [
         actionid: 5,
         priceid1: 877,
         priceid2: null,
-        saldhistid: 2
+        saldhistid: 2,
     },
     // admin changed sellprice
     {
@@ -31,7 +31,7 @@ module.exports = [
         actionid: 7,
         priceid1: 877,
         priceid2: 899,
-        saldhistid: null
+        saldhistid: null,
     },
     {
         itemhistid: 4,
@@ -42,7 +42,7 @@ module.exports = [
         actionid: 5,
         priceid1: 827,
         priceid2: null,
-        saldhistid: 4
+        saldhistid: 4,
     },
     // two different products bought at the same time
     {
@@ -54,7 +54,7 @@ module.exports = [
         actionid: 5,
         priceid1: 827,
         priceid2: null,
-        saldhistid: 6
+        saldhistid: 6,
     },
     {
         itemhistid: 6,
@@ -65,7 +65,7 @@ module.exports = [
         actionid: 5,
         priceid1: 822,
         priceid2: null,
-        saldhistid: 7
+        saldhistid: 7,
     },
     // two same products bought at the same time
     {
@@ -77,7 +77,7 @@ module.exports = [
         actionid: 5,
         priceid1: 847,
         priceid2: null,
-        saldhistid: 9
+        saldhistid: 9,
     },
     {
         itemhistid: 8,
@@ -88,6 +88,6 @@ module.exports = [
         actionid: 5,
         priceid1: 847,
         priceid2: null,
-        saldhistid: 10
-    }
+        saldhistid: 10,
+    },
 ];
