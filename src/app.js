@@ -1,5 +1,3 @@
-const logger = require('./logger');
-
 (() => {
     'use strict';
 
