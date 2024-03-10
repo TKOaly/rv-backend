@@ -10,8 +10,8 @@
         "db-migrate": "knex migrate:latest",
         "db-seed": "knex seed:run",
         "test": "nyc --reporter=lcov mocha --exit",
-        "lint": "prettier --check '**/*.js' && eslint src/** test/**",
-        "lint-fix": "prettier --write '**/*.js' && eslint --fix src/** test/**",
+        "lint": "eslint src/** test/**",
+        "lint-fix": "eslint --fix src/** test/**",
         "start-container": "docker compose build && docker compose up -d",
         "stop-container": "docker compose down",
         "restart-container": "npm run stop-container && npm run start-container",
@@ -32,17 +32,15 @@
         "winston": "^3.11.0"
     },
     "devDependencies": {
+        "@stylistic/eslint-plugin-js": "^1.6.3",
         "chai": "^4.4.1",
         "chai-http": "^4.4.0",
         "eslint": "^8.56.0",
-        "eslint-config-prettier": "^9.1.0",
         "husky": "^9.0.10",
         "lint-staged": "^15.2.2",
         "mocha": "^10.2.0",
         "nodemon": "^3.0.3",
-        "nyc": "^15.1.0",
-        "prettier": "^3.2.5",
-        "prettier-eslint": "^16.3.0"
+        "nyc": "^15.1.0"
     },
     "lint-staged": {
         "src/**/*.js": [

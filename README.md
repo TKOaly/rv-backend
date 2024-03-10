@@ -47,7 +47,6 @@ Backend for new TKO-äly Ruokavälitys (Snack kiosk)
 
 -   Recommended
     -   ESLint
-    -   Prettier
 -   Useful
     -   an OpenAPI spec viewer
     -   [REST client](docs/REST_CLIENT.md)

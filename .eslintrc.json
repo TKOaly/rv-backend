@@ -4,12 +4,17 @@
         "node": true,
         "mocha": true
     },
-    "extends": ["eslint:recommended", "prettier"],
+    "extends": ["eslint:recommended"],
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": 2018
     },
+    "plugins": ["@stylistic/js"],
     "rules": {
+        "no-var": "error",
+        "prefer-const": "error",
+        "no-console": "warn",
+        "no-undef": "warn",
         "no-unused-vars": [
             "error",
             {
@@ -17,6 +22,22 @@
                 "varsIgnorePattern": "^_",
                 "caughtErrorsIgnorePattern": "^_"
             }
-        ]
+        ],
+        "@stylistic/js/max-len": ["warn", { "code": 120 }],
+        "@stylistic/js/indent": ["error", "tab"],
+        "@stylistic/js/linebreak-style": ["error", "unix"],
+        "@stylistic/js/quotes": [
+            "error",
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
+        "@stylistic/js/semi": ["error", "always"],
+        "@stylistic/js/arrow-parens": ["error", "always"],
+        "@stylistic/js/no-trailing-spaces": "error",
+        "@stylistic/js/comma-dangle": ["error", "always-multiline"],
+        "@stylistic/js/function-call-argument-newline": ["error", "consistent"],
+        "@stylistic/js/function-paren-newline": ["error", { "minItems": 3 }]
     }
 }
