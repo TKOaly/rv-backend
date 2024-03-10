@@ -4,7 +4,7 @@
         "node": true,
         "mocha": true
     },
-    "extends": ["eslint:recommended", "prettier"],
+    "extends": ["eslint:recommended"],
     "parserOptions": {
         "sourceType": "module",
         "ecmaVersion": 2018

@@ -1,0 +1,28 @@
+{
+	"lineWidth": 100,
+	"indentWidth": 4,
+	"useTabs": true,
+	"typescript": {
+		"semiColons": "always",
+		"quoteStyle": "alwaysSingle",
+		"arrowFunction.useParentheses": "force"
+	},
+	"json": {
+	},
+	"markdown": {
+	},
+	"dockerfile": {
+	},
+	"excludes": [
+		"**/node_modules",
+		"**/*-lock.json",
+		"**/coverage",
+		"**/.nyc_output/"
+	],
+	"plugins": [
+		"https://plugins.dprint.dev/typescript-0.89.3.wasm",
+		"https://plugins.dprint.dev/json-0.19.2.wasm",
+		"https://plugins.dprint.dev/markdown-0.16.4.wasm",
+		"https://plugins.dprint.dev/dockerfile-0.3.0.wasm"
+	]
+}
