@@ -2,5 +2,6 @@
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
-  }
+  },
+  "prettier.enable": false
 }
