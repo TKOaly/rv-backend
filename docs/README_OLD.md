@@ -58,10 +58,10 @@ Then, to run the backend server:
 
 1. Run `npm install` to install packages needed by the backend server.
 2. Set environment variables:
-    - `DATABASE_URL` is used by the backend to connect to a database server. For example, if your local database is running on port 5432 with user `user` and password `password` and database `db`, the value would be `postgres://user:password@localhost:5432/db`.
-    - `JWT_SECRET` is used to sign authentication tokens issued by the server. This can be any string.
-    - `PORT` is the port the backend server listens on.
-    - Setting `NODE_ENV` is optional since it defaults to `development` but you can set it if you want try out environments other than development.
+   - `DATABASE_URL` is used by the backend to connect to a database server. For example, if your local database is running on port 5432 with user `user` and password `password` and database `db`, the value would be `postgres://user:password@localhost:5432/db`.
+   - `JWT_SECRET` is used to sign authentication tokens issued by the server. This can be any string.
+   - `PORT` is the port the backend server listens on.
+   - Setting `NODE_ENV` is optional since it defaults to `development` but you can set it if you want try out environments other than development.
 3. If needed, clear database by running `npm run db-rollback`.
 4. Run `npm run db-migrate` to create or update the database schema to the latest version.
 5. Run `npm run db-seed` to seed the database with initial data.

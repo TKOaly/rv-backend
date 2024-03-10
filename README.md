@@ -9,18 +9,18 @@ Backend for new TKO-äly Ruokavälitys (Snack kiosk)
 
 #### Serves the following frontends:
 
--   [rv-tui-frontend](https://github.com/TKOaly/rv-tui-frontend) (React based TUI interface)
--   [rv-management-frontend](https://github.com/TKOaly/rv-management-frontend) (NextJS based web interface)
--   [rv-app-frontend](https://github.com/TKOaly/rv-app-frontend) (Old touch supported web interface)
--   [rv-old-management-frontend](https://github.com/TKOaly/rv-old-management-frontend) (Deprecated)
+- [rv-tui-frontend](https://github.com/TKOaly/rv-tui-frontend) (React based TUI interface)
+- [rv-management-frontend](https://github.com/TKOaly/rv-management-frontend) (NextJS based web interface)
+- [rv-app-frontend](https://github.com/TKOaly/rv-app-frontend) (Old touch supported web interface)
+- [rv-old-management-frontend](https://github.com/TKOaly/rv-old-management-frontend) (Deprecated)
 
 ## Table Of Contents
 
--   [Prerequisites](#prerequisites)
--   [Docker Setup](#docker-setup)
--   [Local Setup](#local-setup-without-docker)
--   [Configuration](#configuration)
--   [API](#api)
+- [Prerequisites](#prerequisites)
+- [Docker Setup](#docker-setup)
+- [Local Setup](#local-setup-without-docker)
+- [Configuration](#configuration)
+- [API](#api)
 
 ## Prerequisites
 
@@ -29,28 +29,28 @@ Backend for new TKO-äly Ruokavälitys (Snack kiosk)
 <details>
 <summary>Install node & npm</summary>
 
--   easiest with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
--   see [nvm docs](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) to have your shell switch automatically to the version specified in .nvmrc
--   frontend and backend repos may use different node versions
+- easiest with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
+- see [nvm docs](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) to have your shell switch automatically to the version specified in .nvmrc
+- frontend and backend repos may use different node versions
 
 </details>
 <details>
 <summary>Install Docker</summary>
-  
-  - add your user to the docker group 
-    - may require a restart
-  - Install docker-compose
+
+- add your user to the docker group
+  - may require a restart
+- Install docker-compose
 
 </details>
 <details open>
 <summary> Install IDE plugins  </summary>
 
--   Recommended
-    -   ESLint
-    -   Prettier
--   Useful
-    -   an OpenAPI spec viewer
-    -   [REST client](docs/REST_CLIENT.md)
+- Recommended
+  - ESLint
+  - Prettier
+- Useful
+  - an OpenAPI spec viewer
+  - [REST client](docs/REST_CLIENT.md)
 
 </details>
 </br>
@@ -124,10 +124,10 @@ Install [PostgreSQL](https://www.postgresql.org) and create a database and a use
 
 1. Run `npm install` to install packages needed by the backend server.
 2. Set environment variables:
-    - `DATABASE_URL` is used by the backend to connect to a database server. For example, if your local database is running on port 5432 with user `user` and password `password` and database `db`, the value would be `postgres://user:password@localhost:5432/db`.
-    - `JWT_SECRET` is used to sign authentication tokens issued by the server. This can be any string.
-    - `PORT` is the port the backend server listens on.
-    - Setting `NODE_ENV` is optional since it defaults to `development` but you can set it if you want try out environments other than development.
+   - `DATABASE_URL` is used by the backend to connect to a database server. For example, if your local database is running on port 5432 with user `user` and password `password` and database `db`, the value would be `postgres://user:password@localhost:5432/db`.
+   - `JWT_SECRET` is used to sign authentication tokens issued by the server. This can be any string.
+   - `PORT` is the port the backend server listens on.
+   - Setting `NODE_ENV` is optional since it defaults to `development` but you can set it if you want try out environments other than development.
 3. If needed, clear database by running `npm run db-rollback`.
 4. Run `npm run db-migrate` to create or update the database schema to the latest version.
 5. Run `npm run db-seed` to seed the database with initial data.

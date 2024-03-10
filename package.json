@@ -1,51 +1,51 @@
 {
-    "name": "rv-backend",
-    "version": "0.1.0",
-    "description": "RV backend",
-    "private": true,
-    "scripts": {
-        "start": "node ./src/server.js",
-        "start-nodemon": "nodemon ./src/server.js",
-        "db-rollback": "knex migrate:rollback",
-        "db-migrate": "knex migrate:latest",
-        "db-seed": "knex seed:run",
-        "test": "nyc --reporter=lcov mocha --exit",
-        "lint": "prettier --check '**/*.js' && eslint src/** test/**",
-        "lint-fix": "prettier --write '**/*.js' && eslint --fix src/** test/**",
-        "start-container": "docker compose build && docker compose up -d",
-        "stop-container": "docker compose down",
-        "restart-container": "npm run stop-container && npm run start-container",
-        "recreate-container-db": "docker compose exec rv-backend npm run db-rollback && docker compose exec rv-backend npm run db-migrate && docker compose exec rv-backend npm run db-seed",
-        "recreate-container": "npm run restart-container && npm run recreate-container-db",
-        "test-container": "docker compose exec rv-backend npm test"
-    },
-    "dependencies": {
-        "bcrypt": "^5.1.1",
-        "cors": "^2.8.5",
-        "dotenv": "^16.4.1",
-        "express": "^4.18.2",
-        "express-openapi-validator": "^4.13.8",
-        "helmet": "^7.1.0",
-        "jsonwebtoken": "^9.0.2",
-        "knex": "^3.1.0",
-        "pg": "^8.11.3",
-        "winston": "^3.11.0"
-    },
-    "devDependencies": {
-        "chai": "^4.4.1",
-        "chai-http": "^4.4.0",
-        "dprint": "^0.45.0",
-        "eslint": "^8.56.0",
-        "husky": "^9.0.10",
-        "lint-staged": "^15.2.2",
-        "mocha": "^10.2.0",
-        "nodemon": "^3.0.3",
-        "nyc": "^15.1.0"
-    },
-    "lint-staged": {
-        "src/**/*.js": [
-            "eslint",
-            "git add"
-        ]
-    }
+	"name": "rv-backend",
+	"version": "0.1.0",
+	"description": "RV backend",
+	"private": true,
+	"scripts": {
+		"start": "node ./src/server.js",
+		"start-nodemon": "nodemon ./src/server.js",
+		"db-rollback": "knex migrate:rollback",
+		"db-migrate": "knex migrate:latest",
+		"db-seed": "knex seed:run",
+		"test": "nyc --reporter=lcov mocha --exit",
+		"lint": "eslint src/** test/**",
+		"lint-fix": "dprint fmt && eslint --fix src/** test/**",
+		"start-container": "docker compose build && docker compose up -d",
+		"stop-container": "docker compose down",
+		"restart-container": "npm run stop-container && npm run start-container",
+		"recreate-container-db": "docker compose exec rv-backend npm run db-rollback && docker compose exec rv-backend npm run db-migrate && docker compose exec rv-backend npm run db-seed",
+		"recreate-container": "npm run restart-container && npm run recreate-container-db",
+		"test-container": "docker compose exec rv-backend npm test"
+	},
+	"dependencies": {
+		"bcrypt": "^5.1.1",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.1",
+		"express": "^4.18.2",
+		"express-openapi-validator": "^4.13.8",
+		"helmet": "^7.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"knex": "^3.1.0",
+		"pg": "^8.11.3",
+		"winston": "^3.11.0"
+	},
+	"devDependencies": {
+		"chai": "^4.4.1",
+		"chai-http": "^4.4.0",
+		"dprint": "^0.45.0",
+		"eslint": "^8.56.0",
+		"husky": "^9.0.10",
+		"lint-staged": "^15.2.2",
+		"mocha": "^10.2.0",
+		"nodemon": "^3.0.3",
+		"nyc": "^15.1.0"
+	},
+	"lint-staged": {
+		"src/**/*.js": [
+			"eslint",
+			"git add"
+		]
+	}
 }
