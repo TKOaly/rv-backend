@@ -1,6 +1,6 @@
-const personhist = require('../seeddata/PERSONHIST.js');
+import { personhist } from '../seeddata/PERSONHIST.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('PERSONHIST').insert(personhist);
     await knex.raw(`
         select setval(

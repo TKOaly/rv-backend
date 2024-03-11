@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import userStore from '../db/userStore.js';
+import logger from './../logger.js';
+
 const router = express.Router();
-const userStore = require('../db/userStore');
-const logger = require('./../logger');
 
 // Register a new user
 router.post('/', async (req, res) => {
@@ -57,4 +58,4 @@ router.post('/', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
+import categoryStore from '../../db/categoryStore.js';
+import { getPreference, preferences } from '../../db/preferences.js';
+import logger from '../../logger.js';
+import authMiddleware from '../authMiddleware.js';
+
+const { DEFAULT_PRODUCT_CATEGORY } = preferences;
+
 const router = express.Router();
-const authMiddleware = require('../authMiddleware');
-const categoryStore = require('../../db/categoryStore');
-const logger = require('../../logger');
-const {
-    DEFAULT_PRODUCT_CATEGORY,
-    getPreference,
-} = require('../../db/preferences');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -187,4 +187,4 @@ router.delete('/:categoryId', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

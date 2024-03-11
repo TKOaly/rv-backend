@@ -1,10 +1,12 @@
-const express = require('express');
-const authMiddleware = require('../authMiddleware');
-const {
-    GLOBAL_DEFAULT_MARGIN,
+import express from 'express';
+import {
     getPreference,
+    preferences,
     setPreference,
-} = require('../../db/preferences');
+} from '../../db/preferences.js';
+import authMiddleware from '../authMiddleware.js';
+
+const { GLOBAL_DEFAULT_MARGIN } = preferences;
 
 const router = express.Router();
 
@@ -20,4 +22,4 @@ router.patch('/', async (req, res) => {
     res.status(200).send();
 });
 
-module.exports = router;
+export default router;

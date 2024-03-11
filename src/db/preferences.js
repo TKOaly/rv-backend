@@ -1,6 +1,6 @@
-const knex = require('./knex');
+import knex from './knex.js';
 
-module.exports.getPreference = async (preference) => {
+export const getPreference = async (preference) => {
     const data = await knex('PREFERENCES')
         .where({ key: preference.key })
         .first('value');
@@ -20,7 +20,7 @@ module.exports.getPreference = async (preference) => {
     }
 };
 
-module.exports.setPreference = async (preference, value) => {
+export const setPreference = async (preference, value) => {
     const data = await knex('PREFERENCES')
         .where({ key: preference.key })
         .first('value');
@@ -85,7 +85,7 @@ const integerPreference = {
               : [],
 };
 
-module.exports.preferences = {
+export const preferences = {
     GLOBAL_DEFAULT_MARGIN: {
         ...floatPreference,
         key: 'globalDefaultMargin',
@@ -99,10 +99,6 @@ module.exports.preferences = {
     },
 };
 
-Object.assign(module.exports, module.exports.preferences);
-
-module.exports.getPreferenceByKey = (key) => {
-    return Object.values(module.exports.preferences).find(
-        (pref) => pref.key === key,
-    );
+export const getPreferenceByKey = (key) => {
+    return Object.values(preferences).find((pref) => pref.key === key);
 };

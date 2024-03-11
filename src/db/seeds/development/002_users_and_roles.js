@@ -1,7 +1,7 @@
-const roles = require('../seeddata/ROLE.json');
-const rvpersons = require('../seeddata/RVPERSON.js');
+import { roles } from '../seeddata/ROLE.js';
+import { rvpersons } from '../seeddata/RVPERSON.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('ROLE').insert(roles);
     await knex.raw(`
         select setval(

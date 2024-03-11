@@ -1,12 +1,12 @@
-const express = require('express');
-const logger = require('../../logger');
-const authMiddleware = require('../authMiddleware');
-const {
-    preferences,
+import express from 'express';
+import {
     getPreference,
-    setPreference,
     getPreferenceByKey,
-} = require('../../db/preferences');
+    preferences,
+    setPreference,
+} from '../../db/preferences.js';
+import logger from '../../logger.js';
+import authMiddleware from '../authMiddleware.js';
 
 const router = express.Router();
 
@@ -99,4 +99,4 @@ router.patch('/:preferenceKey', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

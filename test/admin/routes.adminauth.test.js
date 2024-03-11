@@ -1,11 +1,12 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
-const userStore = require('../../src/db/userStore');
+import app from '../../src/app.js';
+import knex from '../../src/db/knex.js';
+import userStore from '../../src/db/userStore.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -23,7 +24,7 @@ describe('routes: admin authentication', () => {
     describe('Admin authentication', () => {
         it('logging in with admin role should work', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
@@ -44,7 +45,7 @@ describe('routes: admin authentication', () => {
 
         it('admin tokens should not be signed with the same key as user tokens', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'admin_user',
@@ -60,7 +61,7 @@ describe('routes: admin authentication', () => {
 
         it('only admins should be able to authenticate', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/authenticate')
                 .send({
                     username: 'normal_user',

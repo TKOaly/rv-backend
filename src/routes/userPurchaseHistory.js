@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import historyStore from '../db/historyStore.js';
+import logger from '../logger.js';
+import authMiddleware from './authMiddleware.js';
+
 const router = express.Router();
-const historyStore = require('../db/historyStore');
-const authMiddleware = require('./authMiddleware');
-const logger = require('../logger');
 
 router.use(authMiddleware());
 
@@ -94,4 +95,4 @@ router.get('/:purchaseId(\\d+)', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

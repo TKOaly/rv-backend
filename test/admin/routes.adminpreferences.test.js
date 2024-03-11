@@ -1,10 +1,11 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
+import app from '../../src/app.js';
+import knex from '../../src/db/knex.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -29,7 +30,7 @@ describe('routes: admin preferences', () => {
     describe('listing preferences', () => {
         it('should return a list of preferences and values', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/preferences')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -40,7 +41,7 @@ describe('routes: admin preferences', () => {
     describe("querying a preference by it's key", () => {
         it('should fail for unknown keys', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/preferences/nonexistent')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -50,7 +51,7 @@ describe('routes: admin preferences', () => {
 
         it('should return a default value for an undefined preference', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -64,7 +65,7 @@ describe('routes: admin preferences', () => {
     describe("setting preference's value", () => {
         it('should fail for unknown keys', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/preferences/nonexistent')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -77,7 +78,7 @@ describe('routes: admin preferences', () => {
 
         it('should cause queries to resolve with the new value', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -87,7 +88,7 @@ describe('routes: admin preferences', () => {
             expect(res.status).to.equal(200);
 
             const post_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -97,7 +98,7 @@ describe('routes: admin preferences', () => {
 
         it('should fail when setting an invalid value', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token)
                 .send({

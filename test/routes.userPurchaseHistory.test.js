@@ -1,10 +1,11 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../src/app');
-const knex = require('../src/db/knex');
-const jwt = require('../src/jwt/token');
+import app from '../src/app.js';
+import knex from '../src/db/knex.js';
+import jwt from '../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -26,7 +27,7 @@ describe('routes: userPurchaseHistory', () => {
     describe('Fetching user purchase history', () => {
         it('should return user purchase history', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/purchaseHistory')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -37,7 +38,7 @@ describe('routes: userPurchaseHistory', () => {
     describe('Fetching single purchase by id', () => {
         it('should return the purchase event', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/purchaseHistory/2')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -46,7 +47,7 @@ describe('routes: userPurchaseHistory', () => {
 
         it('should return 404 on nonexistent purchase event', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/purchaseHistory/8319')
                 .set('Authorization', 'Bearer ' + token);
 

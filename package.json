@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "description": "RV backend",
     "private": true,
+    "type": "module",
     "scripts": {
         "start": "node ./src/server.js",
         "start-nodemon": "nodemon ./src/server.js",
@@ -36,6 +37,7 @@
         "chai-http": "^4.4.0",
         "eslint": "^8.56.0",
         "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-import": "^2.29.1",
         "husky": "^9.0.10",
         "lint-staged": "^15.2.2",
         "mocha": "^10.2.0",

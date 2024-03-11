@@ -4,7 +4,7 @@
  * @param {*} obj object to validate
  * @param {*} fieldValidators list of fields and validators for each field
  */
-module.exports.validateObject = (obj, fieldValidators) => {
+const validateObject = (obj, fieldValidators) => {
     const errors = [];
 
     fieldValidators.forEach((val) => {
@@ -19,7 +19,7 @@ module.exports.validateObject = (obj, fieldValidators) => {
     return errors;
 };
 
-module.exports.validateOptionalFields = (obj, fieldValidators) => {
+const validateOptionalFields = (obj, fieldValidators) => {
     const errors = [];
     let someFieldPresent = false;
 
@@ -38,3 +38,10 @@ module.exports.validateOptionalFields = (obj, fieldValidators) => {
 
     return errors;
 };
+
+const fieldValidator = {
+    validateObject,
+    validateOptionalFields,
+};
+
+export default fieldValidator;

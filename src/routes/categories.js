@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import categoryStore from '../db/categoryStore.js';
+import logger from './../logger.js';
+import authMiddleware from './authMiddleware.js';
+
 const router = express.Router();
-const categoryStore = require('../db/categoryStore');
-const authMiddleware = require('./authMiddleware');
-const logger = require('./../logger');
 
 router.use(authMiddleware());
 
@@ -67,4 +68,4 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

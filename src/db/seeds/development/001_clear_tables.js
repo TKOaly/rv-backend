@@ -1,4 +1,4 @@
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('PERSONHIST').del();
     await knex('RVBOX').del();
     await knex('ITEMHISTORY').del();

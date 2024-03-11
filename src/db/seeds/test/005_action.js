@@ -1,1 +1,1 @@
-exports.seed = require('../development/005_action').seed;
+export { seed } from '../development/005_action.js';

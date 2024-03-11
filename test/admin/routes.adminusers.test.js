@@ -1,11 +1,12 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
-const userStore = require('../../src/db/userStore');
+import app from '../../src/app.js';
+import knex from '../../src/db/knex.js';
+import userStore from '../../src/db/userStore.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -30,7 +31,7 @@ describe('routes: admin users', () => {
     describe('Fetching all users', () => {
         it('should return all users', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/users')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -41,7 +42,7 @@ describe('routes: admin users', () => {
     describe('Fetching user by id', () => {
         it('should return the user', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/users/1')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -50,7 +51,7 @@ describe('routes: admin users', () => {
 
         it('should error on nonexistent user', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/users/77')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -62,7 +63,7 @@ describe('routes: admin users', () => {
     describe('Changing user role', () => {
         it('should change the role', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -77,7 +78,7 @@ describe('routes: admin users', () => {
 
         it('should return the new role', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -89,7 +90,7 @@ describe('routes: admin users', () => {
 
         it('should error on nonexistent user', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/users/99/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -102,7 +103,7 @@ describe('routes: admin users', () => {
 
         it('should error on invalid role', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -114,7 +115,7 @@ describe('routes: admin users', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/users/1/changeRole')
                 .set('Authorization', 'Bearer ' + token)
                 .send({});
@@ -127,7 +128,7 @@ describe('routes: admin users', () => {
     describe("Fetching user's deposit history", async () => {
         it('should return list of deposits', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/users/1/depositHistory')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -138,7 +139,7 @@ describe('routes: admin users', () => {
     describe("Fetching user's purchase history", async () => {
         it('should return a list of purchases', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/users/1/purchaseHistory')
                 .set('Authorization', 'Bearer ' + token);
 

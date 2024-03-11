@@ -1,10 +1,11 @@
-const chai = require('chai');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
+import app from '../../src/app.js';
+import knex from '../../src/db/knex.js';
+import productStore from '../../src/db/productStore.js';
+import jwt from '../../src/jwt/token.js';
+
 const expect = chai.expect;
-const chaiHttp = require('chai-http');
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
-const productStore = require('../../src/db/productStore');
 
 chai.use(chaiHttp);
 
@@ -36,7 +37,7 @@ describe('routes: admin products', () => {
     describe('Fetching all products', () => {
         it('should return all products', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -47,7 +48,7 @@ describe('routes: admin products', () => {
     describe('Fetching product by barcode', () => {
         it('should return the product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -56,7 +57,7 @@ describe('routes: admin products', () => {
 
         it('should error on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/666')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -67,7 +68,7 @@ describe('routes: admin products', () => {
     describe('Creating new product', () => {
         it('should create new product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -90,7 +91,7 @@ describe('routes: admin products', () => {
 
         it('should return the new product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -107,7 +108,7 @@ describe('routes: admin products', () => {
 
         it('should error if barcode is already taken', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -126,7 +127,7 @@ describe('routes: admin products', () => {
 
         it('should error on nonexistent category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -144,7 +145,7 @@ describe('routes: admin products', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -162,7 +163,7 @@ describe('routes: admin products', () => {
     describe('Modifying product data', () => {
         it('should modify the product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -184,7 +185,7 @@ describe('routes: admin products', () => {
 
         it('should allow modifying only some fields', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -201,7 +202,7 @@ describe('routes: admin products', () => {
 
         it('should return the updated product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -213,7 +214,7 @@ describe('routes: admin products', () => {
 
         it('should error on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/88888888')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -226,7 +227,7 @@ describe('routes: admin products', () => {
 
         it('should error on nonexistent category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -239,7 +240,7 @@ describe('routes: admin products', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -254,7 +255,7 @@ describe('routes: admin products', () => {
     describe('Deleting a product', () => {
         it('should fail on nonexisting product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/products/88888888')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -264,7 +265,7 @@ describe('routes: admin products', () => {
 
         it('should return the deleted product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -273,12 +274,12 @@ describe('routes: admin products', () => {
 
         it("should cause any requests for that product's information to fail", async () => {
             await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
             const lookup = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -288,12 +289,12 @@ describe('routes: admin products', () => {
 
         it('should cause the item to be removed from item listing', async () => {
             await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
             const listing = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -306,12 +307,12 @@ describe('routes: admin products', () => {
 
         it('should prevent the item from being purchased', async () => {
             await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
             const purchase = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/5053990123506/purchase')
                 .set('Authorization', 'Bearer ' + normalUserToken)
                 .send({
@@ -325,7 +326,7 @@ describe('routes: admin products', () => {
     describe('Buy-in of a product', () => {
         it('should fail on nonexisting products', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products/88888888/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -350,7 +351,7 @@ describe('routes: admin products', () => {
                 delete invalidRequest[missingField];
 
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .post('/api/v1/admin/products/5053990123506/buyIn')
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
@@ -366,7 +367,7 @@ describe('routes: admin products', () => {
                 invalidRequest[negativeField] = -1;
 
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .post('/api/v1/admin/products/5053990123506/buyIn')
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
@@ -380,7 +381,7 @@ describe('routes: admin products', () => {
 
         it('should change the number of products in stock', async () => {
             const pre_query = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -388,7 +389,7 @@ describe('routes: admin products', () => {
             const initial_stock = pre_query.body.product.stock;
 
             await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products/5053990123506/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -398,7 +399,7 @@ describe('routes: admin products', () => {
                 });
 
             const post_query = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -408,7 +409,7 @@ describe('routes: admin products', () => {
 
         it("should change the item's buyPrice and sellPrice", async () => {
             const pre_query = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -417,7 +418,7 @@ describe('routes: admin products', () => {
                 pre_query.body.product;
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/products/5053990123506/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -429,7 +430,7 @@ describe('routes: admin products', () => {
             expect(res.status).to.equal(200);
 
             const post_query = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -446,7 +447,7 @@ describe('routes: admin products', () => {
     describe("Querying product's purchase history", () => {
         it('should return a list of purchases', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products/5053990123506/purchaseHistory')
                 .set('Authorization', 'Bearer ' + token);
 

@@ -1,10 +1,11 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../src/app');
-const knex = require('../src/db/knex');
-const jwt = require('../src/jwt/token');
+import app from '../src/app.js';
+import knex from '../src/db/knex.js';
+import jwt from '../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -26,7 +27,7 @@ describe('routes: userDepositHistory', () => {
     describe('Fetching user deposit history', () => {
         it('should return user deposit history', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/depositHistory')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -37,7 +38,7 @@ describe('routes: userDepositHistory', () => {
     describe('Fetching single deposit by id', () => {
         it('should return the deposit event', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/depositHistory/3')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -46,7 +47,7 @@ describe('routes: userDepositHistory', () => {
 
         it('should return 404 on nonexistent deposit event', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user/depositHistory/6677614')
                 .set('Authorization', 'Bearer ' + token);
 

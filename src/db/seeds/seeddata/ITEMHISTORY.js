@@ -1,4 +1,4 @@
-module.exports = [
+export const itemhistory = [
     {
         itemhistid: 1,
         time: new Date('2018-12-24T00:00:00Z'),

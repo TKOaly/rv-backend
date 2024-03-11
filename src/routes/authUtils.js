@@ -1,15 +1,13 @@
-const token = require('../jwt/token');
-const userStore = require('../db/userStore');
-const logger = require('./../logger');
+import userStore from '../db/userStore.js';
+import jwt from '../jwt/token.js';
+import logger from './../logger.js';
 
 /* null means no role requirements. */
-const verifyRole = (requiredRole, userRole) => {
+export const verifyRole = (requiredRole, userRole) => {
     return requiredRole === null || requiredRole === userRole;
 };
 
-module.exports.verifyRole = verifyRole;
-
-module.exports.authenticateUserRfid =
+export const authenticateUserRfid =
     (requiredRole = null, tokenSecret = process.env.JWT_SECRET) =>
     async (req, res) => {
         const body = req.body;
@@ -24,10 +22,7 @@ module.exports.authenticateUserRfid =
                     requiredRole,
                 );
                 res.status(200).json({
-                    accessToken: token.sign(
-                        { userId: user.userId },
-                        tokenSecret,
-                    ),
+                    accessToken: jwt.sign({ userId: user.userId }, tokenSecret),
                 });
             } else {
                 logger.error(
@@ -48,7 +43,7 @@ module.exports.authenticateUserRfid =
             });
         }
     };
-module.exports.authenticateUser =
+export const authenticateUser =
     (requiredRole = null, tokenSecret = process.env.JWT_SECRET) =>
     async (req, res) => {
         const body = req.body;
@@ -68,7 +63,7 @@ module.exports.authenticateUser =
                         requiredRole,
                     );
                     res.status(200).json({
-                        accessToken: token.sign(
+                        accessToken: jwt.sign(
                             { userId: user.userId },
                             tokenSecret,
                         ),

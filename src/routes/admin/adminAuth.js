@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { authenticateUser } from '../authUtils.js';
+
 const router = express.Router();
-const { authenticateUser } = require('../authUtils');
 
 router.post('/', authenticateUser('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-module.exports = [
+export const prices = [
     {
         priceid: 1,
         barcode: '6413600006527',
