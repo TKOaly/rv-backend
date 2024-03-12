@@ -1,10 +1,7 @@
 exports.up = async (knex) => {
     if (!(await knex.schema.hasTable('PRODGROUP'))) {
         await knex.schema.createTable('PRODGROUP', (table) => {
-            table
-                .increments('pgrpid')
-                .primary()
-                .comment('Product group ID');
+            table.increments('pgrpid').primary().comment('Product group ID');
             table
                 .string('descr', 64)
                 .notNullable()
@@ -14,10 +11,7 @@ exports.up = async (knex) => {
 
     if (!(await knex.schema.hasTable('RVITEM'))) {
         await knex.schema.createTable('RVITEM', (table) => {
-            table
-                .increments('itemid')
-                .primary()
-                .comment('Item ID (unique)');
+            table.increments('itemid').primary().comment('Item ID (unique)');
             table
                 .integer('pgrpid')
                 .unsigned()
@@ -35,7 +29,9 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        await knex.schema.dropTableIfExists('RVITEM').dropTableIfExists('PRODGROUP');
+        await knex.schema
+            .dropTableIfExists('RVITEM')
+            .dropTableIfExists('PRODGROUP');
     } else {
         throw new Error('dont drop stuff in production');
     }

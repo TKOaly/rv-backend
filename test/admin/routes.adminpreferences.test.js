@@ -10,9 +10,9 @@ chai.use(chaiHttp);
 
 const token = jwt.sign(
     {
-        userId: 2
+        userId: 2,
     },
-    process.env.JWT_ADMIN_SECRET
+    process.env.JWT_ADMIN_SECRET,
 );
 
 describe('routes: admin preferences', () => {
@@ -37,7 +37,7 @@ describe('routes: admin preferences', () => {
         });
     });
 
-    describe('querying a preference by it\'s key', () => {
+    describe("querying a preference by it's key", () => {
         it('should fail for unknown keys', async () => {
             const res = await chai
                 .request(server)
@@ -61,14 +61,14 @@ describe('routes: admin preferences', () => {
         });
     });
 
-    describe('setting preference\'s value', () => {
+    describe("setting preference's value", () => {
         it('should fail for unknown keys', async () => {
             const res = await chai
                 .request(server)
                 .patch('/api/v1/admin/preferences/nonexistent')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    value: 0.25
+                    value: 0.25,
                 });
 
             expect(res.status).to.equal(404);
@@ -81,7 +81,7 @@ describe('routes: admin preferences', () => {
                 .patch('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    value: 0.25
+                    value: 0.25,
                 });
 
             expect(res.status).to.equal(200);
@@ -101,7 +101,7 @@ describe('routes: admin preferences', () => {
                 .patch('/api/v1/admin/preferences/globalDefaultMargin')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
-                    value: 'asd'
+                    value: 'asd',
                 });
 
             expect(res.status).to.equal(400);

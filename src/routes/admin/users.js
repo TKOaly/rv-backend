@@ -13,10 +13,14 @@ router.param('userId', async (req, res, next) => {
     if (user === undefined) {
         res.status(404).json({
             error_code: 'not_found',
-            message: `No user with id '${req.params.userId}' found`
+            message: `No user with id '${req.params.userId}' found`,
         });
 
-        logger.error('User %s tried to access unknown user %s as admin', req.user.username, req.params.userId);
+        logger.error(
+            'User %s tried to access unknown user %s as admin',
+            req.user.username,
+            req.params.userId,
+        );
 
         return;
     }
@@ -37,25 +41,29 @@ router.get('/', async (req, res) => {
                 fullName: user.fullName,
                 email: user.email,
                 moneyBalance: user.moneyBalance,
-                role: user.role
+                role: user.role,
             };
         });
 
         logger.info('User %s fetched all users as admin', callingUser.username);
         res.status(200).json({
-            users: mappedUsers
+            users: mappedUsers,
         });
     } catch (error) {
         logger.error('Error at %s %s: %s', req.method, req.originalUrl, error);
         res.status(500).json({
             error_code: 'internal_error',
-            message: 'Internal error'
+            message: 'Internal error',
         });
     }
 });
 
 router.get('/:userId(\\d+)', async (req, res) => {
-    logger.info('User %s fetched user %s as admin', req.user.username, req.routeUser.userId);
+    logger.info(
+        'User %s fetched user %s as admin',
+        req.user.username,
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
         user: {
@@ -64,36 +72,47 @@ router.get('/:userId(\\d+)', async (req, res) => {
             fullName: req.routeUser.fullName,
             email: req.routeUser.email,
             moneyBalance: req.routeUser.moneyBalance,
-            role: req.routeUser.role
-        }
+            role: req.routeUser.role,
+        },
     });
 });
 
 router.post('/:userId(\\d+)/changeRole', async (req, res) => {
     const role = req.body.role;
 
-    const updatedUser = await userStore.updateUser(req.routeUser.userId, { role });
+    const updatedUser = await userStore.updateUser(req.routeUser.userId, {
+        role,
+    });
 
-    logger.info('User %s changed role of user %s to role %s', req.user.username, req.routeUser.userId, role);
+    logger.info(
+        'User %s changed role of user %s to role %s',
+        req.user.username,
+        req.routeUser.userId,
+        role,
+    );
 
     res.status(200).json({
-        role: updatedUser.role
+        role: updatedUser.role,
     });
 });
 
 router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
-    const purchases = await historyStore.getUserPurchaseHistory(req.routeUser.userId);
+    const purchases = await historyStore.getUserPurchaseHistory(
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
-        purchases
+        purchases,
     });
 });
 
 router.get('/:userId(\\d+)/depositHistory', async (req, res) => {
-    const history = await historyStore.getUserDepositHistory(req.routeUser.userId);
+    const history = await historyStore.getUserDepositHistory(
+        req.routeUser.userId,
+    );
 
     res.status(200).json({
-        deposits: history
+        deposits: history,
     });
 });
 
