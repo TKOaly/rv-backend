@@ -19,7 +19,6 @@
         "import/no-duplicates": "warn",
         "import/extensions": ["error", { "js": "always", "json": "always" }],
         "import/first": "error",
-        "import/order": "error",
         "no-unused-vars": [
             "error",
             {

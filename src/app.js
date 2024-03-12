@@ -1,10 +1,8 @@
-'use strict';
-
-import path from 'path';
 import cors from 'cors';
 import express from 'express';
 import OpenApiValidator from 'express-openapi-validator';
 import helmet from 'helmet';
+import path from 'path';
 import logger from './logger.js';
 
 import admin_auth from './routes/admin/adminAuth.js';

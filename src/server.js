@@ -1,4 +1,3 @@
-'use strict';
 import 'dotenv/config.js';
 import app from './app.js';
 import logger from './logger.js';
