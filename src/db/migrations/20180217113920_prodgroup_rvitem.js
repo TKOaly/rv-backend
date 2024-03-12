@@ -29,6 +29,11 @@ exports.up = async (knex) => {
                 .string('descr', 64)
                 .notNullable()
                 .comment('Textual product description (name)');
+            table
+                .integer('weight')
+                .unsigned()
+                .notNullable()
+                .comment('Product weight');
         });
     }
 };
