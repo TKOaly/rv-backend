@@ -1,4 +1,4 @@
-const knex = require('./knex');
+import knex from './knex.js';
 
 const rowToPurchase = (row) => {
     return {
@@ -108,7 +108,7 @@ const createDepositHistoryQuery = () =>
             { column: 'PERSONHIST.pershistid', order: 'desc' },
         ]);
 
-module.exports.getPurchaseHistory = async () => {
+const getPurchaseHistory = async () => {
     const data = await createPurchaseHistoryQuery();
 
     return data.map((row) => {
@@ -120,7 +120,7 @@ module.exports.getPurchaseHistory = async () => {
     });
 };
 
-module.exports.getUserPurchaseHistory = async (userId) => {
+const getUserPurchaseHistory = async (userId) => {
     const data = await createPurchaseHistoryQuery().andWhere(
         'ITEMHISTORY.userid',
         userId,
@@ -134,7 +134,7 @@ module.exports.getUserPurchaseHistory = async (userId) => {
     });
 };
 
-module.exports.getProductPurchaseHistory = async (barcode) => {
+const getProductPurchaseHistory = async (barcode) => {
     const data = await createPurchaseHistoryQuery().andWhere(
         'PRICE.barcode',
         barcode,
@@ -148,7 +148,7 @@ module.exports.getProductPurchaseHistory = async (barcode) => {
     });
 };
 
-module.exports.findPurchaseById = async (purchaseId) => {
+const findPurchaseById = async (purchaseId) => {
     const row = await createPurchaseHistoryQuery()
         .andWhere('ITEMHISTORY.itemhistid', purchaseId)
         .first();
@@ -164,7 +164,7 @@ module.exports.findPurchaseById = async (purchaseId) => {
     }
 };
 
-module.exports.getDepositHistory = async () => {
+const getDepositHistory = async () => {
     const data = await createDepositHistoryQuery();
 
     return data.map((row) => {
@@ -175,7 +175,7 @@ module.exports.getDepositHistory = async () => {
     });
 };
 
-module.exports.getUserDepositHistory = async (userId) => {
+const getUserDepositHistory = async (userId) => {
     const data = await createDepositHistoryQuery().andWhere(
         'PERSONHIST.userid1',
         userId,
@@ -184,7 +184,7 @@ module.exports.getUserDepositHistory = async (userId) => {
     return data.map(rowToDeposit);
 };
 
-module.exports.findDepositById = async (depositId) => {
+const findDepositById = async (depositId) => {
     const row = await createDepositHistoryQuery()
         .andWhere('PERSONHIST.pershistid', depositId)
         .first();
@@ -198,3 +198,15 @@ module.exports.findDepositById = async (depositId) => {
         return undefined;
     }
 };
+
+const historyStore = {
+    getPurchaseHistory,
+    getUserPurchaseHistory,
+    getProductPurchaseHistory,
+    findPurchaseById,
+    getDepositHistory,
+    getUserDepositHistory,
+    findDepositById,
+};
+
+export default historyStore;

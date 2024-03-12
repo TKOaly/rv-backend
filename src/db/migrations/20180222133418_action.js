@@ -1,4 +1,4 @@
-exports.up = async (knex) => {
+export const up = async (knex) => {
     if (!(await knex.schema.hasTable('ACTION'))) {
         await knex.schema.createTable('ACTION', (table) => {
             table.increments('actionid').primary().comment('Action ID');
@@ -10,7 +10,7 @@ exports.up = async (knex) => {
     }
 };
 
-exports.down = async (knex) => {
+export const down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         await knex.schema.dropTableIfExists('ACTION');
     } else {

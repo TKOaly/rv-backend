@@ -1,11 +1,12 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
-const categoryStore = require('../../src/db/categoryStore');
+import app from '../../src/app.js';
+import categoryStore from '../../src/db/categoryStore.js';
+import knex from '../../src/db/knex.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -30,7 +31,7 @@ describe('routes: admin categories', () => {
     describe('Fetching all categories', () => {
         it('should return all categories', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -41,7 +42,7 @@ describe('routes: admin categories', () => {
     describe('Fetching category by id', () => {
         it('should return the category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/categories/11')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -50,7 +51,7 @@ describe('routes: admin categories', () => {
 
         it('should error on nonexistent category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/categories/666')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -61,7 +62,7 @@ describe('routes: admin categories', () => {
     describe('Creating new category', () => {
         it('should create new category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -79,7 +80,7 @@ describe('routes: admin categories', () => {
 
         it('should return the new category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -91,7 +92,7 @@ describe('routes: admin categories', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/categories')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -106,7 +107,7 @@ describe('routes: admin categories', () => {
     describe('Modifying category data', () => {
         it('should modify the category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -122,7 +123,7 @@ describe('routes: admin categories', () => {
 
         it('should return the updated category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -135,7 +136,7 @@ describe('routes: admin categories', () => {
 
         it('should error on nonexistent category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/categories/88888888')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -148,7 +149,7 @@ describe('routes: admin categories', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -163,7 +164,7 @@ describe('routes: admin categories', () => {
     describe('deleting a category', () => {
         it('should fail with a nonexisting category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/categories/9999')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -173,7 +174,7 @@ describe('routes: admin categories', () => {
 
         it('should return the deleted category and moved items', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -182,7 +183,7 @@ describe('routes: admin categories', () => {
 
         it('should move items to the default category', async () => {
             const pre_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -193,7 +194,7 @@ describe('routes: admin categories', () => {
                 .map((prod) => prod.barcode);
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/categories/20')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -203,7 +204,7 @@ describe('routes: admin categories', () => {
             );
 
             const post_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/products')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -218,7 +219,7 @@ describe('routes: admin categories', () => {
 
         it('should fail with the default category', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/categories/0')
                 .set('Authorization', 'Bearer ' + token);
 

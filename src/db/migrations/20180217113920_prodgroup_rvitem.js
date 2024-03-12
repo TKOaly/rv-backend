@@ -1,4 +1,4 @@
-exports.up = async (knex) => {
+export const up = async (knex) => {
     if (!(await knex.schema.hasTable('PRODGROUP'))) {
         await knex.schema.createTable('PRODGROUP', (table) => {
             table.increments('pgrpid').primary().comment('Product group ID');
@@ -32,7 +32,7 @@ exports.up = async (knex) => {
     }
 };
 
-exports.down = async (knex) => {
+export const down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         await knex.schema
             .dropTableIfExists('RVITEM')

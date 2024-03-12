@@ -1,1 +1,1 @@
-exports.seed = require('../development/007_boxes').seed;
+export { seed } from '../development/007_boxes.js';

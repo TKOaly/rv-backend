@@ -1,5 +1,5 @@
-const boxes = require('../seeddata/RVBOX.json');
+import { boxes } from '../seeddata/RVBOX.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('RVBOX').insert(boxes);
 };

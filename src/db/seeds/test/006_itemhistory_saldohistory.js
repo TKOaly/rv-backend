@@ -1,1 +1,1 @@
-exports.seed = require('../development/006_itemhistory_saldohistory').seed;
+export { seed } from '../development/006_itemhistory_saldohistory.js';

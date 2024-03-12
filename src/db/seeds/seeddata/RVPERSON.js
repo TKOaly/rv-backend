@@ -1,7 +1,7 @@
-const bcrypt = require('bcrypt');
-const user_store = require('../../userStore.js');
+import bcrypt from 'bcrypt';
+import { RFID_SALT } from '../../userStore.js';
 
-module.exports = [
+export const rvpersons = [
     {
         userid: 1,
         createdate: new Date('2018-12-24T00:00:00Z'),
@@ -21,7 +21,7 @@ module.exports = [
         pass: bcrypt.hashSync('admin123', 11),
         saldo: 500,
         realname: 'BOFH',
-        rfid: bcrypt.hashSync('1234', user_store.RFID_SALT),
+        rfid: bcrypt.hashSync('1234', RFID_SALT),
     },
     {
         userid: 3,

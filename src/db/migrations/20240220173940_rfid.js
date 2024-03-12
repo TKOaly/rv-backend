@@ -1,8 +1,8 @@
-exports.up = async (knex) => {
+export const up = async (knex) => {
     await knex.raw('ALTER TABLE "RVPERSON" ADD COLUMN "rfid" TEXT');
 };
 
-exports.down = async (knex) => {
+export const down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
         await knex.raw('ALTER TABLE "RVPERSON" DROP COLUMN "rfid"');
     } else {

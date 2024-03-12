@@ -1,11 +1,11 @@
-const express = require('express');
+import express from 'express';
+import boxStore from '../../db/boxStore.js';
+import productStore from '../../db/productStore.js';
+import { deleteUndefinedFields } from '../../utils/objectUtils.js';
+import authMiddleware from '../authMiddleware.js';
+import logger from './../../logger.js';
+
 const router = express.Router();
-const authMiddleware = require('../authMiddleware');
-const boxStore = require('../../db/boxStore');
-const productStore = require('../../db/productStore');
-const logger = require('./../../logger');
-const deleteUndefinedFields =
-    require('../../utils/objectUtils').deleteUndefinedFields;
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -287,4 +287,4 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

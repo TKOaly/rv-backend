@@ -1,6 +1,6 @@
-const fieldValidator = require('./fieldValidator');
+import fieldValidator from './fieldValidator.js';
 
-module.exports.numericBarcode = (fieldname) => {
+export const numericBarcode = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -13,7 +13,7 @@ module.exports.numericBarcode = (fieldname) => {
     };
 };
 
-module.exports.string = (fieldname) => {
+export const string = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -26,7 +26,7 @@ module.exports.string = (fieldname) => {
     };
 };
 
-module.exports.nonEmptyString = (fieldname) => {
+export const nonEmptyString = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -39,7 +39,7 @@ module.exports.nonEmptyString = (fieldname) => {
     };
 };
 
-module.exports.integer = (fieldname) => {
+export const integer = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -52,7 +52,7 @@ module.exports.integer = (fieldname) => {
     };
 };
 
-module.exports.positiveInteger = (fieldname) => {
+export const positiveInteger = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -69,7 +69,7 @@ module.exports.positiveInteger = (fieldname) => {
     };
 };
 
-module.exports.nonNegativeInteger = (fieldname) => {
+export const nonNegativeInteger = (fieldname) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -86,7 +86,7 @@ module.exports.nonNegativeInteger = (fieldname) => {
     };
 };
 
-module.exports.objectWithFields = (fieldname, fieldValidators) => {
+export const objectWithFields = (fieldname, fieldValidators) => {
     return {
         field: fieldname,
         validator: (value) => {
@@ -101,7 +101,7 @@ module.exports.objectWithFields = (fieldname, fieldValidators) => {
     };
 };
 
-module.exports.orNull = ({ field, validator }) => ({
+export const orNull = ({ field, validator }) => ({
     field,
     validator: (value) => (value === null ? [] : validator(value)),
 });

@@ -1,4 +1,4 @@
-module.exports = {
+const config = {
     development: {
         client: 'pg',
         connection: {
@@ -9,10 +9,10 @@ module.exports = {
             port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations',
+            directory: import.meta.dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/development',
+            directory: import.meta.dirname + '/src/db/seeds/development',
         },
     },
 
@@ -26,10 +26,10 @@ module.exports = {
             port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations',
+            directory: import.meta.dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/test',
+            directory: import.meta.dirname + '/src/db/seeds/test',
         },
     },
 
@@ -43,10 +43,12 @@ module.exports = {
             port: process.env.DB_PORT,
         },
         migrations: {
-            directory: __dirname + '/src/db/migrations',
+            directory: import.meta.dirname + '/src/db/migrations',
         },
         seeds: {
-            directory: __dirname + '/src/db/seeds/production',
+            directory: import.meta.dirname + '/src/db/seeds/production',
         },
     },
 };
+
+export default config;

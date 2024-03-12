@@ -1,13 +1,14 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../src/app');
-const knex = require('../src/db/knex');
-const jwt = require('../src/jwt/token');
-const userStore = require('../src/db/userStore');
-const productStore = require('../src/db/productStore');
-const historyStore = require('../src/db/historyStore');
+import app from '../src/app.js';
+import historyStore from '../src/db/historyStore.js';
+import knex from '../src/db/knex.js';
+import productStore from '../src/db/productStore.js';
+import userStore from '../src/db/userStore.js';
+import jwt from '../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -29,7 +30,7 @@ describe('routes: products', () => {
     describe('Searching products', () => {
         it('should return matching product if found', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/search')
                 .set('Authorization', 'Bearer ' + token)
                 .send({ query: 'koff III' });
@@ -38,7 +39,7 @@ describe('routes: products', () => {
         });
         it('should return no matching product if not found', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/search')
                 .set('Authorization', 'Bearer ' + token)
                 .send({ query: 'motivaatio' });
@@ -50,7 +51,7 @@ describe('routes: products', () => {
     describe('Fetching all products', () => {
         it('should return all products', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/products')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -61,7 +62,7 @@ describe('routes: products', () => {
     describe('Fetching product by barcode', () => {
         it('should return the product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/products/5053990127443')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -70,7 +71,7 @@ describe('routes: products', () => {
 
         it('should return 404 on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/products/99999995')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -85,7 +86,7 @@ describe('routes: products', () => {
                 await productStore.findByBarcode('8855702006834');
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/8855702006834/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -113,7 +114,7 @@ describe('routes: products', () => {
                 await historyStore.getUserPurchaseHistory(user.userId);
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/6417901011105/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -145,7 +146,7 @@ describe('routes: products', () => {
                 await historyStore.getUserPurchaseHistory(user.userId);
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/6417901011105/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -165,7 +166,7 @@ describe('routes: products', () => {
 
         it('should return 404 on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/1234567890123/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -180,7 +181,7 @@ describe('routes: products', () => {
             await userStore.updateUser(user.userId, { moneyBalance: 0 });
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/products/8855702006834/purchase')
                 .set('Authorization', 'Bearer ' + token)
                 .send({

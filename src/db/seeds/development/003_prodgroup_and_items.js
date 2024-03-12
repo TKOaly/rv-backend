@@ -1,7 +1,7 @@
-const prodgroups = require('../seeddata/PRODGROUP.json');
-const rvitems = require('../seeddata/RVITEM.json');
+import { prodgroups } from '../seeddata/PRODGROUP.js';
+import { rvitems } from '../seeddata/RVITEM.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('PRODGROUP').insert(prodgroups);
     await knex.raw(`
         select setval(

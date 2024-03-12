@@ -1,9 +1,8 @@
-const knex = require('./knex');
-const bcrypt = require('bcrypt');
-const deleteUndefinedFields =
-    require('../utils/objectUtils').deleteUndefinedFields;
-const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
-module.exports.RFID_SALT = RFID_SALT;
+import bcrypt from 'bcrypt';
+import { deleteUndefinedFields } from '../utils/objectUtils.js';
+import knex from './knex.js';
+
+export const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
 
 const rowToUser = (row) => {
     if (row !== undefined) {
@@ -22,7 +21,7 @@ const rowToUser = (row) => {
     }
 };
 
-module.exports.getUsers = async () => {
+const getUsers = async () => {
     const data = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(
@@ -38,7 +37,7 @@ module.exports.getUsers = async () => {
     return data.map(rowToUser);
 };
 
-module.exports.findById = async (userId) => {
+const findById = async (userId) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(
@@ -56,7 +55,7 @@ module.exports.findById = async (userId) => {
     return rowToUser(row);
 };
 
-module.exports.findByRfid = async (rfid) => {
+const findByRfid = async (rfid) => {
     // TODO rfid should be changed to use sha256 for compatibility with old rv
     const rfid_hash = bcrypt.hashSync(rfid, RFID_SALT);
     const row = await knex('RVPERSON')
@@ -75,7 +74,7 @@ module.exports.findByRfid = async (rfid) => {
         .first();
     return rowToUser(row);
 };
-module.exports.findByUsername = async (username) => {
+const findByUsername = async (username) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(
@@ -93,7 +92,7 @@ module.exports.findByUsername = async (username) => {
     return rowToUser(row);
 };
 
-module.exports.findByEmail = async (email) => {
+const findByEmail = async (email) => {
     const row = await knex('RVPERSON')
         .leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
         .select(
@@ -111,7 +110,7 @@ module.exports.findByEmail = async (email) => {
     return rowToUser(row);
 };
 
-module.exports.insertUser = async (userData) => {
+const insertUser = async (userData) => {
     const passwordHash = bcrypt.hashSync(userData.password, 11);
 
     const insertedPersonRows = await knex('RVPERSON')
@@ -138,7 +137,7 @@ module.exports.insertUser = async (userData) => {
     };
 };
 
-module.exports.updateUser = async (userId, userData) => {
+const updateUser = async (userId, userData) => {
     return await knex.transaction(async (trx) => {
         const rvpersonFields = deleteUndefinedFields({
             name: userData.username,
@@ -184,15 +183,15 @@ module.exports.updateUser = async (userId, userData) => {
     });
 };
 
-module.exports.verifyPassword = async (password, passwordHash) => {
+const verifyPassword = async (password, passwordHash) => {
     return await bcrypt.compare(password, passwordHash);
 };
 
-module.exports.verifyRfid = async (rfid, rfidHash) => {
+const verifyRfid = async (rfid, rfidHash) => {
     return await bcrypt.compare(rfid, rfidHash);
 };
 
-module.exports.recordDeposit = async (userId, amount) => {
+const recordDeposit = async (userId, amount) => {
     return await knex.transaction(async (trx) => {
         const now = new Date();
 
@@ -230,3 +229,18 @@ module.exports.recordDeposit = async (userId, amount) => {
         };
     });
 };
+
+const userStore = {
+    getUsers,
+    findById,
+    findByRfid,
+    findByUsername,
+    findByEmail,
+    insertUser,
+    updateUser,
+    verifyPassword,
+    verifyRfid,
+    recordDeposit,
+};
+
+export default userStore;

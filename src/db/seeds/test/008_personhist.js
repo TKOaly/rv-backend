@@ -1,1 +1,1 @@
-exports.seed = require('../development/008_personhist').seed;
+export { seed } from '../development/008_personhist.js';

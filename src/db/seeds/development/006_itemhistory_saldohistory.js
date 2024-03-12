@@ -1,7 +1,7 @@
-const itemhistory = require('../seeddata/ITEMHISTORY.js');
-const saldohistory = require('../seeddata/SALDOHISTORY.js');
+import { itemhistory } from '../seeddata/ITEMHISTORY.js';
+import { saldohistory } from '../seeddata/SALDOHISTORY.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('SALDOHISTORY').insert(saldohistory);
     await knex.raw(`
         select setval(

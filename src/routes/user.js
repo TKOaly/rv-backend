@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import userStore from '../db/userStore.js';
+import logger from '../logger.js';
+import { deleteUndefinedFields } from '../utils/objectUtils.js';
+import authMiddleware from './authMiddleware.js';
+
 const router = express.Router();
-const userStore = require('../db/userStore');
-const authMiddleware = require('./authMiddleware');
-const logger = require('../logger');
-const deleteUndefinedFields =
-    require('../utils/objectUtils').deleteUndefinedFields;
 
 router.post('/user_exists', async (req, res) => {
     const username = req.body.username;
@@ -144,4 +144,4 @@ router.post('/changePassword', async (req, res) => {
     res.status(204).end();
 });
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const knex = require('./knex');
+import knex from './knex.js';
 
 const rowToCategory = (row) => {
     if (row !== undefined) {
@@ -14,7 +14,7 @@ const rowToCategory = (row) => {
 /**
  * Returns all categories.
  */
-module.exports.getCategories = async () => {
+const getCategories = async () => {
     const data = await knex('PRODGROUP').select(
         'PRODGROUP.pgrpid',
         'PRODGROUP.descr',
@@ -25,7 +25,7 @@ module.exports.getCategories = async () => {
 /**
  * Finds a category by its id.
  */
-module.exports.findById = async (categoryId) => {
+const findById = async (categoryId) => {
     const row = await knex('PRODGROUP')
         .select('PRODGROUP.pgrpid', 'PRODGROUP.descr')
         .where({ pgrpid: categoryId })
@@ -33,7 +33,7 @@ module.exports.findById = async (categoryId) => {
     return rowToCategory(row);
 };
 
-module.exports.insertCategory = async (description) => {
+const insertCategory = async (description) => {
     const insertedRows = await knex('PRODGROUP')
         .insert({ descr: description })
         .returning(['pgrpid']);
@@ -43,7 +43,7 @@ module.exports.insertCategory = async (description) => {
     };
 };
 
-module.exports.updateCategory = async (categoryId, description) => {
+const updateCategory = async (categoryId, description) => {
     await knex('PRODGROUP')
         .update({ descr: description })
         .where({ pgrpid: categoryId });
@@ -53,7 +53,7 @@ module.exports.updateCategory = async (categoryId, description) => {
     };
 };
 
-module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
+const deleteCategory = async (categoryId, moveProductsTo) => {
     const movedProductIdRows = await knex('RVITEM')
         .where('pgrpid', categoryId)
         .update({
@@ -85,3 +85,13 @@ module.exports.deleteCategory = async (categoryId, moveProductsTo) => {
         movedProducts: movedProducts.map((row) => row.barcode),
     };
 };
+
+const categoryStore = {
+    getCategories,
+    findById,
+    insertCategory,
+    updateCategory,
+    deleteCategory,
+};
+
+export default categoryStore;

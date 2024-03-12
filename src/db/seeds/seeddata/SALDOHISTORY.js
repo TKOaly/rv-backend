@@ -1,4 +1,4 @@
-module.exports = [
+export const saldohistory = [
     {
         saldhistid: 1,
         userid: 1,

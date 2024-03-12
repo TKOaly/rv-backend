@@ -1,11 +1,12 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
-const boxStore = require('../../src/db/boxStore');
+import app from '../../src/app.js';
+import boxStore from '../../src/db/boxStore.js';
+import knex from '../../src/db/knex.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -30,7 +31,7 @@ describe('routes: admin boxes', () => {
     describe('Fetching all boxes', () => {
         it('should return all boxes', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -41,7 +42,7 @@ describe('routes: admin boxes', () => {
     describe('Fetching box by barcode', () => {
         it('should return the box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01766752')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -50,7 +51,7 @@ describe('routes: admin boxes', () => {
 
         it('should return 404 on nonexistent box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/00000000')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -61,7 +62,7 @@ describe('routes: admin boxes', () => {
     describe('Creating new box', () => {
         it('should create new box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -81,7 +82,7 @@ describe('routes: admin boxes', () => {
 
         it('should return the new box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -95,7 +96,7 @@ describe('routes: admin boxes', () => {
 
         it('should error if box barcode is already taken', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -110,7 +111,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -125,7 +126,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -142,7 +143,7 @@ describe('routes: admin boxes', () => {
     describe('Modifying box data', () => {
         it('should modify the box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -160,7 +161,7 @@ describe('routes: admin boxes', () => {
 
         it('should allow modifying only some fields', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -176,7 +177,7 @@ describe('routes: admin boxes', () => {
 
         it('should return the updated box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -189,7 +190,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on nonexistent box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/88888888')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -203,7 +204,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on nonexistent product', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -217,7 +218,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on invalid parameters', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -233,14 +234,14 @@ describe('routes: admin boxes', () => {
     describe('Deleting a box', () => {
         it('should delete the box', async () => {
             let res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
             expect(res.status).to.equal(200);
 
             res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -249,7 +250,7 @@ describe('routes: admin boxes', () => {
 
         it('should error on nonexistent box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/boxes/88888888')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -259,7 +260,7 @@ describe('routes: admin boxes', () => {
 
         it('should return the deleted box', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .delete('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -270,7 +271,7 @@ describe('routes: admin boxes', () => {
     describe('Buy-in of boxes', () => {
         it('should fail on nonexisting boxes', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes/88888888/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -294,7 +295,7 @@ describe('routes: admin boxes', () => {
                 delete invalidRequest[missingField];
 
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .post('/api/v1/admin/boxes/01880335/buyIn')
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
@@ -310,7 +311,7 @@ describe('routes: admin boxes', () => {
                 invalidRequest[negativeField] = -1;
 
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .post('/api/v1/admin/boxes/01880335/buyIn')
                     .set('Authorization', 'Bearer ' + token)
                     .send(invalidRequest);
@@ -324,7 +325,7 @@ describe('routes: admin boxes', () => {
 
         it('should update the number of items', async () => {
             const initial_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -334,7 +335,7 @@ describe('routes: admin boxes', () => {
             const itemsPerBox = initial_res.body.box.itemsPerBox;
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes/01880335/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -347,7 +348,7 @@ describe('routes: admin boxes', () => {
             expect(res.body.productStock).to.equal(stock + itemsPerBox);
 
             const post_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -359,7 +360,7 @@ describe('routes: admin boxes', () => {
 
         it('should update the sell and buy prices of the product', async () => {
             const initial_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -368,7 +369,7 @@ describe('routes: admin boxes', () => {
             const { buyPrice, sellPrice } = initial_res.body.box.product;
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/admin/boxes/01880335/buyIn')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -380,7 +381,7 @@ describe('routes: admin boxes', () => {
             expect(res.status).to.equal(200);
 
             const post_res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/admin/boxes/01880335')
                 .set('Authorization', 'Bearer ' + token);
 

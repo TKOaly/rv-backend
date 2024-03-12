@@ -1,7 +1,7 @@
-const jwt = require('../jwt/token');
-const userStore = require('../db/userStore');
-const verifyRole = require('./authUtils').verifyRole;
-const logger = require('./../logger');
+import userStore from '../db/userStore.js';
+import jwt from '../jwt/token.js';
+import logger from './../logger.js';
+import { verifyRole } from './authUtils.js';
 
 const authMiddleware = (
     requiredRole = null,
@@ -83,4 +83,4 @@ const authMiddleware = (
     };
 };
 
-module.exports = authMiddleware;
+export default authMiddleware;

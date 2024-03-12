@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
+import categoryStore from '../../db/categoryStore.js';
+import historyStore from '../../db/historyStore.js';
+import productStore from '../../db/productStore.js';
+import { deleteUndefinedFields } from '../../utils/objectUtils.js';
+import authMiddleware from '../authMiddleware.js';
+import logger from './../../logger.js';
+
 const router = express.Router();
-const authMiddleware = require('../authMiddleware');
-const productStore = require('../../db/productStore');
-const categoryStore = require('../../db/categoryStore');
-const logger = require('./../../logger');
-const deleteUndefinedFields =
-    require('../../utils/objectUtils').deleteUndefinedFields;
-const historyStore = require('../../db/historyStore');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -304,4 +304,4 @@ router.get('/:barcode(\\d{1,14})/purchaseHistory', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

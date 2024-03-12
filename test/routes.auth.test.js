@@ -1,11 +1,12 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../src/app');
-const knex = require('../src/db/knex');
-const jwt = require('../src/jwt/token');
-const userStore = require('../src/db/userStore');
+import app from '../src/app.js';
+import knex from '../src/db/knex.js';
+import userStore from '../src/db/userStore.js';
+import jwt from '../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -22,7 +23,7 @@ describe('routes: authentication', () => {
     describe('User RFID authentication', () => {
         it('with valid credentials, should respond with an authentication token', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate/rfid')
                 .send({
                     rfid: '1234',
@@ -39,7 +40,7 @@ describe('routes: authentication', () => {
 
         it('with invalid rfid, should return a 401 unauthorized response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate/rfid')
                 .send({
                     rfid: '12345',
@@ -49,7 +50,7 @@ describe('routes: authentication', () => {
 
         it('invalid request should result in a 400 bad request response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate/rfid')
                 .send({
                     garbage: 'garbage',
@@ -62,7 +63,7 @@ describe('routes: authentication', () => {
     describe('User authentication', () => {
         it('with valid credentials, should respond with an authentication token', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
@@ -80,7 +81,7 @@ describe('routes: authentication', () => {
 
         it('with invalid password, should return a 401 unauthorized response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'normal_user',
@@ -92,7 +93,7 @@ describe('routes: authentication', () => {
 
         it('with nonexistent user, should return a 401 unauthorized response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate')
                 .send({
                     username: 'nobody',
@@ -104,7 +105,7 @@ describe('routes: authentication', () => {
 
         it('invalid request should result in a 400 bad request response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/authenticate')
                 .send({
                     garbage: 'garbage',

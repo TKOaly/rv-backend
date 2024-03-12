@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import historyStore from '../../db/historyStore.js';
+import userStore from '../../db/userStore.js';
+import logger from '../../logger.js';
+import authMiddleware from '../authMiddleware.js';
+
 const router = express.Router();
-const authMiddleware = require('../authMiddleware');
-const userStore = require('../../db/userStore');
-const historyStore = require('../../db/historyStore');
-const logger = require('../../logger');
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
@@ -116,4 +117,4 @@ router.get('/:userId(\\d+)/depositHistory', async (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

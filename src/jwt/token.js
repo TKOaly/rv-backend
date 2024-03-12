@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
-const logger = require('./../logger');
+import { default as JWT } from 'jsonwebtoken';
+import logger from './../logger.js';
 
-module.exports.sign = (payload, tokenSecret = process.env.JWT_SECRET) => {
-    return jwt.sign(
+const sign = (payload, tokenSecret = process.env.JWT_SECRET) => {
+    return JWT.sign(
         { exp: Math.floor(Date.now() / 1000) + 86400, data: payload },
         tokenSecret,
         {
@@ -11,11 +11,11 @@ module.exports.sign = (payload, tokenSecret = process.env.JWT_SECRET) => {
     );
 };
 
-module.exports.verify = (jwtToken, tokenSecret = process.env.JWT_SECRET) => {
+const verify = (jwtToken, tokenSecret = process.env.JWT_SECRET) => {
     let decoded = null;
 
     try {
-        decoded = jwt.verify(jwtToken, tokenSecret, { algorithm: 'HS256' });
+        decoded = JWT.verify(jwtToken, tokenSecret, { algorithm: 'HS256' });
     } catch (err) {
         // log error
         logger.error(err);
@@ -23,3 +23,10 @@ module.exports.verify = (jwtToken, tokenSecret = process.env.JWT_SECRET) => {
 
     return decoded;
 };
+
+const jwt = {
+    sign,
+    verify,
+};
+
+export default jwt;

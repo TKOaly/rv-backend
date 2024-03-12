@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import knex from '../../db/knex.js';
+
 const router = express.Router();
-const knex = require('../../db/knex');
 
 router.post('/', async (req, res) => {
     if (!['test', 'development', 'ci'].includes(process.env.NODE_ENV)) {
@@ -23,4 +24,4 @@ router.post('/', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

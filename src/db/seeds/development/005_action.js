@@ -1,6 +1,6 @@
-const actions = require('../seeddata/ACTION.json');
+import { actions } from '../seeddata/ACTION.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('ACTION').insert(actions);
     await knex.raw(`
         select setval(

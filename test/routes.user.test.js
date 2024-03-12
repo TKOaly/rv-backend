@@ -1,12 +1,13 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../src/app');
-const knex = require('../src/db/knex');
-const jwt = require('../src/jwt/token');
-const userStore = require('../src/db/userStore');
-const historyStore = require('../src/db/historyStore');
+import app from '../src/app.js';
+import historyStore from '../src/db/historyStore.js';
+import knex from '../src/db/knex.js';
+import userStore from '../src/db/userStore.js';
+import jwt from '../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -28,7 +29,7 @@ describe('routes: user', () => {
     describe('Checking user existence', () => {
         it('should return true if user exists', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/user_exists')
                 .send({
                     username: 'admin_user',
@@ -38,7 +39,7 @@ describe('routes: user', () => {
         });
         it('should return false if user does not exist', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/user_exists')
                 .send({
                     username: 'admin_user2',
@@ -48,7 +49,7 @@ describe('routes: user', () => {
         });
         it('invalid request should result in a 400 bad request response', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/user_exists')
                 .send({
                     garbage: 'garbage',
@@ -60,7 +61,7 @@ describe('routes: user', () => {
     describe('Fetching user info', () => {
         it('should return user info', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .get('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token);
 
@@ -71,7 +72,7 @@ describe('routes: user', () => {
     describe('Modifying user info', () => {
         it('should modify user', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -95,7 +96,7 @@ describe('routes: user', () => {
 
         it('should allow modifying only some fields', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -111,7 +112,7 @@ describe('routes: user', () => {
 
         it('should deny changing username to one already taken', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -123,7 +124,7 @@ describe('routes: user', () => {
 
         it('should deny changing email to one already taken', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -135,7 +136,7 @@ describe('routes: user', () => {
 
         it('should error if no fields are specified', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .patch('/api/v1/user')
                 .set('Authorization', 'Bearer ' + token)
                 .send({});
@@ -147,7 +148,7 @@ describe('routes: user', () => {
     describe('Depositing money', () => {
         it('should increase account balance', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -170,7 +171,7 @@ describe('routes: user', () => {
             );
 
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -195,7 +196,7 @@ describe('routes: user', () => {
 
         it('should error on depositing a negative amount', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/deposit')
                 .set('Authorization', 'Bearer ' + token)
                 .send({
@@ -209,7 +210,7 @@ describe('routes: user', () => {
     describe('Changing password', () => {
         it('should change the password', async () => {
             const res = await chai
-                .request(server)
+                .request(app)
                 .post('/api/v1/user/changePassword')
                 .set('Authorization', 'Bearer ' + token)
                 .send({

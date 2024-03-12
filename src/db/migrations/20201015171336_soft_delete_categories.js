@@ -1,4 +1,4 @@
-exports.up = async (knex) => {
+export const up = async (knex) => {
     await knex.raw('ALTER TABLE "PRODGROUP" RENAME TO "PRODGROUP_ALL"');
 
     await knex.schema.table('PRODGROUP_ALL', (table) => {
@@ -10,7 +10,7 @@ exports.up = async (knex) => {
     );
 };
 
-exports.down = async (knex) => {
+export const down = async (knex) => {
     await knex.raw('DROP VIEW "PRODGROUP"');
 
     await knex.schema.table('PRODGROUP_ALL', (table) => {

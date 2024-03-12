@@ -1,10 +1,11 @@
-const chai = require('chai');
-const expect = chai.expect;
-const chaiHttp = require('chai-http');
+import chai from 'chai';
+import chaiHttp from 'chai-http';
 
-const server = require('../../src/app');
-const knex = require('../../src/db/knex');
-const jwt = require('../../src/jwt/token');
+import app from '../../src/app.js';
+import knex from '../../src/db/knex.js';
+import jwt from '../../src/jwt/token.js';
+
+const expect = chai.expect;
 
 chai.use(chaiHttp);
 
@@ -30,7 +31,7 @@ describe('routes: admin history', () => {
         describe('querying all purchases', () => {
             it('should return a list of purchases', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/purchaseHistory')
                     .set('Authorization', 'Bearer ' + token);
 
@@ -41,7 +42,7 @@ describe('routes: admin history', () => {
         describe('Querying a purchase by id', () => {
             it('should return a purchase', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/purchaseHistory/1')
                     .set('Authorization', 'Bearer ' + token);
 
@@ -50,7 +51,7 @@ describe('routes: admin history', () => {
 
             it('should fail with a nonexsisting id', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/purchaseHistory/999999')
                     .set('Authorization', 'Bearer ' + token);
 
@@ -64,7 +65,7 @@ describe('routes: admin history', () => {
         describe('querying all events', () => {
             it('should return list of deposits', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/depositHistory')
                     .set('Authorization', 'Bearer ' + token);
 
@@ -75,7 +76,7 @@ describe('routes: admin history', () => {
         describe('querying deposit by id', () => {
             it('should fail when using a nonexistent id', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/depositHistory/99999999')
                     .set('Authorization', 'Bearer ' + token);
 
@@ -85,7 +86,7 @@ describe('routes: admin history', () => {
 
             it('should return a deposit', async () => {
                 const res = await chai
-                    .request(server)
+                    .request(app)
                     .get('/api/v1/admin/depositHistory/1')
                     .set('Authorization', 'Bearer ' + token);
 

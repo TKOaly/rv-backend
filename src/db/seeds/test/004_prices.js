@@ -1,6 +1,6 @@
-const prices = require('../seeddata/PRICE.js');
+import { prices } from '../seeddata/PRICE.js';
 
-exports.seed = async (knex) => {
+export const seed = async (knex) => {
     await knex('PRICE').insert(prices);
     await knex.raw(`
         select setval(
