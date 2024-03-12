@@ -10,7 +10,7 @@ module.exports = [
         univident: 'user@example.com',
         pass: bcrypt.hashSync('hunter2', 11),
         saldo: 500,
-        realname: 'John Doe'
+        realname: 'John Doe',
     },
     {
         userid: 2,
@@ -21,7 +21,7 @@ module.exports = [
         pass: bcrypt.hashSync('admin123', 11),
         saldo: 500,
         realname: 'BOFH',
-        rfid: bcrypt.hashSync('1234', user_store.RFID_SALT)
+        rfid: bcrypt.hashSync('1234', user_store.RFID_SALT),
     },
     {
         userid: 3,
@@ -31,7 +31,7 @@ module.exports = [
         univident: 'user2@example.com',
         pass: bcrypt.hashSync('role2', 11),
         saldo: -500,
-        realname: 'User Two'
+        realname: 'User Two',
     },
     {
         userid: 4,
@@ -41,6 +41,6 @@ module.exports = [
         univident: 'inactive@example.com',
         pass: bcrypt.hashSync('inactive', 11),
         saldo: -1100,
-        realname: 'Inactive User'
-    }
+        realname: 'Inactive User',
+    },
 ];

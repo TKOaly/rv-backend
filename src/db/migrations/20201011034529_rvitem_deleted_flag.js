@@ -5,7 +5,9 @@ exports.up = async (knex) => {
         table.boolean('deleted').notNull().defaultTo(false);
     });
 
-    await knex.raw('CREATE VIEW "RVITEM" AS SELECT * FROM "RVITEM_ALL" WHERE deleted IS FALSE');
+    await knex.raw(
+        'CREATE VIEW "RVITEM" AS SELECT * FROM "RVITEM_ALL" WHERE deleted IS FALSE',
+    );
 };
 
 exports.down = async (knex) => {

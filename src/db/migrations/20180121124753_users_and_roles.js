@@ -3,18 +3,9 @@ exports.up = async (knex) => {
         await knex.schema.createTable('ROLE', (table) => {
             table.increments('roleid').primary();
             table.string('role', 32).notNullable();
-            table
-                .integer('buzzerlimit')
-                .notNullable()
-                .defaultTo(-1000);
-            table
-                .integer('fgcolor')
-                .notNullable()
-                .defaultTo(37);
-            table
-                .integer('bgcolor')
-                .notNullable()
-                .defaultTo(40);
+            table.integer('buzzerlimit').notNullable().defaultTo(-1000);
+            table.integer('fgcolor').notNullable().defaultTo(37);
+            table.integer('bgcolor').notNullable().defaultTo(40);
         });
     }
 
@@ -27,10 +18,7 @@ exports.up = async (knex) => {
                 .notNullable()
                 .references('roleid')
                 .inTable('ROLE');
-            table
-                .string('name', 64)
-                .notNullable()
-                .index();
+            table.string('name', 64).notNullable().index();
             table.string('univident', 128).notNullable();
             table.string('pass', 100).notNullable();
             table.integer('saldo').notNullable();
@@ -43,7 +31,9 @@ exports.up = async (knex) => {
 
 exports.down = async (knex) => {
     if (process.env.NODE_ENV !== 'production') {
-        await knex.schema.dropTableIfExists('RVPERSON').dropTableIfExists('ROLE');
+        await knex.schema
+            .dropTableIfExists('RVPERSON')
+            .dropTableIfExists('ROLE');
     } else {
         throw new Error('dont drop stuff in production');
     }
