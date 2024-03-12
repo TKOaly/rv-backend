@@ -1,4 +1,4 @@
-FROM node:hydrogen-slim
+FROM node:iron-slim
 
 WORKDIR /usr/src/app
 

@@ -12,7 +12,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
-        container: node:hydrogen-slim
+        container: node:iron-slim
 
         services:
             postgres:
