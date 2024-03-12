@@ -1,30 +1,50 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha test all",
-            "runtimeExecutable": "docker-compose",
-            "runtimeArgs": ["run", "-p", "9229:9229", "rv-backend", "node_modules/.bin/mocha", "--inspect-brk=0.0.0.0:9229", "--colors", "--exit", "test"],
-            "port": 9229,
-            "timeout": 20000,
-            "remoteRoot": "/usr/src/app",
-            "localRoot": "${workspaceFolder}"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Mocha test current file",
-            "runtimeExecutable": "docker-compose",
-            "runtimeArgs": ["run", "-p", "9229:9229", "rv-backend", "node_modules/.bin/mocha", "--inspect-brk=0.0.0.0:9229", "--colors", "--exit", "${relativeFile}"],
-            "port": 9229,
-            "timeout": 20000,
-            "remoteRoot": "/usr/src/app",
-            "localRoot": "${workspaceFolder}"
-        }
-    ]
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Mocha test all",
+			"runtimeExecutable": "docker-compose",
+			"runtimeArgs": [
+				"run",
+				"-p",
+				"9229:9229",
+				"rv-backend",
+				"node_modules/.bin/mocha",
+				"--inspect-brk=0.0.0.0:9229",
+				"--colors",
+				"--exit",
+				"test"
+			],
+			"port": 9229,
+			"timeout": 20000,
+			"remoteRoot": "/usr/src/app",
+			"localRoot": "${workspaceFolder}"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Mocha test current file",
+			"runtimeExecutable": "docker-compose",
+			"runtimeArgs": [
+				"run",
+				"-p",
+				"9229:9229",
+				"rv-backend",
+				"node_modules/.bin/mocha",
+				"--inspect-brk=0.0.0.0:9229",
+				"--colors",
+				"--exit",
+				"${relativeFile}"
+			],
+			"port": 9229,
+			"timeout": 20000,
+			"remoteRoot": "/usr/src/app",
+			"localRoot": "${workspaceFolder}"
+		}
+	]
 }

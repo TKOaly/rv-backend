@@ -1,5 +1,8 @@
-# Format all files with prettier
+# Format all files with Prettier
 2d43841c0081f7f6f9da2ab2cb9cddaf12efec3d
 
 # Migrate project to ES Modules
 2c118a9a221fde6b2b8b956cbbeda950759d01e2
+
+# Format all files with Biome
+3a4e21d697e2463a6278a750e568e3c4781ddda9

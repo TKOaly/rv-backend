@@ -1,8 +1,8 @@
+import path from 'path';
 import cors from 'cors';
 import express from 'express';
 import OpenApiValidator from 'express-openapi-validator';
 import helmet from 'helmet';
-import path from 'path';
 import logger from './logger.js';
 
 import admin_auth from './routes/admin/adminAuth.js';
@@ -30,12 +30,12 @@ app.use(cors());
 app.use(helmet());
 
 app.use(
-    OpenApiValidator.middleware({
-        apiSpec: path.resolve(import.meta.dirname, '../openapi.yaml'),
-        validateRequests: true,
-        validateResponses: process.env.NODE_ENV !== 'production',
-        ignorePaths: /^\/api\/[^/]+\/test\/.*/,
-    }),
+	OpenApiValidator.middleware({
+		apiSpec: path.resolve(import.meta.dirname, '../openapi.yaml'),
+		validateRequests: true,
+		validateResponses: process.env.NODE_ENV !== 'production',
+		ignorePaths: /^\/api\/[^/]+\/test\/.*/,
+	})
 );
 
 app.use('/api/v1/authenticate', auth_route);
@@ -57,29 +57,25 @@ app.use('/api/v1/admin/preferences', admin_preferences);
 app.use('/api/v1/test/reset_data', api_reset_route);
 
 app.use((error, req, res, next) => {
-    logger.error(
-        'Invalid or missing fields in request: %s',
-        error.errors.map(
-            ({ path, message }) => `Field ${path.substring(6)} ${message}`,
-        ),
-    );
-    if (error.status === 400) {
-        res.status(400).json({
-            error_code: 'bad_request',
-            message: 'Invalid or missing fields in request',
-            errors: error.errors.map(
-                ({ path, message }) => `Field ${path.substring(6)} ${message}`,
-            ),
-        });
+	logger.error(
+		'Invalid or missing fields in request: %s',
+		error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`)
+	);
+	if (error.status === 400) {
+		res.status(400).json({
+			error_code: 'bad_request',
+			message: 'Invalid or missing fields in request',
+			errors: error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`),
+		});
 
-        return;
-    }
+		return;
+	}
 
-    res.status(500).json({
-        error_code: 'internal_error',
-        message: 'Internal server error',
-    });
-    next(error);
+	res.status(500).json({
+		error_code: 'internal_error',
+		message: 'Internal server error',
+	});
+	next(error);
 });
 
 export default app;

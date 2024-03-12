@@ -1,0 +1,27 @@
+# lint-fix on commit and leave fixes as unstaged
+pre-commit:
+  commands:
+    check:
+      glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}"
+      run: npm run lint-fix -- --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+
+# lint on commit
+# pre-commit:
+#   commands:
+#     check:
+#       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}"
+#       run: npm run lint -- --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+
+# lint-fix on commit and stage files before commit
+# pre-commit:
+#   commands:
+#     check:
+#       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}"
+#       run: npm run lint-fix -- --no-errors-on-unmatched --files-ignore-unknown=true {staged_files} && git update-index --again
+
+# lint on push
+# pre-push:
+#   commands:
+#     check:
+#       glob: "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}"
+#       run: npm run lint -- --no-errors-on-unmatched --files-ignore-unknown=true {push_files}
