@@ -4,5 +4,5 @@ import logger from './logger.js';
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    logger.info('rv-backend started at port ' + PORT);
+	logger.info('rv-backend started at port ' + PORT);
 });
