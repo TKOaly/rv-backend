@@ -289,6 +289,45 @@ describe('routes: admin boxes', () => {
 			expect(res.status).to.equal(404);
 		});
 
+		it('should not update the number of other items', async () => {
+			const initial_res = await chai
+				.request(server)
+				.get('/api/v1/admin/boxes/01880335')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(initial_res.status).to.equal(200);
+
+			const { buyPrice, sellPrice, stock } = initial_res.body.box.product;
+			const itemsPerBox = initial_res.body.box.itemsPerBox;
+
+			const post_res1 = await chai
+				.request(server)
+				.get('/api/v1/admin/boxes/01766752')
+				.set('Authorization', 'Bearer ' + token);
+			expect(post_res1.status).to.equal(200);
+
+			const res = await chai
+				.request(server)
+				.post('/api/v1/admin/boxes/01880335/buyIn')
+				.set('Authorization', 'Bearer ' + token)
+				.send({
+					boxCount: 1,
+					productBuyPrice: buyPrice,
+					productSellPrice: sellPrice,
+				});
+
+			expect(res.status).to.equal(200);
+			expect(res.body.productStock).to.equal(stock + itemsPerBox);
+
+			const post_res2 = await chai
+				.request(server)
+				.get('/api/v1/admin/boxes/01766752')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(post_res2.status).to.equal(200);
+			expect(post_res1.body.box.product.stock).to.equal(post_res2.body.box.product.stock);
+		});
+
 		it('should fail on invalid request', async () => {
 			const validFields = {
 				boxCount: 1,
