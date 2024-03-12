@@ -11,22 +11,22 @@ These apply if you only want to run the backend without the frontend. To run it 
 
 ### On the first time
 
-- install node.js
-- install npm
-- install docker
-- add your user to the docker group
-- install docker-compose
-- install vs code
-- install plugins to vs code
-- clone backend from github
-- run npm install
-- run docker-compose up
-- run npm run db-migrate in the backend container
-- run npm run db-seed in the backend container
+-   install node.js
+-   install npm
+-   install docker
+-   add your user to the docker group
+-   install docker-compose
+-   install vs code
+-   install plugins to vs code
+-   clone backend from github
+-   run npm install
+-   run docker-compose up
+-   run npm run db-migrate in the backend container
+-   run npm run db-seed in the backend container
 
 ### Testing the backend
 
-- run npm test
+-   run npm test
 
 ## Old instructions below
 
