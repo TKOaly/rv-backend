@@ -1,4 +1,4 @@
-exports.up = async (knex) => {
+export const up = async (knex) => {
     await knex.raw('DROP VIEW "RVITEM"');
     await knex.raw('ALTER TABLE "RVITEM_ALL" DROP COLUMN "weight"');
     await knex.raw(
@@ -6,4 +6,4 @@ exports.up = async (knex) => {
     );
 };
 
-exports.down = async () => {};
+export const down = async () => {};
