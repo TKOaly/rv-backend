@@ -46,8 +46,7 @@ Backend for new TKO-äly Ruokavälitys (Snack kiosk)
 <summary> Install IDE plugins  </summary>
 
 -   Recommended
-    -   ESLint
-    -   Prettier
+    -   Biome
 -   Useful
     -   an OpenAPI spec viewer
     -   [REST client](docs/REST_CLIENT.md)
