@@ -31,7 +31,7 @@ app.use(helmet());
 
 app.use(
     OpenApiValidator.middleware({
-        apiSpec: path.resolve(__dirname, '../openapi.yaml'),
+        apiSpec: path.resolve(import.meta.dirname, '../openapi.yaml'),
         validateRequests: true,
         validateResponses: process.env.NODE_ENV !== 'production',
         ignorePaths: /^\/api\/[^/]+\/test\/.*/,
