@@ -10,7 +10,7 @@
 		"db-rollback": "knex migrate:rollback",
 		"db-migrate": "knex migrate:latest",
 		"db-seed": "knex seed:run",
-		"test": "nyc --reporter=lcov mocha --exit",
+		"test": "nyc --reporter=lcov node --env-file=test/test.env  --test --test-concurrency 1 test/",
 		"lint": "biome check .",
 		"lint-fix": "biome check . --apply",
 		"start-container": "docker compose build && docker compose up -d",
@@ -39,7 +39,6 @@
 		"chai": "^4.4.1",
 		"chai-http": "^4.4.0",
 		"lefthook": "^1.6.5",
-		"mocha": "^10.2.0",
 		"nodemon": "^3.0.3",
 		"nyc": "^15.1.0"
 	}

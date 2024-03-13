@@ -6,6 +6,8 @@ import categoryStore from '../../src/db/categoryStore.js';
 import knex from '../../src/db/knex.js';
 import jwt from '../../src/jwt/token.js';
 
+import { after, afterEach, beforeEach, describe, it } from 'node:test';
+
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -16,6 +18,9 @@ const token = jwt.sign(
 	},
 	process.env.JWT_ADMIN_SECRET
 );
+after(() => {
+	knex.destroy();
+});
 
 describe('routes: admin categories', () => {
 	beforeEach(async () => {

@@ -44,8 +44,8 @@ jobs:
                   DB_PASSWORD: unsecure
                   DB_NAME: rv
                   DB_PORT: 5432
-                  JWT_SECRET: unsecure
-                  JWT_ADMIN_SECRET: unsecure
+                  JWT_SECRET: unsecure1
+                  JWT_ADMIN_SECRET: unsecure2
             - name: Lint and check formatting with biome
               run: npm run lint
             - name: Generate the code coverage report

@@ -14,4 +14,6 @@ COPY ./startup.sh ./startup.sh
 
 RUN chmod +x ./startup.sh
 
+EXPOSE 9229
+
 CMD ["./startup.sh"]

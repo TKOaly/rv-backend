@@ -9,6 +9,7 @@ services:
         depends_on:
             - db
         ports:
+            - 127.0.0.1:9229:9229
             - 127.0.0.1:4040:4040
         environment:
             - NODE_ENV=development
@@ -18,8 +19,8 @@ services:
             - DB_PASSWORD=unsecure
             - DB_NAME=rv
             - DB_PORT=5432
-            - JWT_SECRET=unsecure
-            - JWT_ADMIN_SECRET=unsecure
+            - JWT_SECRET=unsecure1
+            - JWT_ADMIN_SECRET=unsecure2
         volumes:
             - ./src:/usr/src/app/src
             - ./test:/usr/src/app/test
