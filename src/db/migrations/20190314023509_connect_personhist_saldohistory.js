@@ -37,22 +37,29 @@ export const up = async (knex) => {
 			saldoIndex++;
 		}
 
-		/* The next saldo event should match the deposit event. Its timestamp should be 0s or 1s later. Just to be sure,
-		 * this checks if its properties actually match the deposit event. */
-		const saldoEvent = unconnectedSaldoEvents[saldoIndex];
-		if (
-			(Date.parse(saldoEvent.time) === depositTime || Date.parse(saldoEvent.time) === depositTime + 1000) &&
-			saldoEvent.userid === depositEvent.userid1
-		) {
-			/* Inserting saldo event references to deposit event objects. */
-			depositEvent.saldhistid = saldoEvent.saldhistid;
+		// Consider the next 10 saldo events just to be safe with ordering.
+		// In production data there are cases where multiple saldo events are at the same time,
+		// with the deposit event being sorted _after_ a saldo event pertaining to a user with a lower id.
+		for (let i = 0; i < 10; i++) {
+			const saldoEvent = unconnectedSaldoEvents[saldoIndex + i];
 
-			saldoIndex++;
-		} else {
-			throw new Error('There was no matching saldo event for a deposit event.');
+			if (Date.parse(saldoEvent.time) - depositTime <= 1000 && saldoEvent.userid === depositEvent.userid1) {
+				depositEvent.saldhistid = saldoEvent.saldhistid;
+				saldoIndex++;
+				depositIndex++;
+				break;
+			}
 		}
 
-		depositIndex++;
+		if (!depositEvent.saldhistid) {
+			throw new Error(
+				`There was no matching saldo event for deposit event ${JSON.stringify(
+					depositEvent
+				)}, was considering the following saldo events: ${JSON.stringify([
+					...unconnectedSaldoEvents.slice(saldoIndex, saldoIndex + 10),
+				])}.`
+			);
+		}
 	}
 
 	await knex.schema.table('PERSONHIST', (table) => {
