@@ -1,4 +1,6 @@
 import knex from './knex.js';
+import { rowToProduct } from './productStore.js';
+import { rowToUser } from './userStore.js';
 
 const rowToPurchase = (row) => {
 	return {
@@ -16,31 +18,6 @@ const rowToDeposit = (row) => {
 		time: new Date(row.time).toISOString(),
 		amount: row.difference,
 		balanceAfter: row.saldo,
-	};
-};
-
-const rowToProduct = (row) => {
-	return {
-		barcode: row.barcode,
-		name: row.descr,
-		category: {
-			categoryId: row.pgrpid,
-			description: row.pgrpdescr,
-		},
-		buyPrice: row.buyprice,
-		sellPrice: row.sellprice,
-		stock: row.stock,
-	};
-};
-
-const rowToUser = (row) => {
-	return {
-		userId: row.userid,
-		username: row.name,
-		fullName: row.realname,
-		email: row.univident,
-		role: row.role,
-		moneyBalance: row.currentsaldo,
 	};
 };
 
