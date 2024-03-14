@@ -18,6 +18,7 @@ const token = jwt.sign(
 	},
 	process.env.JWT_ADMIN_SECRET
 );
+
 after(() => {
 	knex.destroy();
 });

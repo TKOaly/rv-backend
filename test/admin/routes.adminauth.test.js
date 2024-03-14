@@ -11,6 +11,7 @@ import { after, afterEach, beforeEach, describe, it } from 'node:test';
 const expect = chai.expect;
 
 chai.use(chaiHttp);
+
 after(() => {
 	knex.destroy();
 });

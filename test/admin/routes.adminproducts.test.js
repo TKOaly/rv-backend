@@ -24,6 +24,7 @@ const normalUserToken = jwt.sign(
 	},
 	process.env.JWT_SECRET
 );
+
 after(() => {
 	knex.destroy();
 });
