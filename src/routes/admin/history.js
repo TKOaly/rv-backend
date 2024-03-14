@@ -1,7 +1,10 @@
 import express from 'express';
 import historyStore from '../../db/historyStore.js';
+import authMiddleware from '../authMiddleware.js';
 
 const router = express.Router();
+
+router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 router.get('/depositHistory', async (req, res) => {
 	const history = await historyStore.getDepositHistory(req.params.userId);
