@@ -11,7 +11,7 @@ services:
         ports:
             - 127.0.0.1:4040:4040
         environment:
-            - NODE_ENV=development
+            #            - NODE_ENV=development
             - PORT=4040
             - DB_HOST=db
             - DB_USERNAME=rvadmin
