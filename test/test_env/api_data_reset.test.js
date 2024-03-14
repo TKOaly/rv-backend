@@ -7,9 +7,10 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { test_teardown } from '../utils.js';
 
-after(() => {
-	knex.destroy();
+after(async () => {
+	await test_teardown();
 });
 
 describe('routes: API data reset', () => {

@@ -10,7 +10,7 @@
 		"db-rollback": "knex migrate:rollback",
 		"db-migrate": "knex migrate:latest",
 		"db-seed": "knex seed:run",
-		"test": "nyc --reporter=lcov node --env-file=test/test.env  --test --test-concurrency 1 test/",
+		"test": "nyc --reporter=lcov node --env-file=test/test.env  --test test/",
 		"lint": "biome check .",
 		"lint-fix": "biome check . --apply",
 		"start-container": "docker compose build && docker compose up -d",
@@ -18,7 +18,7 @@
 		"restart-container": "npm run stop-container && npm run start-container",
 		"recreate-container-db": "docker compose exec rv-backend npm run db-rollback && docker compose exec rv-backend npm run db-migrate && docker compose exec rv-backend npm run db-seed",
 		"recreate-container": "npm run restart-container && npm run recreate-container-db",
-		"test-container": "docker compose exec rv-backend npm test",
+		"test-container": "docker compose run rv-backend npm test",
 		"git-hooks": "lefthook install",
 		"git-hooks-clear": "lefthook uninstall"
 	},

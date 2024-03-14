@@ -6,6 +6,7 @@ import productStore from '../../src/db/productStore.js';
 import jwt from '../../src/jwt/token.js';
 
 import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { test_teardown } from '../utils.js';
 
 const expect = chai.expect;
 
@@ -25,8 +26,8 @@ const normalUserToken = jwt.sign(
 	process.env.JWT_SECRET
 );
 
-after(() => {
-	knex.destroy();
+after(async () => {
+	await test_teardown();
 });
 
 describe('routes: admin products', () => {
