@@ -291,7 +291,7 @@ describe('routes: admin boxes', () => {
 
 		it('should not update the number of other items', async () => {
 			const initial_res = await chai
-				.request(server)
+				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
 				.set('Authorization', 'Bearer ' + token);
 
