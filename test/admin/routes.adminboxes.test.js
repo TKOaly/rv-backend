@@ -301,13 +301,13 @@ describe('routes: admin boxes', () => {
 			const itemsPerBox = initial_res.body.box.itemsPerBox;
 
 			const post_res1 = await chai
-				.request(server)
+				.request(app)
 				.get('/api/v1/admin/boxes/01766752')
 				.set('Authorization', 'Bearer ' + token);
 			expect(post_res1.status).to.equal(200);
 
 			const res = await chai
-				.request(server)
+				.request(app)
 				.post('/api/v1/admin/boxes/01880335/buyIn')
 				.set('Authorization', 'Bearer ' + token)
 				.send({
@@ -320,7 +320,7 @@ describe('routes: admin boxes', () => {
 			expect(res.body.productStock).to.equal(stock + itemsPerBox);
 
 			const post_res2 = await chai
-				.request(server)
+				.request(app)
 				.get('/api/v1/admin/boxes/01766752')
 				.set('Authorization', 'Bearer ' + token);
 
