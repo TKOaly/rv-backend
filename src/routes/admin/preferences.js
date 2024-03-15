@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
 	const values = await Promise.all(
 		Object.values(preferences).map(async (preference) => ({
 			key: preference.key,

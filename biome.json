@@ -23,6 +23,10 @@
 			},
 			"performance": {
 				"noDelete": "off"
+			},
+			"correctness": {
+				"noUnusedVariables": "error",
+				"noUnusedImports": "error"
 			}
 		}
 	},

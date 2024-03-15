@@ -6,7 +6,7 @@ import knex from '../../src/db/knex.js';
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { after, describe, it } from 'node:test';
 
 after(() => {
 	knex.destroy();

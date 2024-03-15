@@ -28,7 +28,7 @@ router.get('/depositHistory/:depositId', async (req, res) => {
 	});
 });
 
-router.get('/purchaseHistory', async (req, res) => {
+router.get('/purchaseHistory', async (_req, res) => {
 	const purchases = await historyStore.getPurchaseHistory();
 
 	res.status(200).json({
