@@ -10,7 +10,7 @@
 		"db-rollback": "knex migrate:rollback",
 		"db-migrate": "knex migrate:latest",
 		"db-seed": "knex seed:run",
-		"test": "nyc --reporter=lcov node --env-file=test/test.env  --test test/",
+		"test": ". test/test.env && nyc --reporter=lcov node --test test/",
 		"lint": "biome check .",
 		"lint-fix": "biome check . --apply",
 		"start-container": "docker compose build && docker compose up -d",
