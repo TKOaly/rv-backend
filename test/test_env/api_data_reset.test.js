@@ -1,7 +1,6 @@
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import app from '../../src/app.js';
-import knex from '../../src/db/knex.js';
 
 const expect = chai.expect;
 chai.use(chaiHttp);
