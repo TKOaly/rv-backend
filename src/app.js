@@ -56,7 +56,7 @@ app.use('/api/v1/admin', admin_history);
 app.use('/api/v1/admin/preferences', admin_preferences);
 app.use('/api/v1/test/reset_data', api_reset_route);
 
-app.use((error, req, res, next) => {
+app.use((error, _req, res, next) => {
 	logger.error(
 		'Invalid or missing fields in request: %s',
 		error.errors.map(({ path, message }) => `Field ${path.substring(6)} ${message}`)
