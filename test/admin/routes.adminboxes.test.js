@@ -7,6 +7,7 @@ import knex from '../../src/db/knex.js';
 import jwt from '../../src/jwt/token.js';
 
 import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { test_teardown } from '../utils.js';
 
 const expect = chai.expect;
 
@@ -19,8 +20,8 @@ const token = jwt.sign(
 	process.env.JWT_ADMIN_SECRET
 );
 
-after(() => {
-	knex.destroy();
+after(async () => {
+	await test_teardown();
 });
 
 describe('routes: admin boxes', () => {
