@@ -109,7 +109,6 @@ docker exec -it rv-backend-rv-backend-1 npm run db-seed
 ### Testing
 
 ```bash
-npm run start-container
 npm run test-container
 ```
 

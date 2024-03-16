@@ -24,7 +24,7 @@ const cfg = config[environment];
 
 if (environment == 'test') {
 	// Each test runs in its own separate process, use pid to avoid db conflicts.
-	const db_name = 'test_' + process.pid;
+	const db_name = 'rv_test_' + process.pid;
 
 	const client = new Client({
 		host: cfg.connection.host,
