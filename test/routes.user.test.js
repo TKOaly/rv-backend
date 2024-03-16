@@ -8,6 +8,7 @@ import userStore from '../src/db/userStore.js';
 import jwt from '../src/jwt/token.js';
 
 import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { test_teardown } from './utils.js';
 
 const expect = chai.expect;
 
@@ -17,8 +18,8 @@ const token = jwt.sign({
 	userId: 1,
 });
 
-after(() => {
-	knex.destroy();
+after(async () => {
+	await test_teardown();
 });
 
 describe('routes: user', () => {
