@@ -6,7 +6,7 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 import { after, describe, it } from 'node:test';
-import { test_teardown } from '../utils.js';
+import { test_teardown } from '../../src/db/knex.js';
 
 after(async () => {
 	await test_teardown();

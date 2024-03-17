@@ -3,13 +3,12 @@ import chaiHttp from 'chai-http';
 
 import app from '../src/app.js';
 import historyStore from '../src/db/historyStore.js';
-import knex from '../src/db/knex.js';
+import knex, { test_teardown } from '../src/db/knex.js';
 import productStore from '../src/db/productStore.js';
 import userStore from '../src/db/userStore.js';
 import jwt from '../src/jwt/token.js';
 
 import { after, afterEach, beforeEach, describe, it } from 'node:test';
-import { test_teardown } from './utils.js';
 
 const expect = chai.expect;
 
