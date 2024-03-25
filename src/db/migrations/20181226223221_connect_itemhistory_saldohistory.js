@@ -1,4 +1,8 @@
 export const up = async (knex) => {
+	if (await knex.schema.hasColumn('ITEMHISTORY', 'saldhistid')) {
+		return;
+	}
+
 	const itemhistory = await knex('ITEMHISTORY')
 		.leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
 		.select('ITEMHISTORY.itemhistid', 'ITEMHISTORY.time', 'ITEMHISTORY.userid', 'PRICE.sellprice')
@@ -19,43 +23,26 @@ export const up = async (knex) => {
 	let itemIndex = 0;
 	let saldoIndex = 0;
 	while (itemIndex < itemhistory.length) {
-		/* Storing fields of first item event in multibuy. */
-		const startOfMultibuy = itemhistory[itemIndex];
-		const time = startOfMultibuy.time;
-		const userid = startOfMultibuy.userid;
-		const sellprice = startOfMultibuy.sellprice;
+		const itemEvent = itemhistory[itemIndex];
 
-		/* Iterating item events of current multibuy and storing them. */
+		/* Iterating item events of current multibuy and storing them.
+			We can break as soon as the next item event is not part of the multibuy. */
 		const multibuyItemEvents = [];
-		while (
-			itemIndex < itemhistory.length &&
-			itemhistory[itemIndex].time === time &&
-			itemhistory[itemIndex].userid === userid &&
-			itemhistory[itemIndex].sellprice === sellprice
-		) {
+		while (itemIndex < itemhistory.length && isSameMultibuy(itemEvent, itemhistory[itemIndex])) {
 			multibuyItemEvents.push(itemhistory[itemIndex]);
 			itemIndex++;
 		}
 
 		/* Item events are now stored, so concentrating on the saldo array. First skipping saldo events that are not
 		 * related to purchases (such as deposits). */
-		while (
-			saldohistory[saldoIndex].time !== time ||
-			saldohistory[saldoIndex].userid !== userid ||
-			saldohistory[saldoIndex].difference !== -sellprice
-		) {
+		while (saldoIndex < saldohistory.length && !isMultibuySaldoEvent(itemEvent, saldohistory[saldoIndex])) {
 			saldoIndex++;
 		}
 
 		/* Iterating saldo events of current multibuy and storing them. Also might catch deposits if they happened at
 		 * the same time by the same user and had same saldo difference than elements of the multibuy. */
 		const multibuySaldoEvents = [];
-		while (
-			saldoIndex < saldohistory.length &&
-			saldohistory[saldoIndex].time === time &&
-			saldohistory[saldoIndex].userid === userid &&
-			saldohistory[saldoIndex].difference === -sellprice
-		) {
+		while (saldoIndex < saldohistory.length && isMultibuySaldoEvent(itemEvent, saldohistory[saldoIndex])) {
 			multibuySaldoEvents.push(saldohistory[saldoIndex]);
 			saldoIndex++;
 		}
@@ -66,7 +53,7 @@ export const up = async (knex) => {
 		 *
 		 * If the sell price is negative, the saldo readings should increase, so saldo events are sorted by saldo in
 		 * ascending order. If it is positive, the saldo readings should decrease. */
-		if (sellprice < 0) {
+		if (itemEvent.sellprice < 0) {
 			multibuySaldoEvents.sort((a, b) => a.saldo - b.saldo);
 		} else {
 			multibuySaldoEvents.sort((a, b) => b.saldo - a.saldo);
@@ -100,4 +87,37 @@ export const down = async (knex) => {
 	} else {
 		throw new Error('dont drop stuff in production');
 	}
+};
+
+const isSameMultibuy = (itemEvent, nextEvent) => {
+	if (nextEvent === undefined) {
+		throw new Error(`nextEvent is undefined for itemEvent ${JSON.stringify(itemEvent)}`);
+	}
+
+	return (
+		itemEvent.time.getTime() === nextEvent.time.getTime() &&
+		itemEvent.userid === nextEvent.userid &&
+		itemEvent.sellprice === nextEvent.sellprice
+	);
+};
+
+const isMultibuySaldoEvent = (itemEvent, saldoEvent) => {
+	if (saldoEvent === undefined) {
+		throw new Error(`saldoEvent is undefined for itemEvent ${JSON.stringify(itemEvent)}`);
+	}
+
+	// Weird edge cases in production data
+	if (
+		(itemEvent.sellprice === '65' && saldoEvent.difference === '-60') ||
+		(itemEvent.sellprice === '60' && saldoEvent.difference === '-62') ||
+		(itemEvent.sellprice === '57' && saldoEvent.difference === '-59')
+	) {
+		return itemEvent.time.getTime() === saldoEvent.time.getTime() && itemEvent.userid === saldoEvent.userid;
+	}
+
+	return (
+		itemEvent.time.getTime() === saldoEvent.time.getTime() &&
+		itemEvent.userid === saldoEvent.userid &&
+		Number(itemEvent.sellprice) === -1 * Number(saldoEvent.difference)
+	);
 };

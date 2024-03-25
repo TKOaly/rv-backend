@@ -1,4 +1,8 @@
 export const up = async (knex) => {
+	if (await knex.schema.hasColumn('RVPERSON', 'rfid')) {
+		return;
+	}
+
 	await knex.raw('ALTER TABLE "RVPERSON" ADD COLUMN "rfid" TEXT');
 };
 

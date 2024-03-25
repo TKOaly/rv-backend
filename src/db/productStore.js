@@ -1,7 +1,7 @@
 import { deleteUndefinedFields } from '../utils/objectUtils.js';
 import knex from './knex.js';
 
-const rowToProduct = (row) => {
+export const rowToProduct = (row) => {
 	if (row !== undefined) {
 		return {
 			barcode: row.barcode,
