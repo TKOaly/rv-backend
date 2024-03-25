@@ -527,6 +527,16 @@ describe('routes: admin products', () => {
 			expect(res.status).to.equal(200);
 		});
 
+		it('should error on nonexistent product', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/products/333344445555/purchaseHistory')
+				.set('Authorization', 'Bearer ' + adminToken);
+
+			expect(res.status).to.equal(404);
+			expect(res.body.error_code).to.equal('not_found');
+		});
+
 		it('should not be called by unprivileged user', async () => {
 			const res = await chai
 				.request(app)

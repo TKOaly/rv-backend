@@ -177,6 +177,16 @@ describe('routes: admin users', () => {
 			expect(res.status).to.equal(200);
 		});
 
+		it('should error on nonexistent user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/users/88/depositHistory')
+				.set('Authorization', 'Bearer ' + adminToken);
+
+			expect(res.status).to.equal(404);
+			expect(res.body.error_code).to.equal('not_found');
+		});
+
 		it('should not be called by unprivileged user', async () => {
 			const res = await chai
 				.request(app)
@@ -196,6 +206,16 @@ describe('routes: admin users', () => {
 				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
+		});
+
+		it('should error on nonexistent user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/users/99/purchaseHistory')
+				.set('Authorization', 'Bearer ' + adminToken);
+
+			expect(res.status).to.equal(404);
+			expect(res.body.error_code).to.equal('not_found');
 		});
 
 		it('should not be called by unprivileged user', async () => {
