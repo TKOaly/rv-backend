@@ -446,7 +446,7 @@ describe('routes: admin products', () => {
 			expect(pre_query.status).to.equal(200);
 			const initial_stock = pre_query.body.product.stock;
 
-			await chai
+			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/products/5053990123506/buyIn')
 				.set('Authorization', 'Bearer ' + adminToken)
@@ -455,6 +455,9 @@ describe('routes: admin products', () => {
 					buyPrice: 1,
 					sellPrice: 1,
 				});
+
+			expect(res.status).to.equal(200);
+			expect(res.body.stock).to.equal(initial_stock + 1);
 
 			const post_query = await chai
 				.request(app)
@@ -485,6 +488,8 @@ describe('routes: admin products', () => {
 				});
 
 			expect(res.status).to.equal(200);
+			expect(res.body.sellPrice).to.equal(initialSellPrice + 1);
+			expect(res.body.buyPrice).to.equal(initialBuyPrice + 1);
 
 			const post_query = await chai
 				.request(app)
