@@ -11,12 +11,15 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-const token = jwt.sign(
+const adminToken = jwt.sign(
 	{
 		userId: 2,
 	},
 	process.env.JWT_ADMIN_SECRET
 );
+const userToken = jwt.sign({
+	userId: 1,
+});
 
 after(async () => {
 	await test_teardown();
@@ -38,9 +41,19 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/preferences')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/preferences')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -49,7 +62,7 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/preferences/nonexistent')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
 			expect(res.body.error_code).to.equal('not_found');
@@ -59,12 +72,22 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/preferences/globalDefaultMargin')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 			expect(res.body).to.contain.key('preference');
 			expect(res.body.preference).to.contain.all.keys('value', 'key');
 			expect(res.body.preference.value).to.equal(0.05);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/preferences/globalDefaultMargin')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -73,7 +96,7 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/preferences/nonexistent')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					value: 0.25,
 				});
@@ -86,7 +109,7 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/preferences/globalDefaultMargin')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					value: 0.25,
 				});
@@ -96,7 +119,7 @@ describe('routes: admin preferences', () => {
 			const post_res = await chai
 				.request(app)
 				.get('/api/v1/admin/preferences/globalDefaultMargin')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(post_res.status).to.equal(200);
 			expect(post_res.body.preference.value).to.equal(0.25);
@@ -106,12 +129,25 @@ describe('routes: admin preferences', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/preferences/globalDefaultMargin')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					value: 'asd',
 				});
 
 			expect(res.status).to.equal(400);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.patch('/api/v1/admin/preferences/globalDefaultMargin')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					value: 0.25,
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 });

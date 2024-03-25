@@ -12,12 +12,15 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-const token = jwt.sign(
+const adminToken = jwt.sign(
 	{
 		userId: 2,
 	},
 	process.env.JWT_ADMIN_SECRET
 );
+const userToken = jwt.sign({
+	userId: 1,
+});
 
 after(async () => {
 	await test_teardown();
@@ -39,9 +42,19 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/boxes')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -50,7 +63,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01766752')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 		});
@@ -59,9 +72,19 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/00000000')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/boxes/01766752')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -70,7 +93,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxBarcode: '12345678',
 					itemsPerBox: 3,
@@ -90,7 +113,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxBarcode: '12345678',
 					itemsPerBox: 3,
@@ -104,7 +127,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxBarcode: '01880335',
 					itemsPerBox: 3,
@@ -119,7 +142,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxBarcode: '12345678',
 					itemsPerBox: 2,
@@ -134,7 +157,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxBarcode: '',
 					itemsPerBox: 2,
@@ -144,6 +167,21 @@ describe('routes: admin boxes', () => {
 			expect(res.status).to.equal(400);
 			expect(res.body.error_code).to.equal('bad_request');
 		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.post('/api/v1/admin/boxes')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					boxBarcode: '12345678',
+					itemsPerBox: 3,
+					productBarcode: '6415600540889',
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
+		});
 	});
 
 	describe('Modifying box data', () => {
@@ -151,7 +189,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					itemsPerBox: 6,
 					productBarcode: '6415600540889',
@@ -169,7 +207,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					productBarcode: '6415600540889',
 				});
@@ -185,7 +223,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					itemsPerBox: 49,
 					productBarcode: '6415600540889',
@@ -198,7 +236,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/88888888')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					itemsPerBox: 3,
 					productBarcode: '6415600540889',
@@ -212,7 +250,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					itemsPerBox: 6,
 					productBarcode: '55555555',
@@ -226,7 +264,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					itemsPerBox: -1,
 					productBarcode: '6415600540889',
@@ -235,6 +273,20 @@ describe('routes: admin boxes', () => {
 			expect(res.status).to.equal(400);
 			expect(res.body.error_code).to.equal('bad_request');
 		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.patch('/api/v1/admin/boxes/01880335')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					itemsPerBox: 6,
+					productBarcode: '6415600540889',
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
+		});
 	});
 
 	describe('Deleting a box', () => {
@@ -242,14 +294,14 @@ describe('routes: admin boxes', () => {
 			let res = await chai
 				.request(app)
 				.delete('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 
 			res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
 		});
@@ -258,7 +310,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/boxes/88888888')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
 			expect(res.body.error_code).to.equal('not_found');
@@ -268,9 +320,19 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.delete('/api/v1/admin/boxes/01880335')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -279,7 +341,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes/88888888/buyIn')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxCount: 1,
 					productBuyPrice: 1,
@@ -303,7 +365,7 @@ describe('routes: admin boxes', () => {
 				const res = await chai
 					.request(app)
 					.post('/api/v1/admin/boxes/01880335/buyIn')
-					.set('Authorization', 'Bearer ' + token)
+					.set('Authorization', 'Bearer ' + adminToken)
 					.send(invalidRequest);
 
 				expect(res.status).to.equal(400, `request should fail when field ${missingField} is not defined`);
@@ -316,7 +378,7 @@ describe('routes: admin boxes', () => {
 				const res = await chai
 					.request(app)
 					.post('/api/v1/admin/boxes/01880335/buyIn')
-					.set('Authorization', 'Bearer ' + token)
+					.set('Authorization', 'Bearer ' + adminToken)
 					.send(invalidRequest);
 
 				expect(res.status).to.equal(400, `request should fail when field ${negativeField} is negative`);
@@ -327,7 +389,7 @@ describe('routes: admin boxes', () => {
 			const initial_res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(initial_res.status).to.equal(200);
 
@@ -337,7 +399,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes/01880335/buyIn')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxCount: 1,
 					productBuyPrice: buyPrice,
@@ -350,7 +412,7 @@ describe('routes: admin boxes', () => {
 			const post_res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(post_res.status).to.equal(200);
 			expect(post_res.body.box.product.stock).to.equal(stock + itemsPerBox);
@@ -360,7 +422,7 @@ describe('routes: admin boxes', () => {
 			const initial_res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(initial_res.status).to.equal(200);
 
@@ -369,7 +431,7 @@ describe('routes: admin boxes', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/boxes/01880335/buyIn')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					boxCount: 1,
 					productBuyPrice: buyPrice + 1,
@@ -381,7 +443,7 @@ describe('routes: admin boxes', () => {
 			const post_res = await chai
 				.request(app)
 				.get('/api/v1/admin/boxes/01880335')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(post_res.status).to.equal(200);
 			expect(post_res.body.box.product.sellPrice).to.equal(
@@ -389,6 +451,21 @@ describe('routes: admin boxes', () => {
 				"product's sellPrice should have changed"
 			);
 			expect(post_res.body.box.product.buyPrice).to.equal(buyPrice + 1, "product's buyPrice should have changed");
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.post('/api/v1/admin/boxes/01880335/buyIn')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					boxCount: 1,
+					productBuyPrice: 50,
+					productSellPrice: 51,
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 });
