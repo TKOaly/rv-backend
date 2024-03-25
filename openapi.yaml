@@ -261,6 +261,7 @@ components:
                 type: string
                 enum:
                   - invalid_credentials
+                  - invalid_token
               message:
                 type: string
                 example: Invalid username or password
@@ -543,7 +544,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/Product'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/products: 
     get: 
       summary: Get a list of all products
@@ -567,7 +568,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/Product'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/products/{barcode}: 
     get:
       summary: Get details of a specific product
@@ -596,7 +597,7 @@ paths:
                   product:
                     '$ref': '#/components/schemas/Product'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/products/{barcode}/purchase: 
@@ -642,7 +643,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         403:
           description: The account has insufficient funds and the purchase cannot be made.
           content:
@@ -698,7 +699,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/Category'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/categories/{categoryId}: 
     get: 
       summary: Get details of a product category
@@ -727,7 +728,7 @@ paths:
                   category: 
                     '$ref': '#/components/schemas/Category'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/user:
@@ -751,7 +752,7 @@ paths:
                   user:
                     '$ref': '#/components/schemas/User'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
     patch: 
       summary: Update details of the authenticated user
       operationId: updateSessionUser
@@ -772,7 +773,7 @@ paths:
                   user: 
                     '$ref': '#/components/schemas/User'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         409:
@@ -816,7 +817,7 @@ paths:
                   exists: 
                     type: boolean
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
       requestBody: 
@@ -856,7 +857,7 @@ paths:
                     allOf:
                       - '$ref': '#/components/schemas/DepositEventBase'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
       requestBody: 
@@ -897,7 +898,7 @@ paths:
                       - '$ref': '#/components/schemas/PurchaseEventProduct'
                       - '$ref': '#/components/schemas/PurchaseEventBalance'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/user/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase made by the authenticated user
@@ -929,7 +930,7 @@ paths:
                       - '$ref': '#/components/schemas/PurchaseEventProduct'
                       - '$ref': '#/components/schemas/PurchaseEventBalance'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/user/depositHistory: 
@@ -955,7 +956,7 @@ paths:
                     items:
                       '$ref': '#/components/schemas/DepositEventBase'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/user/depositHistory/{depositId}: 
     get: 
       summary: Get details of a specific deposit event created by the authenticated user
@@ -984,7 +985,7 @@ paths:
                   deposit: 
                     '$ref': '#/components/schemas/DepositEventBase'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/user/changeRfid:
@@ -1013,7 +1014,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/user/changePassword:
     post:
       summary: Change the account's password
@@ -1041,7 +1042,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/admin/boxes: 
     get: 
       summary: Get a list of product boxes
@@ -1065,7 +1066,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/Box'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
     post: 
       summary: Create a new box of products
       operationId: createBox
@@ -1086,7 +1087,7 @@ paths:
                   box: 
                     '$ref': '#/components/schemas/Box'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         409:
@@ -1144,7 +1145,7 @@ paths:
                   box: 
                     '$ref': '#/components/schemas/Box'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
@@ -1176,7 +1177,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -1225,7 +1226,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/boxes/{boxBarcode}/buyIn: 
@@ -1267,7 +1268,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -1316,7 +1317,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/AdminProduct'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
     post: 
       summary: Create a new product
       operationId: createProduct
@@ -1339,7 +1340,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         409:
           '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 
@@ -1406,7 +1407,7 @@ paths:
                   product: 
                     '$ref': '#/components/schemas/AdminProduct'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
@@ -1438,7 +1439,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -1494,7 +1495,7 @@ paths:
                   deletedProduct: 
                     '$ref': '#/components/schemas/AdminProduct'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/products/{barcode}/buyIn: 
@@ -1536,7 +1537,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -1595,7 +1596,7 @@ paths:
                         - '$ref': '#/components/schemas/PurchaseEventUser'
                         - '$ref': '#/components/schemas/PurchaseEventStock'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/products/{barcode}/purchaseHistory/{purchaseId}: 
@@ -1637,7 +1638,7 @@ paths:
                         - '$ref': '#/components/schemas/PurchaseEventUser'
                         - '$ref': '#/components/schemas/PurchaseEventStock'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/categories: 
@@ -1663,7 +1664,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/Category'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
     post: 
       summary: Create a new product category
       operationId: createCategory
@@ -1686,7 +1687,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
       requestBody: 
         required: true
         content: 
@@ -1728,7 +1729,7 @@ paths:
                   category: 
                     '$ref': '#/components/schemas/Category'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch: 
@@ -1760,7 +1761,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -1807,7 +1808,7 @@ paths:
                     items: 
                       type: string
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         403:
           description: 'Cannot delete the default product category'
           content:
@@ -1850,7 +1851,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/User'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/admin/users/{userId}: 
     get: 
       summary: Get the details of a user
@@ -1880,7 +1881,7 @@ paths:
                   user: 
                     '$ref': '#/components/schemas/User'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/users/{userId}/purchaseHistory: 
@@ -1917,7 +1918,7 @@ paths:
                           - '$ref': '#/components/schemas/PurchaseEventProduct'
                           - '$ref': '#/components/schemas/PurchaseEventBalance'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/users/{userId}/purchaseHistory/{purchaseId}: 
@@ -1959,7 +1960,7 @@ paths:
                           - '$ref': '#/components/schemas/PurchaseEventProduct'
                           - '$ref': '#/components/schemas/PurchaseEventBalance'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/users/{userId}/depositHistory: 
@@ -1993,7 +1994,7 @@ paths:
                     items: 
                       '$ref': '#/components/schemas/DepositEventBase'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/users/{userId}/depositHistory/{depositId}: 
@@ -2032,7 +2033,7 @@ paths:
                   deposit: 
                     '$ref': '#/components/schemas/DepositEventBase'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/users/{userId}/changeRole: 
@@ -2066,7 +2067,7 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
       requestBody: 
@@ -2106,7 +2107,7 @@ paths:
                           - '$ref': '#/components/schemas/PurchaseEventProduct'
                           - '$ref': '#/components/schemas/PurchaseEventUser'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/admin/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase event
@@ -2139,7 +2140,7 @@ paths:
                       - '$ref': '#/components/schemas/PurchaseEventProduct'
                       - '$ref': '#/components/schemas/PurchaseEventUser'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/depositHistory: 
@@ -2167,7 +2168,7 @@ paths:
                         - '$ref': '#/components/schemas/DepositEventBase'
                         - '$ref': '#/components/schemas/DepositEventUser'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/admin/depositHistory/{depositId}: 
     get: 
       summary: Get details of a specific deposit event
@@ -2199,7 +2200,7 @@ paths:
                         - '$ref': '#/components/schemas/DepositEventBase'
                         - '$ref': '#/components/schemas/DepositEventUser'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/preferences:
@@ -2225,7 +2226,7 @@ paths:
                     items:
                       '$ref': '#/components/schemas/Preference'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
   /api/v1/admin/preferences/{preferenceKey}:
     get:
       summary: Get the value of a preference
@@ -2255,7 +2256,7 @@ paths:
                   preference:
                     '$ref': '#/components/schemas/Preference'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
     patch:
@@ -2288,6 +2289,6 @@ paths:
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
-          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
