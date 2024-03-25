@@ -35,6 +35,7 @@ export const authenticateUserRfid =
 			});
 		}
 	};
+
 export const authenticateUser =
 	(requiredRole = null, tokenSecret = process.env.JWT_SECRET) =>
 	async (req, res) => {
