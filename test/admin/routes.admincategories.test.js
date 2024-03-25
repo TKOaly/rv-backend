@@ -12,12 +12,15 @@ const expect = chai.expect;
 
 chai.use(chaiHttp);
 
-const token = jwt.sign(
+const adminToken = jwt.sign(
 	{
 		userId: 2,
 	},
 	process.env.JWT_ADMIN_SECRET
 );
+const userToken = jwt.sign({
+	userId: 1,
+});
 
 after(async () => {
 	await test_teardown();
@@ -39,9 +42,19 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/categories')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/categories')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -50,7 +63,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/categories/11')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 		});
@@ -59,9 +72,19 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.get('/api/v1/admin/categories/666')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/categories/11')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -70,7 +93,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/categories')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 'Food waste',
 				});
@@ -88,7 +111,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/categories')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 'Food waste',
 				});
@@ -100,13 +123,26 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/admin/categories')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					abcd: 1,
 				});
 
 			expect(res.status).to.equal(400);
 			expect(res.body.error_code).to.equal('bad_request');
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.post('/api/v1/admin/categories')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					description: 'Food waste',
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -115,7 +151,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/categories/20')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 'Radioactive waste',
 				});
@@ -131,7 +167,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/categories/20')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 'Radioactive waste',
 				});
@@ -144,7 +180,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/categories/88888888')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 'Radioactive waste',
 				});
@@ -157,13 +193,26 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.patch('/api/v1/admin/categories/20')
-				.set('Authorization', 'Bearer ' + token)
+				.set('Authorization', 'Bearer ' + adminToken)
 				.send({
 					description: 5,
 				});
 
 			expect(res.status).to.equal(400);
 			expect(res.body.error_code).to.equal('bad_request');
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.patch('/api/v1/admin/categories/20')
+				.set('Authorization', 'Bearer ' + userToken)
+				.send({
+					description: 'Radioactive waste',
+				});
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 
@@ -172,7 +221,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/categories/9999')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(404);
 			expect(res.body.error_code).to.equal('not_found');
@@ -182,7 +231,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/categories/20')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 		});
@@ -191,7 +240,7 @@ describe('routes: admin categories', () => {
 			const pre_res = await chai
 				.request(app)
 				.get('/api/v1/admin/products')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(pre_res.status).to.equal(200);
 
@@ -202,7 +251,7 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/categories/20')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(200);
 			expect(res.body.movedProducts.sort()).to.deep.equal(initial_items.sort());
@@ -210,7 +259,7 @@ describe('routes: admin categories', () => {
 			const post_res = await chai
 				.request(app)
 				.get('/api/v1/admin/products')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(post_res.status).to.equal(200);
 
@@ -223,10 +272,20 @@ describe('routes: admin categories', () => {
 			const res = await chai
 				.request(app)
 				.delete('/api/v1/admin/categories/0')
-				.set('Authorization', 'Bearer ' + token);
+				.set('Authorization', 'Bearer ' + adminToken);
 
 			expect(res.status).to.equal(403);
 			expect(res.body.error_code).to.equal('bad_request');
+		});
+
+		it('should not be called by unprivileged user', async () => {
+			const res = await chai
+				.request(app)
+				.delete('/api/v1/admin/categories/20')
+				.set('Authorization', 'Bearer ' + userToken);
+
+			expect(res.status).to.equal(401);
+			expect(res.body.error_code).to.equal('invalid_token');
 		});
 	});
 });
