@@ -2,8 +2,12 @@
 	"compilerOptions": {
 		"outDir": "./built",
 		"allowJs": true,
-		"module": "NodeNext",
-		"target": "ES5"
+		"lib": ["es2023"],
+		"module": "Node16",
+		"target": "ES2022",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"moduleResolution": "node16"
 	},
 	"include": ["./src/**/*", "./test/**/*"],
 	"ts-node": {
