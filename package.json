@@ -5,12 +5,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "node ./src/server.js",
-		"start-nodemon": "nodemon ./src/server.js",
+		"build": "tsc",
+		"start": "node ./built/src/server.js",
+		"start-nodemon": "nodemon -e ts,js -w src -x node --loader ts-node/esm src/server.ts",
 		"db-rollback": "knex migrate:rollback",
 		"db-migrate": "knex migrate:latest",
 		"db-seed": "knex seed:run",
-		"test": ". test/test.env && nyc --reporter=lcov node --test test/",
+		"test": ". test/test.env && nyc --reporter=lcov node --test built/test/",
 		"lint": "biome check .",
 		"lint-fix": "biome check . --apply",
 		"start-container": "docker compose build && docker compose up -d",
@@ -40,6 +41,8 @@
 		"chai-http": "^4.4.0",
 		"lefthook": "^1.6.5",
 		"nodemon": "^3.0.3",
-		"nyc": "^15.1.0"
+		"nyc": "^15.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.4.3"
 	}
 }
