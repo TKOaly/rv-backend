@@ -2,15 +2,19 @@ import express from 'express';
 import categoryStore from '../../db/categoryStore.js';
 import historyStore from '../../db/historyStore.js';
 import productStore from '../../db/productStore.js';
+import logger from '../../logger.js';
 import { deleteUndefinedFields } from '../../utils/objectUtils.js';
-import authMiddleware from '../authMiddleware.js';
-import logger from './../../logger.js';
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 
 const router = express.Router();
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.param('barcode', async (req, res, next) => {
+interface Products_requests extends Authenticated_request {
+	product: any;
+}
+
+router.param('barcode', async (req: Products_requests, res, next) => {
 	const product = await productStore.findByBarcode(req.params.barcode);
 
 	if (product === undefined) {
@@ -29,7 +33,7 @@ router.param('barcode', async (req, res, next) => {
 	next();
 });
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Products_requests, res) => {
 	const user = req.user;
 
 	try {
@@ -61,7 +65,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: Products_requests, res) => {
 	const user = req.user;
 	const { barcode, name, categoryId, buyPrice, sellPrice, stock } = req.body;
 
@@ -124,7 +128,7 @@ router.post('/', async (req, res) => {
 	});
 });
 
-router.get('/:barcode(\\d{1,14})', async (req, res) => {
+router.get('/:barcode(\\d{1,14})', async (req: Products_requests, res) => {
 	const user = req.user;
 	const barcode = req.params.barcode;
 
@@ -145,7 +149,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
 	});
 });
 
-router.patch('/:barcode(\\d{1,14})', async (req, res) => {
+router.patch('/:barcode(\\d{1,14})', async (req: Products_requests, res) => {
 	const user = req.user;
 	const barcode = req.params.barcode;
 	const { name, categoryId, buyPrice, sellPrice, stock } = req.body;
@@ -224,7 +228,7 @@ router.delete('/:barcode(\\d{1,14})', async (req, res) => {
 	});
 });
 
-router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
+router.post('/:barcode(\\d{1,14})/buyIn', async (req: Products_requests, res) => {
 	const barcode = req.params.barcode;
 	const { count, buyPrice, sellPrice } = req.body;
 
@@ -271,14 +275,14 @@ router.post('/:barcode(\\d{1,14})/buyIn', async (req, res) => {
 	});
 });
 
-router.get('/:barcode(\\d{1,14})/purchaseHistory', async (req, res) => {
+router.get('/:barcode(\\d{1,14})/purchaseHistory', async (req: Products_requests, res) => {
 	const barcode = req.params.barcode;
 	const purchases = await historyStore.getProductPurchaseHistory(barcode);
 
 	res.status(200).json({
 		purchases: purchases.map((purchase) => {
 			delete purchase.balanceAfter;
-			delete purchase.product;
+			// delete purchase.product; This doesn't exist on this object?
 			return purchase;
 		}),
 	});

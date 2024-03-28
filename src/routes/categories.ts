@@ -1,13 +1,13 @@
 import express from 'express';
 import categoryStore from '../db/categoryStore.js';
-import logger from './../logger.js';
-import authMiddleware from './authMiddleware.js';
+import logger from '../logger.js';
+import authMiddleware, { type Authenticated_request } from './authMiddleware.js';
 
 const router = express.Router();
 
 router.use(authMiddleware());
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	try {
@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/:categoryId(\\d+)', async (req, res) => {
+router.get('/:categoryId(\\d+)', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const categoryId = Number.parseInt(req.params.categoryId);
 

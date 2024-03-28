@@ -1,9 +1,9 @@
 import express from 'express';
 import boxStore from '../../db/boxStore.js';
 import productStore from '../../db/productStore.js';
+import logger from '../../logger.js';
 import { deleteUndefinedFields } from '../../utils/objectUtils.js';
-import authMiddleware from '../authMiddleware.js';
-import logger from './../../logger.js';
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 
 const router = express.Router();
 
@@ -25,7 +25,7 @@ const mapDatabaseBoxToApiBox = (box) => ({
 	},
 });
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	try {
@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const boxBarcode = req.body.boxBarcode;
 	const itemsPerBox = req.body.itemsPerBox;
@@ -91,7 +91,7 @@ router.post('/', async (req, res) => {
 	});
 });
 
-router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
+router.get('/:boxBarcode(\\d{1,14})', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const boxBarcode = req.params.boxBarcode;
 
@@ -112,7 +112,7 @@ router.get('/:boxBarcode(\\d{1,14})', async (req, res) => {
 	});
 });
 
-router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
+router.patch('/:boxBarcode(\\d{1,14})', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const boxBarcode = req.params.boxBarcode;
 	const itemsPerBox = req.body.itemsPerBox;
@@ -168,7 +168,7 @@ router.patch('/:boxBarcode(\\d{1,14})', async (req, res) => {
 	});
 });
 
-router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
+router.delete('/:boxBarcode(\\d{1,14})', async (req: Authenticated_request, res) => {
 	const boxBarcode = req.params.boxBarcode;
 	const deletedBox = await boxStore.deleteBox(boxBarcode);
 
@@ -194,7 +194,7 @@ router.delete('/:boxBarcode(\\d{1,14})', async (req, res) => {
 	}
 });
 
-router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
+router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req: Authenticated_request, res) => {
 	const boxBarcode = req.params.boxBarcode;
 	const { productSellPrice, productBuyPrice } = req.body;
 
@@ -209,7 +209,9 @@ router.post('/:boxBarcode(\\d{1,14})/buyIn', async (req, res) => {
 		return;
 	}
 
-	const { sellprice: oldsellprice, buyprice: oldbuyprice } = box;
+	const {
+		product: { sellPrice: oldsellprice, buyPrice: oldbuyprice },
+	} = box;
 
 	const stock = await boxStore.buyIn(boxBarcode, req.body.boxCount);
 

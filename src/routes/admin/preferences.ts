@@ -1,7 +1,7 @@
 import express from 'express';
 import { getPreference, getPreferenceByKey, preferences, setPreference } from '../../db/preferences.js';
 import logger from '../../logger.js';
-import authMiddleware from '../authMiddleware.js';
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 
 const router = express.Router();
 
@@ -42,7 +42,7 @@ router.get('/:preferenceKey', async (req, res) => {
 	});
 });
 
-router.patch('/:preferenceKey', async (req, res) => {
+router.patch('/:preferenceKey', async (req: Authenticated_request, res) => {
 	const preference = getPreferenceByKey(req.params.preferenceKey);
 
 	if (preference === undefined) {

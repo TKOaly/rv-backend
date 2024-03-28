@@ -1,13 +1,13 @@
 import express from 'express';
 import historyStore from '../db/historyStore.js';
 import logger from '../logger.js';
-import authMiddleware from './authMiddleware.js';
+import authMiddleware, { type Authenticated_request } from './authMiddleware.js';
 
 const router = express.Router();
 
 router.use(authMiddleware());
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	try {
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/:depositId(\\d+)', async (req, res) => {
+router.get('/:depositId(\\d+)', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const depositId = Number.parseInt(req.params.depositId);
 
