@@ -2,7 +2,7 @@ import express from 'express';
 import categoryStore from '../../db/categoryStore.js';
 import { getPreference, preferences } from '../../db/preferences.js';
 import logger from '../../logger.js';
-import authMiddleware from '../authMiddleware.js';
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 
 const { DEFAULT_PRODUCT_CATEGORY } = preferences;
 
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	try {
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const description = req.body.description;
 
@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
 	});
 });
 
-router.get('/:categoryId(\\d+)', async (req, res) => {
+router.get('/:categoryId(\\d+)', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const categoryId = Number.parseInt(req.params.categoryId);
 
@@ -79,7 +79,7 @@ router.get('/:categoryId(\\d+)', async (req, res) => {
 	});
 });
 
-router.patch('/:categoryId(\\d+)', async (req, res) => {
+router.patch('/:categoryId(\\d+)', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const categoryId = Number.parseInt(req.params.categoryId);
 	const description = req.body.description;
@@ -111,7 +111,7 @@ router.patch('/:categoryId(\\d+)', async (req, res) => {
 	});
 });
 
-router.delete('/:categoryId', async (req, res) => {
+router.delete('/:categoryId', async (req: Authenticated_request, res) => {
 	const categoryId = req.params.categoryId;
 
 	const defaultCategoryId = await getPreference(DEFAULT_PRODUCT_CATEGORY);

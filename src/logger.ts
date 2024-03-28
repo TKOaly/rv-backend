@@ -11,13 +11,11 @@ const logger = createLogger({
 			filename: 'logs/errors.log',
 			level: 'error',
 			format: combine(timestamp(), splat(), logFormat),
-			json: false,
 		}),
 		new transports.File({
 			filename: 'logs/combined.log',
 			level: 'info',
 			format: combine(timestamp(), splat(), logFormat),
-			json: false,
 		}),
 	],
 });
@@ -26,8 +24,6 @@ if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
 	logger.add(
 		new transports.Console({
 			format: format.combine(splat(), format.simple()),
-			colorize: true,
-			timestamp: true,
 		})
 	);
 }

@@ -1,14 +1,18 @@
 import express from 'express';
 import historyStore from '../../db/historyStore.js';
-import userStore from '../../db/userStore.js';
+import userStore, { type user } from '../../db/userStore.js';
 import logger from '../../logger.js';
-import authMiddleware from '../authMiddleware.js';
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 
 const router = express.Router();
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.param('userId', async (req, res, next) => {
+interface Users_request extends Authenticated_request {
+	routeUser: user;
+}
+
+router.param('userId', async (req: Users_request, res, next) => {
 	const user = await userStore.findById(req.params.userId);
 
 	if (user === undefined) {
@@ -26,7 +30,7 @@ router.param('userId', async (req, res, next) => {
 	next();
 });
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Users_request, res) => {
 	const callingUser = req.user;
 
 	try {
@@ -55,7 +59,7 @@ router.get('/', async (req, res) => {
 	}
 });
 
-router.get('/:userId(\\d+)', async (req, res) => {
+router.get('/:userId(\\d+)', async (req: Users_request, res) => {
 	logger.info('User %s fetched user %s as admin', req.user.username, req.routeUser.userId);
 
 	res.status(200).json({
@@ -70,7 +74,7 @@ router.get('/:userId(\\d+)', async (req, res) => {
 	});
 });
 
-router.post('/:userId(\\d+)/changeRole', async (req, res) => {
+router.post('/:userId(\\d+)/changeRole', async (req: Users_request, res) => {
 	const role = req.body.role;
 
 	const updatedUser = await userStore.updateUser(req.routeUser.userId, {
@@ -84,7 +88,7 @@ router.post('/:userId(\\d+)/changeRole', async (req, res) => {
 	});
 });
 
-router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
+router.get('/:userId(\\d+)/purchaseHistory', async (req: Users_request, res) => {
 	const purchases = await historyStore.getUserPurchaseHistory(req.routeUser.userId);
 
 	res.status(200).json({
@@ -92,7 +96,7 @@ router.get('/:userId(\\d+)/purchaseHistory', async (req, res) => {
 	});
 });
 
-router.get('/:userId(\\d+)/depositHistory', async (req, res) => {
+router.get('/:userId(\\d+)/depositHistory', async (req: Users_request, res) => {
 	const history = await historyStore.getUserDepositHistory(req.routeUser.userId);
 
 	res.status(200).json({
