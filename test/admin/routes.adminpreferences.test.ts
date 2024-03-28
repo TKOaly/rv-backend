@@ -62,7 +62,7 @@ describe('routes: admin preferences', () => {
 				.set('Authorization', 'Bearer ' + token);
 
 			expect(res.status).to.equal(200);
-			expect(res.body).to.contain.key('preference');
+			expect(res.body).to.contain.keys('preference');
 			expect(res.body.preference).to.contain.all.keys('value', 'key');
 			expect(res.body.preference.value).to.equal(0.05);
 		});

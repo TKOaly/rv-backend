@@ -10,7 +10,10 @@ COPY ./src ./src
 COPY ./test ./test
 COPY ./knexfile.js .
 COPY ./startup.sh ./startup.sh
+COPY ./tsconfig.json .
 
 RUN chmod +x ./startup.sh
+
+RUN npm run build
 
 CMD ["./startup.sh"]

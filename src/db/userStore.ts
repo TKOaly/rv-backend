@@ -4,7 +4,18 @@ import knex from './knex.js';
 
 export const RFID_SALT = '$2b$15$yvDy89XRQiv1e4M6Vn2m5e';
 
-const rowToUser = (row) => {
+export interface user {
+	userId: any;
+	username: any;
+	fullName: any;
+	email: any;
+	moneyBalance: any;
+	role: any;
+	passwordHash: any;
+	rfidHash: any;
+}
+
+const rowToUser = (row): user | undefined => {
 	if (row !== undefined) {
 		return {
 			userId: row.userid,
