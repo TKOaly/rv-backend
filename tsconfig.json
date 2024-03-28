@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-      "outDir": "./built",
-      "allowJs": true,
-      "module": "NodeNext",
-      "target": "ES5"
-    },
-    "include": ["./src/**/*", "./test/**/*"],
-    "ts-node": {
-        "esm": true,
-        "experimentalSpecifierResolution": "node",
-    }
-  }
+	"compilerOptions": {
+		"outDir": "./built",
+		"allowJs": true,
+		"module": "NodeNext",
+		"target": "ES5"
+	},
+	"include": ["./src/**/*", "./test/**/*"],
+	"ts-node": {
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
+	}
+}
