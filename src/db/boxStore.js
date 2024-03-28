@@ -190,18 +190,21 @@ const buyIn = async (boxBarcode, boxCount) => {
 			.transacting(trx)
 			.leftJoin('PRICE', 'RVBOX.itembarcode', 'PRICE.barcode')
 			.leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
-			.where('RVBOX.barcode', boxBarcode)
-			.first('RVBOX.itemcount', 'PRICE.priceid', 'PRICE.count');
+			.where({ 'RVBOX.barcode': boxBarcode, 'PRICE.endtime': null })
+			.first('RVBOX.itemcount', 'PRICE.priceid', 'PRICE.count', 'PRICE.barcode');
 
 		if (row === undefined) {
 			return undefined;
 		}
 
-		const { count, itemcount, priceid } = row;
+		const { count, itemcount, priceid, barcode } = row;
 
 		const newCount = count + itemcount * boxCount;
 
-		await knex('PRICE').transacting(trx).select({ priceid, endtime: null }).update({ count: newCount });
+		await knex('PRICE')
+			.transacting(trx)
+			.update({ count: newCount })
+			.where({ 'PRICE.barcode': barcode, 'PRICE.endtime': null });
 
 		return newCount;
 	});
