@@ -11,7 +11,7 @@ const router = express.Router();
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 interface Products_requests extends Authenticated_request {
-	product: any;
+	product?: any;
 }
 
 router.param('barcode', async (req: Products_requests, res, next) => {

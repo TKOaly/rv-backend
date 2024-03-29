@@ -5,7 +5,7 @@ import logger from '../logger.js';
 import { verifyRole } from './authUtils.js';
 
 export interface Authenticated_request extends Request {
-	user: user;
+	user?: user;
 }
 
 const authMiddleware = (requiredRole = null, tokenSecret = process.env.JWT_SECRET) => {

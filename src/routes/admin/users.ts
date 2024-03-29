@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
 interface Users_request extends Authenticated_request {
-	routeUser: user;
+	routeUser?: user;
 }
 
 router.param('userId', async (req: Users_request, res, next) => {
