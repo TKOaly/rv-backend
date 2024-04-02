@@ -12,7 +12,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
 
-        container: node:iron-slim
+        container: node:20-alpine
 
         services:
             postgres:
