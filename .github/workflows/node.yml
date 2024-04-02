@@ -9,10 +9,9 @@ on:
         types: [published]
 
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
-
-        container: node:20-alpine
+        container: node:20-slim
 
         services:
             postgres:
@@ -31,6 +30,11 @@ jobs:
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v4
+            - name: Cache NPM dependencies
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: 'npm'
             - name: Install NPM dependencies
               run: npm ci
             - name: Execute test suites
@@ -45,7 +49,21 @@ jobs:
                   DB_PORT: 5432
                   JWT_SECRET: unsecure1
                   JWT_ADMIN_SECRET: unsecure2
-            - name: Lint and check formatting with biome
-              run: npm run lint
             - name: Generate the code coverage report
               uses: codecov/codecov-action@v3
+    lint:
+        runs-on: ubuntu-latest
+        container: node:20-slim
+
+        steps:
+            - name: Checkout the repository
+              uses: actions/checkout@v4
+            - name: Cache NPM dependencies
+              uses: actions/setup-node@v4
+              with:
+                node-version: 20
+                cache: 'npm'
+            - name: Install NPM dependencies
+              run: npm ci
+            - name: Lint and check formatting with biome
+              run: npm run lint
