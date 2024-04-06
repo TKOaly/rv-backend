@@ -19,46 +19,48 @@ export const getPreference = async (preference) => {
 };
 
 export const setPreference = async (preference, value) => {
-	const data = await knex('PREFERENCES').where({ key: preference.key }).first('value');
+	return await knex.transaction(async (trx) => {
+		const data = await knex('PREFERENCES').transacting(trx).where({ key: preference.key }).first('value');
 
-	if (preference.validate) {
-		const errors = preference.validate(value);
+		if (preference.validate) {
+			const errors = preference.validate(value);
 
-		if (errors.length > 0) {
+			if (errors.length > 0) {
+				return {
+					previousValue: undefined,
+					value,
+					errors,
+				};
+			}
+		}
+
+		let serialized = value;
+
+		if (preference.serialize) {
+			serialized = preference.serialize(value);
+		}
+
+		if (data === undefined) {
+			await knex('PREFERENCES').transacting(trx).insert({
+				key: preference.key,
+				value: serialized,
+			});
+
 			return {
-				previousValue: undefined,
+				errors: [],
 				value,
-				errors,
+				previousValue: undefined,
+			};
+		} else {
+			await knex('PREFERENCES').transacting(trx).update({ value: serialized }).where({ key: preference.key });
+
+			return {
+				errors: [],
+				value,
+				previousValue: data.value,
 			};
 		}
-	}
-
-	let serialized = value;
-
-	if (preference.serialize) {
-		serialized = preference.serialize(value);
-	}
-
-	if (data === undefined) {
-		await knex('PREFERENCES').insert({
-			key: preference.key,
-			value: serialized,
-		});
-
-		return {
-			errors: [],
-			value,
-			previousValue: undefined,
-		};
-	} else {
-		await knex('PREFERENCES').update({ value: serialized }).where({ key: preference.key });
-
-		return {
-			errors: [],
-			value,
-			previousValue: data.value,
-		};
-	}
+	});
 };
 
 const floatPreference = {
