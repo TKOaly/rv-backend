@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.use(authMiddleware('ADMIN', process.env.JWT_ADMIN_SECRET));
 
-router.get('/depositHistory', async (req, res) => {
-	const history = await historyStore.getDepositHistory(req.params.userId);
+router.get('/depositHistory', async (_req, res) => {
+	const history = await historyStore.getDepositHistory();
 
 	res.status(200).json({
 		deposits: history,

@@ -5,12 +5,13 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"start": "node ./src/server.js",
-		"start-nodemon": "nodemon ./src/server.js",
+		"build": "tsc",
+		"start": "node ./built/src/server.js",
+		"start-nodemon": "nodemon -e ts,js -w src -x node --loader ts-node/esm src/server.ts",
 		"db-rollback": "knex migrate:rollback",
 		"db-migrate": "knex migrate:latest",
 		"db-seed": "knex seed:run",
-		"test": ". test/test.env && nyc --reporter=lcov node --test test/",
+		"test": ". test/test.env && nyc --reporter=lcov node --test built/test/",
 		"lint": "biome check .",
 		"lint-fix": "biome check . --apply",
 		"start-container": "docker compose build && docker compose up -d",
@@ -36,10 +37,19 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.6.0",
+		"@types/bcrypt": "^5.0.2",
+		"@types/chai": "^4.3.14",
+		"@types/cors": "^2.8.17",
+		"@types/express": "^4.17.21",
+		"@types/jsonwebtoken": "^9.0.6",
+		"@types/node": "^20.11.30",
+		"@types/pg": "^8.11.3",
 		"chai": "^4.4.1",
 		"chai-http": "^4.4.0",
 		"lefthook": "^1.6.5",
 		"nodemon": "^3.0.3",
-		"nyc": "^15.1.0"
+		"nyc": "^15.1.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.4.3"
 	}
 }

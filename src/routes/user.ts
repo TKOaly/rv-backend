@@ -2,11 +2,11 @@ import express from 'express';
 import userStore from '../db/userStore.js';
 import logger from '../logger.js';
 import { deleteUndefinedFields } from '../utils/objectUtils.js';
-import authMiddleware from './authMiddleware.js';
+import authMiddleware, { type Authenticated_request } from './authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/user_exists', async (req, res) => {
+router.post('/user_exists', async (req: Authenticated_request, res) => {
 	const username = req.body.username;
 	const user = await userStore.findByUsername(username);
 	if (user) {
@@ -18,7 +18,7 @@ router.post('/user_exists', async (req, res) => {
 
 router.use(authMiddleware());
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	logger.info('User %s fetched user data', user.username);
@@ -34,7 +34,7 @@ router.get('/', async (req, res) => {
 	});
 });
 
-router.patch('/', async (req, res) => {
+router.patch('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	const username = req.body.username;
@@ -102,7 +102,7 @@ router.patch('/', async (req, res) => {
 	});
 });
 
-router.post('/deposit', async (req, res) => {
+router.post('/deposit', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const amount = req.body.amount;
 
@@ -120,7 +120,7 @@ router.post('/deposit', async (req, res) => {
 	});
 });
 
-router.post('/changeRfid', async (req, res) => {
+router.post('/changeRfid', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const rfid = req.body.rfid;
 
@@ -130,7 +130,7 @@ router.post('/changeRfid', async (req, res) => {
 	res.status(204).end();
 });
 
-router.post('/changePassword', async (req, res) => {
+router.post('/changePassword', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const password = req.body.password;
 

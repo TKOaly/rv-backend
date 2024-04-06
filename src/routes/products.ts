@@ -1,13 +1,13 @@
 import express from 'express';
 import productStore from '../db/productStore.js';
-import logger from './../logger.js';
-import authMiddleware from './authMiddleware.js';
+import logger from '../logger.js';
+import authMiddleware, { type Authenticated_request } from './authMiddleware.js';
 
 const router = express.Router();
 
 router.use(authMiddleware());
 
-router.get('/', async (req, res) => {
+router.get('/', async (req: Authenticated_request, res) => {
 	const user = req.user;
 
 	const products = await productStore.getProducts();
@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
 	});
 });
 
-router.get('/:barcode(\\d{1,14})', async (req, res) => {
+router.get('/:barcode(\\d{1,14})', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const barcode = req.params.barcode;
 
@@ -64,7 +64,7 @@ router.get('/:barcode(\\d{1,14})', async (req, res) => {
 	});
 });
 
-router.post('/search', async (req, res) => {
+router.post('/search', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const query = req.body.query;
 	const result = await productStore.searchProducts(query);
@@ -72,7 +72,7 @@ router.post('/search', async (req, res) => {
 	res.status(200).json({ products: result });
 });
 
-router.post('/:barcode(\\d{1,14})/purchase', async (req, res) => {
+router.post('/:barcode(\\d{1,14})/purchase', async (req: Authenticated_request, res) => {
 	const user = req.user;
 	const barcode = req.params.barcode;
 	const count = req.body.count;

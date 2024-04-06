@@ -11,7 +11,8 @@
 			"recommended": true,
 			"suspicious": {
 				"noRedundantUseStrict": "off",
-				"noDoubleEquals": "off"
+				"noDoubleEquals": "off",
+				"noExplicitAny": "off"
 			},
 			"style": {
 				"useNodejsImportProtocol": "off",

@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"outDir": "./built",
+		"allowJs": true,
+		"lib": ["es2023"],
+		"module": "Node16",
+		"target": "ES2022",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"moduleResolution": "node16",
+		"strict": true,
+		"noImplicitAny": false,
+		"strictNullChecks": false
+	},
+	"include": ["./src/**/*", "./test/**/*"],
+	"ts-node": {
+		"esm": true,
+		"experimentalSpecifierResolution": "node"
+	}
+}
