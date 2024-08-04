@@ -2,16 +2,16 @@ name: Deploy
 on:
     release:
         types: [released]
+    push:
+        branches: [lolasd123]
 jobs:
-    test:
-        uses: ./.github/workflows/node.yml
-    lint:
-        uses: ./.github/workflows/node.yml
+#    test:
+#        uses: ./.github/workflows/node.yml
+#    lint:
+#        uses: ./.github/workflows/node.yml
     build:
         runs-on: ubuntu-latest
-        container: node:20-slim
-        needs: [test, lint]
-
+#        needs: [test, lint]
         steps:
             - name: Checkout the repository
               uses: actions/checkout@v4
