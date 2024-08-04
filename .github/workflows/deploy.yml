@@ -2,7 +2,6 @@ name: Deploy
 on:
     release:
         types: [released]
-
 jobs:
     test:
         uses: ./.github/workflows/node.yml
