@@ -358,6 +358,12 @@ paths:
       operationId: register
       tags:
         - normal
+      parameters:
+        - in: header
+          name: RV-Terminal-Secret
+          schema:
+            type: string
+          required: true
       responses: 
         201:
           description: New user created successfully
@@ -372,6 +378,8 @@ paths:
                     '$ref': '#/components/schemas/User'
         400:
           '$ref': '#/components/responses/BadRequestErrorResponse'
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         409:
           '$ref': '#/components/responses/IdentifierTakenErrorResponse'
       requestBody: 

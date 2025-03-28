@@ -71,6 +71,34 @@ describe('routes: register', () => {
 			expect(res.status).to.equal(400);
 			expect(res.body.error_code).to.equal('bad_request');
 		});
+
+		it('should return 400 with missing terminal secret', async () => {
+			const res = await chai.request(app).post('/api/v1/register').send({
+				username: 'test',
+				password: 'test',
+				fullName: 'm.erkki',
+				email: 'erkki@test.com',
+			});
+
+			expect(res.status).to.equal(400);
+			expect(res.body.error_code).to.equal('bad_request');
+		});
+
+		it('should return 403 with invalid terminal secret', async () => {
+			const res = await chai
+				.request(app)
+				.post('/api/v1/register')
+				.set('RV-Terminal-Secret', 'invalid secret')
+				.send({
+					username: 'test',
+					password: 'test',
+					fullName: 'm.erkki',
+					email: 'erkki@test.com',
+				});
+
+			expect(res.status).to.equal(403);
+			expect(res.body.error_code).to.equal('not_authorized');
+		});
 	});
 
 	describe('Usernames and Emails should be uniques', () => {
