@@ -174,7 +174,7 @@ export const updateProduct = async (barcode, productData, userId) => {
 			sellprice: productData.sellPrice,
 		});
 		if (Object.keys(priceFields).length > 0) {
-			if (priceFields.sellPrice === undefined) {
+			if (priceFields.sellprice === undefined) {
 				await knex('PRICE').transacting(trx).update(priceFields).where({ barcode: barcode, endtime: null });
 			} else {
 				/* Sell price changed, a new price row will be created. */
