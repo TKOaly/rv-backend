@@ -11,16 +11,21 @@
 			"runtimeExecutable": "sh",
 			"runtimeArgs": ["-c", ". test/test.env && node --test built/test/"],
 			"localRoot": "${workspaceFolder}",
-			"console": "integratedTerminal"
+			"console": "integratedTerminal",
+			"preLaunchTask": "build for debug"
 		},
 		{
 			"type": "node",
 			"request": "launch",
 			"name": "Test current file",
 			"runtimeExecutable": "sh",
-			"runtimeArgs": ["-c", ". test/test.env && node --test built/$(dirname ${relativeFile})/$(basename -s .ts ${relativeFile}).js"],
+			"runtimeArgs": [
+				"-c",
+				". test/test.env && node --test built/$(dirname ${relativeFile})/$(basename -s .ts ${relativeFile}).js"
+			],
 			"localRoot": "${workspaceFolder}",
-			"console": "integratedTerminal"
+			"console": "integratedTerminal",
+			"preLaunchTask": "build for debug"
 		}
 	]
 }
