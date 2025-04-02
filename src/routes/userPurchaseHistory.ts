@@ -15,6 +15,7 @@ router.get('/', async (req: Authenticated_request, res) => {
 			return {
 				purchaseId: purchase.purchaseId,
 				time: purchase.time,
+				returnedTime: purchase.returnedTime,
 				product: {
 					barcode: purchase.product.barcode,
 					name: purchase.product.name,
@@ -28,6 +29,7 @@ router.get('/', async (req: Authenticated_request, res) => {
 				returned: purchase.returned,
 				price: purchase.price,
 				balanceAfter: purchase.balanceAfter,
+				returnedBalanceAfter: purchase.returnedBalanceAfter,
 			};
 		});
 
@@ -66,6 +68,7 @@ router.get('/:purchaseId(\\d+)', async (req: Authenticated_request, res) => {
 			purchase: {
 				purchaseId: purchase.purchaseId,
 				time: purchase.time,
+				returnedTime: purchase.returnedTime,
 				product: {
 					barcode: purchase.product.barcode,
 					name: purchase.product.name,
@@ -79,6 +82,7 @@ router.get('/:purchaseId(\\d+)', async (req: Authenticated_request, res) => {
 				returned: purchase.returned,
 				price: purchase.price,
 				balanceAfter: purchase.balanceAfter,
+				returnedBalanceAfter: purchase.returnedBalanceAfter,
 			},
 		});
 	} catch (error) {

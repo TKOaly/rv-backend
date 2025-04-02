@@ -11,6 +11,8 @@ const rowToPurchase = (row) => {
 		balanceAfter: row.saldo,
 		stockAfter: row.count,
 		returned: row.returned,
+		returnedTime: new Date(row.returnedTime).toISOString(),
+		returnedBalanceAfter: row.saldo2,
 	};
 };
 
@@ -33,6 +35,7 @@ export const createPurchaseHistoryQuery = () =>
 		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
 		.leftJoin('ITEMHISTORY as ih2', 'ih2.itemhistid2', 'ITEMHISTORY.itemhistid')
+		.leftJoin('SALDOHISTORY as sh2', 'sh2.saldhistid', 'ih2.saldhistid')
 		.select(
 			'ITEMHISTORY.itemhistid',
 			'ITEMHISTORY.time',
@@ -52,7 +55,9 @@ export const createPurchaseHistoryQuery = () =>
 			'ROLE.role',
 			'SALDOHISTORY.saldo',
 			'RVPERSON.privacy_level',
-			knex.raw('(ih2.itemhistid2 is not null) as returned')
+			knex.raw('(ih2.itemhistid2 is not null) as returned'),
+			'ih2.time as returnedTime',
+			'sh2.saldo as saldo2'
 		)
 		.where('ITEMHISTORY.actionid', actions.BOUGHT_BY) /* actionid 5 = buy action */
 		.orderBy([
