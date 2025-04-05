@@ -69,4 +69,42 @@ export const saldohistory = [
 		saldo: 500,
 		difference: -133,
 	},
+	// product bought and returned
+	{
+		saldhistid: 11,
+		userid: 1,
+		time: new Date('2019-11-24T00:00:15Z'),
+		saldo: 354,
+		difference: -146,
+	},
+	{
+		saldhistid: 12,
+		userid: 2,
+		time: new Date('2019-11-24T00:01:15Z'),
+		saldo: 1500,
+		difference: -146,
+	},
+	{
+		saldhistid: 13,
+		userid: 1,
+		time: new Date('2019-11-24T00:03:15Z'),
+		saldo: 500,
+		difference: 146,
+	},
+	// bank trasfer deposit
+	{
+		saldhistid: 14,
+		userid: 1,
+		time: new Date('2019-12-24T00:00:15Z'),
+		saldo: 1500,
+		difference: 1000,
+	},
+	// cash deposit
+	{
+		saldhistid: 15,
+		userid: 1,
+		time: new Date('2019-12-24T00:03:15Z'),
+		saldo: 1700,
+		difference: 200,
+	},
 ];
