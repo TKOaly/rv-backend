@@ -1,8 +1,8 @@
 import { rvitems } from './RVITEM.js';
 
 function getRandomInteger(min, max) {
-	min_number = Math.ceil(min);
-	max_number = Math.floor(max);
+	const min_number = Math.ceil(min);
+	const max_number = Math.floor(max);
 	return Math.floor(Math.random() * (max_number - min_number + 1)) + min_number;
 }
 
