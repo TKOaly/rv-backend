@@ -107,4 +107,26 @@ export const saldohistory = [
 		saldo: 1700,
 		difference: 200,
 	},
+	// Can return
+	{
+		saldhistid: 16,
+		userid: 1,
+		time: new Date('2019-12-25T00:00:15Z'),
+		saldo: 1715,
+		difference: 15,
+	},
+	{
+		saldhistid: 17,
+		userid: 2,
+		time: new Date('2019-12-25T00:01:15Z'),
+		saldo: 1515,
+		difference: 15,
+	},
+	{
+		saldhistid: 18,
+		userid: 1,
+		time: new Date('2019-12-25T00:03:15Z'),
+		saldo: 1700,
+		difference: -15,
+	},
 ];

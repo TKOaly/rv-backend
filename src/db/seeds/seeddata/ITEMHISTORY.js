@@ -133,6 +133,41 @@ export const itemhistory = [
 		saldhistid: 13,
 		itemhistid2: 9,
 	},
+	// Can return
+	{
+		itemhistid: 12,
+		time: new Date('2019-12-25T00:00:15Z'),
+		count: -44062,
+		itemid: 58,
+		userid: 1,
+		actionid: 5,
+		priceid1: 105,
+		priceid2: null,
+		saldhistid: 16,
+	},
+	{
+		itemhistid: 13,
+		time: new Date('2019-12-25T00:01:15Z'),
+		count: -44062,
+		itemid: 58,
+		userid: 2,
+		actionid: 5,
+		priceid1: 105,
+		priceid2: null,
+		saldhistid: 17,
+	},
+	{
+		itemhistid: 14,
+		time: new Date('2019-12-25T00:03:15Z'),
+		count: -44062,
+		itemid: 58,
+		userid: 1,
+		actionid: 28,
+		priceid1: 105,
+		priceid2: null,
+		saldhistid: 18,
+		itemhistid2: 12,
+	},
 ];
 
 //Creates 5000 somewhat random itemhistory logs when container is recreated
