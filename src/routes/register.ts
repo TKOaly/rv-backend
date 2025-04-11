@@ -5,8 +5,10 @@ import { requireRvTerminalSecretMiddleware } from './authMiddleware.js';
 
 const router = express.Router();
 
+router.use(requireRvTerminalSecretMiddleware());
+
 // Register a new user
-router.post('/', requireRvTerminalSecretMiddleware(), async (req, res) => {
+router.post('/', async (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	const fullName = req.body.fullName;

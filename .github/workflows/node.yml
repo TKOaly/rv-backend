@@ -48,6 +48,7 @@ jobs:
                   DB_NAME: rv
                   DB_PORT: 5432
                   JWT_SECRET: unsecure1
+                  RV_TERMINAL_SECRET: unsecure2
             - name: Generate the code coverage report
               uses: codecov/codecov-action@v3
     lint:
