@@ -18,6 +18,7 @@ router.get('/', async (req: Authenticated_request, res) => {
 				time: deposit.time,
 				amount: deposit.amount,
 				balanceAfter: deposit.balanceAfter,
+				type: deposit.type
 			};
 		});
 
