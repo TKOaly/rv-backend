@@ -60,4 +60,28 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
 	});
 });
 
+router.post('/depositHistory', async (req, res) => {
+	const limit: number = parseInt(req.body.limit, 10);
+	const offset: number = parseInt(req.body.offset, 10);
+	const history = await historyStore.getDepositHistory(offset, limit);
+
+	console.log(limit,":LIMIT",offset,":OFFSET")
+
+	res.status(200).json({
+		deposits: history,
+	});
+});
+
+router.post('/purchaseHistory', async (req, res) => {
+	const limit: number = parseInt(req.body.limit, 10);
+	const offset: number = parseInt(req.body.offset, 10);
+	const purchases = await historyStore.getPurchaseHistory(offset, limit);
+
+	console.log(limit,":LIMIT",offset,":OFFSET")
+
+	res.status(200).json({
+		purchases,
+	});
+});
+
 export default router;
