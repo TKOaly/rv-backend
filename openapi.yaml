@@ -2411,6 +2411,46 @@ paths:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    post:
+      summary: Get purchase history with pagination
+      tags:
+        - admin
+      security:
+        - adminAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                  example: 50
+                offset:
+                  type: integer
+                  example: 0
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
+                    type: array
+                    items: 
+                      allOf:
+                          - '$ref': '#/components/schemas/PurchaseEventBase'
+                          - '$ref': '#/components/schemas/PurchaseEventProduct'
+                          - '$ref': '#/components/schemas/PurchaseEventUser'
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
   /api/v1/admin/purchaseHistory/{purchaseId}: 
     get: 
       summary: Get details of a specific purchase event
@@ -2467,6 +2507,45 @@ paths:
                   - deposits
                 properties: 
                   deposits: 
+                    type: array
+                    items: 
+                      allOf:
+                        - '$ref': '#/components/schemas/DepositEventBase'
+                        - '$ref': '#/components/schemas/DepositEventUser'
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+    post:
+      summary: Get deposit history with pagination
+      tags:
+        - admin
+      security:
+        - adminAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                  example: 50
+                offset:
+                  type: integer
+                  example: 0
+      responses: 
+        200: 
+          description: Request fulfilled successfully
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - purchases
+                properties: 
+                  purchases: 
                     type: array
                     items: 
                       allOf:
