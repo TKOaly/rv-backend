@@ -10,9 +10,12 @@ const rowToPurchase = (row) => {
 		price: row.sellprice,
 		balanceAfter: row.saldo,
 		stockAfter: row.count,
+		product: rowToProduct(row),
+		user: rowToUser(row),
 		returned: row.returned,
-		returnedTime: new Date(row.returnedTime).toISOString(),
+		returnedTime: row.returnedTime ? new Date(row.returnedTime).toISOString() : '',
 		returnedBalanceAfter: row.saldo2,
+		isReturnAction: row.isReturnAction,
 	};
 };
 
@@ -23,14 +26,15 @@ const rowToDeposit = (row) => {
 		amount: row.difference,
 		balanceAfter: row.saldo,
 		type: row.actionid,
+		user: rowToUser(row),
 	};
 };
 
 export const createPurchaseHistoryQuery = () =>
 	knex('ITEMHISTORY')
-		.leftJoin('RVITEM', 'ITEMHISTORY.itemid', 'RVITEM.itemid')
-		.leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
 		.leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
+		.leftJoin('RVITEM', 'PRICE.itemid', 'RVITEM.itemid')
+		.leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
 		.leftJoin('RVPERSON', 'ITEMHISTORY.userid', 'RVPERSON.userid')
 		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
@@ -57,9 +61,11 @@ export const createPurchaseHistoryQuery = () =>
 			'RVPERSON.privacy_level',
 			knex.raw('(ih2.itemhistid2 is not null) as returned'),
 			'ih2.time as returnedTime',
-			'sh2.saldo as saldo2'
+			'sh2.saldo as saldo2',
+			knex.raw('CASE WHEN ih2.itemhistid IS NOT NULL THEN true ELSE false END as isReturnAction')
 		)
-		.where('ITEMHISTORY.actionid', actions.BOUGHT_BY) /* actionid 5 = buy action */
+		.where('ITEMHISTORY.actionid', actions.BOUGHT_BY)
+		.andWhere('PRICE.endtime', null)
 		.orderBy([
 			{ column: 'ITEMHISTORY.time', order: 'desc' },
 			{ column: 'ITEMHISTORY.itemhistid', order: 'desc' },
@@ -100,46 +106,24 @@ export const getPurchaseHistory = async (offset?: number, limit?: number) => {
 	if (limit) query = query.limit(limit);
 	const data = await query;
 
-	return data.map((row) => {
-		return {
-			...rowToPurchase(row),
-			product: rowToProduct(row),
-			user: rowToUser(row),
-		};
-	});
+	return data.map((row) => rowToPurchase(row));
 };
 
 export const getUserPurchaseHistory = async (userId) => {
 	const data = await createPurchaseHistoryQuery().andWhere('ITEMHISTORY.userid', userId);
-
-	return data.map((row) => {
-		return {
-			...rowToPurchase(row),
-			product: rowToProduct(row),
-		};
-	});
+	return data.map(rowToPurchase);
 };
 
 export const getProductPurchaseHistory = async (barcode) => {
 	const data = await createPurchaseHistoryQuery().andWhere('PRICE.barcode', barcode);
-
-	return data.map((row) => {
-		return {
-			...rowToPurchase(row),
-			user: rowToUser(row),
-		};
-	});
+	return data.map(rowToPurchase);
 };
 
 export const findPurchaseById = async (purchaseId) => {
 	const row = await createPurchaseHistoryQuery().andWhere('ITEMHISTORY.itemhistid', purchaseId).first();
 
 	if (row !== undefined) {
-		return {
-			...rowToPurchase(row),
-			product: rowToProduct(row),
-			user: rowToUser(row),
-		};
+		return rowToPurchase(row);
 	} else {
 		return undefined;
 	}
@@ -151,12 +135,7 @@ export const getDepositHistory = async (offset?: number, limit?: number) => {
 	if (limit) query = query.limit(limit);
 	const data = await query;
 
-	return data.map((row) => {
-		return {
-			...rowToDeposit(row),
-			user: rowToUser(row),
-		};
-	});
+	return data.map((row) => rowToDeposit(row));
 };
 
 export const getUserDepositHistory = async (userId) => {
@@ -169,10 +148,7 @@ export const findDepositById = async (depositId) => {
 	const row = await createDepositHistoryQuery().andWhere('PERSONHIST.pershistid', depositId).first();
 
 	if (row !== undefined) {
-		return {
-			...rowToDeposit(row),
-			user: rowToUser(row),
-		};
+		return rowToDeposit(row);
 	} else {
 		return undefined;
 	}
