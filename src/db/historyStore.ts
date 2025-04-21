@@ -107,7 +107,7 @@ export const getPurchaseHistory = async (offset?: number, limit?: number) => {
 	const data = await query;
 
 	return data.map((row) => rowToPurchase(row));
-};		
+};
 
 export const getUserPurchaseHistory = async (userId) => {
 	const data = await createPurchaseHistoryQuery().andWhere('ITEMHISTORY.userid', userId);
