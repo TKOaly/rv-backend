@@ -30,6 +30,7 @@ router.get('/', async (req: Authenticated_request, res) => {
 				price: purchase.price,
 				balanceAfter: purchase.balanceAfter,
 				returnedBalanceAfter: purchase.returnedBalanceAfter,
+				isReturnedAction: purchase.isReturnAction,
 			};
 		});
 
@@ -83,6 +84,7 @@ router.get('/:purchaseId(\\d+)', async (req: Authenticated_request, res) => {
 				price: purchase.price,
 				balanceAfter: purchase.balanceAfter,
 				returnedBalanceAfter: purchase.returnedBalanceAfter,
+				isReturnedAction: purchase.isReturnAction,
 			},
 		});
 	} catch (error) {
