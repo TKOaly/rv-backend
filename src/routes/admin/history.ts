@@ -1,7 +1,6 @@
 import express from 'express';
 import * as historyStore from '../../db/historyStore.js';
-import authMiddleware from '../authMiddleware.js';
-
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 const router = express.Router();
 
 router.use(authMiddleware({ requiredRole: 'ADMIN', tokenSecret: process.env.JWT_SECRET }));
@@ -60,9 +59,10 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
 	});
 });
 
-router.post('/depositHistory', async (req, res) => {
+router.post('/depositHistory', async (req: Authenticated_request, res) => {
 	const limit: number = parseInt(req.body.limit, 10);
 	const offset: number = parseInt(req.body.offset, 10);
+
 	const history = await historyStore.getDepositHistory(offset, limit);
 
 	console.log(limit,":LIMIT",offset,":OFFSET")
@@ -72,9 +72,10 @@ router.post('/depositHistory', async (req, res) => {
 	});
 });
 
-router.post('/purchaseHistory', async (req, res) => {
+router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
 	const limit: number = parseInt(req.body.limit, 10);
 	const offset: number = parseInt(req.body.offset, 10);
+
 	const purchases = await historyStore.getPurchaseHistory(offset, limit);
 
 	console.log(limit,":LIMIT",offset,":OFFSET")

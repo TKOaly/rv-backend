@@ -2536,21 +2536,25 @@ paths:
                   type: integer
                   example: 0
       responses: 
-        200: 
+        200:
           description: Request fulfilled successfully
-          content: 
-            application/json: 
-              schema: 
+          content:
+            application/json:
+              schema:
                 type: object
-                required: 
-                  - purchases
-                properties: 
-                  purchases: 
+                properties:
+                  deposits:
                     type: array
-                    items: 
-                      allOf:
-                        - '$ref': '#/components/schemas/DepositEventBase'
-                        - '$ref': '#/components/schemas/DepositEventUser'
+                    items:
+                      type: object
+                      properties:
+                        depositId:
+                          type: integer
+                        amount:
+                          type: number
+                        time:
+                          type: string
+                          format: date-time
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
