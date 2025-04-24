@@ -60,12 +60,10 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
 });
 
 router.post('/depositHistory', async (req: Authenticated_request, res) => {
-	const limit: number = parseInt(req.body.limit, 10);
-	const offset: number = parseInt(req.body.offset, 10);
+	const limit: number = parseInt(req.body.limit);
+	const offset: number = parseInt(req.body.offset);
 
 	const history = await historyStore.getDepositHistory(offset, limit);
-
-	console.log(limit,":LIMIT",offset,":OFFSET")
 
 	res.status(200).json({
 		deposits: history,
@@ -73,8 +71,8 @@ router.post('/depositHistory', async (req: Authenticated_request, res) => {
 });
 
 router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
-	const limit: number = parseInt(req.body.limit, 10);
-	const offset: number = parseInt(req.body.offset, 10);
+	const limit: number = parseInt(req.body.limit);
+	const offset: number = parseInt(req.body.offset);
 
 	const purchases = await historyStore.getPurchaseHistory(offset, limit);
 
