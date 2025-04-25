@@ -1,7 +1,6 @@
 import express from 'express';
 import * as historyStore from '../../db/historyStore.js';
-import authMiddleware from '../authMiddleware.js';
-
+import authMiddleware, { type Authenticated_request } from '../authMiddleware.js';
 const router = express.Router();
 
 router.use(authMiddleware({ requiredRole: 'ADMIN', tokenSecret: process.env.JWT_SECRET }));
@@ -57,6 +56,30 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
 
 	res.status(200).json({
 		purchase,
+	});
+});
+
+router.post('/depositHistory', async (req: Authenticated_request, res) => {
+	const limit: number = parseInt(req.body.limit);
+	const offset: number = parseInt(req.body.offset);
+
+	const history = await historyStore.getDepositHistory(offset, limit);
+
+	res.status(200).json({
+		deposits: history,
+	});
+});
+
+router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
+	const limit: number = parseInt(req.body.limit);
+	const offset: number = parseInt(req.body.offset);
+
+	const purchases = await historyStore.getPurchaseHistory(offset, limit);
+
+	console.log(limit,":LIMIT",offset,":OFFSET")
+
+	res.status(200).json({
+		purchases,
 	});
 });
 
