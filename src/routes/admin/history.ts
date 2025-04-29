@@ -64,9 +64,12 @@ router.post('/depositHistory', async (req: Authenticated_request, res) => {
 	const offset: number = parseInt(req.body.offset);
 
 	const history = await historyStore.getDepositHistory(offset, limit);
+	const numberOfDeposits = await historyStore.getNumberOfDeposits();
+	const depohistid = numberOfDeposits.pershistid
 
 	res.status(200).json({
 		deposits: history,
+		count: depohistid
 	});
 });
 
@@ -76,10 +79,12 @@ router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
 
 	const purchases = await historyStore.getPurchaseHistory(offset, limit);
 
-	console.log(limit,":LIMIT",offset,":OFFSET")
+	const numberOfPurchases = await historyStore.getNumberOfPurchases();
+	const itemhistid = numberOfPurchases.itemhistid
 
 	res.status(200).json({
 		purchases,
+		count: itemhistid
 	});
 });
 
