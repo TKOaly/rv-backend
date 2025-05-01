@@ -88,4 +88,24 @@ router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
 	});
 });
 
+router.post('/combinedHistory', async (req: Authenticated_request, res) => {
+	const limit: number = parseInt(req.body.limit);
+	const offset: number = parseInt(req.body.offset);
+
+	const combined = await historyStore.getCombinedHistory(offset, limit);
+
+	const numberOfPurchases = await historyStore.getNumberOfPurchases();
+	const itemhistid = numberOfPurchases.itemhistid
+
+	const numberOfDeposits = await historyStore.getNumberOfDeposits();
+	const depohistid = numberOfDeposits.pershistid
+
+	const count = itemhistid + depohistid
+
+	res.status(200).json({
+		combined,
+		count
+	});
+});
+
 export default router;
