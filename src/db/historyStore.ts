@@ -153,3 +153,24 @@ export const findDepositById = async (depositId) => {
 		return undefined;
 	}
 };
+
+export const getNumberOfPurchases = async () => {
+	const latestLog = await knex('ITEMHISTORY').orderBy('itemhistid', 'desc').limit(1);
+	return latestLog[0];
+};
+
+export const getNumberOfDeposits = async () => {
+	const latestLog = await knex('PERSONHIST').orderBy('pershistid', 'desc').limit(1);
+	return latestLog[0];
+};
+
+export const getCombinedHistory = async (offset?: number, limit?: number) => {
+	const purchases = await getPurchaseHistory(offset, limit);
+	const deposits = await getDepositHistory(offset, limit);
+  
+	const combinedHistory = [...purchases, ...deposits];
+  
+	combinedHistory.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+  
+	return combinedHistory;
+  };
