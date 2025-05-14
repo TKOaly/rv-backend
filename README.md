@@ -5,7 +5,7 @@
 [![.github/workflows/node.yml](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml/badge.svg?branch=develop)](https://github.com/TKOaly/rv-backend/actions/workflows/node.yml)
 [![codecov](https://codecov.io/gh/TKOaly/rv-backend/branch/develop/graph/badge.svg)](https://app.codecov.io/gh/TKOaly/rv-backend)
 
-Backend for new TKO-äly Ruokavälitys (Snack kiosk)
+Backend service for the new TKO-äly Ruokavälitys (Snack kiosk)
 
 ## Forked Version
 
@@ -15,100 +15,72 @@ This repository is a fork of the [TKOaly/rv-backend](https://github.com/tkoaly/r
 
 -   [rv-tui-frontend](https://github.com/TKOaly/rv-tui-frontend) (React based TUI interface)
 -   [rv-management-frontend](https://github.com/TKOaly/rv-management-frontend) (NextJS based web interface)
--   [rv-app-frontend](https://github.com/TKOaly/rv-app-frontend) (Old touch supported web interface)
+-   [rv-app-frontend](https://github.com/TKOaly/rv-app-frontend) (Legacy touch-supported web UI)
 -   [rv-old-management-frontend](https://github.com/TKOaly/rv-old-management-frontend) (Deprecated)
 
 ## Table Of Contents
 
--   [Prerequisites](#prerequisites)
--   [Docker Setup](#docker-setup)
--   [Local Setup](#local-setup-without-docker)
--   [Configuration](#configuration)
--   [API](#api)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Docker Setup](#docker-setup)
+  - [Local Setup (without Docker)](#local-setup-without-docker)
+- [Configuration](#configuration)
+- [API](#api)
 
 ## Prerequisites
 
-<sub>Expand sections for more info</sub>
+- **Node.js** (>=16.x LTS) and **npm** 
+- **Docker** 
+- Recommended IDE plugins:
+  - [Biome](https://biomejs.dev/)
+  - OpenAPI spec viewer
+  - REST client (e.g. VS Code REST Client)
 
-<details>
-<summary>Install node & npm</summary>
+> Installation instructions apply to the backend only. Please refer to frontend repo for its own setup.
 
--   easiest with [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file)
--   see [nvm docs](https://github.com/nvm-sh/nvm?tab=readme-ov-file#calling-nvm-use-automatically-in-a-directory-with-a-nvmrc-file) to have your shell switch automatically to the version specified in .nvmrc
--   frontend and backend repos may use different node versions
+---
 
-</details>
-<details>
-<summary>Install Docker</summary>
-  
-  - add your user to the docker group 
-    - may require a restart
-  - Install docker-compose
+## Installation
 
-</details>
-<details open>
-<summary> Install IDE plugins  </summary>
-
--   Recommended
-    -   Biome
--   Useful
-    -   an OpenAPI spec viewer
-    -   [REST client](docs/REST_CLIENT.md)
-
-</details>
-</br>
-
-Intallation instructions apply for running the project backend. To run the frontends check the respective frontend repositories [listed above](#serves-the-following-frontends) for instructions.
-
-## Docker Setup
-
-### installation
+Clone the repository and install dependencies:
 
 ```bash
-git clone git@github.com:Ruokavalitys/rv-update-backend.git
-cd rv-backend
+git clone https://github.com/Ruokavalitys/rv-update-backend.git
+cd rv-update-backend
 npm install
-cp .env.example .env
 npm run start-container
 npm run recreate-container-db
 ```
 
+## Docker Setup
+
+Build and run all services:
+
+```bash
+docker compose up -d --build
+```
+Initialize the database (migrations & seed):
+
+```bash
+docker compose exec rv-update-backend-server npm run db-migrate
+docker compose exec rv-update-backend-server npm run db-seed
+```
+
+Stop and remove containers:
+
+```bash
+docker compose down
+```
+
+The database image uses a persistent volume so data will persist across service restarts.
+
 By default, the server will listen on port 4040. See [Configuration](#configuration) for more.
 
-To rebuild the environment and reset the database run `npm run recreate-container`
-
-To shutdown the enviroment run `docker-compose down`. The database image uses a persistent volume so data will persist across service restarts.
-
-<details>
-<summary>
-Detailed container setup process <sup>[expand]</sup>
-</summary>
-
-##### Build backend and start container
+To rebuild the environment and reset the database: 
 
 ```bash
-docker-compose up -d --build
+npm run recreate-container
 ```
-
-##### Rollback existing database (optional)
-
-```bash
-docker exec -it rv-backend-rv-backend-1 npm run db-rollback
-```
-
-##### Create database schema
-
-```bash
-docker exec -it rv-backend-rv-backend-1 npm run db-migrate
-```
-
-##### Add insert seed data to database
-
-```bash
-docker exec -it rv-backend-rv-backend-1 npm run db-seed
-```
-
-</details>
 
 ### Testing
 
@@ -116,24 +88,49 @@ docker exec -it rv-backend-rv-backend-1 npm run db-seed
 npm run test-container
 ```
 
-## Local Setup without Docker
+## Local Setup (without Docker)
 
 ### Prerequisites
 
-Install [PostgreSQL](https://www.postgresql.org) and create a database and a user for the backend to use.
+1. Ensure [PostgreSQL](https://www.postgresql.org) is installed and running; create a database and user.
 
-### Installations
 
-1. Run `npm install` to install packages needed by the backend server.
-2. Set environment variables:
+2. Install project dependencies:
+
+```bash
+npm install
+```
+
+3. Set environment variables:
     - `DATABASE_URL` is used by the backend to connect to a database server. For example, if your local database is running on port 5432 with user `user` and password `password` and database `db`, the value would be `postgres://user:password@localhost:5432/db`.
     - `JWT_SECRET` is used to sign authentication tokens issued by the server. This can be any string.
     - `PORT` is the port the backend server listens on.
     - Setting `NODE_ENV` is optional since it defaults to `development` but you can set it if you want try out environments other than development.
-3. If needed, clear database by running `npm run db-rollback`.
-4. Run `npm run db-migrate` to create or update the database schema to the latest version.
-5. Run `npm run db-seed` to seed the database with initial data.
-6. Finally, run `npm start-nodemon` to start the server. [Nodemon](https://github.com/remy/nodemon) will listen for changes in code and restart the server if necessary.
+
+4. If needed, clear database:
+
+```bash
+npm run db-rollback
+```
+
+5. Run migrations and seed data:
+
+```bash
+npm run build
+```
+
+```bash
+npm run db-migrate
+npm run db-seed
+```
+
+6. Start the server:
+
+```bash
+npm start-nodemon
+```
+
+ [Nodemon](https://github.com/remy/nodemon) will listen for changes in code and restart the server if necessary.
 
 ## Configuration
 
@@ -152,9 +149,7 @@ You can use a custom [.env](.env) file to override the environment variables set
 
 The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests. All authenticated endpoints require that you include your JWT token in the request headers. The token should be included in the `Authorization` header, e.g. `Authorization: Bearer <JWT token here>`.
 
-### Endpoints
+### Documentation
 
-A full list of API endpoints and their documentation can be found at
-[Swagger](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1.1#/).
-This documentation is created from an OpenAPI description of the API,
-which can be found from the file `openapi.yaml`. The OpenApi spec is also used for request validation with middleware
+- OpenAPI spec: `openapi.yaml`
+- [Swagger UI](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1.1#/)
