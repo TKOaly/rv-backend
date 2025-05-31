@@ -7,10 +7,6 @@
 
 Backend service for the new TKO-äly Ruokavälitys (Snack kiosk)
 
-## Forked Version
-
-This repository is a fork of the [TKOaly/rv-backend](https://github.com/tkoaly/rv-backend/) project. In this version, the software is updated as part of the Ohtu project (spring 2025), incorporating changes and enhancements tailored to its specific goals.
-
 #### Serves the following frontends:
 
 -   [rv-tui-frontend](https://github.com/TKOaly/rv-tui-frontend) (React based TUI interface)
@@ -45,7 +41,7 @@ This repository is a fork of the [TKOaly/rv-backend](https://github.com/tkoaly/r
 Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/Ruokavalitys/rv-update-backend.git
+git clone git@github.com:TKOaly/rv-backend.git
 cd rv-update-backend
 npm install
 npm run start-container
@@ -152,4 +148,3 @@ The service uses [JWT tokens](https://jwt.io) for authenticating HTTP requests.
 ### Documentation
 
 - OpenAPI spec: `openapi.yaml`
-- [Swagger UI](https://app.swaggerhub.com/apis-docs/TKOaly/Ruokavalitys/1.1#/)
