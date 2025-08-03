@@ -102,7 +102,7 @@ export const createDepositHistoryQuery = () =>
 
 export const getPurchaseHistory = async (offset?: number, limit?: number) => {
 	let query = createPurchaseHistoryQuery();
-	if (offset) query = query.andWhere('ITEMHISTORY.itemhistid', '<', offset);
+	if (offset) query = query.offset(offset);
 	if (limit) query = query.limit(limit);
 	const data = await query;
 
@@ -131,7 +131,7 @@ export const findPurchaseById = async (purchaseId) => {
 
 export const getDepositHistory = async (offset?: number, limit?: number) => {
 	let query = createDepositHistoryQuery();
-	if (offset) query = query.andWhere('PERSONHIST.pershistid', '<', offset);
+	if (offset) query = query.offset(offset);
 	if (limit) query = query.limit(limit);
 	const data = await query;
 
@@ -167,10 +167,10 @@ export const getNumberOfDeposits = async () => {
 export const getCombinedHistory = async (offset?: number, limit?: number) => {
 	const purchases = await getPurchaseHistory(offset, limit);
 	const deposits = await getDepositHistory(offset, limit);
-  
+
 	const combinedHistory = [...purchases, ...deposits];
-  
+
 	combinedHistory.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-  
+
 	return combinedHistory;
-  };
+};
