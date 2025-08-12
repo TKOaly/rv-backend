@@ -33,9 +33,12 @@ router.get('/depositHistory/:depositId', async (req, res) => {
 });
 
 router.get('/purchaseHistory', async (req, res) => {
-	const limit: number = req.body.limit;
-	const offset: number = req.body.offset;
-	const purchases = await historyStore.getPurchaseHistory(offset, limit);
+	const limit: number | undefined = req.query.limit ? Number.parseInt(req.query.limit as string) : undefined;
+	const offset: number | undefined = req.query.offset ? Number.parseInt(req.query.offset as string) : undefined;
+	const before: Date | undefined = req.query.before ? new Date(Date.parse(req.query.before as string)) : undefined;
+	const after: Date | undefined = req.query.after ? new Date(Date.parse(req.query.after as string)) : undefined;
+	const usernameOrName: string | undefined = req.query.usernameOrName as string | undefined;
+	const purchases = await historyStore.getPurchaseHistory(offset, limit, before, after, usernameOrName);
 
 	res.status(200).json({
 		purchases,
@@ -60,51 +63,51 @@ router.get('/purchaseHistory/:purchaseId', async (req, res) => {
 });
 
 router.post('/depositHistory', async (req: Authenticated_request, res) => {
-	const limit: number = parseInt(req.body.limit);
-	const offset: number = parseInt(req.body.offset);
+	const limit: number = Number.parseInt(req.body.limit);
+	const offset: number = Number.parseInt(req.body.offset);
 
 	const history = await historyStore.getDepositHistory(offset, limit);
 	const numberOfDeposits = await historyStore.getNumberOfDeposits();
-	const depohistid = numberOfDeposits.pershistid
+	const depohistid = numberOfDeposits.pershistid;
 
 	res.status(200).json({
 		deposits: history,
-		count: depohistid
+		count: depohistid,
 	});
 });
 
 router.post('/purchaseHistory', async (req: Authenticated_request, res) => {
-	const limit: number = parseInt(req.body.limit);
-	const offset: number = parseInt(req.body.offset);
+	const limit: number = Number.parseInt(req.body.limit);
+	const offset: number = Number.parseInt(req.body.offset);
 
 	const purchases = await historyStore.getPurchaseHistory(offset, limit);
 
 	const numberOfPurchases = await historyStore.getNumberOfPurchases();
-	const itemhistid = numberOfPurchases.itemhistid
+	const itemhistid = numberOfPurchases.itemhistid;
 
 	res.status(200).json({
 		purchases,
-		count: itemhistid
+		count: itemhistid,
 	});
 });
 
 router.post('/combinedHistory', async (req: Authenticated_request, res) => {
-	const limit: number = parseInt(req.body.limit);
-	const offset: number = parseInt(req.body.offset);
+	const limit: number = Number.parseInt(req.body.limit);
+	const offset: number = Number.parseInt(req.body.offset);
 
 	const combined = await historyStore.getCombinedHistory(offset, limit);
 
 	const numberOfPurchases = await historyStore.getNumberOfPurchases();
-	const itemhistid = numberOfPurchases.itemhistid
+	const itemhistid = numberOfPurchases.itemhistid;
 
 	const numberOfDeposits = await historyStore.getNumberOfDeposits();
-	const depohistid = numberOfDeposits.pershistid
+	const depohistid = numberOfDeposits.pershistid;
 
-	const count = itemhistid + depohistid
+	const count = itemhistid + depohistid;
 
 	res.status(200).json({
 		combined,
-		count
+		count,
 	});
 });
 

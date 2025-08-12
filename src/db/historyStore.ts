@@ -100,10 +100,23 @@ export const createDepositHistoryQuery = () =>
 			{ column: 'PERSONHIST.pershistid', order: 'desc' },
 		]);
 
-export const getPurchaseHistory = async (offset?: number, limit?: number) => {
+export const getPurchaseHistory = async (
+	offset?: number,
+	limit?: number,
+	before?: Date,
+	after?: Date,
+	usernameOrName?: string
+) => {
 	let query = createPurchaseHistoryQuery();
 	if (offset) query = query.offset(offset);
 	if (limit) query = query.limit(limit);
+	if (before) query = query.where('ITEMHISTORY.time', '<', before);
+	if (after) query = query.where('ITEMHISTORY.time', '>', after);
+	if (usernameOrName)
+		query = query.where(function () {
+			this.whereILike('RVPERSON.name', `%${usernameOrName}%`);
+			this.orWhereILike('RVPERSON.realname', `%${usernameOrName}%`);
+		});
 	const data = await query;
 
 	return data.map((row) => rowToPurchase(row));

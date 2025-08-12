@@ -68,7 +68,9 @@ describe('routes: admin history', () => {
 					.request(app)
 					.get('/api/v1/admin/purchaseHistory')
 					.set('Authorization', 'Bearer ' + adminToken)
-					.send({ limit: 2 });
+					.query({
+						limit: 2,
+					});
 
 				expect(res.status).to.equal(200);
 				expect(res.body.purchases.length).to.equal(2);
@@ -78,7 +80,10 @@ describe('routes: admin history', () => {
 					.request(app)
 					.get('/api/v1/admin/purchaseHistory')
 					.set('Authorization', 'Bearer ' + adminToken)
-					.send({ offset: 7, limit: 2 });
+					.query({
+						limit: 2,
+						offset: 7,
+					});
 
 				expect(res.status).to.equal(200);
 				expect(res.body.purchases.length).to.equal(2);

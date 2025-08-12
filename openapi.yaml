@@ -2398,6 +2398,32 @@ paths:
         - admin
       security:
         - adminAccessToken: []
+      parameters:
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            type: integer
+        - in: query
+          name: before
+          schema:
+            type: string
+            format: date-time
+          description: Include only purchases made before the given date
+        - in: query
+          name: after
+          schema:
+            type: string
+            format: date-time
+          description: Include only purchases made after the given date
+        - in: query
+          name: usernameOrName
+          schema:
+            type: string
+          description: Include only purchases that have substring match in fullname or username
       responses: 
         200: 
           description: Request fulfilled successfully
