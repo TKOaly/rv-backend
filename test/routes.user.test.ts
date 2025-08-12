@@ -7,7 +7,7 @@ import knex, { test_teardown } from '../src/db/knex.js';
 import * as userStore from '../src/db/userStore.js';
 import jwt from '../src/jwt/token.js';
 
-import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { after, afterEach, before, beforeEach, describe, it } from 'node:test';
 import actions from '../src/db/actions.js';
 
 const expect = chai.expect;
@@ -28,19 +28,22 @@ const tokenNoRvTerminal = jwt.sign({
 	userId: 1,
 });
 
+before(async () => {
+	await knex.migrate.latest();
+	await knex.seed.run();
+});
+
 after(async () => {
 	await test_teardown();
 });
 
 describe('routes: user', () => {
 	beforeEach(async () => {
-		await knex.migrate.rollback();
-		await knex.migrate.latest();
-		await knex.seed.run();
+		await knex.raw('SAVEPOINT test_begin;');
 	});
 
 	afterEach(async () => {
-		await knex.migrate.rollback();
+		await knex.raw('ROLLBACK TO SAVEPOINT test_begin;');
 	});
 
 	describe('Changing user rfid', () => {

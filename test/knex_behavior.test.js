@@ -2,9 +2,14 @@ import chai from 'chai';
 
 import knex, { test_teardown } from '../src/db/knex.js';
 
-import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { after, afterEach, before, beforeEach, describe, it } from 'node:test';
 
 const expect = chai.expect;
+
+before(async () => {
+	await knex.migrate.latest();
+	await knex.seed.run();
+});
 
 after(async () => {
 	await test_teardown();
@@ -12,13 +17,11 @@ after(async () => {
 
 describe('Knex', () => {
 	beforeEach(async () => {
-		await knex.migrate.rollback();
-		await knex.migrate.latest();
-		await knex.seed.run();
+		await knex.raw('SAVEPOINT test_begin;');
 	});
 
 	afterEach(async () => {
-		await knex.migrate.rollback();
+		await knex.raw('ROLLBACK TO SAVEPOINT test_begin;');
 	});
 
 	/* Why are we testing this?

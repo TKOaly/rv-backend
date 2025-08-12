@@ -5,7 +5,7 @@ import app from '../../src/app.js';
 import knex, { test_teardown } from '../../src/db/knex.js';
 import jwt from '../../src/jwt/token.js';
 
-import { after, afterEach, beforeEach, describe, it } from 'node:test';
+import { after, afterEach, before, beforeEach, describe, it } from 'node:test';
 
 const expect = chai.expect;
 
@@ -16,19 +16,22 @@ const token = jwt.sign({
 	loggedInFromRvTerminal: true,
 });
 
+before(async () => {
+	await knex.migrate.latest();
+	await knex.seed.run();
+});
+
 after(async () => {
 	await test_teardown();
 });
 
 describe('routes: admin utils', () => {
 	beforeEach(async () => {
-		await knex.migrate.rollback();
-		await knex.migrate.latest();
-		await knex.seed.run();
+		await knex.raw('SAVEPOINT test_begin;');
 	});
 
 	afterEach(async () => {
-		await knex.migrate.rollback();
+		await knex.raw('ROLLBACK TO SAVEPOINT test_begin;');
 	});
 
 	describe('Endpoint getUserByUsername', () => {

@@ -42,11 +42,17 @@ if (environment === 'test') {
 	cfg.connection.database = db_name;
 }
 
-const knex = Knex(cfg);
+const knex_original = await Knex(cfg);
+/*
+	During testing, re-creating database based on migrations is very slow. One trick is to run each testcase in a transaction and then rollback them. However postgresql doesn't support nested transactions, only savepoints. To make knex use savepoints, there must be a top level transaction running. In each testcase we can then create savepoint and rollback after the testcase. This works for our purposes but may break in the future if more complicated testing is performed.
+ */
+const knex = environment === 'test' ? await knex_original.transaction() : knex_original;
 
-/* In test environment, a new database is created for every process, so they need to be deleted after the test is run. */
+/* In a test environment, a new database is created for every process, so they need to be deleted after the test is run. */
 export const test_teardown = async () => {
-	await knex.destroy();
+	// @ts-ignore
+	await knex.rollback();
+	await knex_original.destroy();
 	await drop_database('rv_test_' + process.pid);
 };
 
