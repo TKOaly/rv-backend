@@ -93,6 +93,34 @@ describe('routes: admin history', () => {
 				expect(res.body.purchases[0].purchaseId).to.equal(6);
 				expect(res.body.purchases[1].purchaseId).to.equal(5);
 			});
+			it('with before and after should return purchases matching the interval', async () => {
+				const res = await chai
+					.request(app)
+					.get('/api/v1/admin/purchaseHistory')
+					.set('Authorization', 'Bearer ' + adminToken)
+					.query({
+						before: '2018-12-24T00:00:06Z',
+						after: '2018-12-24T00:00:04Z',
+					});
+
+				expect(res.status).to.equal(200);
+				expect(res.body.purchases.length).to.equal(1);
+				expect(res.body.purchases[0].purchaseId).to.equal(4);
+			});
+			it('with username should return match', async () => {
+				const res = await chai
+					.request(app)
+					.get('/api/v1/admin/purchaseHistory')
+					.set('Authorization', 'Bearer ' + adminToken)
+					.query({
+						usernameOrName: 'admin_use',
+					});
+
+				expect(res.status).to.equal(200);
+				expect(res.body.purchases.length).to.equal(2);
+				expect(res.body.purchases[0].purchaseId).to.equal(10);
+				expect(res.body.purchases[1].purchaseId).to.equal(13);
+			});
 		});
 
 		describe('Querying a purchase by id', () => {
