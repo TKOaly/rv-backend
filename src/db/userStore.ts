@@ -175,7 +175,7 @@ export const verifyRfid = async (rfid, rfidHash) => {
 };
 
 export const leaderboard = async () => {
-	const result = await knex.raw('SELECT name, saldo FROM "RVPERSON" ORDER BY saldo DESC limit 50;');
+	const result = await knex.raw('SELECT name, saldo FROM "RVPERSON" WHERE privacy_level=0 ORDER BY saldo DESC limit 50;');
 	return result.rows;
 };
 
