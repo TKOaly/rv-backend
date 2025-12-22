@@ -21,7 +21,7 @@ export const rvpersons = [
 		pass: bcrypt.hashSync('admin123', 11),
 		saldo: 500,
 		realname: 'BOFH',
-		rfid: oldRvRfidHash('1234'),
+		rfid: newRvRfidHash('1234'),
 	},
 	{
 		userid: 3,
@@ -42,6 +42,6 @@ export const rvpersons = [
 		pass: bcrypt.hashSync('inactive', 11),
 		saldo: -1100,
 		realname: 'Inactive User',
-		rfid: oldRvRfidHash('999999'),
+		rfid: newRvRfidHash('999999'),
 	},
 ];
