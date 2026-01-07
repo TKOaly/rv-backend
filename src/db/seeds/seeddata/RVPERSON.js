@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { oldRvRfidHash } from '../../userStore.js';
+import { newRvRfidHash } from '../../userStore.js';
 
 export const rvpersons = [
 	{
