@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { newRvRfidHash } from '../../userStore.js';
+import { newRvRfidHash, oldRvRfidHash } from '../../userStore.js';
 
 export const rvpersons = [
 	{
@@ -35,6 +35,17 @@ export const rvpersons = [
 	},
 	{
 		userid: 4,
+		createdate: new Date('2026-01-14T00:00:00Z'),
+		roleid: 3,
+		name: 'user_3',
+		univident: 'user3@example.com',
+		pass: bcrypt.hashSync('role2', 11),
+		saldo: 500,
+		realname: 'User Three',
+		rfid: oldRvRfidHash('4321'),
+	},
+	{
+		userid: 5,
 		createdate: new Date('2022-02-20T00:00:00Z'),
 		roleid: 7,
 		name: 'user_inactive',
