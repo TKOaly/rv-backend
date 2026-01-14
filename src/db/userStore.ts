@@ -148,7 +148,6 @@ export const newRvRfidHash = (rfid_hex: string): string => {
 }
 
 export const migrateRvRfidHash = async (rfid: string) => {
-	logger.info('start migration');
 	var row = await knex('RVPERSON')
 		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
@@ -156,12 +155,11 @@ export const migrateRvRfidHash = async (rfid: string) => {
 		.first();
 
 	if (row === undefined) {
-		logger.info('rfid not defined');
 		return undefined
 	}
 
 	const user = updateUser(row.userid, {rfid: rfid});
-	logger.info(`migrated user: ${(await user).username} rfid has to use bcrypt`);
+	logger.info('Migrated user: $1 rfid has to use bcrypt', (await user).username);
 	return user;
 }
 
