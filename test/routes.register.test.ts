@@ -188,7 +188,7 @@ describe('routes: register', () => {
 			expect(user.email).to.equal('person@email.com');
 		});
 
-		it('New user should have role USER1', async () => {
+		it('New user should have role USER', async () => {
 			const res = await chai
 				.request(app)
 				.post('/api/v1/register')
@@ -203,7 +203,7 @@ describe('routes: register', () => {
 			expect(res.status).to.equal(201);
 
 			const user = await userStore.findByUsername('abc');
-			expect(user.role).to.equal('USER1');
+			expect(user.role).to.equal('USER');
 		});
 
 		it('New user should have no money', async () => {

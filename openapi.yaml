@@ -41,8 +41,8 @@ components:
       type: string
       enum:
         - ADMIN
-        - USER1
-        - USER2
+        - USER
+        - NOEMAIL
         - INACTIVE
       example: USER
     Product:

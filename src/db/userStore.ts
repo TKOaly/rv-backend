@@ -4,6 +4,7 @@ import { deleteUndefinedFields } from '../utils/objectUtils.js';
 import actions from './actions.js';
 import knex from './knex.js';
 import logger from '../logger.js';
+import { getRole, getRoleId } from './roles.js';
 
 export const RFID_SALT = 'rv-vakio-suola';
 export const NEW_RFID_SALT = 'TamaOnUusiRvVakioSuola';
@@ -28,7 +29,7 @@ export const rowToUser = (row): user | undefined => {
 			fullName: row.realname,
 			email: row.univident,
 			moneyBalance: row.saldo,
-			role: row.role,
+			role: getRole(row.roleid),
 			passwordHash: row.pass,
 			rfidHash: row.rfid,
 			privacyLevel: row.privacy_level,
@@ -44,20 +45,19 @@ const user_select_query = [
 	'RVPERSON.realname',
 	'RVPERSON.univident',
 	'RVPERSON.saldo',
-	'ROLE.role',
+	'RVPERSON.roleid',
 	'RVPERSON.pass',
 	'RVPERSON.rfid',
 	'RVPERSON.privacy_level',
 ];
 
 export const getUsers = async () => {
-	const data = await knex('RVPERSON').leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid').select(user_select_query);
+	const data = await knex('RVPERSON').select(user_select_query);
 	return data.map(rowToUser);
 };
 
 export const findById = async (userId) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
 		.where('RVPERSON.userid', userId)
 		.first();
@@ -66,10 +66,9 @@ export const findById = async (userId) => {
 
 export const findByRfid = async (rfid) => {
 	const row = await knex('RVPERSON')
-	.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-	.select(user_select_query)
-	.where('RVPERSON.rfid', newRvRfidHash(rfid))
-	.first();
+		.select(user_select_query)
+		.where('RVPERSON.rfid', newRvRfidHash(rfid))
+		.first();
 
 	if (row === undefined) {
 		return migrateRvRfidHash(rfid);
@@ -80,7 +79,6 @@ export const findByRfid = async (rfid) => {
 
 export const findByUsername = async (username) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
 		.where('RVPERSON.name', username)
 		.first();
@@ -89,7 +87,6 @@ export const findByUsername = async (username) => {
 
 export const findByEmail = async (email) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
 		.where('RVPERSON.univident', email)
 		.first();
@@ -103,7 +100,7 @@ export const insertUser = async (userData) => {
 		const insertedPersonRows = await knex('RVPERSON')
 			.insert({
 				createdate: now,
-				// roleid 2 = USER1
+				// roleid 2 = USER
 				roleid: 2,
 				name: userData.username,
 				univident: userData.email,
@@ -124,7 +121,7 @@ export const insertUser = async (userData) => {
 			fullName: userData.fullName,
 			email: userData.email,
 			moneyBalance: 0,
-			role: 'USER1',
+			role: 'USER',
 			passwordHash: passwordHash,
 			privacyLevel: 0,
 		};
@@ -149,7 +146,6 @@ export const newRvRfidHash = (rfid_hex: string): string => {
 
 export const migrateRvRfidHash = async (rfid: string) => {
 	var row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
 		.where('RVPERSON.rfid', oldRvRfidHash(rfid))
 		.first();
@@ -179,14 +175,12 @@ export const updateUser = async (userId, userData) => {
 			rvpersonFields.rfid = newRvRfidHash(userData.rfid);
 		}
 		if (userData.role !== undefined) {
-			const roleRow = await knex('ROLE').transacting(trx).select('roleid').where({ role: userData.role }).first();
-			rvpersonFields.roleid = roleRow.roleid;
+			rvpersonFields.roleid = getRoleId(userData.role);
 		}
 		await knex('RVPERSON').transacting(trx).update(rvpersonFields).where({ userid: userId });
 
 		const userRow = await knex('RVPERSON')
 			.transacting(trx)
-			.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 			.select(user_select_query)
 			.where('RVPERSON.userid', userId)
 			.first();
