@@ -145,7 +145,7 @@ export const newRvRfidHash = (rfid_hex: string): string => {
 }
 
 export const migrateRvRfidHash = async (rfid: string) => {
-	var row = await knex('RVPERSON')
+	const row = await knex('RVPERSON')
 		.select(user_select_query)
 		.where('RVPERSON.rfid', oldRvRfidHash(rfid))
 		.first();
@@ -186,6 +186,25 @@ export const updateUser = async (userId, userData) => {
 			.first();
 		return rowToUser(userRow);
 	});
+};
+
+export const createTempPassword = async (userId, userName) => {
+	const now = new Date();
+	const hash = bcrypt.hashSync(`${userName}${now.getMilliseconds()}${userId}`, 11);
+	const tempPassword = hash.split('$').at(-1).slice(22, 32);
+	const hashedTempPassword = bcrypt.hashSync(tempPassword, 11);
+
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+			.transacting(trx)
+			.insert({
+				userId: userId,
+				tempPass: hashedTempPassword,
+				time: now
+			});
+	});
+
+	return tempPassword
 };
 
 export const verifyPassword = async (password, passwordHash) => {

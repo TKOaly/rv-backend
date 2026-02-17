@@ -22,6 +22,8 @@ import api_reset_route from './routes/test_env/api_data_reset.js';
 import user_route from './routes/user.js';
 import user_deposit_history_route from './routes/userDepositHistory.js';
 import user_purchase_history_route from './routes/userPurchaseHistory.js';
+import email_route from "./routes/email.js";
+
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -49,6 +51,7 @@ app.use('/api/v1/register', register_route);
 app.use('/api/v1/products', user_products);
 app.use('/api/v1/categories', user_categories);
 app.use('/api/v1/statistics', statistics_route);
+app.use('/api/v1/email', email_route)
 
 app.use('/api/v1/admin/defaultMargin', admin_default_margin);
 app.use('/api/v1/admin/products', admin_products);
