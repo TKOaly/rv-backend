@@ -17,6 +17,7 @@ export interface user {
 	moneyBalance: any;
 	role: any;
 	passwordHash: any;
+	tempPasswordHash: any;
 	rfidHash: any;
 	privacyLevel: number; // 0 = no limits, 1 = hide username from public, 2 = hide all data from public
 }
@@ -31,6 +32,7 @@ export const rowToUser = (row): user | undefined => {
 			moneyBalance: row.saldo,
 			role: getRole(row.roleid),
 			passwordHash: row.pass,
+			tempPasswordHash: row.temp_password,
 			rfidHash: row.rfid,
 			privacyLevel: row.privacy_level,
 		};
@@ -49,6 +51,7 @@ const user_select_query = [
 	'RVPERSON.pass',
 	'RVPERSON.rfid',
 	'RVPERSON.privacy_level',
+	'TEMPPASSWORD.temp_password'
 ];
 
 export const getUsers = async () => {
@@ -58,6 +61,7 @@ export const getUsers = async () => {
 
 export const findById = async (userId) => {
 	const row = await knex('RVPERSON')
+		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
 		.where('RVPERSON.userid', userId)
 		.first();
@@ -66,6 +70,7 @@ export const findById = async (userId) => {
 
 export const findByRfid = async (rfid) => {
 	const row = await knex('RVPERSON')
+		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
 		.where('RVPERSON.rfid', newRvRfidHash(rfid))
 		.first();
@@ -79,6 +84,7 @@ export const findByRfid = async (rfid) => {
 
 export const findByUsername = async (username) => {
 	const row = await knex('RVPERSON')
+		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
 		.where('RVPERSON.name', username)
 		.first();
@@ -87,6 +93,7 @@ export const findByUsername = async (username) => {
 
 export const findByEmail = async (email) => {
 	const row = await knex('RVPERSON')
+		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
 		.where('RVPERSON.univident', email)
 		.first();
@@ -198,7 +205,7 @@ export const createTempPassword = async (userId, userName) => {
 		await knex('TEMPPASSWORD')
 			.transacting(trx)
 			.insert({
-				userId: userId,
+				userid: userId,
 				tempPass: hashedTempPassword,
 				time: now
 			});
@@ -206,6 +213,25 @@ export const createTempPassword = async (userId, userName) => {
 
 	return tempPassword
 };
+
+export const removeTempPassword = async (userId) => {
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+			.transacting(trx)
+			.where('userid', userId)
+			.del();
+	});
+}
+
+export const removeExpiredTempPassword = async (userId) => {
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+            .transacting(trx)
+            .where('userId', userId)
+            .where('created_at', '<', knex.raw("NOW() - INTERVAL '15 minutes'"))
+            .del();
+	});
+}
 
 export const verifyPassword = async (password, passwordHash) => {
 	return await bcrypt.compare(password, passwordHash);

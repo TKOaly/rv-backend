@@ -27,15 +27,14 @@ components:
       bearerFormat: JWT
       description:
         A JWT access token used for authenticating with the \"end user facing\" portition of the API.
-        Can be obtained with any valid credentials from route `/api/v1/authenticate`.
+        Can be obtained with any valid credentials from route `/api/v2/authenticate`.
     adminAccessToken:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description:
         A JWT access token used for authenticating with the administrations portition of the API.
-        Can be obtained with administrator credentials from route `/api/v1/admin/authenticate`.
-  
+        Can be obtained with administrator credentials from route `/api/v2/admin/authenticate`.
   schemas:
     Role:
       type: string
@@ -350,6 +349,22 @@ components:
               message:
                 type: string
                 example: Barcode already in use.
+    ResourceGone:
+      description: Resource gone
+      content:
+        application/json:
+          schema:
+            required:
+            - error_code
+            - message
+          properties:
+            error_code:
+              type: string
+              enum:
+                - resource_gone
+          message:
+            type: string
+            example: This resource has been permanently removed.
 
 paths: 
   /api/v1/register: 
@@ -412,6 +427,68 @@ paths:
                   minLength: 1
   /api/v1/authenticate/rfid: 
     post: 
+      summary: Deprecated, use /api/v2/authenticate/rfid
+      operationId: authenticate
+      tags:
+        - normal
+      responses:
+        410:
+          '$ref': '#/components/responses/ResourceGone' 
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - rfid
+              properties: 
+                rvTerminalSecret:
+                  type: string
+                rfid: 
+                  type: string
+                  example: 8a4f2f0a
+                  minLength: 1
+  /api/v1/authenticate: 
+    post: 
+      summary: Deprecated, use /api/v2/authenticate/rfid
+      operationId: authenticate
+      tags:
+        - normal
+      responses: 
+        410:
+          '$ref': '#/components/responses/ResourceGone'
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                  minLength: 1
+                password: 
+                  type: string
+                  example: hunter2
+  /api/v2/authenticate/rfid: 
+    post: 
       summary: Authenticate with normal privileges
       operationId: authenticate
       tags:
@@ -453,7 +530,7 @@ paths:
                   type: string
                   example: 8a4f2f0a
                   minLength: 1
-  /api/v1/authenticate: 
+  /api/v2/authenticate: 
     post: 
       summary: Authenticate with normal privileges
       operationId: authenticate
