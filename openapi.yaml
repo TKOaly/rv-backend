@@ -2710,12 +2710,12 @@ paths:
             schema:
               type: object
               required:
-                - email
+                - userId
               properties:
-                email:
-                  type: string
-                  example: fuxi.student@helsinki.fi
-                  description: Email address of the account to generate a temporary password for.
+                userId:
+                  type: integer
+                  example: 415
+                  description: Opaque unique identifier of the user. description: Email address of the account to generate a temporary password for.
       responses:
         201:
           description: Temporary password generated and sent to the provided email address successfully

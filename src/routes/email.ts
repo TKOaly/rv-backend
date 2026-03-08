@@ -15,13 +15,13 @@ const transporter = nodemailer.createTransport({
 router.use(requireRvTerminalSecretMiddleware());
 
 router.post('/temp_password', async (req: Authenticated_request, res) => {
-    const email = req.body.email;
-    const user = await userStore.findByEmail(email);
+    const userId = req.body.userId;
+    const user = await userStore.findById(userId);
     const tempPassword = await userStore.createTempPassword(user.userId, user.username);
     logger.info("Temaporary password generated for user %s ", user.username);
     const info = await transporter.sendMail({
-        from: '"TKO-äly RV" <noreply@tko-aly.fi',
-        to: email,
+        from: '"TKO-äly RV" <noreply@tko-aly.fi>',
+        to: user.email,
         subject: 'Temporary RV password',
         text: `Hi ${user.fullName.split(' ').at(0)}!\n\nYour RV username is ${user.username} and the temporary password for your account is ${tempPassword}.\nThe temporary password will work for the next 15 minutes.\nKind regards\nThe RV team`,
         // html: TODO
