@@ -100,6 +100,15 @@ export const findByEmail = async (email) => {
 	return rowToUser(row);
 };
 
+export const findByFullName = async (fullName) => {
+	const row = await knex('RVPERSON')
+		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
+		.select(user_select_query)
+		.where('RVPERSON.realname', fullName)
+		.first();
+	return rowToUser(row);
+};
+
 export const insertUser = async (userData) => {
 	const passwordHash = bcrypt.hashSync(userData.password, 11);
 	return await knex.transaction(async (trx) => {

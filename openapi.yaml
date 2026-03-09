@@ -2467,6 +2467,70 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/utils/getUserByEmail/{email}:
+    get:
+      summary: Get details of user with the given email
+      operationId: getUserByEmail
+      tags:
+        - normal
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: email
+          description: Email of the user.
+          required: true
+          in: path
+          schema:
+            type: string
+            example: fuxi.student@helsinki.fi
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/utils/getUserByFullName/{fullname}:
+    get:
+      summary: Get details of user with the given full name
+      operationId: getUserByFullName
+      tags:
+        - normal
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: fullname
+          description: Full name of the user.
+          required: true
+          in: path
+          schema:
+            type: string
+            example: Ella Esimerkki
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/purchaseHistory: 
     get: 
       summary: Get combined purchase histories of all products and users
