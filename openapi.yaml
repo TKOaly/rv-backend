@@ -357,14 +357,14 @@ components:
             required:
             - error_code
             - message
-          properties:
-            error_code:
-              type: string
-              enum:
-                - resource_gone
-          message:
-            type: string
-            example: This resource has been permanently removed.
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - resource_gone
+              message:
+                type: string
+                example: This resource has been permanently removed.
 
 paths: 
   /api/v1/register: 
@@ -2779,7 +2779,7 @@ paths:
                 userId:
                   type: integer
                   example: 415
-                  description: Opaque unique identifier of the user. description: Email address of the account to generate a temporary password for.
+                  description: Opaque unique identifier of the user.
       responses:
         201:
           description: Temporary password generated and sent to the provided email address successfully
