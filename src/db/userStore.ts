@@ -61,8 +61,15 @@ export const getUsers = async () => {
 
 export const findById = async (userId) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.userid', userId)
 		.first();
 	return rowToUser(row);
@@ -70,8 +77,15 @@ export const findById = async (userId) => {
 
 export const findByRfid = async (rfid) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.rfid', newRvRfidHash(rfid))
 		.first();
 
@@ -84,8 +98,15 @@ export const findByRfid = async (rfid) => {
 
 export const findByUsername = async (username) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.name', username)
 		.first();
 	return rowToUser(row);
@@ -93,8 +114,15 @@ export const findByUsername = async (username) => {
 
 export const findByEmail = async (email) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.univident', email)
 		.first();
 	return rowToUser(row);
@@ -102,8 +130,15 @@ export const findByEmail = async (email) => {
 
 export const findByFullName = async (fullName) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('TEMPPASSWORD', knex.raw("RVPERSON.userid = TEMPPASSWORD.userid AND TEMPPASSWORD.created_at < NOW() - INTERVAL '15 minutes'"))
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.realname', fullName)
 		.first();
 	return rowToUser(row);
