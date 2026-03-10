@@ -112,7 +112,7 @@ describe('routes: admin users', () => {
 
 			expect(res.status).to.equal(200);
 
-			const res2 = await chai.request(app).post('/api/v1/authenticate').send({
+			const res2 = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'lol',
 			});
