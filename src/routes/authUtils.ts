@@ -31,7 +31,7 @@ export const authenticateUserRfid =
 				userStore.removeTempPassword(user.userId);
 				res.status(200).json({
 					accessToken: jwt.sign({ userId: user.userId, loggedInFromRvTerminal }, tokenSecret),
-					loginWithTempPassword: false
+					passwordReset: false
 				});
 			} else {
 				logger.warn('User %s is not authorized to login as role %s', user.username, requiredRole);
@@ -67,7 +67,7 @@ export const authenticateUser =
 						logger.info('User %s logged in with temporary password and role %s', user.username, user.role);
 						res.status(200).json({
 							accessToken: jwt.sign({ userId: user.userId, loggedInFromRvTerminal }, process.env.JWT_SECRET),
-							loginWithTempPassword: true
+							passwordReset: true
 						});
 					}
 					if (verifyRole(requiredRole, user.role)) {
@@ -75,7 +75,7 @@ export const authenticateUser =
 						userStore.removeTempPassword(user.userId);
 						res.status(200).json({
 							accessToken: jwt.sign({ userId: user.userId, loggedInFromRvTerminal }, process.env.JWT_SECRET),
-							loginWithTempPassword: false
+							passwordReset: false
 						});
 					} else {
 						logger.warn('User %s is not authorized to login as role %s', user.username, requiredRole);

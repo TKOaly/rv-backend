@@ -502,6 +502,7 @@ paths:
                 type: object
                 required: 
                   - accessToken
+                  - passwordReset
                 properties: 
                   accessToken: 
                     type: string
@@ -509,6 +510,9 @@ paths:
                   rvTerminalSecret:
                     type: string
                     description: Include secret to allow access into rv terminal specific endpoints
+                  passwordReset:
+                    type: boolean
+                    description: If tells login with temppassword
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
@@ -545,6 +549,7 @@ paths:
                 type: object
                 required: 
                   - accessToken
+                  - passwordReset
                 properties: 
                   accessToken: 
                     type: string
@@ -552,6 +557,9 @@ paths:
                   rvTerminalSecret:
                     type: string
                     description: Include secret to allow access into rv terminal specific endpoints
+                  passwordReset:
+                    type: boolean
+                    description: If tells login with temppassword
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
