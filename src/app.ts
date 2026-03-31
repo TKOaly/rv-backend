@@ -22,6 +22,9 @@ import api_reset_route from './routes/test_env/api_data_reset.js';
 import user_route from './routes/user.js';
 import user_deposit_history_route from './routes/userDepositHistory.js';
 import user_purchase_history_route from './routes/userPurchaseHistory.js';
+import email_route from "./routes/email.js";
+import old_routes from './routes/old.js'
+
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -41,7 +44,7 @@ app.use(
 	})
 );
 
-app.use('/api/v1/authenticate', auth_route);
+app.use('/api/v2/authenticate', auth_route);
 app.use('/api/v1/user/purchaseHistory', user_purchase_history_route);
 app.use('/api/v1/user/depositHistory', user_deposit_history_route);
 app.use('/api/v1/user', user_route);
@@ -49,6 +52,7 @@ app.use('/api/v1/register', register_route);
 app.use('/api/v1/products', user_products);
 app.use('/api/v1/categories', user_categories);
 app.use('/api/v1/statistics', statistics_route);
+app.use('/api/v1/email', email_route)
 
 app.use('/api/v1/admin/defaultMargin', admin_default_margin);
 app.use('/api/v1/admin/products', admin_products);
@@ -59,6 +63,7 @@ app.use('/api/v1/admin/utils', admin_utils);
 app.use('/api/v1/admin', admin_history);
 app.use('/api/v1/admin/preferences', admin_preferences);
 app.use('/api/v1/test/reset_data', api_reset_route);
+app.use('/api/', old_routes)
 
 app.use((error, _req, res, next) => {
 	console.error(error);

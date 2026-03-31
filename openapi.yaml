@@ -27,22 +27,21 @@ components:
       bearerFormat: JWT
       description:
         A JWT access token used for authenticating with the \"end user facing\" portition of the API.
-        Can be obtained with any valid credentials from route `/api/v1/authenticate`.
+        Can be obtained with any valid credentials from route `/api/v2/authenticate`.
     adminAccessToken:
       type: http
       scheme: bearer
       bearerFormat: JWT
       description:
         A JWT access token used for authenticating with the administrations portition of the API.
-        Can be obtained with administrator credentials from route `/api/v1/admin/authenticate`.
-  
+        Can be obtained with administrator credentials from route `/api/v2/admin/authenticate`.
   schemas:
     Role:
       type: string
       enum:
         - ADMIN
-        - USER1
-        - USER2
+        - USER
+        - NOEMAIL
         - INACTIVE
       example: USER
     Product:
@@ -350,6 +349,22 @@ components:
               message:
                 type: string
                 example: Barcode already in use.
+    ResourceGone:
+      description: Resource gone
+      content:
+        application/json:
+          schema:
+            required:
+            - error_code
+            - message
+            properties:
+              error_code:
+                type: string
+                enum:
+                  - resource_gone
+              message:
+                type: string
+                example: This resource has been permanently removed.
 
 paths: 
   /api/v1/register: 
@@ -412,26 +427,11 @@ paths:
                   minLength: 1
   /api/v1/authenticate/rfid: 
     post: 
-      summary: Authenticate with normal privileges
+      summary: Deprecated, use /api/v2/authenticate/rfid
       operationId: authenticate
       tags:
         - normal
-      responses: 
-        200:
-          description: Authentication successfull
-          content: 
-            application/json: 
-              schema: 
-                type: object
-                required: 
-                  - accessToken
-                properties: 
-                  accessToken: 
-                    type: string
-                    description: JSON Web Token
-                  rvTerminalSecret:
-                    type: string
-                    description: Include secret to allow access into rv terminal specific endpoints
+      responses:
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
@@ -455,6 +455,36 @@ paths:
                   minLength: 1
   /api/v1/authenticate: 
     post: 
+      summary: Deprecated, use /api/v2/authenticate/rfid
+      operationId: authenticate
+      tags:
+        - normal
+      responses: 
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - username
+                - password
+              properties: 
+                username: 
+                  type: string
+                  example: fuxi2001
+                  minLength: 1
+                password: 
+                  type: string
+                  example: hunter2
+  /api/v2/authenticate/rfid: 
+    post: 
       summary: Authenticate with normal privileges
       operationId: authenticate
       tags:
@@ -468,6 +498,7 @@ paths:
                 type: object
                 required: 
                   - accessToken
+                  - passwordReset
                 properties: 
                   accessToken: 
                     type: string
@@ -475,6 +506,56 @@ paths:
                   rvTerminalSecret:
                     type: string
                     description: Include secret to allow access into rv terminal specific endpoints
+                  passwordReset:
+                    type: boolean
+                    description: If tells login with temppassword
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            schema: 
+              type: object
+              required:
+                - rfid
+              properties: 
+                rvTerminalSecret:
+                  type: string
+                rfid: 
+                  type: string
+                  example: 8a4f2f0a
+                  minLength: 1
+  /api/v2/authenticate: 
+    post: 
+      summary: Authenticate with normal privileges
+      operationId: authenticate
+      tags:
+        - normal
+      responses: 
+        200:
+          description: Authentication successfull
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                required: 
+                  - accessToken
+                  - passwordReset
+                properties: 
+                  accessToken: 
+                    type: string
+                    description: JSON Web Token
+                  rvTerminalSecret:
+                    type: string
+                    description: Include secret to allow access into rv terminal specific endpoints
+                  passwordReset:
+                    type: boolean
+                    description: If tells login with temppassword
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
         403:
@@ -2390,6 +2471,70 @@ paths:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:
           '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/utils/getUserByEmail/{email}:
+    get:
+      summary: Get details of user with the given email
+      operationId: getUserByEmail
+      tags:
+        - normal
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: email
+          description: Email of the user.
+          required: true
+          in: path
+          schema:
+            type: string
+            example: fuxi.student@helsinki.fi
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/admin/utils/getUserByFullName/{fullname}:
+    get:
+      summary: Get details of user with the given full name
+      operationId: getUserByFullName
+      tags:
+        - normal
+      security:
+        - adminAccessToken: []
+      parameters:
+        - name: fullname
+          description: Full name of the user.
+          required: true
+          in: path
+          schema:
+            type: string
+            example: Ella Esimerkki
+      responses:
+        200:
+          description: Request fulfilled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - user
+                properties:
+                  user:
+                    '$ref': '#/components/schemas/User'
+        401:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
   /api/v1/admin/purchaseHistory: 
     get: 
       summary: Get combined purchase histories of all products and users
@@ -2611,6 +2756,51 @@ paths:
           '$ref': '#/components/responses/BadRequestErrorResponse'
         401:
           '$ref': '#/components/responses/InvalidCredentialsErrorResponse'        
+        403:
+          '$ref': '#/components/responses/NotAuthorizedErrorResponse'
+        404:
+          '$ref': '#/components/responses/NotFoundErrorResponse'
+  /api/v1/email/temp_password:
+    post:
+      summary: Generate and send a temporary password
+      description: |
+        Generates a temporary password for the user associated with the provided email address
+        and sends it to that address. The temporary password is valid for 15 minutes.
+      operationId: createTempPassword
+      tags:
+        - normal
+      security:
+        - normalAccessToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: integer
+                  example: 415
+                  description: Opaque unique identifier of the user.
+      responses:
+        201:
+          description: Temporary password generated and sent to the provided email address successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                    example: Temporary password created successfully.
+        400:
+          '$ref': '#/components/responses/BadRequestErrorResponse'
+        401:
+          '$ref': '#/components/responses/InvalidCredentialsErrorResponse'
         403:
           '$ref': '#/components/responses/NotAuthorizedErrorResponse'
         404:

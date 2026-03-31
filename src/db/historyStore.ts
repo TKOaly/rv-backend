@@ -30,7 +30,6 @@ export const createPurchaseHistoryQuery = () =>
 		.leftJoin('PRODGROUP', 'RVITEM.pgrpid', 'PRODGROUP.pgrpid')
 		.leftJoin('PRICE', 'ITEMHISTORY.priceid1', 'PRICE.priceid')
 		.leftJoin('RVPERSON', 'ITEMHISTORY.userid', 'RVPERSON.userid')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.leftJoin('SALDOHISTORY', 'ITEMHISTORY.saldhistid', 'SALDOHISTORY.saldhistid')
 		.leftJoin('ITEMHISTORY as ih2', 'ih2.itemhistid2', 'ITEMHISTORY.itemhistid')
 		.select(
@@ -49,7 +48,7 @@ export const createPurchaseHistoryQuery = () =>
 			'RVPERSON.realname',
 			'RVPERSON.univident',
 			'RVPERSON.saldo as currentsaldo',
-			'ROLE.role',
+			'RVPERSON.roleid',
 			'SALDOHISTORY.saldo',
 			'RVPERSON.privacy_level',
 			knex.raw('(ih2.itemhistid2 is not null) as returned')
@@ -64,7 +63,6 @@ export const createDepositHistoryQuery = () =>
 	knex('PERSONHIST')
 		.leftJoin('SALDOHISTORY', 'PERSONHIST.saldhistid', 'SALDOHISTORY.saldhistid')
 		.leftJoin('RVPERSON', 'PERSONHIST.userid1', 'RVPERSON.userid')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(
 			'PERSONHIST.pershistid',
 			'PERSONHIST.time',
@@ -75,7 +73,7 @@ export const createDepositHistoryQuery = () =>
 			'RVPERSON.realname',
 			'RVPERSON.univident',
 			'RVPERSON.saldo as currentsaldo',
-			'ROLE.role',
+			'RVPERSON.roleid',
 			'PERSONHIST.actionid',
 			'RVPERSON.privacy_level'
 		)

@@ -30,7 +30,7 @@ describe('routes: authentication', () => {
 		it('logging in with admin role should work', async () => {
 			/**
 			 * 		it('with valid credentials, should respond with an authentication token', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'hunter2',
 			});
@@ -44,7 +44,7 @@ describe('routes: authentication', () => {
 			expect(token.data.userId).to.equal(user.userId);
 		});
 			**/
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'admin_user',
 				password: 'admin123',
 			});
@@ -59,7 +59,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('should error on nonexistent user', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'abc',
 				password: 'defgh',
 			});
@@ -69,7 +69,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('should error the same way if only password is wrong', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'hunter69',
 			});
@@ -79,7 +79,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('should error on invalid parameters', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				password: false,
 			});
 
@@ -89,7 +89,7 @@ describe('routes: authentication', () => {
 	});
 	describe('User RFID authentication', () => {
 		it('with valid credentials hashed with userStore.newRfidHash, should respond with an authentication token', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				rfid: '1234',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -104,7 +104,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('with valid credentials hashed with userStore.oldRfidHash, should respond with an authentication token', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				rfid: '4321',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -119,7 +119,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('with invalid rfid, should return a 401 unauthorized response', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				rfid: '123456',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -128,7 +128,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('invalid request should result in a 400 bad request response', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				garbage: 'garbage',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -138,7 +138,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('inactive user should not be able to login', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				rfid: '999999',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -148,7 +148,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('should sign as rv terminal login if valid rvTerminalSecret ', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate/rfid').send({
+			const res = await chai.request(app).post('/api/v2/authenticate/rfid').send({
 				rfid: '1234',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
 			});
@@ -163,7 +163,7 @@ describe('routes: authentication', () => {
 		it('should not sign as rv terminal login if invalid rvTerminalSecret ', async () => {
 			const res = await chai
 				.request(app)
-				.post('/api/v1/authenticate/rfid')
+				.post('/api/v2/authenticate/rfid')
 				.send({
 					rfid: '1234',
 					rvTerminalSecret: process.env.RV_TERMINAL_SECRET + 'lol',
@@ -175,7 +175,7 @@ describe('routes: authentication', () => {
 
 	describe('User authentication', () => {
 		it('with valid credentials, should respond with an authentication token', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'hunter2',
 			});
@@ -190,7 +190,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('with invalid password, should return a 401 unauthorized response', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'incorrect',
 			});
@@ -200,7 +200,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('with nonexistent user, should return a 401 unauthorized response', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'nobody',
 				password: 'something',
 			});
@@ -210,7 +210,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('invalid request should result in a 400 bad request response', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				garbage: 'garbage',
 			});
 
@@ -219,7 +219,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('inactive user should not be able to login', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'user_inactive',
 				password: 'inactive',
 			});
@@ -229,7 +229,7 @@ describe('routes: authentication', () => {
 		});
 
 		it('should sign as rv terminal login if valid rvTerminalSecret ', async () => {
-			const res = await chai.request(app).post('/api/v1/authenticate').send({
+			const res = await chai.request(app).post('/api/v2/authenticate').send({
 				username: 'normal_user',
 				password: 'hunter2',
 				rvTerminalSecret: process.env.RV_TERMINAL_SECRET,
@@ -244,7 +244,7 @@ describe('routes: authentication', () => {
 		it('should not sign as rv terminal login if invalid rvTerminalSecret ', async () => {
 			const res = await chai
 				.request(app)
-				.post('/api/v1/authenticate')
+				.post('/api/v2/authenticate')
 				.send({
 					username: 'normal_user',
 					password: 'hunter2',

@@ -1,9 +1,10 @@
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 import { deleteUndefinedFields } from '../utils/objectUtils.js';
 import actions from './actions.js';
 import knex from './knex.js';
 import logger from '../logger.js';
+import { getRole, getRoleId } from './roles.js';
 
 export const RFID_SALT = 'rv-vakio-suola';
 export const NEW_RFID_SALT = 'TamaOnUusiRvVakioSuola';
@@ -16,6 +17,7 @@ export interface user {
 	moneyBalance: any;
 	role: any;
 	passwordHash: any;
+	tempPasswordHash: any;
 	rfidHash: any;
 	privacyLevel: number; // 0 = no limits, 1 = hide username from public, 2 = hide all data from public
 }
@@ -28,8 +30,9 @@ export const rowToUser = (row): user | undefined => {
 			fullName: row.realname,
 			email: row.univident,
 			moneyBalance: row.saldo,
-			role: row.role,
+			role: getRole(row.roleid),
 			passwordHash: row.pass,
+			tempPasswordHash: row.temp_password,
 			rfidHash: row.rfid,
 			privacyLevel: row.privacy_level,
 		};
@@ -44,21 +47,29 @@ const user_select_query = [
 	'RVPERSON.realname',
 	'RVPERSON.univident',
 	'RVPERSON.saldo',
-	'ROLE.role',
+	'RVPERSON.roleid',
 	'RVPERSON.pass',
 	'RVPERSON.rfid',
 	'RVPERSON.privacy_level',
+	'TEMPPASSWORD.temp_password'
 ];
 
 export const getUsers = async () => {
-	const data = await knex('RVPERSON').leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid').select(user_select_query);
+	const data = await knex('RVPERSON').select(user_select_query);
 	return data.map(rowToUser);
 };
 
 export const findById = async (userId) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.userid', userId)
 		.first();
 	return rowToUser(row);
@@ -66,10 +77,17 @@ export const findById = async (userId) => {
 
 export const findByRfid = async (rfid) => {
 	const row = await knex('RVPERSON')
-	.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
-	.select(user_select_query)
-	.where('RVPERSON.rfid', newRvRfidHash(rfid))
-	.first();
+		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
+		.where('RVPERSON.rfid', newRvRfidHash(rfid))
+		.first();
 
 	if (row === undefined) {
 		return migrateRvRfidHash(rfid);
@@ -80,8 +98,15 @@ export const findByRfid = async (rfid) => {
 
 export const findByUsername = async (username) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.name', username)
 		.first();
 	return rowToUser(row);
@@ -89,9 +114,32 @@ export const findByUsername = async (username) => {
 
 export const findByEmail = async (email) => {
 	const row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
 		.where('RVPERSON.univident', email)
+		.first();
+	return rowToUser(row);
+};
+
+export const findByFullName = async (fullName) => {
+	const row = await knex('RVPERSON')
+		.select(user_select_query)
+		.leftJoin('TEMPPASSWORD', function () {
+			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
+				.andOn(
+					'TEMPPASSWORD.created_at',
+					'<',
+					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
+				);
+		})
+		.where('RVPERSON.realname', fullName)
 		.first();
 	return rowToUser(row);
 };
@@ -103,7 +151,7 @@ export const insertUser = async (userData) => {
 		const insertedPersonRows = await knex('RVPERSON')
 			.insert({
 				createdate: now,
-				// roleid 2 = USER1
+				// roleid 2 = USER
 				roleid: 2,
 				name: userData.username,
 				univident: userData.email,
@@ -124,7 +172,7 @@ export const insertUser = async (userData) => {
 			fullName: userData.fullName,
 			email: userData.email,
 			moneyBalance: 0,
-			role: 'USER1',
+			role: 'USER',
 			passwordHash: passwordHash,
 			privacyLevel: 0,
 		};
@@ -148,8 +196,7 @@ export const newRvRfidHash = (rfid_hex: string): string => {
 }
 
 export const migrateRvRfidHash = async (rfid: string) => {
-	var row = await knex('RVPERSON')
-		.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
+	const row = await knex('RVPERSON')
 		.select(user_select_query)
 		.where('RVPERSON.rfid', oldRvRfidHash(rfid))
 		.first();
@@ -179,20 +226,55 @@ export const updateUser = async (userId, userData) => {
 			rvpersonFields.rfid = newRvRfidHash(userData.rfid);
 		}
 		if (userData.role !== undefined) {
-			const roleRow = await knex('ROLE').transacting(trx).select('roleid').where({ role: userData.role }).first();
-			rvpersonFields.roleid = roleRow.roleid;
+			rvpersonFields.roleid = getRoleId(userData.role);
 		}
 		await knex('RVPERSON').transacting(trx).update(rvpersonFields).where({ userid: userId });
 
 		const userRow = await knex('RVPERSON')
 			.transacting(trx)
-			.leftJoin('ROLE', 'RVPERSON.roleid', 'ROLE.roleid')
 			.select(user_select_query)
 			.where('RVPERSON.userid', userId)
 			.first();
 		return rowToUser(userRow);
 	});
 };
+
+export const createTempPassword = async (userId, userName) => {
+	const now = new Date();
+	const tempPassword = randomBytes(5).toString('hex')
+	const hashedTempPassword = bcrypt.hashSync(tempPassword, 11);
+
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+			.transacting(trx)
+			.insert({
+				userid: userId,
+				tempPass: hashedTempPassword,
+				time: now
+			});
+	});
+
+	return tempPassword
+};
+
+export const removeTempPassword = async (userId) => {
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+			.transacting(trx)
+			.where('userid', userId)
+			.del();
+	});
+}
+
+export const removeExpiredTempPassword = async (userId) => {
+	await knex.transaction(async (trx) => {
+		await knex('TEMPPASSWORD')
+            .transacting(trx)
+            .where('userId', userId)
+            .where('created_at', '<', knex.raw("NOW() - INTERVAL '15 minutes'"))
+            .del();
+	});
+}
 
 export const verifyPassword = async (password, passwordHash) => {
 	return await bcrypt.compare(password, passwordHash);

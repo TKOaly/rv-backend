@@ -51,4 +51,46 @@ describe('routes: admin utils', () => {
 			expect(res.status).to.equal(404);
 		});
 	});
+
+	describe('Endpoint getUserByEmail', () => {
+		it('should return user if email exists', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/utils/getUserByEmail/user@example.com')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(res.status).to.equal(200);
+			expect(res.body.user).to.exist;
+			expect(res.body.user.email).to.equal('user@example.com');
+		});
+		it('should return 404 if username does not exist', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/utils/getUserByEmail/nonexistant_user@example.com')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(res.status).to.equal(404);
+		});
+	});
+
+	describe('Endpoint getUserByFullName', () => {
+		it('should return user if real name exists', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/utils/getUserByFullName/John Doe')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(res.status).to.equal(200);
+			expect(res.body.user).to.exist;
+			expect(res.body.user.name).to.equal('John Doe');
+		});
+		it('should return 404 if username does not exist', async () => {
+			const res = await chai
+				.request(app)
+				.get('/api/v1/admin/utils/getUserByFullName/nonexistant_user')
+				.set('Authorization', 'Bearer ' + token);
+
+			expect(res.status).to.equal(404);
+		});
+	});
 });
