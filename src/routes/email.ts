@@ -18,7 +18,7 @@ router.post('/temp_password', async (req: Authenticated_request, res) => {
     const userId = req.body.userId;
     const user = await userStore.findById(userId);
     const tempPassword = await userStore.createTempPassword(user.userId, user.username);
-    logger.info("Temaporary password generated for user %s ", user.username);
+    logger.info("Temporary password generated for user %s ", user.username);
     const info = await transporter.sendMail({
         from: '"TKO-äly RV" <noreply@tko-aly.fi>',
         to: user.email,

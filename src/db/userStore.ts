@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 import { deleteUndefinedFields } from '../utils/objectUtils.js';
 import actions from './actions.js';
@@ -241,8 +241,7 @@ export const updateUser = async (userId, userData) => {
 
 export const createTempPassword = async (userId, userName) => {
 	const now = new Date();
-	const hash = bcrypt.hashSync(`${userName}${now.getMilliseconds()}${userId}`, 11);
-	const tempPassword = hash.split('$').at(-1).slice(22, 32);
+	const tempPassword = randomBytes(5).toString('hex')
 	const hashedTempPassword = bcrypt.hashSync(tempPassword, 11);
 
 	await knex.transaction(async (trx) => {
