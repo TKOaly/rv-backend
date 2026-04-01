@@ -55,21 +55,28 @@ const user_select_query = [
 ];
 
 export const getUsers = async () => {
-	const data = await knex('RVPERSON').select(user_select_query);
+	const data = await knex('RVPERSON')
+		.select(user_select_query)
+		.leftJoin(
+				knex('TEMPPASSWORD')
+					.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+					.as('TEMPPASSWORD'),
+				'RVPERSON.userid',
+				'TEMPPASSWORD.userid'
+		);
 	return data.map(rowToUser);
 };
 
 export const findById = async (userId) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
-		.leftJoin('TEMPPASSWORD', function () {
-			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
-				.andOn(
-					'TEMPPASSWORD.created_at',
-					'<',
-					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
-				);
-		})
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.userid', userId)
 		.first();
 	return rowToUser(row);
@@ -78,14 +85,13 @@ export const findById = async (userId) => {
 export const findByRfid = async (rfid) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
-		.leftJoin('TEMPPASSWORD', function () {
-			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
-				.andOn(
-					'TEMPPASSWORD.created_at',
-					'<',
-					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
-				);
-		})
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.rfid', newRvRfidHash(rfid))
 		.first();
 
@@ -99,14 +105,13 @@ export const findByRfid = async (rfid) => {
 export const findByUsername = async (username) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
-		.leftJoin('TEMPPASSWORD', function () {
-			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
-				.andOn(
-					'TEMPPASSWORD.created_at',
-					'<',
-					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
-				);
-		})
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.name', username)
 		.first();
 	return rowToUser(row);
@@ -115,14 +120,13 @@ export const findByUsername = async (username) => {
 export const findByEmail = async (email) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
-		.leftJoin('TEMPPASSWORD', function () {
-			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
-				.andOn(
-					'TEMPPASSWORD.created_at',
-					'<',
-					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
-				);
-		})
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.univident', email)
 		.first();
 	return rowToUser(row);
@@ -131,14 +135,13 @@ export const findByEmail = async (email) => {
 export const findByFullName = async (fullName) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
-		.leftJoin('TEMPPASSWORD', function () {
-			this.on('RVPERSON.userid', '=', 'TEMPPASSWORD.userid')
-				.andOn(
-					'TEMPPASSWORD.created_at',
-					'<',
-					knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'")
-				);
-		})
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.realname', fullName)
 		.first();
 	return rowToUser(row);
@@ -198,6 +201,13 @@ export const newRvRfidHash = (rfid_hex: string): string => {
 export const migrateRvRfidHash = async (rfid: string) => {
 	const row = await knex('RVPERSON')
 		.select(user_select_query)
+		.leftJoin(
+			knex('TEMPPASSWORD')
+				.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+				.as('TEMPPASSWORD'),
+			'RVPERSON.userid',
+			'TEMPPASSWORD.userid'
+		)
 		.where('RVPERSON.rfid', oldRvRfidHash(rfid))
 		.first();
 
@@ -233,6 +243,13 @@ export const updateUser = async (userId, userData) => {
 		const userRow = await knex('RVPERSON')
 			.transacting(trx)
 			.select(user_select_query)
+			.leftJoin(
+				knex('TEMPPASSWORD')
+					.where('created_at', '<', knex.raw("CURRENT_TIMESTAMP - INTERVAL '15 minutes'"))
+					.as('TEMPPASSWORD'),
+				'RVPERSON.userid',
+				'TEMPPASSWORD.userid'
+			)
 			.where('RVPERSON.userid', userId)
 			.first();
 		return rowToUser(userRow);
