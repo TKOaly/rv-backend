@@ -7,7 +7,7 @@ import logger from '../logger.js';
 import { getRole, getRoleId } from './roles.js';
 
 export const RFID_SALT = 'rv-vakio-suola';
-export const NEW_RFID_SALT = 'TamaOnUusiRvVakioSuola';
+export const NEW_RFID_SALT = process.env.RFID_SALT;
 
 export interface user {
 	userId: any;

@@ -140,7 +140,9 @@ You can use a custom [.env](.env) file to override the environment variables set
 | POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB | Postgres database configuration                                                                                                                                                     |
 | JWT_SECRET                 | Secret keys for signing JWT tokens. **Do not** use default values in production! The security of authentication will depend on this key being kept secret, so treat it accordingly. |
 | PORT                                          | Port the backend is served at                                                                                                                                                       |
-| NODE_ENV                                      | Environment for Node, can be one of `development`, `test` or `production`.                                                                                                          |
+| NODE_ENV                                      | Environment for Node, can be one of `development`, `test` or `production`. |
+| RFID_SALT | Salt for rfid must be hexadecimal. **Do not** use default values in production! |
+| EMAIL_HOST, EMAIL_PORT, EMAIL_ADDRESS | Email configuration |
 
 ## API
 
