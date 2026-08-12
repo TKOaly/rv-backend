@@ -84,9 +84,7 @@ router.post(
 
 		// product and price found
 		if (product) {
-			/* User can always empty his account completely, but resulting negative saldo should be minimized. This is
-			 * achieved by allowing only a single product to be bought on credit. */
-			if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * (count - 1)) {
+			if (product.sellPrice <= 0 || user.moneyBalance > product.sellPrice * count) {
 				// record purchase
 				const purchases = await productStore.recordPurchase(barcode, user.userId, count);
 
